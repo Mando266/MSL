@@ -20,14 +20,6 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label>{{trans('user.avatar')}}:</label>
-                                <div class="avatar avatar-xl ">
-                                <img alt="avatar" src="{{$user->getAvatarUrl()}}" class="rounded" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}}</label>
                                 <input type="text" class="form-control" id="userName" value="{{$user->name}}" disabled>
                             </div>
