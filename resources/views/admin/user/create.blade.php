@@ -20,25 +20,6 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <div class="custom-file-container" data-upload-id="avatar">
-                                    <label>{{trans('user.avatar')}} <span class="text-warning"> ( Max image size is 2Mb.) </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
-                                    <label class="custom-file-container__custom-file" >
-                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="avatar" accept="image/*">
-                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
-                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                    </label>
-                                    <div class="custom-file-container__image-preview"></div>
-                                </div>
-
-                                @error('avatar')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>
                             <input type="text" class="form-control" id="userName" name="name" value="{{old('name')}}"
                                  placeholder="{{trans('user.user_name')}}" autocomplete="off" autofocus maxlength="30">
