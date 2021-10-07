@@ -109,14 +109,14 @@ class UserController extends Controller
             'full_name'=>'required|string|max:128',
             'name'=>'required|alpha_dash|min:4|max:30|unique:users,name',
             'password'=>'required|string|min:6|max:30|confirmed',
-            'email'=>'email|nullable|unique:users,email',
+            'email'=>'required|email|nullable|unique:users,email',
             'employee_no'=>'nullable|integer|unique:users,employee_no',
             'avatar'=>'nullable|mimes:jpeg,png|file|max:2048'
         ];
         if($is_update){
             $rules = array_merge($rules, [
                 'name'=>'required|alpha_dash|min:4|unique:users,name,'.$user->id,
-                'email'=>'email|nullable|unique:users,email,'.$user->id,
+                'email'=>'required|email|nullable|unique:users,email,'.$user->id,
                 'employee_no'=>'nullable|integer|unique:users,employee_no,'.$user->id,
                 'password'=>'nullable|min:6|confirmed',
             ]);
@@ -127,7 +127,9 @@ class UserController extends Controller
     protected function messages(){
         return  [
             'name.required'=>'User Name is Required',
-            'name.unique'=>'User Name has already been taken'
+            'name.unique'=>'User Name has already been taken',
+            'email.required'=>'Email is Required'
+
         ];
     }
     protected function storeAvatar(Request $request,$url = null){

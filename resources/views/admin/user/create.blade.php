@@ -24,7 +24,7 @@
                             <input type="text" class="form-control" id="userName" name="name" value="{{old('name')}}"
                                  placeholder="{{trans('user.user_name')}}" autocomplete="off" autofocus maxlength="30">
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -34,7 +34,7 @@
                             <input type="text" class="form-control" id="fullName" name="full_name" value="{{old('full_name')}}"
                                  placeholder="{{trans('user.full_name')}}" autocomplete="off" maxlength="128">
                                 @error('full_name')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -47,7 +47,7 @@
                                 <input type="password" class="form-control" id="passwordInput" name="password" maxlength="30"
                                     placeholder="{{trans('login.password')}}" autocomplete="off" >
                                 @error('password')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -60,11 +60,11 @@
                         </div>
                         <div class="form-row mb-4">
                             <div class="form-group col-md-6">
-                                <label for="email">{{trans('user.email')}}</label>
+                                <label for="email">{{trans('user.email')}} *</label>
                             <input type="text" class="form-control" id="email" name="email" value="{{old('email')}}" maxlength="128"
                                  placeholder="{{trans('user.email')}}" autocomplete="off" >
                                 @error('email')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -74,7 +74,7 @@
                             <input type="text" class="form-control" id="empCode" name="employee_no" value="{{old('employee_no')}}"
                                  placeholder="{{trans('user.employee_no')}}" autocomplete="off" maxlength="15" >
                                 @error('employee_no')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -92,7 +92,7 @@
                                     @endforeach
                                 </select>
                                 @error('role')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -104,7 +104,7 @@
                                     <option value="0" {{ old('status') == "0" ? 'selected':'' }}>Disabled</option>
                                 </select>
                                 @error('status')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror

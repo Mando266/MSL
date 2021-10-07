@@ -20,7 +20,7 @@
 
                     <div class="w-chart-section">
                         <div class="w-detail">
-                            <p class="w-title">Total Sales</p>
+                            <p class="w-title">Total Booking</p>
                             <p class="w-stats">800</p>
                         </div>
                         <div class="w-chart-render-one">

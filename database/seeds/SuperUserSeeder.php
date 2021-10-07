@@ -18,6 +18,7 @@ class SuperUserSeeder extends Seeder
                 'name'=>'sys_admin',
                 'full_name'=>'System Admin',
                 'password'=>Hash::make(123456),
+                'email'=>'mfadl887@gmail.com',
                 'is_active'=>1,
                 'is_super_admin'=>1
             ]);

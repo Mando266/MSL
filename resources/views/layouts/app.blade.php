@@ -58,20 +58,20 @@
                 <li class="nav-item align-self-center page-heading">
                     <div class="page-header">
                         <div class="page-title">
-                            <h3> MSL </h3>
+                            <h3> Middle East Shipping Line </h3>
                         </div>
                     </div>
                 </li>
             </ul>
             <ul class="navbar-item flex-row search-ul">
-                <li class="nav-item align-self-center search-animated">
+                <!-- <li class="nav-item align-self-center search-animated">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     <form class="form-inline search-full form-inline search" role="search">
                         <div class="search-bar">
                             <input type="text" class="form-control search-form-control  ml-lg-auto" placeholder="Search...">
                         </div>
                     </form>
-                </li>
+                </li> -->
             </ul>
 
             <ul class="navbar-item flex-row">
@@ -81,7 +81,7 @@
                         <div class="media mx-auto">
                             <img src="{{optional(Auth::user())->getAvatarUrl()}}" class="img-fluid mr-2" alt="avatar">
                             <div class="media-body">
-                                <h5>{{optional(Auth::user())->name}}</h5>
+                                <h5>{{optional(Auth::user())->full_name}}</h5>
                                 <!-- <p></p> -->
                             </div>
                         </div>
@@ -148,9 +148,9 @@
                 <div class="footer-section f-section-1">
                     <p class="">Copyright © 2021 Middle East Shipping Line, All rights reserved.</p>
                 </div>
-                <!-- <div class="footer-section f-section-2">
-                    <p class="">Developed By Sana Technology</p>
-                </div> -->
+                <div class="footer-section f-section-2">
+                    <p>Developed By <span style="color:red;">Diga Technology</span></p>
+                </div>
             </div>
         </div>
         <!--  END CONTENT AREA  -->
