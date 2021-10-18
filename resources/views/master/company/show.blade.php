@@ -22,6 +22,10 @@
                                 <label for="nameInput">{{trans('company.name')}}</label>
                                 <input type="text" class="form-control" id="nameInput"  value="{{$company->name}}" disabled>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label for="addressInput">{{trans('company.address')}}</label>
+                                <input type="text" class="form-control" id="addressInput"  value="{{$company->address}}" disabled>
+                            </div>
                         </div>
 
                         <div class="form-row">
@@ -35,7 +39,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                                 <label for="countryInput">{{trans('company.country')}}</label>
                                 <input type="text" class="form-control" id="countryInput" value="{{optional($company->country)->name}}" disabled>
 
@@ -43,27 +47,6 @@
                             <div class="form-group col-md-6">
                                 <label for="cityInput">{{trans('company.city')}}</label>
                                 <input type="text" class="form-control" id="cityInput" value="{{$company->city}}" disabled>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="addressInput">{{trans('company.address')}}</label>
-                                <input type="text" class="form-control" id="addressInput"  value="{{$company->address}}" disabled>
-                            </div>
-                        </div>
-                        <div class="form-row">
-
-                            <div class="form-group col-md-6">
-                                <label for="mainCurrencyInput">{{trans('company.main_currency')}}</label>
-                                <input type="text" class="form-control" id="mainCurrencyInput"  value="{{optional($company->mainCurrency)->name}}" disabled>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>{{trans('company.currencies')}}</label>
-                                <ul class="list">
-                                    @foreach ($company->currencies as $item)
-                                        <li>{{$item->name}}</li>
-                                    @endforeach
-                                </ul>
                             </div>
                         </div>
                        <div class="row">

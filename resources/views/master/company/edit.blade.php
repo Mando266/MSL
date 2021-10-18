@@ -30,36 +30,18 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="currencyInput">{{trans('company.currencies')}}</label>
-                                <select class="selectpicker form-control" id="currencyInput" data-live-search="true" name="currencies[]" data-size="10" multiple
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($currencies as $item)
-                                        <option value="{{$item->id}}" {{in_array($item->id , old('currencies',$company->currencies->pluck('id')->all())) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('currencies')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="mainCurrencyInput">{{trans('company.main_currency')}} *</label>
-                                <select class="selectpicker form-control" id="mainCurrencyInput"  name="main_currency_id" data-size="10" title="{{trans('forms.select')}}">
-                                    @foreach ($currencies as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('main_currency_id',$company->main_currency_id) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('main_currency_id')
+                                <label for="addressInput">{{trans('company.address')}}</label>
+                                <input type="text" class="form-control" id="addressInput" name="address" value="{{old('address',$company->address)}}"
+                                    placeholder="{{trans('company.address')}}" autocomplete="disabled">
+                                @error('address')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="phoneInput">{{trans('company.phone')}}</label>
@@ -108,19 +90,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="addressInput">{{trans('company.address')}}</label>
-                                <input type="text" class="form-control" id="addressInput" name="address" value="{{old('address',$company->address)}}"
-                                    placeholder="{{trans('company.address')}}" autocomplete="disabled">
-                                @error('address')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
 
-                        </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
