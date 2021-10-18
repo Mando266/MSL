@@ -17,7 +17,7 @@ class CompanySeeder extends Seeder
     {
         DB::table('companies')->truncate();
         $company = Company::create([
-            'name'=>'Prometeon',
+            'name'=>'Middle East Shipping Line',
             'country_id'=>Country::where('prefix','EG')->value('id'),
         ]);
     }
