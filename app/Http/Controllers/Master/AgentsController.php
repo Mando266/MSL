@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Master;
 use App\Models\Master\Country;
-use App\Models\Master\AgentTypes;
 use App\Models\Master\Agents;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,7 +11,7 @@ class AgentsController extends Controller
 {
     public function index()
     {
-        $this->authorize(__FUNCTION__,AgentTypes::class);
+        $this->authorize(__FUNCTION__,Agents::class);
         $agents = Agents::orderBy('id')->paginate(10);
 
         return view('master.agents.index',[
@@ -24,10 +23,8 @@ class AgentsController extends Controller
     {
         $this->authorize(__FUNCTION__,Agents::class);
         $countries = Country::orderBy('name')->get();
-        $agent_types = AgentTypes::orderBy('name')->get();
         return view('master.agents.create',[
             'countries'=>$countries,
-            'agent_types'=>$agent_types,
         ]);
     }
 
@@ -50,11 +47,9 @@ class AgentsController extends Controller
     {
         $this->authorize(__FUNCTION__,Agents::class);
         $countries = Country::orderBy('name')->get();
-        $agent_types = AgentTypes::orderBy('name')->get();
         return view('master.agents.edit',[
             'agent'=>$agent,
             'countries'=>$countries,
-            'agent_types'=>$agent_types,
         ]); 
     }
 

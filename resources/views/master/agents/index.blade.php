@@ -29,8 +29,9 @@
                                         <th>Name</th>
                                         <th>Country</th>
                                         <th>City</th>
-                                        <th>Agent Type</th>
-
+                                        <th>Intermediate Payer</th>
+                                        <th>port control</th>
+                                        <th>Documentation Control</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -41,8 +42,28 @@
                                             <td>{{$item->name}}</td>
                                             <td>{{optional($item->country)->name}}</td>
                                             <td>{{$item->city}}</td>
-                                            <td>{{{optional($item->agentType)->name}}}</td>
 
+                                            <td class="text-center">
+                                                @if($item->intermediate_payer)
+                                                <input type="checkbox" checked="checked" readonly>
+                                                    @else
+                                                    <input type="checkbox" readonly>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if($item->port_control)
+                                                <input type="checkbox" checked="checked" readonly>
+                                                    @else
+                                                    <input type="checkbox" readonly>
+                                                @endif
+                                            </td>  
+                                            <td class="text-center">
+                                                @if($item->documentation_control)
+                                                <input type="checkbox" checked="checked" readonly>
+                                                    @else
+                                                    <input type="checkbox" readonly>
+                                                @endif
+                                            </td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

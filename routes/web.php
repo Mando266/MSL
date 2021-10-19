@@ -29,9 +29,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('countries', 'CountryController');
         Route::resource('port-types', 'PortTyepsController');
         Route::resource('ports', 'PortsController');
-        Route::resource('agent-types', 'AgentTypesController');
         Route::resource('agents', 'AgentsController');
-
+        Route::resource('terminals', 'TerminalsController');
     });
 
 });
