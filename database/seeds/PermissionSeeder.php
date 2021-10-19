@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         $seeder = new PermissionSeederSeeder();
-       $seeder->clearTable();
+        $seeder->clearTable();
         $seeder->save();
     }
 }

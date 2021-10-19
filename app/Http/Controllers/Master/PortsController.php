@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\Country;
 use App\Models\Master\PortTypes;
 use App\Models\Master\Ports;
+use App\Models\Master\Terminals;
 use App\Models\Master\Agents;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,11 +35,12 @@ class PortsController extends Controller
         $countries = Country::orderBy('name')->get();
         $port_types = PortTypes::orderBy('name')->get();
         $agents = Agents::orderBy('name')->get();
+        $terminals = Terminals::orderBy('name')->get();
         return view('master.ports.create',[
             'countries'=>$countries,
             'port_types'=>$port_types,
             'agents'=>$agents,
-
+            'terminals'=>$terminals,
         ]); 
     }
 
@@ -63,11 +65,13 @@ class PortsController extends Controller
         $countries = Country::orderBy('name')->get();
         $agents = Agents::orderBy('name')->get();
         $port_types = PortTypes::orderBy('name')->get();
+        $terminals = Terminals::orderBy('name')->get();
         return view('master.ports.edit',[
             'port'=>$port,
             'countries'=>$countries,
             'agents'=>$agents,
             'port_types'=>$port_types,
+            'terminals'=>$terminals,
         ]); 
     }
 

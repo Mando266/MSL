@@ -8,22 +8,32 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
-                            <li class="breadcrumb-item"><a href="{{route('agents.index')}}">Agents</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Agent</a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0);"> Master Data </a></li>
+                            <li class="breadcrumb-item"><a href="{{route('terminals.index')}}"> Terminals</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Terminal</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('agents.store')}}" method="POST">
+                <form id="createForm" action="{{route('terminals.store')}}" method="POST">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="nameInput"> Name *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Name" autocomplete="disabled" autofocus>
+                                 placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="codeInput">Code</label>
+                                <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
+                                    placeholder="Code" autocomplete="off">
+                                @error('code')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
@@ -43,34 +53,12 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="cityInput">City</label>
-                                <input type="text" class="form-control" id="cityInput" name="city" value="{{old('city')}}"
-                                    placeholder="City" autocomplete="disabled">
-                                @error('city')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
                         </div>
-  
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <input type="checkbox" id="intermediate_payerInput" name="intermediate_payer" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Intermediate Payer </a>
-                                </br>
-                                <input type="checkbox" id="port_controlInput" name="port_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Port Control </a>
-                                </br>
-                                <input type="checkbox" id="documentation_controlInput" name="documentation_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Documentation Control</a>
-                                </br>
-                            </div>
-                        </div>
-
 
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
-                                <a href="{{route('agents.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('terminals.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                        </div>
 

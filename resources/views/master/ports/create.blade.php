@@ -20,9 +20,9 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="nameInput">Port Name *</label>
+                                <label for="nameInput">Name *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Port Name" autocomplete="disabled" autofocus>
+                                 placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -30,9 +30,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="codeInput">Port Code</label>
+                                <label for="codeInput">Code</label>
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
-                                    placeholder="Port Code" autocomplete="disabled">
+                                    placeholder="Code" autocomplete="off">
                                 @error('code')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -55,7 +55,17 @@
                             </div>
                         </div>
   
-                        <div class="form-row">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                                <label for="via_portInput">Via Port</label>
+                                <input type="text" class="form-control" id="via_portInput" name="via_port" value="{{old('via_port')}}"
+                                    placeholder="Via Port" autocomplete="off">
+                                @error('via_port')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         <div class="form-group col-md-4">
                                 <label for="countryInput">Port Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="port_type_id" data-size="10"
@@ -71,8 +81,8 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="countryInput">Agent</label>
-                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="agent_id" data-size="10"
+                                <label for="agentInput">Agent</label>
+                                <select class="selectpicker form-control" id="agentInput" data-live-search="true" name="agent_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -84,8 +94,24 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
+                    </div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="terminalInput">Terminal</label>
+                            <select class="selectpicker form-control" id="terminalInput" data-live-search="true" name="terminal_id" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                @foreach ($terminals as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                            @error('terminal_id')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
 
                        <div class="row">
                             <div class="col-md-12 text-center">

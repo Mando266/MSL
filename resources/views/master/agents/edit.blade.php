@@ -56,22 +56,16 @@
                             </div>
                         </div>
                         
-                        <div class="form-row">
+                        <!-- <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="agentInput">Agent Type</label>
-                                <select class="selectpicker form-control" id="agentInput" data-live-search="true" data-size="10"
-                                name="agent_type_id" title="{{trans('forms.select')}}">
-                                    @foreach ($agent_types as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('agent_type_id',$agent->agent_type_id) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('agent_type_id')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
+                                <input type="checkbox" id="intermediate_payerInput" name="intermediate_payer" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Intermediate Payer </a>
+                                </br>
+                                <input type="checkbox" id="port_controlInput" name="port_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Port Control </a>
+                                </br>
+                                <input type="checkbox" id="documentation_controlInput" name="documentation_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Documentation Control</a>
+                                </br>
                             </div>
-                        </div>
+                        </div> -->
 
                        <div class="row">
                             <div class="col-md-12 text-center">

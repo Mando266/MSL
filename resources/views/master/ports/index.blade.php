@@ -43,7 +43,7 @@
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
                                             <td>{{optional($item->country)->name}}</td>
-                                            <td>{{$item->terminal_id}}</td>
+                                            <td>{{optional($item->Terminal)->name}}</td>
                                             <td>{{optional($item->Agent)->name}}</td>
                                             <td>{{{optional($item->PortTypes)->name}}}</td>
 

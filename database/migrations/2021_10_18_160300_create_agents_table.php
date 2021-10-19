@@ -16,9 +16,11 @@ class CreateAgentsTable extends Migration
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('city');
+            $table->string('city')->nullable();
+            $table->boolean('intermediate_payer')->nullable();
+            $table->boolean('port_control')->nullable();
+            $table->boolean('documentation_control')->nullable();
             $table->unsignedInteger('country_id')->nullable();
-            $table->unsignedInteger('agent_type_id')->nullable();
             $table->BigInteger('company_id')->nullable();
             $table->timestamps();
         });

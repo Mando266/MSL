@@ -22,7 +22,7 @@
                             <div class="form-group col-md-6">
                                 <label for="nameInput">Port Type Name *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Port Type Name" autocomplete="disabled" autofocus>
+                                 placeholder="Port Type Name" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}

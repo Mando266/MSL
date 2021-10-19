@@ -17,6 +17,7 @@ class CreatePortsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code','255')->nullable();
+            $table->string('via_port')->nullable();
             $table->unsignedInteger('country_id')->nullable();
             $table->unsignedInteger('terminal_id')->nullable();
             $table->unsignedInteger('port_type_id')->nullable();

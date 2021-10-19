@@ -22,6 +22,9 @@ class Ports extends Model
     public function Agent (){
         return $this->belongsto(Agents::class,'agent_id','id');
     }
+    public function Terminal (){
+        return $this->belongsto(Terminals::class,'terminal_id','id');
+    }
     public function scopeUserPorts($query){
         if(is_null(Auth::user()->company_id))
         {

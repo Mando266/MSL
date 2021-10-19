@@ -16,9 +16,6 @@ class Agents extends Model
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
-    public function agentType (){
-        return $this->belongsto(AgentTypes::class,'agent_type_id','id');
-    }
     
     public function scopeUserAgents($query){
         if(is_null(Auth::user()->company_id))
