@@ -54,9 +54,20 @@ class PortsController extends Controller
         return redirect()->route('ports.index')->with('success',trans('port.created')); 
     }
 
-    public function show($id)
+    public function show(Ports $port)
     {
-        //
+        $this->authorize(__FUNCTION__,Ports::class);
+        $countries = Country::orderBy('name')->get();
+        $agents = Agents::orderBy('name')->get();
+        $port_types = PortTypes::orderBy('name')->get();
+        $terminals = Terminals::orderBy('name')->get();
+        return view('master.ports.show',[
+            'port'=>$port,
+            'countries'=>$countries,
+            'agents'=>$agents,
+            'port_types'=>$port_types,
+            'terminals'=>$terminals,
+        ]);
     }
 
     public function edit(Ports $port)

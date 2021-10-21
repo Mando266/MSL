@@ -824,29 +824,29 @@ select.form-control.form-custom {
 
 .btn-danger {
   color: #fff !important;
-  background-color: #d9534f;
-  border-color: #d9534f; }
+  background-color: #e7515a;
+  border-color: #e7515a; }
   .btn-danger:hover, .btn-danger:focus {
     color: #fff !important;
-    background-color: #d9534f;
+    background-color: #e7515a;
     box-shadow: none;
-    border-color: #d9534f; }
+    border-color: #e7515a; }
   .btn-danger:active, .btn-danger.active {
-    background-color: #d9534f;
-    border-top: 1px solid #d9534f; }
+    background-color: #e7515a;
+    border-top: 1px solid #e7515a; }
   .btn-danger:not(:disabled):not(.disabled).active, .btn-danger:not(:disabled):not(.disabled):active {
     color: #fff !important;
-    background-color: #d9534f;
-    border-color: #d9534f; }
+    background-color: #e7515a;
+    border-color: #e7515a; }
 
 .show > .btn-danger.dropdown-toggle {
   color: #fff !important;
-  background-color: #d9534f;
-  border-color: #d9534f; }
+  background-color: #e7515a;
+  border-color: #e7515a; }
 
 .btn-danger.disabled, .btn-danger.btn[disabled], .btn-danger:disabled {
-  background-color: #d9534f;
-  border-color: #d9534f;
+  background-color: #e7515a;
+  border-color: #e7515a;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none; }
@@ -875,7 +875,7 @@ select.form-control.form-custom {
   border-top-color: #fff; }
 
 .btn-group.open .btn-danger.dropdown-toggle {
-  background-color: #d9534f; }
+  background-color: #a9302a; }
 
 .btn-dark {
   color: #fff !important;
@@ -1098,11 +1098,11 @@ select.form-control.form-custom {
   color: #fff !important; }
 
 .btn-outline-danger:not(:disabled):not(.disabled).active, .btn-outline-danger:not(:disabled):not(.disabled):active {
-  background-color: #0c68df;
+  background-color: #e7515a;
   color: #fff !important; }
 
 .show > .btn-outline-danger.dropdown-toggle {
-  background-color: #0c68df;
+  background-color: #e7515a;
   color: #fff !important; }
 
 .btn-outline-warning:not(:disabled):not(.disabled).active, .btn-outline-warning:not(:disabled):not(.disabled):active {
