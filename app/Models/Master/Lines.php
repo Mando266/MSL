@@ -11,13 +11,13 @@ class Lines extends Model
     protected $guarded = [];
 
     public function LineTypes(){
-        return $this->belongsTo(LineTypes::class,'line_type_id','id');
+        return $this->belongsTo(LinesType::class,'line_type_id','id');
     }
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
 
-    public function scopeUserPorts($query){
+    public function scopeUserLines($query){
         if(is_null(Auth::user()->company_id))
         {
             $query;

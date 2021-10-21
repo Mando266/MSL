@@ -79,10 +79,9 @@
                     <div class="page-header">
                         <div class="user-title">
                         <div class="media mx-auto">
-                            <img src="{{optional(Auth::user())->getAvatarUrl()}}" class="img-fluid mr-2" alt="avatar">
+                            <img src="{{optional(Auth::user())->getAvatarUrl()}}" class="img-fluid mr-2" alt="avatar" style="width:36px;">
                             <div class="media-body">
                                 <h5>{{optional(Auth::user())->full_name}}</h5>
-                                <!-- <p></p> -->
                             </div>
                         </div>
                         </div>
@@ -90,21 +89,6 @@
                 </li>
             </ul>
             <ul class="navbar-item flex-row navbar-dropdown">
-                <li class="nav-item dropdown language-dropdown more-dropdown mx-2">
-                    <div class="dropdown  custom-dropdown-icon">
-                    <a class="dropdown-toggle btn" href="#" role="button" id="customDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{asset('assets/img/uk-flag-england.jpg')}}" class="flag-width" alt="flag"><span>English</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </a>
-                    </div>
-                </li>
-<!-- 
-                <li class="nav-item dropdown message-dropdown">
-                    <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="messageDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                        </svg>
-                    </a>
-                </li> -->
                 @include('layouts._profile_menu')
             </ul>
 
