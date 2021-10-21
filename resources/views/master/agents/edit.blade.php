@@ -56,16 +56,44 @@
                             </div>
                         </div>
                         
-                        <!-- <div class="form-row">
+                        <div class="form-row">
                             <div class="form-group col-md-4">
-                                <input type="checkbox" id="intermediate_payerInput" name="intermediate_payer" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Intermediate Payer </a>
-                                </br>
-                                <input type="checkbox" id="port_controlInput" name="port_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Port Control </a>
-                                </br>
-                                <input type="checkbox" id="documentation_controlInput" name="documentation_control" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Documentation Control</a>
-                                </br>
+                                <label for="status">Intermediate payer</label>
+                                <select class="selectpicker form-control"  name="intermediate_payer">
+                                    <option value="1" {{ old('status',$agent->intermediate_payer) == "1" ? 'selected':'' }}>Yes</option>
+                                    <option value="0" {{ old('status',$agent->intermediate_payer) == "0" ? 'selected':'' }}>No</option>
+                                </select>
+                                @error('status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                        </div> -->
+                            <div class="form-group col-md-4">
+                                <label for="status">Port Control</label>
+                                <select class="selectpicker form-control"  name="port_control">
+                                    <option value="1" {{ old('status',$agent->port_control) == "1" ? 'selected':'' }}>Yes</option>
+                                    <option value="0" {{ old('status',$agent->port_control) == "0" ? 'selected':'' }}>No</option>
+                                </select>
+                                @error('status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="status">Documentation Control</label>
+                                <select class="selectpicker form-control"  name="documentation_control">
+                                    <option value="1" {{ old('status',$agent->documentation_control) == "1" ? 'selected':'' }}>Yes</option>
+                                    <option value="0" {{ old('status',$agent->documentation_control) == "0" ? 'selected':'' }}>No</option>
+                                </select>
+                                @error('status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
 
                        <div class="row">
                             <div class="col-md-12 text-center">

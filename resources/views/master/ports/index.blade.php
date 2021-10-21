@@ -28,6 +28,7 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Code</th>
+                                        <th>via port</th>
                                         <th>Country</th>
                                         <th>Terminal</th>
                                         <th>Agent</th>
@@ -42,6 +43,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
+                                            <td>{{$item->via_port}}</td>
                                             <td>{{optional($item->country)->name}}</td>
                                             <td>{{optional($item->Terminal)->name}}</td>
                                             <td>{{optional($item->Agent)->name}}</td>
@@ -64,7 +66,13 @@
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
                                                         </form> 
                                                     </li>
-
+                                                    @endpermission
+                                                    @permission('Ports-Show')
+                                                    <li>
+                                                        <a href="{{route('ports.show',['port'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
                                                     @endpermission
                                                 </ul>
                                             </td>

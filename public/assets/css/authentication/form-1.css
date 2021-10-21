@@ -59,7 +59,7 @@ body {
       color: #3b3f5c;
       margin-bottom: 0; }
   .form-form .form-form-wrap .brand-name {
-    color: #0c68df;
+    color: #e6331b;
     font-weight: 600; }
   .form-form .form-form-wrap p.signup-link {
     font-size: 14px;
@@ -67,7 +67,7 @@ body {
     font-weight: 700;
     margin-bottom: 50px; }
     .form-form .form-form-wrap p.signup-link a {
-      color: #0c68df;
+      color: #e6331b;
       border-bottom: 1px solid; }
   .form-form .form-form-wrap form .field-wrapper.input {
     position: relative;
@@ -85,8 +85,8 @@ body {
   .form-form .form-form-wrap form .field-wrapper svg {
     position: absolute;
     top: 16px;
-    color: #0c68df;
-    fill: rgba(27, 118, 230, 0.239216); }
+    color: #e6331b;
+    fill: rgba(230, 51, 27, 0.239216); }
   .form-form .form-form-wrap form .field-wrapper.terms_condition {
     margin-bottom: 20px; }
     .form-form .form-form-wrap form .field-wrapper.terms_condition label {
@@ -131,7 +131,7 @@ body {
   .form-form .form-form-wrap form .field-wrapper a.forgot-pass-link {
     width: 100%;
     font-weight: 700;
-    color: #0c68df;
+    color: #e6331b;
     text-align: center;
     display: block;
     letter-spacing: 2px;
@@ -157,7 +157,7 @@ body {
     font-weight: 600;
     margin-top: 90px; }
     .form-form .terms-conditions a {
-      color: #0c68df;
+      color: #e6331b;
       font-weight: 700; }
 
 .form-image {

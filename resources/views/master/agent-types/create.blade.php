@@ -9,21 +9,20 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
-                            <li class="breadcrumb-item"><a href="{{route('port-types.index')}}">Port Types</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('agent-types.index')}}">Agent Types</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Agent Type</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('port-types.update',['port_type'=>$port_type])}}" method="POST">
+                <form id="createForm" action="{{route('agent-types.store')}}" method="POST">
                         @csrf
-                        @method('put')
                         <div class="form-row">
-                            <div class="form-group col-md-5">
-                                <label for="nameInput">Name *</label>
-                            <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name',$port_type->name)}}"
-                                 placeholder="Name" autocomplete="off" autofocus>
+                            <div class="form-group col-md-6">
+                                <label for="nameInput">Agent Type Name *</label>
+                            <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
+                                 placeholder="Agent Type Name" autocomplete="disabled" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -31,11 +30,10 @@
                                 @enderror
                             </div>
                         </div>
-
                        <div class="row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary mt-3">Update</button>
-                                <a href="{{route('port-types.index')}}" class="btn btn-danger mt-3">Cancel</a>
+                                <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
+                                <a href="{{route('agent-types.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                        </div>
 

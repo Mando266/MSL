@@ -26,7 +26,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>name</th>
+                                        <th>port type</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>

@@ -58,6 +58,16 @@
                         
                         <div class="form-row">
                             <div class="form-group col-md-4">
+                                <label for="via_portInput">Via Port</label>
+                                <input type="text" class="form-control" id="via_portInput" name="via_port" value="{{old('via_port',$port->via_port)}}"
+                                    placeholder="Via Port" autocomplete="off">
+                                @error('via_port')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="portInput">Port Type</label>
                                 <select class="selectpicker form-control" id="portInput" data-live-search="true" data-size="10"
                                 name="port_type_id" title="{{trans('forms.select')}}">
@@ -86,7 +96,22 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="terminalInput">Terminal</label>
+                                <select class="selectpicker form-control" id="terminalInput" data-live-search="true" name="terminal_id" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($terminals as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('terminal_id',$port->terminal_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('terminal_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
