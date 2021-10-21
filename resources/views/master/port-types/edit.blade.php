@@ -20,10 +20,10 @@
                         @csrf
                         @method('put')
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="nameInput">Port Type Name *</label>
+                            <div class="form-group col-md-5">
+                                <label for="nameInput">Name *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name',$port_type->name)}}"
-                                 placeholder="Port Type Name" autocomplete="off" autofocus>
+                                 placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
