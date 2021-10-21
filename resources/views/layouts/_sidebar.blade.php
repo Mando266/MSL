@@ -119,8 +119,19 @@
                                         <a href="{{route('agents.index')}}"> Agents</a>
                                     </li>
                                 @endpermission
+
+                                @permission('Suppliers-List')
+                                    <li>
+                                        <a href="{{route('suppliers.index')}}"> Suppliers</a>
+                                    </li>
+                                @endpermission
+
+                                @permission('Customers-List')
+                                    <li>
+                                        <a href="{{route('customers.index')}}"> Customers</a>
+                                    </li>
+                                @endpermission
                         </ul>
                     </li>
-    </nav>
-
+            </nav>
 </div>

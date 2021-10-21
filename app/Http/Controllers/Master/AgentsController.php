@@ -35,7 +35,7 @@ class AgentsController extends Controller
             'name' => 'required',
         ]);
         $agents = Agents::create($request->except('_token'));
-        return redirect()->route('agents.index')->with('success',trans('port.created'));
+        return redirect()->route('agents.index')->with('success',trans('agent.created'));
     }
 
     public function show($id)
@@ -60,13 +60,13 @@ class AgentsController extends Controller
         ]);
         $this->authorize(__FUNCTION__,Agents::class);
         $agent->update($request->except('_token'));
-        return redirect()->route('agents.index')->with('success',trans('Port.updated.success'));
+        return redirect()->route('agents.index')->with('success',trans('agent.updated.success'));
     }
 
     public function destroy($id)
     {
         $agent =Agents::Find($id);
         $agent->delete();
-        return redirect()->route('agents.index')->with('success',trans('Agents.deleted.success'));
+        return redirect()->route('agents.index')->with('success',trans('agent.deleted.success'));
     }
 }
