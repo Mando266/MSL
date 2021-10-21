@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('terminals', 'TerminalsController');
         Route::resource('line-types', 'LinTypeController');
         Route::resource('lines', 'LinesController');
+        Route::resource('suppliers', 'SuppliersController');
+        Route::resource('customers', 'CustomersController');
 
     });
 
