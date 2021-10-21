@@ -96,7 +96,7 @@
                                 <ul class="collapse list-unstyled sub-submenu" id="lines" data-parent="#lines">
                                 @permission('Lines-List')
                                     <li>
-                                        <a href="#"> Lines </a>
+                                        <a href="{{route('lines.index')}}"> Lines </a>
                                     </li>
                                 @endpermission
 
