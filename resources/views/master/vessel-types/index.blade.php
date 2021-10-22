@@ -8,14 +8,14 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Agent Types</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Vessel Types</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('AgentTypes-Create')
+                        @permission('VesselType-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('agent-types.create')}}" class="btn btn-primary">Add New Agent Type</a>
+                            <a href="{{route('vessel-types.create')}}" class="btn btn-primary">Add New Vessel Type</a>
                             </div>
                         </div>
                         @endpermission
@@ -26,7 +26,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>name</th>
+                                        <th>Name</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -37,16 +37,16 @@
                                             <td>{{$item->name}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('AgentTypes-Edit')
+                                                    @permission('VesselType-Edit')
                                                     <li>
-                                                        <a href="{{route('agent-types.edit',['agent_type'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('vessel-types.edit',['vessel_type'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('AgentTypes-Delete')
+                                                    @permission('VesselType-Delete')
                                                     <li>
-                                                        <form action="{{route('agent-types.destroy',['agent_type'=>$item->id])}}" method="post">
+                                                        <form action="{{route('vessel-types.destroy',['vessel_type'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>

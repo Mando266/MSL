@@ -9,20 +9,20 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
-                            <li class="breadcrumb-item"><a href="{{route('agent-types.index')}}">Agent Types</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Agent Type</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('vessel-types.index')}}">Vessel Types</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Vessel Type</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('agent-types.store')}}" method="POST">
+                <form id="createForm" action="{{route('vessel-types.store')}}" method="POST">
                         @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="nameInput">Agent Type Name *</label>
+                            <div class="form-group col-md-5">
+                                <label for="nameInput">Name *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Agent Type Name" autocomplete="disabled" autofocus>
+                                 placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -33,7 +33,7 @@
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
-                                <a href="{{route('agent-types.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('vessel-types.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                        </div>
 
