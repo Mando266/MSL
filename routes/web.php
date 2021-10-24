@@ -39,8 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('vessels', 'VesselsController');
         Route::resource('container-types', 'ContinersTypeController');
         Route::resource('containers', 'ContinersController');
-
-
+    
     });
 
 });
