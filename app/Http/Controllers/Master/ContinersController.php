@@ -50,6 +50,7 @@ class ContinersController extends Controller
         $container_types = ContainersTypes::orderBy('id')->get();
 
         return view('master.containers.edit',[
+            'container'=>$container,
             'container_types'=>$container_types,
         ]);
 
