@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Country;
 use App\Models\Master\Terminals;
+use App\Models\Master\Ports;
 use Illuminate\Http\Request;
 
 class TerminalsController extends Controller
@@ -22,8 +23,10 @@ class TerminalsController extends Controller
     {
         $this->authorize(__FUNCTION__,Terminals::class);
         $countries = Country::orderBy('name')->get();
+        $ports = Ports::orderBy('name')->get();
         return view('master.terminals.create',[
             'countries'=>$countries,
+            'ports'=>$ports,
         ]); 
     }
 
@@ -46,9 +49,12 @@ class TerminalsController extends Controller
     {
         $this->authorize(__FUNCTION__,Terminals::class);
         $countries = Country::orderBy('name')->get();
+        $ports = Ports::orderBy('name')->get();
         return view('master.terminals.edit',[
             'countries'=>$countries,
             'terminal'=>$terminal,
+            'ports'=>$ports,
+
         ]); 
     }
 

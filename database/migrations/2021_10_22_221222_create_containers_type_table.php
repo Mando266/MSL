@@ -17,6 +17,7 @@ class CreateContainersTypeTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->nullable();
+            $table->BigInteger('iso_no')->nullable();
             $table->string('width')->nullable();
             $table->string('heights')->nullable();
             $table->string('lenght')->nullable();

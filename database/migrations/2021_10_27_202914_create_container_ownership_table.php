@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTerminalsTable extends Migration
+class CreateContainerOwnershipTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,9 @@ class CreateTerminalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('terminals', function (Blueprint $table) {
+        Schema::create('container_ownership', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code','255')->nullable();
-            $table->string('city')->nullable();;
-            $table->unsignedInteger('country_id')->nullable();
-            $table->unsignedInteger('port_id')->nullable();
-            $table->BigInteger('company_id')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ class CreateTerminalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('terminals');
+        Schema::dropIfExists('container_ownership');
     }
 }

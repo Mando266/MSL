@@ -55,7 +55,22 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="portInput">Port Name</label>
+                                <select class="selectpicker form-control" id="portInput" data-live-search="true" name="port_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('port_id',$terminal->port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('port_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>

@@ -20,8 +20,10 @@ class CreateContainersTable extends Migration
             $table->string('description')->nullable();
             $table->BigInteger('tar_weight')->nullable();
             $table->BigInteger('max_payload')->nullable();
+            $table->BigInteger('container_ownership_id')->nullable();
             $table->BigInteger('production_year')->nullable();
             $table->datetime('last_movement')->nullable();
+            $table->text('certificat')->nullable();
             $table->BigInteger('company_id')->nullable();
             $table->timestamps();
         });

@@ -30,8 +30,8 @@
                                                 <th></th>
                                                 <th><input type="text" class="form-control" name="name" placeholder="{{trans('forms.search')}}" autocomplete="off" value="{{request()->input('name')}}"></th>
                                                 <th><input type="text" class="form-control" name="full_name" placeholder="{{trans('forms.search')}}" autocomplete="off" value="{{request()->input('full_name')}}"></th>
-                                                {{-- <th>{{trans('user.employee_no')}}</th>
-                                                <th>{{trans('user.email')}}</th> --}}
+                                                {{-- <th>{{trans('user.employee_no')}}</th> --}}
+                                                <th></th>
                                                 <th>
                                                     <select class="selectpicker show-tick form-control" multiple data-live-search="true" data-selected-text-format="count > 1"
                                                         name="role[]" title="{{trans('forms.select')}}" data-width="100%">
@@ -55,8 +55,8 @@
                                                 <th>#</th>
                                                 <th>{{trans('user.user_name')}}</th>
                                                 <th>{{trans('user.full_name')}}</th>
-                                                {{-- <th>{{trans('user.employee_no')}}</th>
-                                                <th>{{trans('user.email')}}</th> --}}
+                                                {{-- <th>{{trans('user.employee_no')}}</th>--}}
+                                                <th>{{trans('user.email')}}</th> 
                                                 <th class="text-center">{{trans('user.role')}}</th>
                                                 <th class="text-center">{{trans('user.status')}}</th>
                                                 <th class='text-center' style='width:140px;'></th>
@@ -68,6 +68,7 @@
                                                     <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                                     <td>{{$item->name}}</td>
                                                     <td>{{$item->full_name}}</td>
+                                                    <td>{{$item->email}}</td>
                                                     <td class="text-center"> {{ optional($item->roles->first())->name }}</td>
                                                     <td class="text-center">
                                                         @if($item->is_active )

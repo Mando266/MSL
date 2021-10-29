@@ -15,7 +15,7 @@
                         @permission('Lines-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('lines.create')}}" class="btn btn-primary">Add New Port</a>
+                            <a href="{{route('lines.create')}}" class="btn btn-primary">Add New Line</a>
                             </div>
                         </div>
                         @endpermission

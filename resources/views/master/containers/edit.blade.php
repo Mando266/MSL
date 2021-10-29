@@ -16,7 +16,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('containers.update',['container'=>$container])}}" method="POST">
+                <form id="createForm" action="{{route('containers.update',['container'=>$container])}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('put')
                         <div class="form-row">
@@ -35,9 +35,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="CodeInput">Number</label>
+                                <label for="CodeInput">Container Number</label>
                                 <input type="text" class="form-control" id="CodeInput" name="code" value="{{old('code',$container->code)}}"
-                                    placeholder="Numbere" autocomplete="off">
+                                    placeholder="Container Numbere" autocomplete="off">
                                 @error('Code')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -45,10 +45,14 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="descriptionInput">Description</label>
-                                <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description',$container->description)}}"
-                                    placeholder="Description" autocomplete="off">
-                                @error('description')
+                                <label for="countryInput"> Container Ownership </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id,$container->container_ownership_id') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_id')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
@@ -58,9 +62,9 @@
   
                     <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="tar_weightInput">Tar Weight</label>
+                                <label for="tar_weightInput">Tare Weight</label>
                                 <input type="text" class="form-control" id="tar_weightInput" name="tar_weight" value="{{old('tar_weight',$container->tar_weight)}}"
-                                    placeholder="Tar Weight" autocomplete="off">
+                                    placeholder="Tare Weight" autocomplete="off">
                                 @error('tar_weight')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -88,8 +92,29 @@
                                 @enderror
                             </div>
                     </div>
-                    <!-- <div class="form-row">
+                    <div class="form-row">
                             <div class="form-group col-md-4">
+                                <label for="descriptionInput">Note</label>
+                                <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description',$container->description)}}"
+                                    placeholder="Note" autocomplete="off">
+                                @error('description')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="custom-file-container" data-upload-id="certificat">
+                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label class="custom-file-container__custom-file" >
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" value="{{old('certificat',$container->certificat)}}" accept="pdf">
+                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                            </div>
+                            </div>
+                            <!-- <div class="form-group col-md-4">
                                 <label for="last_movementInput">Last Movement</label>
                                 <input type="text" class="form-control" id="last_movementInput" name="last_movement" value="{{old('last_movement')}}"
                                     placeholder="Last Movement" autocomplete="off">
@@ -98,8 +123,8 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
-                    </div> -->
+                            </div> -->
+                    </div>
                       <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
