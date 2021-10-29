@@ -4,13 +4,25 @@ namespace App\Models\Master;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Bitwise\PermissionSeeder\PermissionSeederContract;
+use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
+use App\Traits\HasFilter;
 use App\User;
 
-class Customers extends Model
+class Customers extends Model implements PermissionSeederContract
 {
     protected $table = 'customers';
     protected $guarded = [];
 
+    use PermissionSeederTrait;
+    public function getPermissionActions(){
+        return config('permission_seeder.actions',[
+            'List',
+            'Create',
+            'Edit',
+            'Delete'
+        ]);
+    }
     public function CustomerRoles (){
         return $this->belongsto(CustomerRoles::class,'customer_role_id','id');
     }

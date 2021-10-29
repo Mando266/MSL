@@ -39,6 +39,7 @@ class ContinersTypeController extends Controller
         'width'=> $request->input('width'),
         'heights'=> $request->input('heights'),
         'lenght'=> $request->input('lenght'),
+        'iso_no'=> $request->input('iso_no'),
         'company_id'=>$user->company_id,
         ]);
         return redirect()->route('container-types.index')->with('success',trans('Container Types.created'));

@@ -75,7 +75,7 @@
                         </a>
                         <ul class="collapse submenu list-unstyled" id="components" data-parent="#accordionExample">
                         <li>
-                            <a href="#pages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Ports <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                            <a href="#pages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Ports & Terminals<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
                                 <ul class="collapse list-unstyled sub-submenu" id="pages" data-parent="#pages">
                                 @permission('Ports-List')
                                     <li>
@@ -86,6 +86,11 @@
                                 @permission('PortTypes-List')
                                     <li>
                                         <a href="{{route('port-types.index')}}"> Port Types </a>
+                                    </li>
+                                @endpermission
+                                @permission('Terminals-List')
+                                    <li>
+                                        <a href="{{route('terminals.index')}}"> Terminals </a>
                                     </li>
                                 @endpermission
                                 </ul>
@@ -107,12 +112,6 @@
                                 @endpermission
                                 </ul>
                         </li>
-
-                                @permission('Terminals-List')
-                                    <li>
-                                        <a href="{{route('terminals.index')}}"> Terminals </a>
-                                    </li>
-                                @endpermission
                                 
                                 @permission('Agents-List')
                                     <li>
@@ -149,7 +148,7 @@
                                 </ul>
                         </li>
                         <li>
-                            <a href="#Containers" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Containers <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                            <a href="#Containers" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Containers & Movements<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
                                 <ul class="collapse list-unstyled sub-submenu" id="Containers" data-parent="#lines">
                                 @permission('Containers-List')
                                     <li>

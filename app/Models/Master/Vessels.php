@@ -2,13 +2,25 @@
 
 namespace App\Models\Master;
 use Illuminate\Support\Facades\Auth;
-
+use Bitwise\PermissionSeeder\PermissionSeederContract;
+use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
+use App\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 
-class Vessels extends Model
+class Vessels extends Model implements PermissionSeederContract
 {
     protected $table = 'vessels';
     protected $guarded = [];
+
+    use PermissionSeederTrait;
+    public function getPermissionActions(){
+        return config('permission_seeder.actions',[
+            'List',
+            'Create',
+            'Edit',
+            'Delete'
+        ]);
+    }
 
     public function VesselType (){
         return $this->belongsto(VesselType::class,'vessel_type_id','id');

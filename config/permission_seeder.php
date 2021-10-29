@@ -2,6 +2,7 @@
 return [
     "actions"=>[
         'List',
+        'Delete',
         'Show',
         'Create',
         'Edit'

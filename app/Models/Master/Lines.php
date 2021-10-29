@@ -3,12 +3,25 @@
 namespace App\Models\Master;
 
 use Illuminate\Database\Eloquent\Model;
+use Bitwise\PermissionSeeder\PermissionSeederContract;
+use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
+use App\Traits\HasFilter;
 use Illuminate\Support\Facades\Auth;
 
-class Lines extends Model
+class Lines extends Model implements PermissionSeederContract
 {
     protected $table = 'line';
     protected $guarded = [];
+
+    use PermissionSeederTrait;
+    public function getPermissionActions(){
+        return config('permission_seeder.actions',[
+            'List',
+            'Create',
+            'Edit',
+            'Delete'
+        ]);
+    }
 
     public function LineTypes(){
         return $this->belongsTo(LinesType::class,'line_type_id','id');

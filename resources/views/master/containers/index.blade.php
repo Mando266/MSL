@@ -28,13 +28,13 @@
                                         <th>#</th>
                                         <th>Container Type</th>
                                         <th>Code</th>
+                                        <th>Container Ownership</th>
                                         <th>tar weight</th>
                                         <th>max payload</th>
                                         <th>production year</th>
-                                        <th>description</th>
-
-
+                                        <th>Note</th>
                                         <th class='text-center' style='width:100px;'></th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -43,6 +43,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{{optional($item->containersTypes)->name}}}</td>
                                             <td>{{$item->code}}</td>
+                                            <td>{{{optional($item->containersOwner)->name}}}</td>
                                             <td>{{$item->tar_weight}}</td>
                                             <td>{{$item->max_payload}}</td>
                                             <td>{{$item->production_year}}</td>
@@ -66,6 +67,13 @@
                                                         </form> 
                                                     </li>
                                                     @endpermission
+                                                    @if($item->certificat == !null)
+                                                    <li>
+                                                        <a href='{{asset($item->certificat)}}' target="_blank"> 
+                                                            <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
                                                 </ul>
                                             </td>
                                         </tr>

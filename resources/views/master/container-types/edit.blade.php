@@ -21,9 +21,9 @@
                         @method('put')
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="nameInput">Name *</label>
+                                <label for="nameInput">Description *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name',$container_type->name)}}"
-                                 placeholder="Name" autocomplete="off" autofocus>
+                                 placeholder="Description" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -41,6 +41,19 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
+                                <label for="iso_noInput">Iso No</label>
+                                <input type="text" class="form-control" id="iso_noInput" name="iso_no" value="{{old('iso_no',$container_type->iso_no)}}"
+                                    placeholder="Iso No" autocomplete="off">
+                                @error('iso_no')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                        <div class="form-group col-md-4">
                                 <label for="widthInput">Width</label>
                                 <input type="text" class="form-control" id="widthInput" name="width" value="{{old('width',$container_type->width)}}"
                                     placeholder="Width" autocomplete="off">
@@ -50,9 +63,6 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="heightsInput">Height</label>
                                 <input type="text" class="form-control" id="heightsInput" name="heights" value="{{old('heights',$container_type->heights)}}"

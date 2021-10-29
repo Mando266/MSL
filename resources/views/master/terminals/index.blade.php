@@ -29,6 +29,7 @@
                                         <th>Name</th>
                                         <th>Code</th>
                                         <th>Country</th>
+                                        <th>port name</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -39,6 +40,7 @@
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
                                             <td>{{optional($item->country)->name}}</td>
+                                            <td>{{optional($item->port)->name}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Terminals-Edit')
