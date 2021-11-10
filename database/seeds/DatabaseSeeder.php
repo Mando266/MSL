@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomerRoleTableSeeder::class);
         $this->call(VesselOperatorSeeder::class);
         $this->call(ContinerOwnershipTableSeeder::class);
+        $this->call(ContinerStatusSeeder::class);
+        $this->call(LegsSeeder::class);
 
     }
 }

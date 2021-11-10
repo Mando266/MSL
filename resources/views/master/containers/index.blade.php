@@ -26,13 +26,14 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Container Type</th>
+                                        <th>Number</th>
+                                        <th>Type</th>
                                         <th>Code</th>
-                                        <th>Container Ownership</th>
+                                        <th>Ownership</th>
                                         <th>tar weight</th>
                                         <th>max payload</th>
                                         <th>production year</th>
-                                        <th>Note</th>
+                                        <th>REMARKS</th>
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>
@@ -41,8 +42,9 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td>{{{optional($item->containersTypes)->name}}}</td>
                                             <td>{{$item->code}}</td>
+                                            <td>{{{optional($item->containersTypes)->name}}}</td>
+                                            <td>{{{optional($item->containersTypes)->code}}}</td>
                                             <td>{{{optional($item->containersOwner)->name}}}</td>
                                             <td>{{$item->tar_weight}}</td>
                                             <td>{{$item->max_payload}}</td>

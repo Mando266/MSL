@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContainersmovementTable extends Migration
+class CreateContainerStockTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateContainersmovementTable extends Migration
      */
     public function up()
     {
-        Schema::create('containersmovement', function (Blueprint $table) {
+        Schema::create('container_stock', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('code')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateContainersmovementTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('containersmovement');
+        Schema::dropIfExists('container_stock');
     }
 }

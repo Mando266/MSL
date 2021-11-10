@@ -17,6 +17,9 @@ class ContinerOwnershipTableSeeder extends Seeder
             ['name' => 'LEASED (PERIOD)'],
             ['name' => 'LEASED (ONE LEG)'],
             ['name' => 'SOC (SHIPPER OWNED CONTAINER)'],
+            ['name' => 'SWAP'],
+            ['name' => 'OTHER SHIPPING LINE'],
+
         ];
         DB::table('container_ownership')->insert($container_ownerships);
 

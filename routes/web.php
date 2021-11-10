@@ -39,7 +39,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('vessels', 'VesselsController');
         Route::resource('container-types', 'ContinersTypeController');
         Route::resource('containers', 'ContinersController');
-    
+        Route::resource('container-movement', 'ContainersMovementController');
+        Route::resource('stock-types', 'StockTypesController');
+    });
+         /*
+    |-------------------------------------------
+    | Voyage routes
+    |--------------------------------------------
+    */
+    Route::prefix('voyages')->namespace('Voyages')->group(function () {
+        Route::resource('voyages', 'VoyagesController');
     });
 
 });

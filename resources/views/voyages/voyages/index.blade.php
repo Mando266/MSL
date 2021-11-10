@@ -7,15 +7,14 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Vessels</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Voyages</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('Vessels-Create')
+                        @permission('Voyages-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('vessels.create')}}" class="btn btn-primary">Add New Vessel</a>
+                            <a href="{{route('voyages.create')}}" class="btn btn-primary">Add New Voyage</a>
                             </div>
                         </div>
                         @endpermission
@@ -26,18 +25,8 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th>Call Sign</th>
-                                        <th>Imo Number</th>
-                                        <th>Year Built</th>
-                                        <th>MMSI</th>
-                                        <th>flag</th>
-                                        <th>G.W</th>
-                                        <th>DWT</th>
-                                        <!-- <th>Vessel Type</th> -->
-                                        <!-- <th>Vessel Operator</th> -->
-
+                                        <th>Vessel Name</th>
+                                        <th>Voyage No</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -45,30 +34,21 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td>{{$item->code}}</td>
-                                            <td>{{$item->name}}</td>
-                                            <td>{{$item->call_sign}}</td>
-                                            <td>{{$item->imo_number}}</td>
-                                            <td>{{$item->production_year}}</td>
-                                            <td>{{$item->mmsi}}</td>
-                                            <td>{{optional($item->country)->name}}</td>
-                                            <td>{{$item->gw_no}}</td>
-                                            <td>{{$item->dwt_no}}</td>
-                                            <!-- <td>{{optional($item->VesselType)->name}}</td> -->
-                                            <!-- <td>{{{optional($item->VesselOperators)->name}}}</td> -->
-
+                                            <td>{{{optional($item->vessel)->name}}}</td>
+                                            <td>{{$item->voyage_no}}</td>
+                                            
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('Vessels-Edit')
+                                                    @permission('Voyages-Edit')
                                                     <li>
-                                                        <a href="{{route('vessels.edit',['vessel'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('voyages.edit',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('Vessels-Delete')
+                                                    @permission('Voyages-Delete')
                                                     <li>
-                                                        <form action="{{route('vessels.destroy',['vessel'=>$item->id])}}" method="post">
+                                                        <form action="{{route('voyages.destroy',['voyage'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
