@@ -37,7 +37,8 @@ class LinTypeController extends Controller
         'name'=> $request->input('name'),
         'company_id'=>$user->company_id,
         ]);
-        return redirect()->route('line-types.index')->with('success',trans('Line Types.created'));
+        return redirect()->route('line-types.index')->with('success',trans('Line Type.created'));
+
     }
 
 

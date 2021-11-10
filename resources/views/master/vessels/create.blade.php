@@ -19,21 +19,21 @@
                 <form id="createForm" action="{{route('vessels.store')}}" method="POST">
                         @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="nameInput">Name *</label>
-                            <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Name" autocomplete="off" autofocus>
-                                @error('name')
+                        <div class="form-group col-md-4">
+                                <label for="codeInput">Code *</label>
+                                <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
+                                    placeholder="Code" autocomplete="off" autofocus>
+                                @error('code')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="codeInput">Code *</label>
-                                <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
-                                    placeholder="Code" autocomplete="off">
-                                @error('code')
+                                <label for="nameInput">Name *</label>
+                            <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
+                                 placeholder="Name" autocomplete="off">
+                                @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
@@ -64,9 +64,9 @@
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label for="production_yearInput">Production Year</label>
-                            <input type="text" class="form-control" id="production_yearInput" name="production_year" value="{{old('production_year')}}"
-                                placeholder="Production Year" autocomplete="off">
+                            <label for="Year BuiltInput">Year Built</label>
+                            <input type="text" class="form-control" id="Year BuiltInput" name="production_year" value="{{old('production_year')}}"
+                                placeholder="Year Built" autocomplete="off">
                             @error('production_year')
                             <div class="invalid-feedback">
                                 {{$message}}
@@ -74,10 +74,10 @@
                             @enderror
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="total_teuInput">Total TEU</label>
-                            <input type="text" class="form-control" id="total_teuInput" name="total_teu" value="{{old('total_teu')}}"
-                                placeholder="Total TEU" autocomplete="off">
-                            @error('total_teu')
+                            <label for="mmsiInput">MMSI</label>
+                            <input type="text" class="form-control" id="mmsiInput" name="mmsi" value="{{old('mmsi')}}"
+                                placeholder="MMSI" autocomplete="off">
+                            @error('mmsi')
                             <div class="invalid-feedback">
                                 {{$message}}
                             </div>
@@ -85,22 +85,44 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
+                <div class="form-row">
                     <div class="form-group col-md-4">
-                                <label for="countryInput">Flag</label>
-                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($countries as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('country_id')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
+                        <label for="countryInput">Flag</label>
+                        <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
+                            title="{{trans('forms.select')}}">
+                            @foreach ($countries as $item)
+                                <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
+                            @endforeach
+                        </select>
+                        @error('country_id')
+                        <div class="invalid-feedback">
+                            {{$message}}
                         </div>
-                        <div class="form-group col-md-4">
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="gw_noInput">G.W</label>
+                        <input type="text" class="form-control" id="gw_noInput" name="gw_no" value="{{old('gw_no')}}"
+                            placeholder="G.W" autocomplete="off">
+                        @error('gw_no')
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="dwt_noInput">DWT</label>
+                        <input type="text" class="form-control" id="dwt_noInput" name="dwt_no" value="{{old('dwt_no')}}"
+                            placeholder="DWT" autocomplete="off">
+                        @error('dwt_no')
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
                             <label for="vessel_type_idInput">Vessel Type</label>
                             <select class="selectpicker form-control" id="vessel_type_idInput" data-live-search="true" name="vessel_type_id" data-size="10"
                                 title="{{trans('forms.select')}}">
@@ -128,7 +150,17 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
+                    <div class="form-group col-md-4">
+                            <label for="total_teuInput">Total TEU</label>
+                            <input type="text" class="form-control" id="total_teuInput" name="total_teu" value="{{old('total_teu')}}"
+                                placeholder="Total TEU" autocomplete="off">
+                            @error('total_teu')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                </div>
 
                        <div class="row">
                             <div class="col-md-12 text-center">
