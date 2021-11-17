@@ -25,7 +25,7 @@ class VoyagesController extends Controller
         $vessels = Vessels::orderBy('name')->get();
         // $voyageports = VoyagePorts::filter(new VoyagesIndexFilter(request()))->paginate(10);
         return view('voyages.voyages.index',[
-            // 'items'=>$voyageports,
+            // 'voyageports'=>$voyageports,
             'items'=>$voyages,
             'vessels'=>$vessels,
 
