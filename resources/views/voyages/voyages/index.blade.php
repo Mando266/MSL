@@ -19,14 +19,40 @@
                         </div>
                         @endpermission
                     </div>
+
+                    <form>
+                        <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="vessel_port_idInput">Vessel Name</label>
+                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($vessels as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('vessel_id',request()->input('vessel_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="voyage_noInput">Voyage No</label>
+                                    <input type="text" class="form-control" id="voyage_noInput" name="voyage_no" value="{{request()->input('voyage_no')}}"
+                                    placeholder="Voyage No" autocomplete="off">
+                                    </div>
+                                <div class="col-md-12 text-center">
+                                    <button  type="submit" class="btn btn-success mt-3">Filter</button>
+                                </div>
+                        </div>
+                    </form>
+
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
-                                    <tr>
+                                    <tr> 
                                         <th>#</th>
+                                        <th>Vessel Code</th>
                                         <th>Vessel Name</th>
                                         <th>Voyage No</th>
+                                        <th>Leg</th>
+
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -34,15 +60,24 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
+                                            <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
                                             <td>{{$item->voyage_no}}</td>
-                                            
+                                            <td>{{{optional($item->leg)->name}}}</td>
+                        
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('Voyages-Edit')
+                                                    <!-- @permission('Voyages-Edit')
                                                     <li>
                                                         <a href="{{route('voyages.edit',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endpermission -->
+                                                    @permission('Voyages-Show')
+                                                    <li>
+                                                        <a href="{{route('voyages.show',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission
@@ -69,7 +104,7 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->links() }}
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

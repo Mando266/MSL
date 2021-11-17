@@ -6,9 +6,11 @@ use App\Models\Master\Vessels;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
+use App\Traits\HasFilter;
 
 class Voyages extends Model implements PermissionSeederContract
 {
+    use HasFilter;
     protected $table = 'voyages';
     protected $guarded = [];
     
@@ -29,5 +31,9 @@ class Voyages extends Model implements PermissionSeederContract
     }
     public function vessel(){
         return $this->belongsTo(Vessels::class,'vessel_id','id');
+    }
+    public function voyagePort()
+    {
+        return $this->hasMany(VoyagePorts::class ,'voyage_id','id');
     }
 }
