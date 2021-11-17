@@ -67,13 +67,13 @@
                                                         </form> 
                                                     </li>
                                                     @endpermission
-                                                    @permission('Ports-Show')
+                                                    <!-- @permission('Ports-Show')
                                                     <li>
                                                         <a href="{{route('ports.show',['port'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission
+                                                    @endpermission -->
                                                 </ul>
                                             </td>
                                         </tr>

@@ -17,10 +17,12 @@ class CreateVoyagePortTable extends Migration
             $table->id();
             $table->unsignedInteger('voyage_id');
             $table->unsignedInteger('port_id')->nullable();
+            $table->string('voyage_port_no')->nullable();
             $table->unsignedInteger('terminal_id')->nullable();
+            $table->unsignedInteger('vessel_port_id')->nullable();
             $table->unsignedInteger('road_no')->nullable();
-            $table->datetime('eta')->nullable();
-            $table->datetime('etd')->nullable();
+            $table->date('eta')->nullable();
+            $table->date('etd')->nullable();
             $table->timestamps();
         });
     }

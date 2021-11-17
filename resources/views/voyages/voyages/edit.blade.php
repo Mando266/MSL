@@ -44,6 +44,37 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                    <label for="leg_idInput">Leg</label>
+                                    <select class="selectpicker form-control" id="leg_idInput" data-live-search="true" name="leg_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($legs as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('leg_id',$voyage->leg_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('leg_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="line_idInput">Line</label>
+                                    <select class="selectpicker form-control" id="line_idInput" data-live-search="true" name="line_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($lines as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('line_id',$voyage->line_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('line_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
