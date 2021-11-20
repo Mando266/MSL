@@ -37,7 +37,8 @@
                                     placeholder="Voyage No" autocomplete="off">
                                     </div>
                                 <div class="col-md-12 text-center">
-                                    <button  type="submit" class="btn btn-success mt-3">Filter</button>
+                                    <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                    <a href="{{route('voyages.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                         </div>
                     </form>

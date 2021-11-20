@@ -36,7 +36,8 @@ class LinesController extends Controller
             'name' => 'required',
         ]);
         $lines = Lines::create($request->except('_token'));
-        return redirect()->route('lines.index')->with('success',trans('line.created'));     }
+        return redirect()->route('lines.index')->with('success',trans('line.created'));   
+    }
 
     public function show($id)
     {

@@ -247,6 +247,7 @@
                             <p class="task-hight-priority"><span>Total 101</span> </p>
                         </div>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>

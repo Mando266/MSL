@@ -42,13 +42,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('container-movement', 'ContainersMovementController');
         Route::resource('stock-types', 'StockTypesController');
     });
-         /*
+    /*
     |-------------------------------------------
     | Voyage routes
     |--------------------------------------------
     */
     Route::prefix('voyages')->namespace('Voyages')->group(function () {
         Route::resource('voyages', 'VoyagesController');
+    });
+
+    /*
+    |-------------------------------------------
+    | Containers routes
+    |--------------------------------------------
+    */
+    Route::prefix('containers')->namespace('Containers')->group(function () {
+        Route::resource('movements', 'MovementController');
     });
 
 });

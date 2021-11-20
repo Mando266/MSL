@@ -7,15 +7,15 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Containers Movement</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Container Types</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Containers</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movements</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('ContainerTypes-Create')
+                        @permission('Movements-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('container-types.create')}}" class="btn btn-primary">Add New Container Type</a>
+                            <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
                             </div>
                         </div>
                         @endpermission
@@ -26,50 +26,35 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>description</th>
-                                        <th>code</th>
-                                        <th>Iso NO</th>
-                                        <th>width</th>
-                                        <th>heights</th>
-                                        <th>lenght</th>
-                                        <th class='text-center' style='width:100px;'></th>
+                                        <th>Container No</th>
+                                        <th>Container Type</th>
+                                        <th>REMARKS</th>
+                                        <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
-                                            <td>{{$item->iso_no}}</td>
-                                            <td>{{$item->width}}</td>
-                                            <td>{{$item->heights}}</td>
-                                            <td>{{$item->lenght}}</td>
+                                            <td>{{{optional($item->containersTypes)->name}}}</td>
+                                            <td>{{$item->description}}</td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('ContainerTypes-Edit')
+                                                    @permission('Movements-Show')
                                                     <li>
-                                                        <a href="{{route('container-types.edit',['container_type'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
-                                                            <i class="far fa-edit text-success"></i>
+                                                        <a href="{{route('movements.show',['movement'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission
-                                                    @permission('ContainerTypes-Delete')
-                                                    <li>
-                                                        <form action="{{route('container-types.destroy',['container_type'=>$item->id])}}" method="post">
-                                                            @method('DELETE')
-                                                            @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
-                                                        </form> 
-                                                    </li>
-
                                                     @endpermission
                                                 </ul>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr class="text-center">
-                                            <td colspan="7">{{ trans('home.no_data_found')}}</td>
+                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
                                         </tr>
                                     @endforelse
 

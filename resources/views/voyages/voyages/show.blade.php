@@ -16,7 +16,9 @@
                 </div>
                 <div class="widget-content widget-content-area">
                 <form id="createForm" action="{{route('voyages.edit',['voyage'=>$voyage])}}" method="get">
- 
+
+                    <h5><span style='color:#1b55e2';>VSL/VOY:</span> {{{optional($voyageport->vessel)->code}}}/{{$voyageport->voyage_no}}</h5>
+                
                 <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">

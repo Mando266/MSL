@@ -7,7 +7,7 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Containers Movement </a></li>
                                 <li class="breadcrumb-item active"><a href="javascript:void(0);">Containers</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
@@ -66,12 +66,12 @@
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                     @if($item->certificat == !null)
                                                     <li>
-                                                        <a href='{{asset($item->certificat)}}' target="_blank"> 
+                                                        <a href='{{asset($item->certificat)}}' target="_blank">
                                                             <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
                                                         </a>
                                                     </li>

@@ -809,7 +809,7 @@ code {
     justify-content: space-between;
     cursor: pointer;
     font-size: 13px;
-    color: #888ea8;
+    color: #ebedf2;
     padding: 9px 20px;
     font-weight: 500;
     transition: .600s;
@@ -819,7 +819,7 @@ code {
   #sidebar ul.menu-categories li.menu .dropdown-toggle:after {
     display: none; }
   #sidebar ul.menu-categories li.menu > .dropdown-toggle svg {
-    color: #888ea8;
+    color: #ebedf2;
     margin-right: 6px;
     vertical-align: middle;
     width: 20px;

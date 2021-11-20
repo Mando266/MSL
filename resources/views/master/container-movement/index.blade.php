@@ -7,15 +7,15 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Containers Movement</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Containers Movement</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movement Code</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         @permission('ContainersMovement-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('container-movement.create')}}" class="btn btn-primary">Add New Container Movement</a>
+                            <a href="{{route('container-movement.create')}}" class="btn btn-primary">Add New Movement Code</a>
                             </div>
                         </div>
                         @endpermission
