@@ -7,6 +7,7 @@ use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Containers\Movements;
 
 class Containers extends Model implements PermissionSeederContract
 {
@@ -31,6 +32,10 @@ class Containers extends Model implements PermissionSeederContract
     }
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
+    }
+    public function movement()
+    {
+        return $this->hasMany(Movements::class ,'movement_id','id');
     }
     
     public function scopeUserContainers($query){

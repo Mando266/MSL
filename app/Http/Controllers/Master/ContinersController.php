@@ -38,8 +38,8 @@ class ContinersController extends Controller
     {
         $this->authorize(__FUNCTION__,Containers::class);
         $request->validate([
-            'container_type_id' => 'required',
-            'code' => 'required',
+            'container_type_id' =>'required',
+            'code' => 'required|unique:posts|max:255',
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',

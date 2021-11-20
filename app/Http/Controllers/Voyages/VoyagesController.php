@@ -21,7 +21,7 @@ class VoyagesController extends Controller
         // $voyages = Voyages::join('voyage_port', 'voyages.id', '=', 'voyage_port.voyage_id')
         //     ->select('voyages.*', 'voyage_port.port_id', 'voyage_port.terminal_id', 'voyage_port.road_no', 'voyage_port.eta', 'voyage_port.etd')
         // ->get();
-        $voyages = Voyages::filter(new VoyagesIndexFilter(request()))->paginate(10);
+        $voyages = Voyages::filter(new VoyagesIndexFilter(request()))->paginate(30);
         $vessels = Vessels::orderBy('name')->get();
         // $voyageports = VoyagePorts::filter(new VoyagesIndexFilter(request()))->paginate(10);
         return view('voyages.voyages.index',[
@@ -66,7 +66,6 @@ class VoyagesController extends Controller
             VoyagePorts::create([
                 'voyage_id'=>$voyages->id,
                 'vessel_port_id'=>$voyages->vessel_id,
-                'voyage_port_no'=>$voyages->voyage_no,
                 'port_id'=>$voyageport['port_id'],
                 'terminal_id'=>$voyageport['terminal_id'],
                 'road_no'=>$voyageport['road_no'],
@@ -83,11 +82,12 @@ class VoyagesController extends Controller
         $this->authorize(__FUNCTION__,Voyages::class);
         $voyage = Voyages::find($id);
         $voyageports = VoyagePorts::where('voyage_id',$id)->get();
-      
+        $voyageport = Voyages::where('id',$id)->first();
+
         return view('voyages.voyages.show',[
             'voyage'=>$voyage,
             'voyageports'=>$voyageports,
-       
+            'voyageport'=>$voyageport,
         ]);
     }
 
