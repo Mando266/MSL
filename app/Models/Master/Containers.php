@@ -11,6 +11,7 @@ use App\Models\Containers\Movements;
 
 class Containers extends Model implements PermissionSeederContract
 {
+    use HasFilter;
     protected $table = 'containers';
     protected $guarded = [];
 
@@ -37,7 +38,7 @@ class Containers extends Model implements PermissionSeederContract
     {
         return $this->hasMany(Movements::class ,'movement_id','id');
     }
-    
+
     public function scopeUserContainers($query){
         if(is_null(Auth::user()->company_id))
         {
@@ -45,6 +46,6 @@ class Containers extends Model implements PermissionSeederContract
         }else{
             $query->where('company_id',Auth::user()->company_id);
         }
-    
+
     }
 }
