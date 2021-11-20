@@ -11,15 +11,19 @@ use App\Models\Master\Vessels;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use App\Models\Containers\Movements;
+use App\Filters\Containers\ContainersIndexFilter;
 
 class MovementController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        $movements = Containers::orderBy('id')->paginate(30);
+        $movements = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
+        $containers = Containers::orderBy('id')->get();
         return view('containers.movements.index',[
             'items'=>$movements,
+            'containers'=>$containers,
+
         ]);
     }
 
