@@ -20,11 +20,12 @@ class CreateMovementsTable extends Migration
             $table->unsignedInteger('container_type_id');
             $table->unsignedInteger('movement_id')->nullable();
             $table->date('movement_date')->nullable();
-            $table->unsignedInteger('port_location_id')->nullable();
-            $table->unsignedInteger('pol_id')->nullable();
-            $table->unsignedInteger('pod_id')->nullable();
-            $table->unsignedInteger('vessel_id')->nullable();
-            $table->unsignedInteger('voyage_id')->nullable();
+            $table->string('port_location_id','255')->nullable();
+            $table->string('pol_id','255')->nullable();
+            $table->string('pod_id','255')->nullable();
+            $table->string('vessel_id','255')->nullable();
+            $table->string('voyage_id','255')->nullable();
+            $table->string('terminal_id','255')->nullable();
             $table->string('booking_no','255')->nullable();
             $table->string('bl_no','255')->nullable();
             $table->string('remarkes')->nullable();

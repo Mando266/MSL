@@ -49,7 +49,7 @@
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('port_location_id',$movement->port_location_id) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id',$movement->port_location_id) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('port_location_id')
@@ -66,7 +66,7 @@
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pol_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('pol_id',$movement->pol_id) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->code}}" {{$item->code == old('pol_id',$movement->pol_id) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @error('pol_id')
@@ -80,7 +80,7 @@
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pod_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('pod_id',$movement->pod_id) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->code}}" {{$item->code == old('pod_id',$movement->pod_id) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @error('pod_id')
@@ -94,7 +94,7 @@
                                 <select class="selectpicker form-control" id="vessel_idInput" data-live-search="true" name="vessel_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -108,12 +108,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="voyage_idInput">Voyage No</label>
-                                <select class="selectpicker form-control" id="voyage_idInput" data-live-search="true" name="voyage_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$movement->voyage_id) ? 'selected':''}}>{{$item->voyage_no}}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" id="voyage_idInput" name="voyage_id" value="{{old('voyage_id',$movement->voyage_id)}}"
+                                    placeholder="Voyage No" autocomplete="off">
                                 @error('voyage_id')
                                 <div class="invalid-feedback">
                                     {{$message}}

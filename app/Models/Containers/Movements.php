@@ -39,19 +39,4 @@ class Movements extends Model implements PermissionSeederContract
         return $this->belongsTo(ContainersTypes::class,'container_type_id','id');
     }
 
-    public function vessel(){
-        return $this->belongsTo(Vessels::class,'vessel_id','id');
-    }
-    public function voyage(){
-        return $this->belongsTo(Voyages::class,'voyage_id','id');
-    }
-    public function location(){
-        return $this->belongsTo(Ports::class,'port_location_id','id');
-    }
-    public function pol(){
-        return $this->belongsTo(Ports::class,'pol_id','id');
-    }
-    public function pod(){
-        return $this->belongsTo(Ports::class,'pod_id','id');
-    }
 }

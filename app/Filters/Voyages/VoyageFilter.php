@@ -6,6 +6,6 @@ use App\Filters\AbstractBasicFilter;
 class VoyageFilter extends AbstractBasicFilter{
     public function filter($value)
     {
-        return $this->builder->where('voyage_port_no','like',"%{$value}%");
+        return $this->builder->where('voyage_no','like',"%{$value}%");
     }
 }

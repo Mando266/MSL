@@ -58,7 +58,7 @@
                                 @enderror
                             </div>
                         </div>
-  
+
                     <div class="form-row">
                     <div class="form-group col-md-4">
                                 <label for="tar_weightInput">Tare Weight</label>

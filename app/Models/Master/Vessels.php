@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vessels extends Model implements PermissionSeederContract
 {
+    use HasFilter;
     protected $table = 'vessels';
     protected $guarded = [];
 
@@ -34,7 +35,7 @@ class Vessels extends Model implements PermissionSeederContract
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
-    
+
     public function scopeUserVessels($query){
         if(is_null(Auth::user()->company_id))
         {
@@ -42,6 +43,6 @@ class Vessels extends Model implements PermissionSeederContract
         }else{
             $query->where('company_id',Auth::user()->company_id);
         }
-    
+
     }
 }

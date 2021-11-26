@@ -57,7 +57,24 @@ class MovementController extends Controller
             'movement_date' => 'required',
             'port_location_id' => 'required',
         ]);
-        $movements = Movements::create($request->except('_token'));
+        // foreach($request->input('movement',[]) as $movement){
+        //     Movements::create([
+        //         'container_id'=>$movement['container_id'],
+        //         'container_type_id'=>$movement['container_type_id'],
+        //         'movement_id'=>$movement['movement_id'],
+        //         'movement_date'=>$movement['movement_date'],
+        //         'port_location_id'=>$movement['port_location_id'],
+        //         'pol_id'=>$movement['pol_id'],
+        //         'pod_id'=>$movement['pod_id'],
+        //         'vessel_id'=>$movement['vessel_id'],
+        //         'voyage_id'=>$movement['voyage_id'],
+        //         'terminal_id'=>$movement['terminal_id'],
+        //         'booking_no'=>$movement['booking_no'],
+        //         'bl_no'=>$movement['bl_no'],
+        //         'remarkes'=>$movement['remarkes'],
+        //     ]);
+        // }
+        Movements::create($request->except('_token'));
         return redirect()->route('movements.index')->with('success',trans('Movement.created'));
     }
 
@@ -66,7 +83,7 @@ class MovementController extends Controller
         $this->authorize(__FUNCTION__,Movements::class);
         $movement = Movements::find($id);
         $container = Containers::find($id);
-        $movements = Movements::where('container_id',$id)->get();
+        $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->get();
         $containers = Containers::where('id',$id)->first();
 
         return view('containers.movements.show',[
