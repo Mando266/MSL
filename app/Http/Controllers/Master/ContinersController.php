@@ -9,6 +9,7 @@ use App\Models\Master\ContainersTypes;
 use App\Models\Master\ContinerOwnership;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Filters\Containers\ContainersIndexFilter;
 
 class ContinersController extends Controller
 {
@@ -16,9 +17,11 @@ class ContinersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Containers::class);
-            $containers = Containers::orderBy('id')->paginate(10);
+            $containers = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
         return view('master.containers.index',[
             'items'=>$containers,
+            'containers'=>$containers,
+
         ]);
     }
 
@@ -39,7 +42,7 @@ class ContinersController extends Controller
         $this->authorize(__FUNCTION__,Containers::class);
         $request->validate([
             'container_type_id' =>'required',
-            'code' => 'required|unique:posts|max:255',
+            'code' => 'required',
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
@@ -93,7 +96,7 @@ class ContinersController extends Controller
             $request->certificat->move(public_path('certificat'), $path);
             $container->update(['certificat'=>"certificat/".$path]);
         }
-    
+
         $this->authorize(__FUNCTION__,Containers::class);
         return redirect()->route('containers.index')->with('success',trans('containers.updated.success'));
     }

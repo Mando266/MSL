@@ -7,7 +7,7 @@ use App\Models\Voyages\Voyages;
 use App\Models\Master\Vessels;
 use App\Models\Master\Lines;
 use App\Models\Master\Terminals;
-use App\Models\Master\Ports; 
+use App\Models\Master\Ports;
 use App\Models\Voyages\Legs;
 use App\Models\Voyages\VoyagePorts;
 use App\Filters\Voyages\VoyagesIndexFilter;
@@ -29,7 +29,7 @@ class VoyagesController extends Controller
             'items'=>$voyages,
             'vessels'=>$vessels,
 
-        ]);   
+        ]);
      }
 
     public function create()
@@ -41,7 +41,7 @@ class VoyagesController extends Controller
         $terminals = Terminals::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
         return view('voyages.voyages.create',[
-            'vessels'=>$vessels, 
+            'vessels'=>$vessels,
             'legs'=>$legs,
             'lines'=>$lines,
             'terminals'=>$terminals,
@@ -74,7 +74,7 @@ class VoyagesController extends Controller
 
             ]);
         }
-        return redirect()->route('voyages.index')->with('success',trans('voyage.created')); 
+        return redirect()->route('voyages.index')->with('success',trans('voyage.created'));
     }
 
     public function show($id)
@@ -102,7 +102,7 @@ class VoyagesController extends Controller
 
         return view('voyages.voyages.edit',[
             'voyage'=>$voyage,
-            'vessels'=>$vessels, 
+            'vessels'=>$vessels,
             'legs'=>$legs,
             'lines'=>$lines,
             'terminals'=>$terminals,

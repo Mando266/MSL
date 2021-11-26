@@ -18,7 +18,7 @@ class ContainersMovementController extends Controller
 
         return view('master.container-movement.index',[
             'items'=>$containers_movement,
-        ]); 
+        ]);
     }
 
     public function create()

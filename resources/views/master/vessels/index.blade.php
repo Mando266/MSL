@@ -20,6 +20,23 @@
                         </div>
                         @endpermission
                     </div>
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="vessel_port_idInput">Vessel Name</label>
+                        <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="id" data-size="10"
+                            title="{{trans('forms.select')}}">
+                            @foreach ($vessel as $item)
+                                <option value="{{$item->id}}" {{$item->id == old('id',request()->input('id')) ? 'selected':''}}>{{$item->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <button  type="submit" class="btn btn-success mt-3">Search</button>
+                        <a href="{{route('vessels.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                    </div>
+                </div>
+            </form>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -72,7 +89,7 @@
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                 </ul>

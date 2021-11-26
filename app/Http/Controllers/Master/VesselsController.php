@@ -8,16 +8,20 @@ use App\Models\Master\Vessels;
 use App\Models\Master\VesselType;
 use App\Models\Master\VesselOperators;
 use Illuminate\Http\Request;
+use App\Filters\Voyages\VoyagesIndexFilter;
 
 class VesselsController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Vessels::class);
-        $vessels = Vessels::orderBy('id')->paginate(10);
+        $vessels = Vessels::filter(new VoyagesIndexFilter(request()))->orderBy('id')->paginate(10);
+        $vessel = Vessels::orderBy('name')->get();
 
         return view('master.vessels.index',[
             'items'=>$vessels,
+            'vessel'=>$vessel,
+
         ]);
     }
 
@@ -31,7 +35,7 @@ class VesselsController extends Controller
             'countries'=>$countries,
             'vessel_types'=>$vessel_types,
             'vesselOperators'=>$vesselOperators,
-        ]); 
+        ]);
     }
 
     public function store(Request $request)
@@ -42,7 +46,7 @@ class VesselsController extends Controller
             'code' => 'required',
         ]);
         $vessels = Vessels::create($request->except('_token'));
-        return redirect()->route('vessels.index')->with('success',trans('vessel.created')); 
+        return redirect()->route('vessels.index')->with('success',trans('vessel.created'));
     }
 
     public function show(Vessels $vessel)
@@ -56,7 +60,7 @@ class VesselsController extends Controller
             'countries'=>$countries,
             'vessel_types'=>$vessel_types,
             'vesselOperators'=>$vesselOperators,
-        ]);   
+        ]);
     }
 
     public function edit(Vessels $vessel)

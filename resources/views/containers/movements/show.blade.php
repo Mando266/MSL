@@ -2,7 +2,6 @@
 @section('content')
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
-
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-one">
                 <div class="widget-heading">
@@ -14,8 +13,24 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="widget-content widget-content-area">
-                <h5><span style='color:#1b55e2';>Container No / Type:</span> {{$containers->code}} / {{{optional($containers->containersTypes)->name}}}</h5>
+            </br>
+            <h5><span style='color:#1b55e2';>Container No / Type:</span> {{$containers->code}} / {{{optional($containers->containersTypes)->name}}}</h5>
+            </br>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
+                            placeholder="BL No" autocomplete="off">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
+                            placeholder="Booking No" autocomplete="off">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <button type="submit" class="btn btn-success btn-icon btn-sm"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
 
                 <div class="widget-content widget-content-area">
                         <div class="table-responsive">
@@ -37,12 +52,12 @@
                                 <tbody>
                                     @forelse ($items as $item)
                                         <tr>
-                                            <td>{{{optional($item->movementcode)->name}}}</td>
+                                            <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{$item->movement_date}}</td>
-                                            <td>{{{optional($item->location)->code}}}</td>
-                                            <td>{{{optional($item->pol)->code}}}</td>
-                                            <td>{{{optional($item->pod)->code}}}</td>
-                                            <td>{{{optional($item->vessel)->code}}} {{{optional($item->voyage)->voyage_no}}}</td>
+                                            <td>{{$item->port_location_id}}</td>
+                                            <td>{{$item->pol_id}}</td>
+                                            <td>{{$item->pod_id}}</td>
+                                            <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
                                             <td>{{$item->booking_no}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->remarkes}}</td>
@@ -75,17 +90,14 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                       <div class="row">
+
+                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
-                       </div>
-
-
+                        </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
