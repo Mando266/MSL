@@ -83,7 +83,8 @@ class MovementController extends Controller
         $this->authorize(__FUNCTION__,Movements::class);
         $movement = Movements::find($id);
         $container = Containers::find($id);
-        $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->get();
+        $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->paginate(30);
+        // dd($movements);
         $containers = Containers::where('id',$id)->first();
 
         return view('containers.movements.show',[

@@ -18,16 +18,20 @@
             </br>
                 <form>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
+                            <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
+                        </div>
+                        <div class="form-group col-md-4">
                             <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
                             placeholder="BL No" autocomplete="off">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
                             placeholder="Booking No" autocomplete="off">
                         </div>
-                        <div class="form-group col-md-6">
-                            <button type="submit" class="btn btn-success btn-icon btn-sm"><i class="fa fa-search"></i></button>
+                        <div class="col-md-12 text-center">
+                            <button  type="submit" class="btn btn-success mt-3">Search</button>
+                            {{-- <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a> --}}
                         </div>
                     </div>
                 </form>
@@ -90,11 +94,8 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
-                            </div>
+                        <div class="paginating-container">
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                 </div>
             </div>
