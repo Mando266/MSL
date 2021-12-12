@@ -21,6 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ContinerOwnershipTableSeeder::class);
         $this->call(ContinerStatusSeeder::class);
         $this->call(LegsSeeder::class);
-
+        $this->call(BoundTableSeeder::class);
     }
 }

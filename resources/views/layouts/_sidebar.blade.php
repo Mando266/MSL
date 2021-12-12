@@ -48,7 +48,7 @@
                 </a>
             </li>
                 @endpermission
-                
+
                 @permission('Role-List')
                 <li class="menu">
                 <a href="{{route('roles.index')}}" target="_blank" data-toggle="collapse" data-link="true" aria-expanded="true" class="dropdown-toggle">
@@ -113,7 +113,7 @@
                                 @endpermission
                                 </ul>
                         </li>
-                                
+
                                 @permission('Agents-List')
                                     <li>
                                         <a href="{{route('agents.index')}}" target="_blank"> Agents</a>
@@ -161,7 +161,7 @@
                         </div>
                     </a>
                 </li>
-                @endpermission              
+                @endpermission
                     <li class="menu">
                         <a href="#component3" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
@@ -200,6 +200,9 @@
                                         <a href="{{route('containers.index')}}"> Containers </a>
                                     </li>
                                 @endpermission
+                                    <li>
+                                        <a href="{{route('tracking.create')}}"> Containers Tracking</a>
+                                    </li>
                                 @permission('ContainersTypes-List')
                                     <li>
                                         <a href="{{route('container-types.index')}}"> Container Types </a>
@@ -222,7 +225,13 @@
                                     </li>
                                 @endpermission
 
-                        </ul>    
+                                @permission('Demurrage-List')
+                                <li>
+                                    <a href="{{route('demurrage.index')}}">Demurrage & Dentention</a>
+                                </li>
+                                @endpermission
+
+                        </ul>
             </li>
     </nav>
 </div>

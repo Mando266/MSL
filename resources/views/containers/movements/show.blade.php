@@ -94,6 +94,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="paginating-container">
+                            {{ $items->appends(request()->query())->links()}}
+                        </div>
                 </div>
             </div>
         </div>

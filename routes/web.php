@@ -58,6 +58,9 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('containers')->namespace('Containers')->group(function () {
         Route::resource('movements', 'MovementController');
+        Route::resource('tracking', 'TrackingController');
+        Route::resource('demurrage', 'DemurageController');
+
     });
 
 });
