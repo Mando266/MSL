@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
+use App\Models\Containers\Triff;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Ports;
 use App\Models\Master\Country;
@@ -19,7 +20,7 @@ class DemurageController extends Controller
         $this->authorize(__FUNCTION__,Demurrage::class);
         $demurrages = Demurrage::
         join('period', 'demurrage.id', '=', 'period.demurrage_id')
-            ->select('demurrage.*', 'period.rate','period.period')->
+            ->select('demurrage.*', 'period.rate','period.period','period.number_off_dayes')->
         get();
 
         return view('containers.demurrage.index',[
@@ -34,12 +35,13 @@ class DemurageController extends Controller
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
-
+        $triffs = Triff::all();
         return view('containers.demurrage.create',[
             'countries'=>$countries,
             'bounds'=>$bounds,
             'containersTypes'=>$containersTypes,
             'ports'=>$ports,
+            'triffs'=>$triffs,
         ]);
     }
 
@@ -53,6 +55,8 @@ class DemurageController extends Controller
             'validity_to'=> $request->input('validity_to'),
             'currency'=> $request->input('currency'),
             'bound_id'=> $request->input('bound_id'),
+            'tariff_id'=> $request->input('tariff_id'),
+
         ]);
 
         foreach($request->input('period',[]) as $period){
@@ -60,6 +64,8 @@ class DemurageController extends Controller
                 'demurrage_id'=>$demurrages->id,
                 'rate'=>$period['rate'],
                 'period'=>$period['period'],
+                'number_off_dayes'=>$period['number_off_dayes'],
+
             ]);
         }
         return redirect()->route('demurrage.index')->with('success',trans('Demurrage.created'));

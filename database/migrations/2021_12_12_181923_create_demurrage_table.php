@@ -22,6 +22,7 @@ class CreateDemurrageTable extends Migration
             $table->date('validity_to')->nullable();
             $table->string('currency','255')->nullable();
             $table->unsignedInteger('bound_id')->nullable();
+            $table->string('tariff_id','255')->nullable();;
             $table->timestamps();
         });
     }
