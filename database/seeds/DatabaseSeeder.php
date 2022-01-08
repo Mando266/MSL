@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ContinerStatusSeeder::class);
         $this->call(LegsSeeder::class);
         $this->call(BoundTableSeeder::class);
+        $this->call(TriffSeeder::class);
+
     }
 }

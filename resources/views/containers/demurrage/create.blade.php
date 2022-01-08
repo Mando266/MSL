@@ -109,12 +109,29 @@
                                     </div>
                                     @enderror
                                 </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="Triffs">Triff</label>
+                                    <select class="selectpicker form-control" id="Triffs" data-live-search="true" name="tariff_id" data-size="10"
+                                    title="{{trans('forms.select')}}" autofocus>
+                                        @foreach ($triffs as $item)
+                                            <option value="{{$item->name}}" {{$item->name == old('tariff_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('tariff_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
                             <table id="period" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Period</th>
                                         <th>Rate</th>
+                                        <th>Calendar Days</th>
+
                                         <th>
                                             <a id="add"> Add Period <i class="fas fa-plus"></i></a>
                                         </th>
@@ -127,6 +144,9 @@
                                     </td>
                                     <td>
                                         <input type="text" id="rate" name="period[0][rate]" class="form-control" autocomplete="off">
+                                    </td>
+                                    <td>
+                                        <input type="text" id="dayes" name="period[0][number_off_dayes]" class="form-control" autocomplete="off">
                                     </td>
                                     <td></td>
                                 </tr>
@@ -157,6 +177,7 @@
             var tr = '<tr>'+
         '<td><input type="text" name="period['+counter+'][period]" class="form-control"></td>'+
         '<td><input type="text" name="period['+counter+'][rate]" class="form-control"></td>'+
+        '<td><input type="text" name="period['+counter+'][number_off_dayes]" class="form-control"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
         counter++;

@@ -30,7 +30,9 @@
                                             <th>validity from</th>
                                             <th>validity to</th>
                                             <th>Container Type/Size</th>
-                                            {{-- <th>period</th> --}}
+                                            <th>period</th>
+                                            <th>calendar days</th>
+                                            <th>rate per day</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -42,7 +44,10 @@
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                             <td>{{{optional($item->containersType)->name}}}</td>
-                                            {{-- <td>{{$item->period}}</td> --}}
+                                            <td>{{$item->period}}</td>
+                                            <td>{{$item->number_off_dayes}}</td>
+                                            <td>{{$item->rate}}</td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Demurrage-Delete')
@@ -71,3 +76,7 @@
         </div>
     </div>
 @endsection
+{{-- const date1 = new Date('7/13/2010');
+const date2 = new Date('12/15/2010');
+const diffTime = Math.abs(date2 - date1);
+console.log(diffDays + "days"); --}}
