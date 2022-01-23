@@ -10,6 +10,7 @@ use App\Models\Containers\Triff;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Ports;
 use App\Models\Master\Country;
+use App\Models\Master\Currency;
 use App\Models\Containers\Bound;
 use DB;
 
@@ -19,8 +20,8 @@ class DemurageController extends Controller
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
         $demurrages = Demurrage::
-        join('period', 'demurrage.id', '=', 'period.demurrage_id')
-            ->select('demurrage.*', 'period.rate','period.period','period.number_off_dayes')->
+        // join('period', 'demurrage.id', '=', 'period.demurrage_id')
+        //     ->select('demurrage.*', 'period.rate','period.period','period.number_off_dayes')->
         get();
 
         return view('containers.demurrage.index',[
@@ -36,12 +37,14 @@ class DemurageController extends Controller
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
         $triffs = Triff::all();
+        $currency = Currency::all();
         return view('containers.demurrage.create',[
             'countries'=>$countries,
             'bounds'=>$bounds,
             'containersTypes'=>$containersTypes,
             'ports'=>$ports,
             'triffs'=>$triffs,
+            'currency'=>$currency,
         ]);
     }
 
@@ -80,7 +83,16 @@ class DemurageController extends Controller
      */
     public function show($id)
     {
-        //
+        $this->authorize(__FUNCTION__,Demurrage::class);
+        $demurrages = Demurrage::find($id);
+        $period = Period::where('demurrage_id',$id)->get();
+        $demurrage = Demurrage::where('id',$id)->first();
+
+        return view('containers.demurrage.show',[
+            'demurrages'=>$demurrages,
+            'period'=>$period,
+            'demurrage'=>$demurrage,
+        ]);
     }
 
     /**

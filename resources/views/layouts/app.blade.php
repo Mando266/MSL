@@ -133,7 +133,7 @@
                     <p class="">Copyright © 2021 Middle East Shipping Line, All rights reserved.</p>
                 </div>
                 <div class="footer-section f-section-2">
-                    <p>Developed By <span style="color:red;">Deja Technology</span></p>
+                    <a href="https://dejatec.com/">Developed By <span style="color:red;">Deja Technology</span></a>
                 </div>
             </div>
         </div>

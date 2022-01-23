@@ -23,6 +23,24 @@
                     <form>
                         <div class="form-row">
                                 <div class="form-group col-md-3">
+                                    <label for="vessel_port_idInput">Port From</label>
+                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="From" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($ports as $item)
+                                            <option value="{{$item->name}}" {{$item->name == old('From',request()->input('From')) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="vessel_port_idInput">Port To</label>
+                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="To" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($ports as $item)
+                                            <option value="{{$item->name}}" {{$item->name == old('To',request()->input('To')) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
                                     <label for="vessel_port_idInput">Vessel Name</label>
                                     <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
                                         title="{{trans('forms.select')}}">
@@ -47,12 +65,13 @@
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th>#</th>
                                         <th>Vessel Code</th>
                                         <th>Vessel Name</th>
                                         <th>Voyage No</th>
                                         <th>Leg</th>
+                                        <th>port</th>
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -60,12 +79,13 @@
                                 <tbody>
                                     @forelse ($items as $item)
                                         <tr>
-                                            <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
+                                            <td>{{$loop->iteration}}</td>
                                             <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
                                             <td>{{$item->voyage_no}}</td>
                                             <td>{{{optional($item->leg)->name}}}</td>
-                        
+                                            <td>{{$item->port_from_name}}</td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     <!-- @permission('Voyages-Edit')
@@ -88,7 +108,7 @@
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                 </ul>
@@ -105,7 +125,6 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

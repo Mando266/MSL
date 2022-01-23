@@ -79,8 +79,12 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="currency">Currency</label>
-                                    <input type="text" class="form-control" id="currency" name="currency" value="{{old('currency')}}"
-                                     placeholder="Currency" autocomplete="off" >
+                                    <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
+                                    title="{{trans('forms.select')}}" autofocus>
+                                        @foreach ($currency as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
                                     @error('currency')
                                     <div class="invalid-feedback">
                                         {{$message}}

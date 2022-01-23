@@ -16,9 +16,8 @@ class CreateVoyagePortTable extends Migration
         Schema::create('voyage_port', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('voyage_id');
-            $table->unsignedInteger('port_id')->nullable();
-            $table->unsignedInteger('terminal_id')->nullable();
-            $table->unsignedInteger('vessel_port_id')->nullable();
+            $table->string('port_from_name','255')->nullable();
+            $table->string('terminal_name','255')->nullable();
             $table->unsignedInteger('road_no')->nullable();
             $table->date('eta')->nullable();
             $table->date('etd')->nullable();
