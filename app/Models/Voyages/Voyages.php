@@ -13,7 +13,7 @@ class Voyages extends Model implements PermissionSeederContract
     use HasFilter;
     protected $table = 'voyages';
     protected $guarded = [];
-    
+
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[

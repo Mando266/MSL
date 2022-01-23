@@ -30,9 +30,10 @@
                                             <th>validity from</th>
                                             <th>validity to</th>
                                             <th>Container Type/Size</th>
-                                            <th>period</th>
+                                            <th>period Details</th>
+                                            {{-- <th>period</th>
                                             <th>calendar days</th>
-                                            <th>rate per day</th>
+                                            <th>rate per day</th> --}}
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -44,10 +45,21 @@
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                             <td>{{{optional($item->containersType)->name}}}</td>
-                                            <td>{{$item->period}}</td>
+                                            {{-- <td>{{$item->period}}</td>
                                             <td>{{$item->number_off_dayes}}</td>
-                                            <td>{{$item->rate}}</td>
+                                            <td>{{$item->rate}}</td> --}}
 
+                                            <td class="text-center">
+                                                <ul class="table-controls">
+                                                    @permission('Demurrage-Show')
+                                                    <li>
+                                                        <a href="{{route('demurrage.show',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endpermission
+                                                </ul>
+                                            </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Demurrage-Delete')

@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\ContinerOwnership;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use App\Filters\Containers\ContainersIndexFilter;
 
 class ContinersController extends Controller
@@ -17,9 +15,10 @@ class ContinersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Containers::class);
-            $containers = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
+            $container = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
+            $containers = Containers::get();
         return view('master.containers.index',[
-            'items'=>$containers,
+            'items'=>$container,
             'containers'=>$containers,
 
         ]);

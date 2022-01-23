@@ -8,37 +8,33 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('voyages.index')}}">Voyages</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Voyage Details </a></li>
+                            <li class="breadcrumb-item"><a href="{{route('demurrage.index')}}">Demurrages</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Demurrage Details </a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('voyages.edit',['voyage'=>$voyage])}}" method="get">
+                {{-- <form id="createForm" action="{{route('voyages.edit',['voyage'=>$voyage])}}" method="get"> --}}
 
-                    <h5><span style='color:#1b55e2';>VSL/VOY:</span> {{{optional($voyageport->vessel)->code}}}/{{$voyageport->voyage_no}}</h5>
+                    <h5><span style='color:#1b55e2';>Tariff Ref No:</span> {{{optional($demurrage->country)->name}}} {{{optional($demurrage->ports)->code}}} {{{optional($demurrage->bound)->name}}} </h5>
 
                 <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
                                     <tr>
-                                        <th>Port</th>
-                                        <th>Terminal</th>
-                                        <th>ETA</th>
-                                        <th>ETD</th>
-                                        <th>road no</th>
+                                            <th>period</th>
+                                            <th>calendar days</th>
+                                            <th>rate per day</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($voyageports as $voyageport)
+                                    @forelse ($period as $period)
                                         <tr>
-                                            <td>{{$voyageport->port_from_name}}</td>
-                                            <td>{{$voyageport->terminal_name}}</td>
-                                            <td>{{$voyageport->eta}}</td>
-                                            <td>{{$voyageport->etd}}</td>
-                                            <td>{{$voyageport->road_no}}</td>
+                                            <td>{{$period->period}}</td>
+                                            <td>{{$period->number_off_dayes}}</td>
+                                            <td>{{$period->rate}}</td>
                                         </tr>
 
                                         @empty
@@ -52,12 +48,12 @@
                     </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
-                                <a href="{{route('voyages.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('demurrage.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                        </div>
 
 
-                    </form>
+                    {{-- </form> --}}
                 </div>
             </div>
 

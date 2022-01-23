@@ -39,7 +39,7 @@
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
 
-                                            <td class="text-left">{{ ucwords($group)}}</td>
+                                            <td class="text-left">{{ucwords($group)}}</td>
                                             <td>
                                                 @foreach ($actions as $action)
                                                 <div class="n-chk">

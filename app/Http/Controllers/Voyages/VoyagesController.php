@@ -18,17 +18,19 @@ class VoyagesController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Voyages::class);
-        // $voyages = Voyages::join('voyage_port', 'voyages.id', '=', 'voyage_port.voyage_id')
-        //     ->select('voyages.*', 'voyage_port.port_id', 'voyage_port.terminal_id', 'voyage_port.road_no', 'voyage_port.eta', 'voyage_port.etd')
-        // ->get();
-        $voyages = Voyages::filter(new VoyagesIndexFilter(request()))->paginate(30);
+        $FromPort =  request()->input('From');
+        $ToPort = request()->input('To');
+        $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+            ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no', 'voyage_port.eta', 'voyage_port.etd')
+            ->filter(new VoyagesIndexFilter(request()))
+            ->whereBetween('port_from_name', [$FromPort, $ToPort])
+            ->get();
         $vessels = Vessels::orderBy('name')->get();
-        // $voyageports = VoyagePorts::filter(new VoyagesIndexFilter(request()))->paginate(10);
+        $ports = Ports::orderBy('name')->get();
         return view('voyages.voyages.index',[
-            // 'voyageports'=>$voyageports,
             'items'=>$voyages,
             'vessels'=>$vessels,
-
+            'ports'=>$ports,
         ]);
      }
 
@@ -65,9 +67,8 @@ class VoyagesController extends Controller
         foreach($request->input('voyageport',[]) as $voyageport){
             VoyagePorts::create([
                 'voyage_id'=>$voyages->id,
-                'vessel_port_id'=>$voyages->vessel_id,
-                'port_id'=>$voyageport['port_id'],
-                'terminal_id'=>$voyageport['terminal_id'],
+                'port_from_name'=>$voyageport['port_from_name'],
+                'terminal_name'=>$voyageport['terminal_name'],
                 'road_no'=>$voyageport['road_no'],
                 'eta'=>$voyageport['eta'],
                 'etd'=>$voyageport['etd'],

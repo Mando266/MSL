@@ -23,6 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LegsSeeder::class);
         $this->call(BoundTableSeeder::class);
         $this->call(TriffSeeder::class);
-
+        $this->call(CurrencySeeder::class);
     }
 }

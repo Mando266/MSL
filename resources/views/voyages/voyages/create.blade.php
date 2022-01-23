@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="tab">
                         <table id="voyagePort" class="table table-bordered">
                             <thead>
@@ -93,18 +93,18 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <select class="selectpicker form-control" id="voyageporrt" data-live-search="true" name="voyageport[0][port_id]" data-size="10"
+                                    <select class="selectpicker form-control" id="voyageporrt" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($ports as $item)
-                                                <option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                <option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                     </select>
                                 </td>
                                 <td>
-                                <select class="selectpicker form-control" id="terminalporrt" data-live-search="true" name="voyageport[0][terminal_id]" data-size="10"
+                                <select class="selectpicker form-control" id="terminalporrt" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($terminals as $item)
-                                                <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                <option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                     </select>
                                 </td>
@@ -142,8 +142,8 @@
 @endsection
 @push('scripts')
 <script>
-var currentTab = 0; 
-showTab(currentTab); 
+var currentTab = 0;
+showTab(currentTab);
 function showTab(n) {
   var x = document.getElementsByClassName("tab");
   x[n].style.display = "block";
@@ -205,8 +205,8 @@ function fixStepIndicator(n) {
      var counter  = 1;
         $("#add").click(function(){
                 var tr = '<tr>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][port_id]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][terminal_id]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
             '<td><input type="text" name="voyageport['+counter+'][road_no]" class="form-control" autocomplete="off"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][eta]" class="form-control"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][etd]" class="form-control"></td>'+
