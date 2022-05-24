@@ -19,48 +19,6 @@
                         </div>
                         @endpermission
                     </div>
-
-                    <form>
-                        <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label for="vessel_port_idInput">Port From</label>
-                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="From" data-size="10"
-                                        title="{{trans('forms.select')}}">
-                                        @foreach ($ports as $item)
-                                            <option value="{{$item->name}}" {{$item->name == old('From',request()->input('From')) ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="vessel_port_idInput">Port To</label>
-                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="To" data-size="10"
-                                        title="{{trans('forms.select')}}">
-                                        @foreach ($ports as $item)
-                                            <option value="{{$item->name}}" {{$item->name == old('To',request()->input('To')) ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="vessel_port_idInput">Vessel Name</label>
-                                    <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
-                                        title="{{trans('forms.select')}}">
-                                        @foreach ($vessels as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('vessel_id',request()->input('vessel_id')) ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="voyage_noInput">Voyage No</label>
-                                    <input type="text" class="form-control" id="voyage_noInput" name="voyage_no" value="{{request()->input('voyage_no')}}"
-                                    placeholder="Voyage No" autocomplete="off">
-                                    </div>
-                                <div class="col-md-12 text-center">
-                                    <button  type="submit" class="btn btn-success mt-3">Search</button>
-                                    <a href="{{route('voyages.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
-                                </div>
-                        </div>
-                    </form>
-
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -71,7 +29,7 @@
                                         <th>Vessel Name</th>
                                         <th>Voyage No</th>
                                         <th>Leg</th>
-                                        <th>port</th>
+                                        {{-- <th>port</th> --}}
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -84,7 +42,7 @@
                                             <td>{{{optional($item->vessel)->name}}}</td>
                                             <td>{{$item->voyage_no}}</td>
                                             <td>{{{optional($item->leg)->name}}}</td>
-                                            <td>{{$item->port_from_name}}</td>
+                                            {{-- <td>{{$item->port_from_name}}</td> --}}
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

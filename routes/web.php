@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('voyages')->namespace('Voyages')->group(function () {
         Route::resource('voyages', 'VoyagesController');
+        Route::resource('voyagesearch', 'VoyagesSearchController');
     });
 
     /*

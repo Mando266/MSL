@@ -18,12 +18,18 @@ class VoyagesController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Voyages::class);
+        $where = [];
+        $Port =  request()->input('Port');
+        if ($Port) $where[] = ['port_from_name', $Port];
         $FromPort =  request()->input('From');
+        if ($FromPort) $where[] = ['port_from_name','>=', $FromPort];
         $ToPort = request()->input('To');
+        if ($ToPort) $where[] = ['port_from_name','<=', $ToPort];
+
         $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
             ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no', 'voyage_port.eta', 'voyage_port.etd')
             ->filter(new VoyagesIndexFilter(request()))
-            ->whereBetween('port_from_name', [$FromPort, $ToPort])
+            ->where($where)
             ->get();
         $vessels = Vessels::orderBy('name')->get();
         $ports = Ports::orderBy('name')->get();
