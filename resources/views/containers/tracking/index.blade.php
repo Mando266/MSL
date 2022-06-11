@@ -32,6 +32,8 @@
                                             <th>Pol</th>
                                             <th>Pod</th>
                                             <th>BL No</th>
+                                            <th>free time destination</th>
+                                            <th>booking agent</th>   
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -114,6 +116,28 @@
                                                          data-name="{{ $action->container_id }}"
                                                         {{in_array($action->id,old('items',[])) ? : ''}} value="{{ $action->id }}">
                                                         <span class="new-control-indicator"></span>{{$action->bl_no}}
+                                                    </label>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($actions as $action)
+                                                <div class="n-chk">
+                                                    <label>
+                                                        <input class="new-control-input"
+                                                         data-name="{{ $action->container_id }}"
+                                                        {{in_array($action->id,old('items',[])) ? : ''}} value="{{ $action->id }}">
+                                                        <span class="new-control-indicator"></span>{{$action->free_time}}
+                                                    </label>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($actions as $action)
+                                                <div class="n-chk">
+                                                    <label>
+                                                        <input class="new-control-input"
+                                                         data-name="{{ $action->container_id }}"
+                                                        {{in_array($action->id,old('items',[])) ? : ''}} value="{{ $action->id }}">
+                                                        <span class="new-control-indicator"></span>{{$action->booking_agent_id}}
                                                     </label>
                                                 @endforeach
                                             </td>

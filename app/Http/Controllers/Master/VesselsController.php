@@ -42,9 +42,17 @@ class VesselsController extends Controller
     {
         $this->authorize(__FUNCTION__,Vessels::class);
         $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-        ]);
+            'name' => 'required|unique:vessels|max:255',
+            'code' => 'required|unique:vessels|max:255',
+            'call_sign' => 'required|unique:vessels|max:255',
+            'imo_number' => 'required|unique:vessels|max:255',
+
+        ],[
+            'name.unique'=>'This Name Already Exists ',
+            'code.unique'=>'This Code Already Exists ',
+            'call_sign.unique'=>'This Call Sign Already Exists ',
+            'imo_number.unique'=>'This IMO NUMBER Already Exists ',
+         ]);
         $vessels = Vessels::create($request->except('_token'));
         return redirect()->route('vessels.index')->with('success',trans('vessel.created'));
     }

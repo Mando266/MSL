@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CompanyDataController;
 use App\Models\Master\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +31,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //});
+Route::get('vessel/voyages/{id}', [CompanyDataController::class, 'getVesselVoyages']);

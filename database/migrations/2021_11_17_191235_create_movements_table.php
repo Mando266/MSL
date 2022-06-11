@@ -29,6 +29,12 @@ class CreateMovementsTable extends Migration
             $table->string('booking_no','255')->nullable();
             $table->string('bl_no','255')->nullable();
             $table->string('remarkes')->nullable();
+            $table->string('transshipment_port_id','255')->nullable();
+            $table->string('booking_agent_id','255')->nullable();
+            $table->unsignedInteger('free_time')->nullable();
+            $table->string('container_status','255')->nullable();
+            $table->string('import_agent','255')->nullable();
+            $table->unsignedInteger('free_time_origin')->nullable();
             $table->timestamps();
         });
     }

@@ -42,7 +42,8 @@ class ContainersMovementController extends Controller
             'container_status_id' => 'integer|nullable',
         ]);
         ContainersMovement::create($request->except('_token'));
-        return redirect()->route('container-movement.index')->with('success',trans('Container Movement.created'));    }
+        return redirect()->route('container-movement.index')->with('success',trans('Container Movement.created'));
+    }
 
     public function show($id)
     {

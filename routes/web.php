@@ -49,7 +49,9 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('voyages')->namespace('Voyages')->group(function () {
         Route::resource('voyages', 'VoyagesController');
-        Route::resource('voyagesearch', 'VoyagesSearchController');
+        Route::get('voyages/{voyage}/{FromPort?}/{ToPort?}','VoyagesController@show')->name('voyages.show');
+        Route::resource('voyageports', 'VoyageportsController');
+
     });
 
     /*
@@ -61,8 +63,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('movements', 'MovementController');
         Route::resource('tracking', 'TrackingController');
         Route::resource('demurrage', 'DemurageController');
+        Route::resource('movementerrors', 'MovementImportErrorsController');
 
     });
+    
+    /*Excel import export*/
+    Route::get('export', 'ImportExportController@export')->name('export');
+    Route::get('importExportView', 'ImportExportController@importExportView');
+    Route::post('import', 'ImportExportController@import')->name('import');
 
 });
 Auth::routes(['register' => false]);

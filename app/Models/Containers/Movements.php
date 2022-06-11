@@ -18,6 +18,28 @@ class Movements extends Model implements PermissionSeederContract
     use HasFilter;
     protected $table = 'movements';
     protected $guarded = [];
+
+    protected $fillable = [
+        'container_id',
+        'container_type_id',
+        'movement_id',
+        'movement_date',
+        'port_location_id',
+        'pol_id',
+        'pod_id',
+        'vessel_id',
+        'voyage_id',
+        'terminal_id',
+        'booking_no',
+        'bl_no',
+        'remarkes',
+        'transshipment_port_id',
+        'booking_agent_id',
+        'free_time',
+        'container_status',
+        'import_agent',
+        'free_time_origin',
+    ];
     
     use PermissionSeederTrait;
     public function getPermissionActions(){

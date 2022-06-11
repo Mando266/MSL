@@ -19,61 +19,66 @@
                         @csrf
                         @method('put')
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="vessel_idInput">Vessel Name *</label>
-                                <select class="selectpicker form-control" id="vessel_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                            <div class="form-group col-md-4">
+                                <label for="ports"> PORT </label>
+                                <select class="selectpicker form-control" id="ports" data-live-search="true" name="port_from_name" data-size="10"
                                     title="{{trans('forms.select')}}">
-                                    @foreach ($vessels as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id',$voyage->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @foreach ($ports as $item)
+                                    <option value="{{$item->name}}" {{$item->name == old('port_from_name',$voyage->port_from_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('vessel_id')
+                                @error('port_from_name')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="voyage_noInput">Voyage No *</label>
-                            <input type="text" class="form-control" id="voyage_noInput" name="voyage_no" value="{{old('voyage_no',$voyage->voyage_no)}}"
-                                 placeholder="Voyage No" autocomplete="off" autofocus>
-                                @error('voyage_no')
+                            <div class="form-group col-md-4">
+                                <label for="terminals"> Terminal </label>
+                                <select class="selectpicker form-control" id="terminals" data-live-search="true" name="terminal_name" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($terminals as $item)
+                                    <option value="{{$item->name}}" {{$item->name == old('terminal_name',$voyage->terminal_name) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('terminal_name')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-4">
+                                    <label for="ROAD NO	">ROAD NO</label>
+                                <input type="text" class="form-control" id="road_no" name="road_no" value="{{old('road_no',$voyage->road_no)}}"
+                                    placeholder="ROAD NO" autocomplete="off">
+                                    @error('road_no')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                    <label for="leg_idInput">Leg</label>
-                                    <select class="selectpicker form-control" id="leg_idInput" data-live-search="true" name="leg_id" data-size="10"
-                                        title="{{trans('forms.select')}}">
-                                        @foreach ($legs as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('leg_id',$voyage->leg_id) ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('leg_id')
+                            <div class="form-group col-md-4">
+                                    <label for="ETA">ETA</label>
+                                <input type="date" class="form-control" id="ETA" name="eta" value="{{old('eta',$voyage->eta)}}"
+                                    placeholder="Voyage No" autocomplete="off">
+                                    @error('eta')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="line_idInput">Line</label>
-                                    <select class="selectpicker form-control" id="line_idInput" data-live-search="true" name="line_id" data-size="10"
-                                        title="{{trans('forms.select')}}">
-                                        @foreach ($lines as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('line_id',$voyage->line_id) ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('line_id')
+                                <div class="form-group col-md-4">
+                                    <label for="ETA">ETD</label>
+                                <input type="date" class="form-control" id="ETA" name="etd" value="{{old('etd',$voyage->etd)}}"
+                                    placeholder="ETD" autocomplete="off">
+                                    @error('etd')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
                         </div>
                        <div class="row">
                             <div class="col-md-12 text-center">
