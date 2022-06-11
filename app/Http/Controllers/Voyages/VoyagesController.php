@@ -22,21 +22,80 @@ class VoyagesController extends Controller
         $Port =  request()->input('Port');
         if ($Port) $where[] = ['port_from_name', $Port];
         $FromPort =  request()->input('From');
-        if ($FromPort) $where[] = ['port_from_name','>=', $FromPort];
+        // if ($FromPort) $where[] = ['port_from_name','>=', $FromPort];
         $ToPort = request()->input('To');
-        if ($ToPort) $where[] = ['port_from_name','<=', $ToPort];
-
+        // if ($ToPort) $where[] = ['port_from_name','<=', $ToPort];
+        
         $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
-            ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no', 'voyage_port.eta', 'voyage_port.etd')
+            ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+            ->with('voyagePorts')
             ->filter(new VoyagesIndexFilter(request()))
-            ->where($where)
+            ->groupBy('id')
             ->get();
+            
+            // SEARCH FROM PART
+            if(isset($FromPort) && !isset($ToPort)){
+                $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+                ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                ->with('voyagePorts')
+                ->filter(new VoyagesIndexFilter(request()))
+                ->where('port_from_name','>=', $FromPort)
+                ->groupBy('id')
+                ->get();
+                foreach ($voyages as $key => $voyage) {
+                    $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
+                    if(!isset($tempPortsFrom[0])){
+                        unset($voyages[$key]);
+                    }else{
+                        foreach($voyage->voyagePorts as $key => $voyagePort){
+                            if(!in_array($voyagePort->id,$tempPortsFrom)){
+                                unset($voyage->voyagePorts[$key]);
+                            }
+                        }
+                    } 
+                }
+            }//check for filter from : to
+            elseif(isset($FromPort) && isset($ToPort)){
+                $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+                ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                ->with('voyagePorts')
+                ->filter(new VoyagesIndexFilter(request()))
+                ->where('port_from_name','>=', $FromPort)
+                ->orWhere('port_from_name','<=', $ToPort)
+                ->groupBy('id')
+                ->get();
+            foreach ($voyages as $key => $voyage) {
+                $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
+                $tempPortsTo = $voyage->voyagePorts->where('port_from_name', $ToPort)->pluck('id')->toArray();
+                if(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0])){
+                    unset($voyages[$key]);
+                }
+                    $voyageports = VoyagePorts::where('voyage_id',$voyage->id)
+                    ->where(function ($query) use ($FromPort,$ToPort) {
+                        $query->where('port_from_name', $FromPort)
+                              ->orWhere('port_from_name', $ToPort);
+                    })->get();
+                    if($voyageports[0]->port_from_name != $FromPort){
+                        unset($voyages[$key]);
+                    }else{
+                        $voyageports = $voyageports->pluck('id')->toArray();
+                        foreach($voyage->voyagePorts as $key => $voyagePort){
+                            if(!in_array($voyagePort->id,$voyageports)){
+                                unset($voyage->voyagePorts[$key]);
+                            }
+                        }
+                    }
+            }
+        }
         $vessels = Vessels::orderBy('name')->get();
         $ports = Ports::orderBy('name')->get();
+        // dd($voyages);
         return view('voyages.voyages.index',[
             'items'=>$voyages,
             'vessels'=>$vessels,
             'ports'=>$ports,
+            'FromPort'=> $FromPort,
+            'ToPort'=> $ToPort
         ]);
      }
 
@@ -84,11 +143,46 @@ class VoyagesController extends Controller
         return redirect()->route('voyages.index')->with('success',trans('voyage.created'));
     }
 
-    public function show($id)
+    public function show($id,$from = null,$to = null)
     {
         $this->authorize(__FUNCTION__,Voyages::class);
         $voyage = Voyages::find($id);
-        $voyageports = VoyagePorts::where('voyage_id',$id)->get();
+        if($from == null && $to == null){
+            $voyageports = VoyagePorts::where('voyage_id',$id)->get();
+        // }elseif($from == null){
+        //     $voyageports = VoyagePorts::where('voyage_id',$id)
+        // ->where('port_from_name', $to)->get();
+        }elseif($to == null){
+            // Here is trips when we search with from just
+            $tempPortsFrom = VoyagePorts::where('voyage_id',$id)->where('port_from_name', $from)->get();
+            if(!isset($tempPortsFrom[0])){
+                $voyageports = [];
+            }else{
+                $voyageports = VoyagePorts::where('voyage_id',$id)
+                        ->where('port_from_name', $from)->get();
+            }
+            
+        }else{
+            // Here is trips when we search with from : to 
+                // here we check if we found ports for this voyage from and to our search
+                $tempPortsFrom = VoyagePorts::where('voyage_id',$id)->where('port_from_name', $from)->get();
+                $tempPortsTo = VoyagePorts::where('voyage_id',$id)->where('port_from_name', $to)->get();
+                
+                // dd(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0]));
+                
+                if(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0])){
+                    $voyageports = [];
+                }else{
+                    $voyageports = VoyagePorts::where('voyage_id',$id)
+                    ->where(function ($query) use ($from,$to) {
+                        $query->where('port_from_name', $from)
+                              ->orWhere('port_from_name', $to);
+                    })->get();
+                }
+                
+            
+        }
+        
         $voyageport = Voyages::where('id',$id)->first();
 
         return view('voyages.voyages.show',[
@@ -98,9 +192,9 @@ class VoyagesController extends Controller
         ]);
     }
 
-    public function edit(Voyages $voyage)
+    public function edit(VoyagePorts $voyage)
     {
-        $this->authorize(__FUNCTION__,Voyages::class);
+        $this->authorize(__FUNCTION__,VoyagePorts::class);
         $vessels = Vessels::orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
         $lines = Lines::orderBy('id')->get();
@@ -118,13 +212,9 @@ class VoyagesController extends Controller
         ]);
     }
 
-    public function update(Request $request, Voyages $voyage)
+    public function update(Request $request, VoyagePorts $voyage)
     {
-        $request->validate([
-            'voyage_no' => 'required',
-            'vessel_id' => 'required',
-        ]);
-        $this->authorize(__FUNCTION__,Voyages::class);
+        $this->authorize(__FUNCTION__,VoyagePorts::class);
         $voyage->update($request->except('_token'));
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));
     }

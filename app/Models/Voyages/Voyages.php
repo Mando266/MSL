@@ -32,7 +32,7 @@ class Voyages extends Model implements PermissionSeederContract
     public function vessel(){
         return $this->belongsTo(Vessels::class,'vessel_id','id');
     }
-    public function voyagePort()
+    public function voyagePorts()
     {
         return $this->hasMany(VoyagePorts::class ,'voyage_id','id');
     }

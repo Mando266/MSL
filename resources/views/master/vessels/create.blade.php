@@ -24,7 +24,7 @@
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
                                     placeholder="Code" autocomplete="off" autofocus>
                                 @error('code')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -34,7 +34,7 @@
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
                                  placeholder="Name" autocomplete="off">
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -44,7 +44,7 @@
                                 <input type="text" class="form-control" id="call_signInput" name="call_sign" value="{{old('call_sign')}}"
                                     placeholder="Call Sign" autocomplete="off">
                                 @error('call_sign')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -57,7 +57,7 @@
                             <input type="text" class="form-control" id="imo_numberInput" name="imo_number" value="{{old('imo_number')}}"
                                 placeholder="IMO Number" autocomplete="off">
                             @error('imo_number')
-                            <div class="invalid-feedback">
+                            <div style="color:red;">
                                 {{$message}}
                             </div>
                             @enderror

@@ -11,70 +11,143 @@ use App\Models\Master\Vessels;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use App\Models\Containers\Movements;
+use App\Models\Master\Agents;
+use App\Models\Master\ContainerStatus;
 use App\Filters\Containers\ContainersIndexFilter;
+use App\MovementImportErrors;
+use Illuminate\Validation\Rule;
 
 class MovementController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        $movements = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
+        $movementErrors = MovementImportErrors::all();
+        $container_id =  request()->input('container_id');
+        $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')
+        ->paginate(30);
         $containers = Containers::orderBy('id')->get();
-        return view('containers.movements.index',[
-            'items'=>$movements,
-            'containers'=>$containers,
+        if($container_id == null){
+            return view('containers.movements.index',[
+                'items'=>$movements,
+                'containers'=>$containers,
+                'movementerrors' => $movementErrors,
+            ]);
+        }else{
+            $movement = Movements::find($container_id);
+            $container = Containers::find($container_id);
+            $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$container_id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->paginate(30);
+            // dd($container);
+            $containers = Containers::where('id',$container_id)->first();
 
-        ]);
+            return view('containers.movements.show',[
+                'movement'=>$movement,
+                'container'=>$container,
+                'items'=>$movements,
+                'containers'=>$containers,
+            ]);
+        }
+        
     }
 
     public function create()
     {
         $this->authorize(__FUNCTION__,Movements::class);
+        $container_id =  request()->input('container_id');
         $voyages = Voyages::orderBy('id')->get();
         $vessels = Vessels::orderBy('id')->get();
-        $containers = Containers::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
+        $agents = Agents::orderBy('id')->get();
+        $containerstatus = ContainerStatus::orderBy('id')->get();
 
-        return view('containers.movements.create',[
-            'voyages'=>$voyages,
-            'vessels'=>$vessels,
-            'containers'=>$containers,
-            'containersTypes'=>$containersTypes,
-            'containersMovements'=>$containersMovements,
-            'ports'=>$ports,
-        ]);
+        if(isset($container_id)){
+            $container = Containers::find($container_id);
+            return view('containers.movements.create',[
+                'voyages'=>$voyages,
+                'vessels'=>$vessels,
+                'container'=>$container,
+                'containersTypes'=>$containersTypes,
+                'containersMovements'=>$containersMovements,
+                'ports'=>$ports,
+                'agents'=>$agents,
+                'containerstatus'=>$containerstatus,
+            ]);
+        }else{
+            $containers = Containers::orderBy('id')->get();
+            return view('containers.movements.create',[
+                'voyages'=>$voyages,
+                'vessels'=>$vessels,
+                'containers'=>$containers,
+                'containersTypes'=>$containersTypes,
+                'containersMovements'=>$containersMovements,
+                'ports'=>$ports,
+                'agents'=>$agents,
+                'containerstatus'=>$containerstatus,
+
+            ]);
+        }
+        
+
+        
     }
 
     public function store(Request $request)
     {
+        
+        // dd($request->input());
         $this->authorize(__FUNCTION__,Movements::class);
+
         $request->validate([
-            'container_id' => 'required',
+            'movement' => 'required',
             'container_type_id' => 'required',
             'movement_id' => 'required',
             'movement_date' => 'required',
             'port_location_id' => 'required',
         ]);
-        // foreach($request->input('movement',[]) as $movement){
-        //     Movements::create([
-        //         'container_id'=>$movement['container_id'],
-        //         'container_type_id'=>$movement['container_type_id'],
-        //         'movement_id'=>$movement['movement_id'],
-        //         'movement_date'=>$movement['movement_date'],
-        //         'port_location_id'=>$movement['port_location_id'],
-        //         'pol_id'=>$movement['pol_id'],
-        //         'pod_id'=>$movement['pod_id'],
-        //         'vessel_id'=>$movement['vessel_id'],
-        //         'voyage_id'=>$movement['voyage_id'],
-        //         'terminal_id'=>$movement['terminal_id'],
-        //         'booking_no'=>$movement['booking_no'],
-        //         'bl_no'=>$movement['bl_no'],
-        //         'remarkes'=>$movement['remarkes'],
-        //     ]);
-        // }
-        Movements::create($request->except('_token'));
+        foreach($request->movement as $move){
+            $containerNo = Containers::where('id', $move['container_id'])->pluck('code')->first();
+            $lastMove = Movements::where('container_id',$move['container_id'])->latest()->pluck('movement_id')->first();
+            $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
+            $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
+            $nextMoves = explode(', ',$nextMoves);
+            $moveCode = ContainersMovement::where('id',$request->movement_id)->pluck('code')->first();
+            if(!$nextMoves[0] == null){
+                if(!in_array($moveCode, $nextMoves)){
+                    return redirect()->route('movements.create')->with('error','container number: '.$containerNo.' with movement: '
+                    .$moveCode.' not allowed!, the allowed movements for this container is '.implode(", ", $nextMoves));
+                }
+            }
+        
+        }
+        foreach($request->movement as $move){
+            Movements::create([
+                'container_id'=>$move['container_id'],
+                'container_type_id'=> $request->input('container_type_id'),
+                'movement_id'=> $request->input('movement_id'),
+                'movement_date'=> $request->input('movement_date'),
+                'port_location_id'=> $request->input('port_location_id'),
+                'pol_id'=> $request->input('pol_id'),
+                'pod_id'=> $request->input('pod_id'),
+                'vessel_id'=> $request->input('vessel_id'),
+                'voyage_id'=> $request->input('voyage_id'),
+                'terminal_id'=> $request->input('terminal_id'),
+                'booking_no'=> $request->input('booking_no'),
+                'transshipment_port_id'=> $request->input('transshipment_port_id'),
+                'booking_agent_id'=> $request->input('booking_agent_id'),
+                'import_agent'=> $request->input('import_agent'),
+                'container_status'=> $request->input('container_status'),
+                'free_time'=> $request->input('free_time'),
+                'free_time_origin'=> $request->input('free_time_origin'),
+                'bl_no'=> $request->input('bl_no'),
+                'remarkes'=> $request->input('remarkes'),
+                ]);
+        }
+        
+        // Movements::create($request->except('_token'));
+        
+        
         return redirect()->route('movements.index')->with('success',trans('Movement.created'));
     }
 
@@ -84,7 +157,7 @@ class MovementController extends Controller
         $movement = Movements::find($id);
         $container = Containers::find($id);
         $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->paginate(30);
-        // dd($movements);
+        // dd($container);
         $containers = Containers::where('id',$id)->first();
 
         return view('containers.movements.show',[
@@ -104,7 +177,8 @@ class MovementController extends Controller
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
-
+        $agents = Agents::orderBy('id')->get();
+        $containerstatus = ContainerStatus::orderBy('id')->get();
         return view('containers.movements.edit',[
             'movement'=>$movement,
             'voyages'=>$voyages,
@@ -113,6 +187,8 @@ class MovementController extends Controller
             'containersTypes'=>$containersTypes,
             'containersMovements'=>$containersMovements,
             'ports'=>$ports,
+            'agents'=>$agents,
+            'containerstatus'=>$containerstatus,
         ]);
     }
 
@@ -121,6 +197,12 @@ class MovementController extends Controller
         $request->validate([
             'movement_id' => 'required',
             'movement_date' => 'required',
+            'port_location_id' => 'required',
+        //     'voyage_id' =>[
+        //     'required', 
+        //                     Rule::unique('movements')
+        //                         ->where('vessel_id', $request->vessel_id)
+        // ],
             'port_location_id' => 'required',
         ]);
         $this->authorize(__FUNCTION__,Movements::class);
@@ -132,6 +214,6 @@ class MovementController extends Controller
     {
         $movement = Movements::find($id);
         $movement->delete();
-        return redirect()->route('movements.index')->with('success',trans('Movement.deleted.success'));
+        return redirect()->back()->with('success',trans('Movement.deleted.success'));
     }
 }

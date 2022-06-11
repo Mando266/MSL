@@ -139,6 +139,60 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
+                                <label for="TransshipmentInput">Transshipment Port </label>
+                                <select class="selectpicker form-control" id="TransshipmentInput" data-live-search="true" name="transshipment_port_id" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->name}}" {{$item->name == old('transshipment_port_id',$movement->transshipment_port_id) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('transshipment_port_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="BookingInput">Booking Agent </label>
+                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="booking_agent_id" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($agents as $item)
+                                        <option value="{{$item->name}}" {{$item->name == old('booking_agent_id',$movement->booking_agent_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('booking_agent_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="BookingInput">container Status </label>
+                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($containerstatus as $item)
+                                        <option value="{{$item->name}}" {{$item->name == old('container_status',$movement->container_status) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="RemarkesInput">Free Time</label>
+                                <input type="text" class="form-control" id="RemarkesInput" name="free_time" value="{{old('free_time',$movement->free_time)}}"
+                                    placeholder="Free Time" autocomplete="off">
+                                @error('free_time')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="RemarkesInput">Remarkes</label>
                                 <input type="text" class="form-control" id="RemarkesInput" name="remarkes" value="{{old('remarkes',$movement->remarkes)}}"
                                     placeholder="Remarkes" autocomplete="off">

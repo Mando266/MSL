@@ -12,11 +12,18 @@
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
+                    @permission('Movements-Create')
+                        <div class="row">
+                            <div class="col-md-12 text-right mb-5">
+                            <a href="{{route('movements.create',['container_id'=>$container->id])}}" class="btn btn-primary">Add New Movement</a>
+                            </div>
+                        </div>
+                    @endpermission
                 </div>
             </br>
             <h5><span style='color:#1b55e2';>Container No / Type:</span> {{$containers->code}} / {{{optional($containers->containersTypes)->name}}}</h5>
             </br>
-                <form>
+                <!-- <form>
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
@@ -31,10 +38,10 @@
                         </div>
                         <div class="col-md-12 text-center">
                             <button  type="submit" class="btn btn-success mt-3">Search</button>
-                            {{-- <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a> --}}
+                            <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a> 
                         </div>
                     </div>
-                </form>
+                </form> -->
 
                 <div class="widget-content widget-content-area">
                         <div class="table-responsive">
@@ -49,6 +56,8 @@
                                         <th>VSL/VOY</th>
                                         <th>BOOKING</th>
                                         <th>BL No</th>
+                                        <th>free time destination</th>
+                                        <th>booking agent</th>   
                                         <th>REMARKS</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -64,6 +73,8 @@
                                             <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
                                             <td>{{$item->booking_no}}</td>
                                             <td>{{$item->bl_no}}</td>
+                                            <td>{{$item->free_time}}</td>
+                                            <td>{{$item->booking_agent_id}}</td>
                                             <td>{{$item->remarkes}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
