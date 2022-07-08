@@ -34,6 +34,8 @@ class MovementController extends Controller
         }
         $containers = Containers::orderBy('id')->get();
         $ports = Ports::orderBy('id')->get();
+        $voyages = Voyages::orderBy('id')->get();
+        $containersMovements = ContainersMovement::orderBy('id')->get();
 
         if($container_id == null){
             return view('containers.movements.index',[
@@ -41,6 +43,8 @@ class MovementController extends Controller
                 'containers'=>$containers,
                 'movementerrors' => $movementErrors,
                 'ports'=>$ports,
+                'voyages'=>$voyages,
+                'containersMovements'=>$containersMovements,
             ]);
         }else{
             $movement = Movements::find($container_id);

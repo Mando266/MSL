@@ -12,5 +12,8 @@ class ContainersIndexFilter extends AbstractFilter{
         'booking_no'=>BookingNoFilter::class,
         'movement_date'=>MovementDateFilter::class,
         'port_location_id'=>PortLocaionFilter::class,
+        'voyage_id'=>VoayegeNoFilter::class,
+        'movement_id'=>MovementIDFilter::class,
+
     ];
 }
