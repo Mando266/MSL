@@ -38,7 +38,7 @@
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
                                     placeholder="Container Number" autocomplete="off">
                                 @error('code')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror

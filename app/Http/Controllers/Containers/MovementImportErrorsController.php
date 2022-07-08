@@ -83,9 +83,8 @@ class MovementImportErrorsController extends Controller
      * @param  \App\MovementImportErrors  $movementImportErrors
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        $movementerror = MovementImportErrors::find($id);
-        $movementerror->delete();
+        MovementImportErrors::query()->truncate();
         return redirect()->route('movementerrors.index')->with('success',trans('MovementErrors.deleted.success'));    }
 }

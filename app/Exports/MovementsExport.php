@@ -6,6 +6,7 @@ use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Models\Master\ContainersTypes;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
@@ -47,11 +48,18 @@ class MovementsExport implements FromCollection,WithHeadings
     */
     public function collection()
     {
-        $movements = Movements::all();
+        $container_id =  request()->input('container_id');
+        if($container_id == null){
+            $movements = Movements::all();
+
+        }else  {
+        $movements = Movements::where('container_id',$container_id)->get();
+        // dd($movements);
+        }
         foreach($movements as $movement){
             $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
             $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
-            $movement->container_type_id = ContainersMovement::where('id',$movement->container_type_id)->pluck('name')->first();
+            $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
         }
         return $movements;
     }

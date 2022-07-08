@@ -212,10 +212,17 @@ class VoyagesController extends Controller
         ]);
     }
 
-    public function update(Request $request, VoyagePorts $voyage)
+    public function update(Request $request, VoyagePorts $voyage  ,Voyages $voyages)
     {
         $this->authorize(__FUNCTION__,VoyagePorts::class);
         $voyage->update($request->except('_token'));
+        // $voyages =  Voyages::find($voyages->id);
+        // $voyages->vessel_id = $request->input('vessel_id');
+        // $voyages->voyage_no = $request->input('voyage_no');
+        // $voyages->leg_id = $request->input('leg_id');
+        // $voyages->line_idline_id = $request->input('line_id');
+        // $voyages->save();
+
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));
     }
 
