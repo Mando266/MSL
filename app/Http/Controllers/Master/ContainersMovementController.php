@@ -23,7 +23,7 @@ class ContainersMovementController extends Controller
 
     public function create()
     {
-        $this->authorize(__FUNCTION__,ContainersMovement::class);
+        $this->authorize(__FUNCTION__,ContainersMovement::class); 
         $container_stock = StockTypes::orderBy('id')->get();
         $container_status = ContainerStatus::orderBy('id')->get();
 
@@ -37,9 +37,15 @@ class ContainersMovementController extends Controller
     {
         $user = Auth::user();
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:containers_movement|max:255',
+            'code' => 'required|unique:containers_movement|max:255',
             'stock_type_id' => 'integer|nullable',
-            'container_status_id' => 'integer|nullable',
+            'container_statuss_id' => 'integer|nullable',
+
+        ],[
+            'name.unique'=>'This Movement Name Already Exists ',
+            'code.unique'=>'This Movement Code Already Exists ',
+
         ]);
         ContainersMovement::create($request->except('_token'));
         return redirect()->route('container-movement.index')->with('success',trans('Container Movement.created'));
@@ -67,9 +73,14 @@ class ContainersMovementController extends Controller
     public function update(Request $request, ContainersMovement $container_movement)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:containers_movement|max:255',
+            'code' => 'required|unique:containers_movement|max:255',
             'stock_type_id' => 'integer|nullable',
             'container_statuss_id' => 'integer|nullable',
+
+        ],[
+            'name.unique'=>'This Movement Name Already Exists ',
+            'code.unique'=>'This Movement Code Already Exists ',
 
         ]);
         $this->authorize(__FUNCTION__,ContainersMovement::class);

@@ -11,9 +11,7 @@ use App\MovementImportErrors;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+
 
 class MovementsImport implements ToModel,WithHeadingRow
 {
@@ -24,20 +22,25 @@ class MovementsImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
+       
         $containerId = $row['container_id'];
-        // dd($containerId);
         $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
-        $lastMove = Movements::where('container_id',$row['container_id'])->latest()->pluck('movement_id')->first();
+        $row['movement_date'] = Date::excelToDateTimeObject($row['movement_date']);
+        $lastMove = Movements::where('container_id',$row['container_id'])->where('movement_date','<=',$row['movement_date'])->orderBy('movement_date')->pluck('movement_id')->last();
+        
         $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
         $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
-        
+        // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
-        $row['movement_date'] = Date::excelToDateTimeObject($row['movement_date']);
-
-        // dd([$movementCode,$nextMoves]);
+        
+        $movementdublicate  = Movements::where('container_id',$row['container_id'])->where('movement_id',$row['movement_id'])->where('movement_date',$row['movement_date'])->first();
+        
+        if($movementdublicate != null){
+            return Session::flash('message', 'this container number: '.$containerId.' with this movement code: '.$movementCode.' already exists!');
+        }
         if(in_array($movementCode,$nextMoves)){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],
@@ -86,9 +89,11 @@ class MovementsImport implements ToModel,WithHeadingRow
             // return '<script type="text/javascript">alert("hello!");</script>';
             // $movement = new Movements();
             // return $movement;
+
             MovementImportErrors::create([
                 'container_id' => $containerId,
-                'error_code' => $lastMoveCode,
+                'date' => $row['movement_date'],
+                'error_code' => $movementCode,
                 'allowed_code' => implode(", ", $nextMoves)
             ]);
             return Session::flash('message', 'Error in Allowed Next Movement');

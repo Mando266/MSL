@@ -34,26 +34,34 @@
                         @endpermission
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="ContainerInput">Container Number </label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('container_id', request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
-
+                            <div class="form-group col-md-3">
+                                <label for="portlocationInput">Activity Location *</label>
+                                <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <!-- <div class="form-group col-md-3">
                             <label for="Movement">Movement Date</label>
                                 <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
                             </div> -->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="BLNo">BL No</label>
                                 <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
                                 placeholder="BL No" autocomplete="off">
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
                                 <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
                                 placeholder="Booking No" autocomplete="off">
@@ -120,7 +128,7 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->links() }}
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

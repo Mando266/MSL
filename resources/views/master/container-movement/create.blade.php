@@ -24,7 +24,7 @@
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
                                  placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -35,7 +35,7 @@
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
                                     placeholder="Code" autocomplete="off">
                                 @error('code')
-                                <div class="invalid-feedback">
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror

@@ -64,7 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('tracking', 'TrackingController');
         Route::resource('demurrage', 'DemurageController');
         Route::resource('movementerrors', 'MovementImportErrorsController');
-
+        Route::get('detentionView','DetentionController@showDetentionView')->name('detention.view');
+        Route::post('calculateDetention','DetentionController@calculateDetention')->name('detention.calculation');
+        Route::get('detention/{id}/{detention}/{dchfDate}/{rcvcDate?}','DetentionController@showTriffSelectWithBlno')->name('detention.showTriffSelectWithBlno');
+        Route::post('detention','DetentionController@showDetention')->name('detention.showDetention');
     });
     
     /*Excel import export*/

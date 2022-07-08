@@ -15,12 +15,15 @@ class TrackingController extends Controller
         $this->authorize(__FUNCTION__,Movements::class);
         // $movements = Movements::filter(new ContainersIndexFilter(request()))
         // ->get()->groupBy('container_id');
+        $containers = Containers::orderBy('id')->get();
         $movements = Movements::filter(new ContainersIndexFilter(request()))->join('containers', 'movements.container_id', '=', 'containers.id')
-            ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')
+            ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')->orderBy('id','asc')
         ->get()->groupBy('code');
 
         return view('containers.tracking.index',[
             'items'=>$movements,
+            'containers'=>$containers,
+
         ]);
     }
 

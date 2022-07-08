@@ -16,7 +16,7 @@ use App\Models\Master\ContainerStatus;
 use App\Filters\Containers\ContainersIndexFilter;
 use App\MovementImportErrors;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Carbon;
 class MovementController extends Controller
 {
     public function index()
@@ -26,21 +26,33 @@ class MovementController extends Controller
         $container_id =  request()->input('container_id');
         $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')
         ->paginate(30);
+        $plNo = request()->input('bl_no');
+        if($plNo != null){
+        //     $movements = Movements::filter(new ContainersIndexFilter(request()))->where('bl_no',$plNo)->orderBy('id')->groupBy('container_id')
+        // ->paginate(30);
+        
+        }
         $containers = Containers::orderBy('id')->get();
+        $ports = Ports::orderBy('id')->get();
+
         if($container_id == null){
             return view('containers.movements.index',[
                 'items'=>$movements,
                 'containers'=>$containers,
                 'movementerrors' => $movementErrors,
+                'ports'=>$ports,
             ]);
         }else{
             $movement = Movements::find($container_id);
             $container = Containers::find($container_id);
-            $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$container_id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->paginate(30);
+            $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$container_id)->orderBy('movement_date','asc')->orderBy('id','asc')->paginate(30);
             // dd($container);
             $containers = Containers::where('id',$container_id)->first();
-
+            $DCHF = $movements->where('movement_id',ContainersMovement::where('code','DCHF')->pluck('id')->first())->count();
+            $RCVC = $movements->where('movement_id',ContainersMovement::where('code','RCVC')->pluck('id')->first())->count();
             return view('containers.movements.show',[
+                'DCHF' => $DCHF,
+                'RCVC' => $RCVC,
                 'movement'=>$movement,
                 'container'=>$container,
                 'items'=>$movements,
@@ -95,8 +107,6 @@ class MovementController extends Controller
 
     public function store(Request $request)
     {
-        
-        // dd($request->input());
         $this->authorize(__FUNCTION__,Movements::class);
 
         $request->validate([
@@ -108,8 +118,7 @@ class MovementController extends Controller
         ]);
         foreach($request->movement as $move){
             $containerNo = Containers::where('id', $move['container_id'])->pluck('code')->first();
-            $lastMove = Movements::where('container_id',$move['container_id'])->latest()->pluck('movement_id')->first();
-            $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
+            $lastMove = Movements::where('container_id',$move['container_id'])->orderBy('movement_date')->pluck('movement_id')->last();
             $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
             $nextMoves = explode(', ',$nextMoves);
             $moveCode = ContainersMovement::where('id',$request->movement_id)->pluck('code')->first();
@@ -156,15 +165,20 @@ class MovementController extends Controller
         $this->authorize(__FUNCTION__,Movements::class);
         $movement = Movements::find($id);
         $container = Containers::find($id);
-        $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('movement_id','asc')->paginate(30);
-        // dd($container);
+        $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->orderBy('movement_date','asc')->orderBy('id','asc')->paginate(30);
         $containers = Containers::where('id',$id)->first();
-
+        $mytime = Carbon::now()->format('d-m-Y');
+        $DCHF = $movements->where('movement_id',ContainersMovement::where('code','DCHF')->pluck('id')->first())->count();
+        $RCVC = $movements->where('movement_id',ContainersMovement::where('code','RCVC')->pluck('id')->first())->count();
         return view('containers.movements.show',[
+            'DCHF' => $DCHF,
+            'RCVC' => $RCVC,
             'movement'=>$movement,
             'container'=>$container,
             'items'=>$movements,
             'containers'=>$containers,
+            'mytime'=>$mytime,
+
         ]);
     }
 

@@ -13,11 +13,42 @@
                             </ol>
                         </nav>
                     </br>
-                    <div class="form-row">
+                    <!-- <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label style="color: #1b55e2"> BL NO</label><input class="form-control" value="{{ request()->input('bl_no')}}">
+                            <label style="color: #1b55e2"> BL NO</label><input style='border:none; background-color: #ffffff !important;' class="form-control" value="{{ request()->input('bl_no')}}" disabled>
+                        </div>
+                    </div> -->
+                    <form  action="{{route('tracking.index')}}" >
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="ContainerInput">Container Number </label>
+                            <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="code" data-size="10"
+                            title="{{trans('forms.select')}}">
+                                @foreach ($containers as $item)
+                                    <option value="{{$item->code}}" {{$item->code == old('code') ? 'selected':''}}>{{$item->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="ContainerInput">BL No</label>
+                            <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
+                            placeholder="BL No" autocomplete="off">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="ContainerInput">Booking No</label>
+                            <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
+                            placeholder="Booking No" autocomplete="off">
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <button  type="submit" class="btn btn-success mt-3">Search</button>
+                            <a href="{{route('tracking.create')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a> 
                         </div>
                     </div>
+
+
+</form>
                         <div class="widget-content widget-content-area">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-condensed mb-4">

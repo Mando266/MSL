@@ -11,5 +11,6 @@ class ContainersIndexFilter extends AbstractFilter{
         'bl_no'=>BLNoFilter::class,
         'booking_no'=>BookingNoFilter::class,
         'movement_date'=>MovementDateFilter::class,
+        'port_location_id'=>PortLocaionFilter::class,
     ];
 }

@@ -14,9 +14,11 @@
                     </nav>
                     @permission('Movements-Create')
                         <div class="row">
-                            <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('movements.create',['container_id'=>$container->id])}}" class="btn btn-primary">Add New Movement</a>
+                            <div class="col-md-12 text-right mb-6">
+                                <a class="btn btn-warning" href="{{ route('export',['container_id'=>request()->input('container_id')]) }}">Export</a>
+                                <a href="{{route('movements.create',['container_id'=>$container->id])}}" class="btn btn-primary">Add New Movement</a>
                             </div>
+
                         </div>
                     @endpermission
                 </div>
@@ -59,10 +61,16 @@
                                         <th>free time destination</th>
                                         <th>booking agent</th>   
                                         <th>REMARKS</th>
+                                        <th>Dentention</th>
+
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                <?php 
+                                    $lastdate = date('Y-m-d'); 
+                                    $counter = 0;
+                                ?>
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
@@ -76,6 +84,49 @@
                                             <td>{{$item->free_time}}</td>
                                             <td>{{$item->booking_agent_id}}</td>
                                             <td>{{$item->remarkes}}</td>
+                                            @if( ($item->bl_no !=null || $item->booking_no !=null)&& optional($item->movementcode)->code == 'DCHF')
+                                                <?php $counter++; ?>
+                                                @if($RCVC < $counter)
+                                                    <?php 
+                                                    $temp = (strtotime(date('Y-m-d')) - strtotime($item->movement_date)) / (60 * 60 * 24) - $item->free_time + 1;
+                                                    if($temp < 0){
+                                                        $temp = 0;
+                                                    }
+                                                    ?>
+                                                    <td>  {{$temp}} Day
+                                                        <a href="{{route('detention.showTriffSelectWithBlno',[
+                                                            'id'=>$item->id,
+                                                            'dchfDate'=>$item->movement_date,
+                                                            'detention'=>$temp
+                                                            
+                                                            ])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>                                                   
+                                                    </td>
+                                                @else
+                                                    <td></td>
+                                                    <?php $lastdate = $item->movement_date; ?>
+                                                @endif
+                                            @elseif(($item->bl_no !=null || $item->booking_no !=null) && optional($item->movementcode)->code == 'RCVC')
+                                            
+                                            <?php $temp = ((strtotime($item->movement_date) - strtotime($lastdate)) / (60 * 60 * 24) - $item->free_time + 1);
+                                            if($temp < 0){
+                                                $temp = 0;
+                                            }
+                                            ?>
+                                            <td>{{$temp}} Day 
+                                                <a href="{{route('detention.showTriffSelectWithBlno',[
+                                                    'id'=>$item->id,
+                                                    'detention'=>$temp,
+                                                    'dchfDate'=>$lastdate,
+                                                    'rcvcDate'=>$item->movement_date
+                                                    ])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                    <i class="far fa-eye text-primary"></i>
+                                                </a>
+                                            </td>
+                                            @else
+                                            <td></td>
+                                            @endif
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Movements-Edit')

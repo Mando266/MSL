@@ -41,10 +41,12 @@ class ContinersController extends Controller
         $this->authorize(__FUNCTION__,Containers::class);
         $request->validate([
             'container_type_id' =>'required',
-            'code' => 'required',
+            'code' => 'required|unique:containers|max:255',
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
+        ],[
+            'code.unique'=>'This container Already Exists ',
         ]);
         $container = Containers::create($request->input());
 

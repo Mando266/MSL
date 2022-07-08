@@ -11,12 +11,21 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Containers</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movements</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movement Errors</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         </div>
-                
+                        <div class="row">
+                            <div class="col-md-12 text-right mb-6">
+                                <form action="{{route('movementerrors.destroy',['movementerror'])}}" method="post">
+                                    @method('DELETE')
+                                    @csrf
+                                <button  type="submit" class="btn btn-danger"> Delete All</button>
+                                </form>
+                            </div>
+                        </div>
+
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -24,8 +33,8 @@
                                     <tr>
                                         <th>Container No</th>
                                         <th>Error Code</th>
+                                        <th>Date</th>
                                         <th>Allowed Movement</th>
-                                        <th class='text-center' style='width:100px;'>delete </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -34,20 +43,9 @@
                                          
                                             <td>{{$item->container_id}}</td>
                                             <td>{{$item->error_code}}</td>
+                                            <td>{{$item->date}}</td>
                                             <td>{{$item->allowed_code}}</td>
-                                                        <td class="text-center">
-                                                <ul class="table-controls">
-                                                    @permission('Movements-Delete')
-                                                    <li>
-                                                        <form action="{{route('movementerrors.destroy',['movementerror'=>$item->id])}}" method="post">
-                                                            @method('DELETE')
-                                                            @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
-                                                        </form>
-                                                    </li>
-                                                    @endpermission
-                                                </ul>
-                                            </td>
+                                                   
                             
                                         </tr>
                                     @empty
