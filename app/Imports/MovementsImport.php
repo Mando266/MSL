@@ -24,6 +24,7 @@ class MovementsImport implements ToModel,WithHeadingRow
     {
        
         $containerId = $row['container_id'];
+        // dd($containerId);
         $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
         $row['movement_date'] = Date::excelToDateTimeObject($row['movement_date']);
         $lastMove = Movements::where('container_id',$row['container_id'])->where('movement_date','<=',$row['movement_date'])->orderBy('movement_date')->pluck('movement_id')->last();
@@ -38,9 +39,14 @@ class MovementsImport implements ToModel,WithHeadingRow
         
         $movementdublicate  = Movements::where('container_id',$row['container_id'])->where('movement_id',$row['movement_id'])->where('movement_date',$row['movement_date'])->first();
         
+        if($containerId == null){
+            return Session::flash('stauts', 'cannot container number be null please check excel sheet');
+        }
+
         if($movementdublicate != null){
             return Session::flash('message', 'this container number: '.$containerId.' with this movement code: '.$movementCode.' already exists!');
         }
+
         if(in_array($movementCode,$nextMoves)){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],

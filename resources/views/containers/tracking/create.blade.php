@@ -17,35 +17,66 @@
                 </div>
                 <div class="widget-content widget-content-area">
                 <form  action="{{route('tracking.index')}}" >
-
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="ContainerInput">Container Number </label>
-                            <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="code" data-size="10"
-                             title="{{trans('forms.select')}}">
-                                @foreach ($containers as $item)
-                                    <option value="{{$item->code}}" {{$item->code == old('code') ? 'selected':''}}>{{$item->code}}</option>
-                                @endforeach
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="ContainerInput">Container Number </label>
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($containers as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_id', request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="portlocationInput">Activity Location</label>
+                                <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                            <label for="">Voyage No</label>
+                                <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <!-- <div class="form-group col-md-3">
+                            <label for="Movement">Movement Date</label>
+                                <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
+                            </div> -->
+                            <div class="form-group col-md-3">
+                                <label for="containersMovementsInput">Movement </label>
+                                <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($containersMovements as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="form-group col-md-4">
-                            <label for="ContainerInput">BL No</label>
-                            <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
-                            placeholder="BL No" autocomplete="off">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="BLNo">BL No</label>
+                                <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
+                                placeholder="BL No" autocomplete="off">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="BLNo">Booking No</label>
+                                <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
+                                placeholder="Booking No" autocomplete="off">
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="ContainerInput">Booking No</label>
-                            <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
-                            placeholder="Booking No" autocomplete="off">
+                            <div class="col-md-12 text-center">
+                                <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                            </div>
                         </div>
-                        <div class="col-md-12 text-center">
-                            <button  type="submit" class="btn btn-success mt-3">Search</button>
-                            {{-- <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a> --}}
-                        </div>
-                    </div>
-
-
                     </form>
                 </div>
             </div>

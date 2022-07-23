@@ -72,6 +72,8 @@ Route::group(['middleware' => 'auth'], function () {
     
     /*Excel import export*/
     Route::get('export', 'ImportExportController@export')->name('export');
+    Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
+    Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
 
