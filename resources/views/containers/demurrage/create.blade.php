@@ -82,7 +82,7 @@
                                     <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
                                     title="{{trans('forms.select')}}" autofocus>
                                         @foreach ($currency as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
+                                            <option value="{{$item->name}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('currency')

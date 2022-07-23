@@ -1,8 +1,5 @@
 @extends('layouts.app')
 @section('content')
-@if(Session::has('message'))
-<p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-@endif
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -15,6 +12,13 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
+                        </br>
+                        @if(Session::has('stauts'))
+                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('stauts') }}</p>
+                        @endif
+                        @if(Session::has('message'))
+                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+                        @endif
                         @permission('Movements-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
@@ -24,7 +28,13 @@
                                     {{ csrf_field() }}
                                     <input type="file" name="file" onchange="unlock();">
                                     <button  id="buttonSubmit" class="btn btn-success  mt-3" disabled>Import</button>
-                                    <a class="btn btn-warning  mt-3" href="{{ route('export') }}">Export</a>
+                                    
+                                    @if(!$items->isEmpty())
+                                    <a class="btn btn-info  mt-3" href="{{ route('export.search',['port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
+                                    @endif
+                                    
+                                    <a class="btn btn-warning  mt-3" href="{{ route('export.all') }}">Export All Data</a>
                                 </form>
                                 @else
                                 <a href="{{route('movementerrors.index')}}" class="btn btn-danger"> Show Errors</a>
@@ -39,7 +49,7 @@
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_id', request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -94,6 +104,7 @@
                             </div>
                         </div>
                     </form>
+                    
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -102,6 +113,9 @@
                                         <th>#</th>
                                         <th>Container No</th>
                                         <th>Container Type</th>
+                                        <th>movement code</th>
+                                        <th>movement date</th>
+                                        <th>bl no</th>
                                         <th>VSL/VOY</th>
                                         <th>ACTIVITY LOCATION</th>
                                         <th>Pol</th>
@@ -113,11 +127,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{{optional($item->container)->code}}}</td>
                                             <td>{{{optional($item->containersType)->name}}}</td>
+                                            <td>{{{optional($item->movementcode)->code}}}</td>
+                                            <td>{{$item->movement_date}}</td>
+                                            <td>{{$item->bl_no}}</td>
                                             <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
                                             <td>{{$item->port_location_id}}</td>
                                             <td>{{$item->pol_id}}</td>
@@ -130,9 +148,11 @@
                                                 <ul class="table-controls">
                                                     @permission('Movements-Show')
                                                     <li>
-                                                        <a href="{{route('movements.show',['movement'=>$item->container_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        
+                                                        <a href="{{route('movements.show',['movement'=>$item->container_id,'bl_no' => $plNo,'port_location_id' => request()->input('port_location_id'),'booking_no' => request()->input('booking_no'),'movement_id' => request()->input('movement_id'),'voyage_id' => request()->input('voyage_id')])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
+                                                        
                                                     </li>
                                                     @endpermission
                                                 </ul>
@@ -148,9 +168,11 @@
 
                             </table>
                         </div>
+                        @if($items->count() > 0)
                         <div class="paginating-container">
                             {{ $items->appends(request()->query())->links()}}
                         </div>
+                        @endif
                     </div>
                 </div>
 

@@ -28,7 +28,7 @@
                                     <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                      title="{{trans('forms.select')}}">
                                         @foreach ($items as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('Triff_id') ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('Triff_id') ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
                                         @endforeach
                                     </select>
                                     @error('Triff_id')
@@ -129,9 +129,17 @@
                                         <tr>
                                             <td class="text-center" style="font-weight: bold;">detention days</td>
                                             @if($freetime != 0 && strtotime($rcvcDate) != null)
-                                            <td class="text-center">{{((strtotime($rcvcDate) - strtotime($dchfDate))/ (60 * 60 * 24) + 1) - $freetime}}</td>
+                                            <?php  $actualDays = ((strtotime($rcvcDate) - strtotime($dchfDate))/ (60 * 60 * 24) + 1) - $freetime; ?>
+                                                @if($actualDays < 0 )
+                                                    <?php  $actualDays = 0; ?>
+                                                @endif
+                                            <td class="text-center">{{$actualDays}}</td>
                                             @elseif($freetime != 0 && strtotime($rcvcDate) == null)
-                                            <td class="text-center">{{((strtotime(date('Y-m-d')) - strtotime($dchfDate))/ (60 * 60 * 24) + 1) - $freetime}}</td>
+                                            <?php  $actualDays = ((strtotime(date('Y-m-d')) - strtotime($dchfDate))/ (60 * 60 * 24) + 1) - $freetime; ?>
+                                                @if($actualDays < 0 )
+                                                    <?php  $actualDays = 0; ?>
+                                                @endif
+                                            <td class="text-center">{{$actualDays}}</td>
                                             @else
                                             <td class="text-center">Select Triff first</td>
                                             @endif
@@ -151,14 +159,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php $remainingFreeTime = $freetime; ?>
                                         
                                         @forelse ($periods as $item)
                                         <tr>
                                             <td class="text-center">{{$item->period}}</td>
                                             @if($item->period == "Thereafter")
                                             <td class="text-center">unlimited</td>
-                                            @elseif($item->period == "free time" && $freetime > $item->number_off_dayes)
-                                            <td class="text-center">{{$freetime}}</td>
                                             @else
                                             <td class="text-center">{{$item->number_off_dayes}}</td>
                                             @endif
@@ -168,17 +175,23 @@
                                                 <td class="text-center">{{$dchfDate}}</td>
                                                 <td class="text-center">{{date('Y-m-d', strtotime($dchfDate. ' + '.$freetime .' days'. ' - 1 days'))}}</td>
                                                 <?php 
+                                                if($remainingFreeTime > $item->number_off_dayes){
+                                                    $remainingFreeTime -= $item->number_off_dayes;
+                                                }
+                                                 
+                                                ?>
+                                                <?php 
                                                 $fromDate = date('Y-m-d', strtotime($dchfDate. ' + '.$freetime .' days'));
                                                 ?>
                                                     @if($remaining_days > $freetime)
                                                     <?php 
-                                                    $remaining_days -= $freetime; 
-                                                    $daysNum = $freetime;
+                                                    $remaining_days -= $item->number_off_dayes; 
+                                                    $daysNum = $item->number_off_dayes;
                                                     ?>
                                                     <td class="text-center">{{$freetime}}</td>
                                                     @else
                                                     <?php 
-                                                    $remaining_days -= $remaining_days; 
+                                                    $remaining_days -= $item->number_off_dayes; 
                                                     $daysNum = $remaining_days;
                                                     ?>
                                                     <td class="text-center">{{$remaining_days}}</td>
@@ -187,53 +200,108 @@
                                                 <td class="text-center">0 {{$demurrage[0]->currency}}</td>
                                                 @elseif($item->period == "Thereafter")
                                                     @if($remaining_days != 0)
+                                                        <td class="text-center">{{$fromDate}}</td>
+                                                        <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$remaining_days .' days'. ' - 1 days'))}}</td>
+                                                        <td class="text-center">{{$remaining_days}}</td>
+                                                        <?php 
+                                                        $daysNum = $remaining_days;
+                                                        $remaining_days -= $remaining_days;
+                                                        ?> 
+                                                        <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
+                                                        <td class="text-center">{{$daysNum * $item->rate}} {{$demurrage[0]->currency}}</td>
+                                                        <?php $total += $daysNum * $item->rate; ?>
+                                                    @else
+                                                        <td class="text-center">{{$fromDate}}</td>
+                                                        <td class="text-center">unlimited</td>
+                                                        <td class="text-center">0</td>
+                                                        <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
+                                                        <td class="text-center">0 {{$demurrage[0]->currency}}</td>
+                                                    @endif
+
+                                                @elseif($remainingFreeTime == 0)
+                                                
                                                     <td class="text-center">{{$fromDate}}</td>
-                                                    <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$remaining_days .' days'. ' - 1 days'))}}</td>
-                                                    <td class="text-center">{{$remaining_days}}</td>
+                                                    <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'. ' - 1 days'))}}</td>
                                                     <?php 
-                                                    $daysNum = $remaining_days;
-                                                    $remaining_days -= $remaining_days;
-                                                    ?> 
+                                                    $fromDate = date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'));
+                                                    ?>
+                                                    @if($remaining_days > $item->number_off_dayes)
+                                                        <?php 
+                                                        $remaining_days -= $item->number_off_dayes; 
+                                                        $daysNum = $item->number_off_dayes;
+                                                        ?>
+                                                        <td class="text-center">{{$item->number_off_dayes}}</td>
+                                                    @else
+                                                        <td class="text-center">{{$remaining_days}}</td>
+                                                        <?php 
+                                                        if($remaining_days == 0)
+                                                        {
+                                                            $daysNum = 0;
+                                                            $remaining_days = 0;
+                                                        }else{
+                                                            $daysNum = $remaining_days;
+                                                            $remaining_days -= $remaining_days;
+                                                        }
+                                                        
+                                                        ?>
+                                                    @endif
                                                     <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
                                                     <td class="text-center">{{$daysNum * $item->rate}} {{$demurrage[0]->currency}}</td>
                                                     <?php $total += $daysNum * $item->rate; ?>
-                                                    @else
-                                                    <td class="text-center">{{$fromDate}}</td>
-                                                    <td class="text-center">unlimited</td>
-                                                    <td class="text-center">0</td>
-                                                    <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
-                                                    <td class="text-center">0 {{$demurrage[0]->currency}}</td>
-                                                    @endif
-
                                                 @else
-                                                <td class="text-center">{{$fromDate}}</td>
-                                                <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'. ' - 1 days'))}}</td>
-                                                <?php 
-                                                $fromDate = date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'));
-                                                ?>
-                                                    @if($remaining_days > $item->number_off_dayes)
-                                                    <?php 
-                                                    $remaining_days -= $item->number_off_dayes; 
-                                                    $daysNum = $item->number_off_dayes;
-                                                    ?>
-                                                    <td class="text-center">{{$item->number_off_dayes}}</td>
-                                                    @else
-                                                    <td class="text-center">{{$remaining_days}}</td>
-                                                    <?php 
-                                                    if($remaining_days == 0)
-                                                    {
+                                                    @if($remainingFreeTime >= $item->number_off_dayes)
+                                                        <td class="text-center">{{$fromDate}}</td>
+                                                        <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'. ' - 1 days'))}}</td>
+                                                        <?php 
+                                                        $fromDate = date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'));
+                                                        ?>
+                                                        <td class="text-center">0</td>
+                                                        <?php 
+                                                        $remaining_days -= $item->number_off_dayes; 
+                                                        $remainingFreeTime -= $item->number_off_dayes;
                                                         $daysNum = 0;
-                                                        $remaining_days = 0;
-                                                    }else{
-                                                        $daysNum = $remaining_days;
-                                                        $remaining_days -= $remaining_days;
-                                                    }
-                                                    
-                                                    ?>
+                                                        if($remainingFreeTime < 0 ){
+                                                            $remainingFreeTime = 0;
+                                                        }    ?>
+                                                    @else 
+                                                        <td class="text-center">{{$fromDate}}</td>
+                                                        <td class="text-center">{{date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'. ' - 1 days'))}}</td>
+                                                        <?php 
+                                                        $fromDate = date('Y-m-d', strtotime($fromDate. ' + '.$item->number_off_dayes .' days'));
+                                                        ?>
+                                                        @if($remaining_days > $item->number_off_dayes)
+                                                            <?php 
+                                                            $remaining_days -= $item->number_off_dayes; 
+                                                            $daysNum = $item->number_off_dayes - $remainingFreeTime;
+                                                            ?>
+                                                            <td class="text-center">{{$daysNum}}</td>
+                                                        @else
+                                                            <td class="text-center">{{$remaining_days}}</td>
+                                                            <?php 
+                                                            if($remaining_days == 0)
+                                                            {
+                                                                $daysNum = 0;
+                                                                $remaining_days = 0;
+                                                            }else{
+                                                                $daysNum = $remaining_days - $remainingFreeTime;
+                                                                if($daysNum < 0) {
+                                                                    $daysNum=0;
+                                                                }
+                                                                
+                                                                $remaining_days -= $remaining_days;
+                                                                if($remaining_days <0){
+                                                                    $remaining_days=0;
+                                                                }
+                                                            }
+                                                            
+                                                            ?>
+                                                        @endif
+                                                        <?php $remainingFreeTime = 0;  ?>
                                                     @endif
-                                                <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
-                                                <td class="text-center">{{$daysNum * $item->rate}} {{$demurrage[0]->currency}}</td>
-                                                <?php $total += $daysNum * $item->rate; ?>
+                                                
+                                                    <td class="text-center">{{$item->rate}} {{$demurrage[0]->currency}}</td>
+                                                    <td class="text-center">{{$daysNum * $item->rate}} {{$demurrage[0]->currency}}</td>
+                                                    <?php $total += $daysNum * $item->rate; ?>
                                                 @endif
                                             @else
                                                 @if($item->period == "free time")

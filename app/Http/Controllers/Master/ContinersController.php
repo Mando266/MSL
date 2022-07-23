@@ -8,6 +8,7 @@ use App\Models\Master\Containers;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\ContinerOwnership;
 use App\Filters\Containers\ContainersIndexFilter;
+use App\Models\Containers\Movements;
 
 class ContinersController extends Controller
 {
@@ -106,6 +107,7 @@ class ContinersController extends Controller
     public function destroy($id)
     {
         $container =Containers::Find($id);
+        Movements::where('container_id',$id)->delete();
         $container->delete();
 
         return redirect()->route('containers.index')->with('success',trans('Container.deleted.success'));
