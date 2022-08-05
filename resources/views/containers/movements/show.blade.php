@@ -46,15 +46,27 @@
                         </div>
                     </div>
                 </form> -->
-                <?php if(request()->input('container_id') != null){$container_id = request()->input('container_id');}elseif($id != null){$container_id = $id;}?>
+                <?php
+
+use App\Models\Containers\Movements;
+
+if(request()->input('container_id') != null){
+                    $container_id = request()->input('container_id');
+                }elseif(request()->input('bl_no') != null){
+                    $container_id = Movements::where('bl_no',request()->input('bl_no'))->pluck('container_id')->first();
+                    
+                }elseif($id != null){
+
+                    $container_id = $id;
+                    }?>
                 <form action="{{ route('movements.show',['movement'=>$container_id]) }}" method="GET" enctype="multipart/form-data">
-                    <div class="form-row">
+                    <div class="form-row"> 
                             <div class="form-group col-md-4">
                                 <label for="countryInput">Select Triff</label>
                                 <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($demurrages as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('Triff_id') ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('Triff_id',request()->input('Triff_id')) ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
                                     @endforeach
                                 </select>
                                 @error('Triff_id')
@@ -65,7 +77,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                     <label for="countryInput"> Till Date</label>
-                                    <input type="date" class="form-control" id="TillDate" name="TillDate" min="2018-01-01" >
+                                    <input type="date" class="form-control" id="TillDate" name="TillDate" min="2018-01-01" value="{{request()->input('TillDate')}}">
                             </div>
                             <div class="col-md-12 text-center">
                                     <button  type="submit" class="btn btn-success mt-3">Calculate</button>
@@ -90,12 +102,13 @@
                                 foreach($periods as $period){
                                     if($period->period != 'Thereafter'){$periodtimeTotal += $period->number_off_dayes;}
                                     
+                                    
                                 }
                                 $thereafter = false;
                                 $remainingDays = (strtotime($tillDate) - strtotime($lastDCHF->movement_date)) / 86400 + 1;
                                 $totalPrice = 0;
                                 if(sizeof($periods) > 0){
-                                        if($freetime > $periodtimeTotal){
+                                        if($freetime >= $periodtimeTotal){
                                             $thereafter = true;
                                         }
                                         if($thereafter){

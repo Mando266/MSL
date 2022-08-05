@@ -23,12 +23,12 @@
                                 </div>
 
                             <div class="form-row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="countryInput">Select Triff</label>
                                     <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                      title="{{trans('forms.select')}}">
                                         @foreach ($items as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('Triff_id') ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('Triff_id',request()->input('Triff_id')) ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
                                         @endforeach
                                     </select>
                                     @error('Triff_id')
@@ -173,7 +173,7 @@
                                             @if($freetime < $periodtimeTotal)
                                                 @if($item->period == "free time")
                                                 <td class="text-center">{{$dchfDate}}</td>
-                                                <td class="text-center">{{date('Y-m-d', strtotime($dchfDate. ' + '.$freetime .' days'. ' - 1 days'))}}</td>
+                                                <td class="text-center">{{date('Y-m-d', strtotime($dchfDate. ' + '.$item->number_off_dayes .' days'. ' - 1 days'))}}</td>
                                                 <?php 
                                                 if($remainingFreeTime > $item->number_off_dayes){
                                                     $remainingFreeTime -= $item->number_off_dayes;
@@ -181,7 +181,7 @@
                                                  
                                                 ?>
                                                 <?php 
-                                                $fromDate = date('Y-m-d', strtotime($dchfDate. ' + '.$freetime .' days'));
+                                                $fromDate = date('Y-m-d', strtotime($dchfDate. ' + '.$item->number_off_dayes .' days'));
                                                 ?>
                                                     @if($remaining_days > $freetime)
                                                     <?php 

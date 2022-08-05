@@ -28,6 +28,7 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
+                                                <th></th>
                                                 <th><input type="text" class="form-control" name="name" placeholder="{{trans('forms.search')}}" autocomplete="off" value="{{request()->input('name')}}"></th>
                                                 <th><input type="text" class="form-control" name="full_name" placeholder="{{trans('forms.search')}}" autocomplete="off" value="{{request()->input('full_name')}}"></th>
                                                 {{-- <th>{{trans('user.employee_no')}}</th> --}}
@@ -53,6 +54,7 @@
                                             </tr>
                                             <tr>
                                                 <th>#</th>
+                                                <th>Agent</th>
                                                 <th>{{trans('user.user_name')}}</th>
                                                 <th>{{trans('user.full_name')}}</th>
                                                 {{-- <th>{{trans('user.employee_no')}}</th>--}}
@@ -66,6 +68,7 @@
                                             @forelse ($items as $item)
                                                 <tr>
                                                     <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
+                                                    <td>{{optional($item->agent)->name}}</td>
                                                     <td>{{$item->name}}</td>
                                                     <td>{{$item->full_name}}</td>
                                                     <td>{{$item->email}}</td>

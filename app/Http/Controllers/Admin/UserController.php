@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Filters\User\UserIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Company;
+use App\Models\Master\Agents;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -47,10 +48,23 @@ class UserController extends Controller
     public function create(){
         $this->authorize(__FUNCTION__,User::class);
         $companies = Company::orderBy('name')->get();
+        $user = User::where('agent_id',Auth::user()->id)->first();
+        $user_agent = $user->id;
         $roles = Role::orderBy('name')->get();
+        $isSuperAdmin = false;
+        if(Auth::user()->is_super_admin){
+            $isSuperAdmin = true;
+            $agents = Agents::get();
+        }else{
+            $agents = [];
+        }
         return view('admin.user.create',[
             'companies'=>$companies,
-            'roles'=>$roles
+            'roles'=>$roles,
+            'agents'=>$agents,
+            'user_agent'=>$user_agent,
+            'isSuperAdmin'=>$isSuperAdmin
+
         ]);
     }
 
@@ -79,8 +93,17 @@ class UserController extends Controller
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
         $userCompanis = $user->companies()->pluck('company_users.company_id')->all();
+        $isSuperAdmin = false;
+        if(Auth::user()->is_super_admin){
+            $isSuperAdmin = true;
+            $agents = Agents::get();
+        }else{
+            $agents = [];
+        }
         return view('admin.user.edit',[
             'companies'=>$companies,
+            'isSuperAdmin'=>$isSuperAdmin,
+            'agents'=>$agents,
             'roles'=>$roles,
             'user'=>$user,
             'userCompanis'=>$userCompanis
