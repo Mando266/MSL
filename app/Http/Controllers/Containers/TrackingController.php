@@ -16,8 +16,6 @@ class TrackingController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        // $movements = Movements::filter(new ContainersIndexFilter(request()))
-        // ->get()->groupBy('container_id');
         $containers = Containers::orderBy('id')->get();
         $movements = Movements::filter(new ContainersIndexFilter(request()))->join('containers', 'movements.container_id', '=', 'containers.id')
             ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')->orderBy('id','asc')
@@ -25,12 +23,16 @@ class TrackingController extends Controller
         $ports = Ports::orderBy('id')->get();
         $voyages = Voyages::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
+        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+
         return view('containers.tracking.index',[
             'items'=>$movements,
             'containers'=>$containers,
             'ports'=>$ports,
             'voyages'=>$voyages,
             'containersMovements'=>$containersMovements,
+            'movementsBlNo'=>$movementsBlNo,
+
         ]);
     }
 
@@ -41,11 +43,15 @@ class TrackingController extends Controller
         $ports = Ports::orderBy('id')->get();
         $voyages = Voyages::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
+        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+
         return view('containers.tracking.create',[
             'containers'=>$containers,
             'ports'=>$ports,
             'voyages'=>$voyages,
             'containersMovements'=>$containersMovements,
+            'movementsBlNo'=>$movementsBlNo,
+
         ]);
     }
 

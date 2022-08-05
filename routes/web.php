@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Quotations\QuotationsController;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +77,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
+
+        /*
+    |-------------------------------------------
+    | Quotations routes
+    |--------------------------------------------
+    */
+    Route::prefix('quotations')->namespace('Quotations')->group(function () {
+        Route::resource('quotations', 'QuotationsController');
+        Route::get('{quotation}/approve',[QuotationsController::class,'approve'])->name('quotation.approve');
+        Route::get('{quotation}/reject',[QuotationsController::class,'reject'])->name('quotation.reject');
+    });
 
 });
 Auth::routes(['register' => false]);

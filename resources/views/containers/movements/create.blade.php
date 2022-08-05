@@ -256,7 +256,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                        <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label for="RemarkesInput">Remarkes</label>
                                 <input type="text" class="form-control" id="RemarkesInput" name="remarkes" value="{{old('remarkes')}}"
                                     placeholder="Remarkes" autocomplete="off">
@@ -266,7 +266,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            </div>
+                        </div>
 
                        <div class="row">
                             <div class="col-md-12 text-center">

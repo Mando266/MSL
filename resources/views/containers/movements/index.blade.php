@@ -85,12 +85,17 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="BLNo">BL No</label>
-                                <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
-                                placeholder="BL No" autocomplete="off">
+                                <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($movementsBlNo as $item)
+                                        @if($item != null)
+                                        <option value="{{$item}}" {{$item == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$item}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>

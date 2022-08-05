@@ -23,6 +23,8 @@ class CreateQuotationsTable extends Migration
             $table->boolean('rate_cn')->nullable();
             $table->boolean('rate_nt')->nullable();
             $table->boolean('rate_fwd')->nullable();
+            $table->unsignedInteger('agent_id')->nullable();
+            $table->unsignedInteger('customer_id')->nullable();
             $table->unsignedInteger('place_of_acceptence_id')->nullable();
             $table->unsignedInteger('place_of_delivery_id')->nullable();
             $table->unsignedInteger('load_port_id')->nullable();

@@ -19,6 +19,24 @@
                 <form id="createForm" action="{{route('users.update',['user'=>$user->id])}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('put')
+                        @if($isSuperAdmin)
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="agent_id">Agent</label>
+                                <select class="selectpicker form-control" id="agent_id" data-live-search="true" name="agent_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($agents as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('agent_id',$user->agent_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('agent_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>

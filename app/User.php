@@ -8,10 +8,12 @@ use App\Models\ViewModel\RootMenuNode;
 use App\Traits\HasFilter;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Laratrust\Traits\LaratrustUserTrait;
+use App\Models\Master\Agents;
 
 class User extends Authenticatable implements PermissionSeederContract
 {
@@ -44,11 +46,28 @@ class User extends Authenticatable implements PermissionSeederContract
         "is_super_admin"=>"boolean"
     ];
 
-    public function companies(){
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    public function scopeRole(Builder $query, $role)
+    {
+        return $query->whereHas('roles',function(Builder $e) use ($role){
+            $e->where('name',$role);
+        })
+        ->get();
+    }
+    
+    public function companies()
+    {
         return $this->belongsToMany(Company::class,'company_users','user_id','company_id');
     }
     public function company(){
         return $this->belongsTo(Company::class,'company_id','id')->withDefault();
+    }
+    public function agent(){
+        return $this->belongsTo(Agents::class,'agent_id','id');
     }
     public function marketSegments(){
         return $this->belongsToMany(MarketSegment::class,'market_segment_users','user_id','market_segment_id');

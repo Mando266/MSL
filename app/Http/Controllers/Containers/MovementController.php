@@ -29,7 +29,7 @@ class MovementController extends Controller
         $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')->get();
         // $movements = Movements::where('movement_id', request('movement_id'))->paginate(30);
         $plNo = request()->input('bl_no');
-        
+        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
         $temp = [];
         
         // remove element if last movement doesn't include movement_id or port_location_id
@@ -116,6 +116,7 @@ class MovementController extends Controller
         if($movements->count() > 1){
             return view('containers.movements.index',[
                 'items'=>$movements,
+                'movementsBlNo'=>$movementsBlNo,
                 'containers'=>$containers,
                 'movementerrors' => $movementErrors,
                 'plNo' => $plNo,
@@ -128,6 +129,7 @@ class MovementController extends Controller
                 if($movements->count() == 0){
                     return view('containers.movements.index',[
                         'items'=>$movements,
+                        'movementsBlNo'=>$movementsBlNo,
                         'containers'=>$containers,
                         'movementerrors' => $movementErrors,
                         'plNo' => $plNo,

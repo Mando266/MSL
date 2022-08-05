@@ -12,18 +12,18 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-</br>
+                        </br>
                         <form id="createForm" action="{{route('detention.calculation')}}" method="POST">
                             @csrf
                        
 
                             <div class="form-row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="countryInput">Select Triff</label>
                                     <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                      title="{{trans('forms.select')}}">
                                         @foreach ($items as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('Triff_id') ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('Triff_id',request()->input('Triff_id')) ? 'selected':''}}>{{{optional($item->country)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->bound)->name}}} {{{optional($item->containersType)->name}}} {{$item->validity_from}}</option>
                                         @endforeach
                                     </select>
                                     @error('Triff_id')
@@ -32,12 +32,18 @@
                                     </div>
                                     @enderror   
                                 </div>
-                                <div class="form-group col-md-4">
-                                <label for="BLNo">BL No</label>
-                                <input type="text" class="form-control" id="BLNoInput" name="bl_no" value="{{request()->input('bl_no')}}"
-                                placeholder="BL No" autocomplete="off">
-                            </div>
+                                <div class="form-group col-md-6">
+                                    <label for="BLNo">BL No</label>
+                                    <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                        @foreach ($movementsBlNo as $item)
+                                            @if($item != null)
+                                            <option value="{{$item}}" {{$item == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$item}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
                                 </div>
+                            </div>
 
 
                                 <div class="row">
@@ -48,13 +54,16 @@
                            </div>
                         </form>
                     </div>
+                    @if(empty($movements))
+                    @else
+                    <h5><span style='color:#1b55e2';>BL Number:</span> {{$movements[0]->bl_no}}</h5>
+                    @endif
                     <div class="widget-content widget-content-area">
                             
                                 <table class="table table-bordered table-hover table-condensed mb-4">
                                     <thead>
                                         <tr>
                                             <th class="text-center">Container Number</th>
-                                            <th class="text-center">BL Number</th>
                                             <th class="text-center">from</th>
                                             <th class="text-center">to</th>
                                             <th class="text-center">Free Time</th>
@@ -92,7 +101,6 @@
                                             <?php $remainingDays = (strtotime(date('Y-m-d')) - strtotime($movement->movement_date)) / 86400 + 1; ?>
                                             <tr>
                                                 <td class="text-center">{{$movement->container->code}}</td>
-                                                <td class="text-center">{{$movement->bl_no}}</td>
                                                 <td class="text-center">{{$movement->movement_date}}</td>
                                                 <td class="text-center">{{date('Y-m-d')}}</td>
                                                 
@@ -113,7 +121,6 @@
                                                 @endif
                                                 <td class="text-center">{{$actualDays}}</td>
                                                 <?php 
-                                                
                                                     if(sizeof($periods) > 0){
                                                             if($freetime > $periodtimeTotal){
                                                                 $thereafter = true;
@@ -194,13 +201,16 @@
                                                     
                                                     $totalPrice += $total;
                                                 ?>
-                                                <td class="text-center">{{$total}}</td>
+                                                @if($total == 0)
+                                                <td class="text-center">0</td>
+                                                @else
+                                                <td class="text-center">{{$total}} {{$demurrage[0]->currency}}</td>
+                                                @endif
                                             </tr>
                                         @else
                                         <?php $remainingDays = (strtotime($rcvcMovement->movement_date) - strtotime($movement->movement_date)) / 86400 + 1 ?>
                                             <tr>
                                                 <td class="text-center">{{$rcvcMovement->container->code}}</td>
-                                                <td class="text-center">{{$rcvcMovement->bl_no}}</td>
                                                 <td class="text-center">{{$movement->movement_date}}</td>
                                                 <td class="text-center">{{$rcvcMovement->movement_date}}</td>
                                                 @if($rcvcMovement->free_time != null)
@@ -219,7 +229,7 @@
                                                 @endif
                                                 <td class="text-center">{{$actualDays}}</td>
                                                 <?php 
-                                                
+                                                $remainingFreeTime = $freetime;
                                                 if(sizeof($periods) > 0){
                                                     if($freetime > $periodtimeTotal){
                                                         $thereafter = true;
@@ -237,7 +247,10 @@
                                                     }else{
                                                         
                                                         foreach($periods as $period){
-                                                                
+                                                            // if($rcvcMovement->container->code == "TGHU2902378"){
+                                                            //     dump("before");
+                                                            //     dump(["period name"=>$period->period,"period days"=>$period->number_off_dayes,"remaining freetime"=>$remainingFreeTime,"remainingDays"=>$remainingDays,"Total"=>$total]);
+                                                            // }
                                                             if($period->period == 'free time' && $remainingDays > 0){
                                                                 if($freetime > $period->number_off_dayes){
                                                                     $remainingFreeTime = $freetime - $period->number_off_dayes;
@@ -275,8 +288,17 @@
                                                                     }
                                                                 }elseif($remainingFreeTime > 0){
                                                                     if($remainingDays > $remainingFreeTime){
-                                                                        $remainingDays -= $remainingFreeTime;
-                                                                        $remainingFreeTime = 0;
+                                                                        if($remainingFreeTime < $period->number_off_dayes){
+                                                                            $remainingDays -= $remainingFreeTime;
+                                                                            $price = $period->rate * ($period->number_off_dayes- $remainingFreeTime);
+                                                                            $total += $price;
+                                                                            $remainingDays -= ($period->number_off_dayes- $remainingFreeTime);
+                                                                            $remainingFreeTime = 0;
+                                                                        }else{
+                                                                        $remainingDays -= $period->number_off_dayes;
+                                                                        $remainingFreeTime -= $period->number_off_dayes;
+                                                                        }
+                                                                        if($remainingFreeTime < 0){ $remainingFreeTime = 0;}
                                                                     }elseif($remainingDays < $remainingFreeTime){
                                                                         $remainingFreeTime = 0;
                                                                         $remainingDays = 0;
@@ -288,6 +310,10 @@
                                                                     $remainingFreeTime = 0;
                                                                 }
                                                             }
+                                                            // if($rcvcMovement->container->code == "TGHU2902378"){
+                                                            //     dump("after");
+                                                            //     dump(["period name"=>$period->period,"period days"=>$period->number_off_dayes,"remaining freetime"=>$remainingFreeTime,"remainingDays"=>$remainingDays,"Total"=>$total]);
+                                                            // }
                                                         }
                                                     }
                                                 }else{
@@ -295,7 +321,11 @@
                                                 }
                                                     $totalPrice += $total;
                                                 ?>
-                                                <td class="text-center">{{$total}}</td>
+                                                @if($total == 0)
+                                                <td class="text-center">0</td>
+                                                @else
+                                                <td class="text-center">{{$total}} {{$demurrage[0]->currency}}</td>
+                                                @endif
                                             </tr>
                                         @endif
                                     @endif
@@ -316,8 +346,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td class="text-center">{{$totalPrice}}</td>
+                                        <td class="text-center">{{$totalPrice}} {{$demurrage[0]->currency}}</td>
                                         @endif
                                         </tr>
                                     </tfoot>
