@@ -12,7 +12,6 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        </br>
                         @if(Session::has('stauts'))
                         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('stauts') }}</p>
                         @endif
@@ -30,7 +29,7 @@
                                     <button  id="buttonSubmit" class="btn btn-success  mt-3" disabled>Import</button>
                                     
                                     @if(!$items->isEmpty())
-                                    <a class="btn btn-info  mt-3" href="{{ route('export.search',['port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
+                                    <a class="btn btn-info  mt-3" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
                                     'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
                                     @endif
                                     
@@ -42,17 +41,32 @@
                             </div>
                         </div>
                         @endpermission
+                        </br>
+
                     <form>
+                        
                         <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="ContainerInput">Container Number </label>
-                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                            <div class="form-group col-md-9">
+                                <label for="ContainerInput">Container Number</label>
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
+                                 title="{{trans('forms.select')}}"  multiple="multiple">
+                                 @if(isset($containers))
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" data-code="{{$item->container_type_id}}" {{$item->id == old('container_id') ||in_array($item->id, request()->container_id ?? []) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
+                                    <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value="{{request()->input('container_type_id')}}">
+                                @else
+                                    <option value="{{$container->id}}" selected data-code="{{$container->container_type_id}}" {{$container->id == old('container_id') ? 'selected':''}}>{{$container->code}}</option>
+                                    <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value="1">
+                                @endif
                                 </select>
+                                @error('container_type_id')
+                                <div class ="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
+                    
                             <div class="form-group col-md-3">
                                 <label for="portlocationInput">Activity Location</label>
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
@@ -62,6 +76,8 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                             <label for="">Voyage No</label>
                                 <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
@@ -84,8 +100,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="BLNo">BL No</label>
                                 <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
@@ -103,6 +117,15 @@
                                 placeholder="Booking No" autocomplete="off">
                             </div>
                         </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                    <label for="remarkes">Remarkes</label>
+                                    <input type="text" class="form-control" id="remarkes" name="remarkes" value="{{request()->input('remarkes')}}"
+                                    placeholder="Remarkes" autocomplete="off">
+                            </div>
+                        </div>
+
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
@@ -119,6 +142,7 @@
                                         <th>Container No</th>
                                         <th>Container Type</th>
                                         <th>movement code</th>
+                                        <th>Ownership</th>
                                         <th>movement date</th>
                                         <th>bl no</th>
                                         <th>VSL/VOY</th>
@@ -139,6 +163,7 @@
                                             <td>{{{optional($item->container)->code}}}</td>
                                             <td>{{{optional($item->containersType)->name}}}</td>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
+                                            <td>{{{optional($item->container->containersOwner)->name}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
@@ -154,7 +179,7 @@
                                                     @permission('Movements-Show')
                                                     <li>
                                                         
-                                                        <a href="{{route('movements.show',['movement'=>$item->container_id,'bl_no' => $plNo,'port_location_id' => request()->input('port_location_id'),'booking_no' => request()->input('booking_no'),'movement_id' => request()->input('movement_id'),'voyage_id' => request()->input('voyage_id')])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        <a href="{{route('movements.show',['movement'=>$item->container_id,'bl_no' => $plNo,'port_location_id' => request()->input('port_location_id'),'booking_no' => request()->input('booking_no'),'movement_id' => request()->input('movement_id'),'voyage_id' => request()->input('voyage_id')])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show" target="blank">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                         
@@ -163,6 +188,7 @@
                                                 </ul>
                                             </td>
                                         </tr>
+                                        
                                     @empty
                                         <tr class="text-center">
                                             <td colspan="20">{{ trans('home.no_data_found')}}</td>
@@ -192,4 +218,13 @@ function unlock(){
     document.getElementById('buttonSubmit').removeAttribute("disabled");
 }
 </script>
+<!-- <script>
+    (function() {
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    })();
+</script> -->
 @endpush

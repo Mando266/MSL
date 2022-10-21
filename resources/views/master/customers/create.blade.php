@@ -30,10 +30,10 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="codeInput">Code</label>
-                                <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
-                                    placeholder="Code" autocomplete="off">
-                                @error('code')
+                                <label for="codeInput">Contact Person</label>
+                                <input type="text" class="form-control" id="contact_personInput" name="contact_person" value="{{old('contact_person')}}"
+                                    placeholder="Contact Person" autocomplete="off">
+                                @error('contact_person')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
@@ -67,6 +67,16 @@
                             @enderror
                         </div>
                         <div class="form-group col-md-4">
+                            <label for="cityInput">Address</label>
+                            <input type="text" class="form-control" id="addressInput" name="address" value="{{old('address')}}"
+                                placeholder="Address" autocomplete="off">
+                            @error('city')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-4">
                                 <label for="phoneInput">Phone</label>
                                 <input type="text" class="form-control" id="phoneInput" name="phone" value="{{old('phone')}}"
                                     placeholder="Phone" autocomplete="off">
@@ -76,7 +86,10 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
                                 <label for="emailInput">Email</label>
                                 <input type="text" class="form-control" id="emailInput" name="email" value="{{old('email')}}"
                                     placeholder="Email" autocomplete="off">
@@ -86,9 +99,6 @@
                                 </div>
                                 @enderror
                             </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="tax_card_noInput">Tax Card</label>
                             <input type="text" class="form-control" id="tax_card_noInput" name="tax_card_no" value="{{old('tax_card_no')}}"
@@ -113,6 +123,9 @@
                                     </div>
                                     @enderror
                                 </div>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                                     <label for="customer_role_idInput">Customer Role</label>
                                     <select class="selectpicker form-control" id="customer_role_idInput" data-live-search="true" name="customer_role_id" data-size="10"

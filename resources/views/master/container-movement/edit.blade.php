@@ -70,223 +70,24 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-8">
+                                <label for="ContainerInput">ALLOWED NEXT MOVES</label>
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="next_move[][code]" data-size="10"
+                                 title="{{trans('forms.select')}}"  multiple="multiple">
+                                    @foreach ($containersMovements as $item)
+                                    <option value="{{$item->code}}" {{is_array($next_move) && $item->code == old('code',in_array($item->code, $next_move) ) ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                                @error('code')
+                                <div class ="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
                         </div>
                         
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">ONHR (ON HIRE)</label>
-                                <select class="selectpicker form-control"  name="is_on_hire">
-                                    <option value="1" {{ old('status',$container_movement->is_on_hire) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_on_hire) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">OFHR (OFF HIRE)</label>
-                                <select class="selectpicker form-control"  name="is_off_hire">
-                                    <option value="1" {{ old('status',$container_movement->is_off_hire) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_off_hire) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">SNTS (SENT TO SHIPPER)</label>
-                                <select class="selectpicker form-control"  name="is_snts">
-                                    <option value="1" {{ old('status',$container_movement->is_snts) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_snts) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">RCVS </label>
-                                <select class="selectpicker form-control"  name="is_rcvs">
-                                    <option value="1" {{ old('status',$container_movement->is_rcvs) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_rcvs) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">LODF (LOAD FULL)</label>
-                                <select class="selectpicker form-control"  name="is_load_full">
-                                    <option value="1" {{ old('status',$container_movement->is_load_full) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_load_full) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">DCHF (DISCHARGE FULL)</label>
-                                <select class="selectpicker form-control"  name="is_dchf">
-                                    <option value="1" {{ old('status',$container_movement->is_dchf) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_dchf) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">SNTC (SENT TO CONSIGNEE)</label>
-                                <select class="selectpicker form-control"  name="is_sntc">
-                                    <option value="1" {{ old('status',$container_movement->is_sntc) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_sntc) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">RCVC </label>
-                                <select class="selectpicker form-control"  name="is_rcvc">
-                                    <option value="1" {{ old('status',$container_movement->is_rcvc) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_rcvc) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">LODE (LOAD EMPTY)</label>
-                                <select class="selectpicker form-control"  name="is_load_empty">
-                                    <option value="1" {{ old('status',$container_movement->is_load_empty) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_load_empty) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">DCHE (DISCHARGE EMPTY)</label>
-                                <select class="selectpicker form-control"  name="is_dche">
-                                    <option value="1" {{ old('status',$container_movement->is_dche) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_dche) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">SNTR (SENT FOR STRIPPING)</label>
-                                <select class="selectpicker form-control"  name="is_sntr">
-                                    <option value="1" {{ old('status',$container_movement->is_sntr) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_sntr) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status"> RCVE (RECIEVED EMPTY) </label>
-                                <select class="selectpicker form-control"  name="is_rcve">
-                                    <option value="1" {{ old('status',$container_movement->is_rcve) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_rcve) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">LOAD FULL TRANSHIPMENT</label>
-                                <select class="selectpicker form-control"  name="is_lodt">
-                                    <option value="1" {{ old('status',$container_movement->is_lodt) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_lodt) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">DCHT</label>
-                                <select class="selectpicker form-control"  name="is_dcht">
-                                    <option value="1" {{ old('status',$container_movement->is_dcht) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_dcht) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">TRANSFER FULL CONTAINER</label>
-                                <select class="selectpicker form-control"  name="is_trff">
-                                    <option value="1" {{ old('status',$container_movement->is_trff) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_trff) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="status">TRANSFER EMPTY CONTAINER </label>
-                                <select class="selectpicker form-control"  name="is_trfe">
-                                    <option value="1" {{ old('status',$container_movement->is_trfe) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_trfe) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">RCVF (RECIEVED FULL)</label>
-                                <select class="selectpicker form-control"  name="is_rcvf">
-                                    <option value="1" {{ old('status',$container_movement->is_rcvf) == "1" ? 'selected':'' }}>Yes</option>
-                                    <option value="" {{ old('status',$container_movement->is_rcvf) == "" ? 'selected':'' }}>No</option>
-                                </select>
-                                @error('status')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
+    
 
                        <div class="row">
                             <div class="col-md-12 text-center">

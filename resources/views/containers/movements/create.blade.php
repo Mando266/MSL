@@ -40,6 +40,7 @@
                                 @enderror
                             </div>
                         </div>
+                        
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="containersMovementsInput">Movement *</label>
@@ -70,7 +71,7 @@
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('port_location_id') ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id') ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('port_location_id')
@@ -80,14 +81,18 @@
                                 @enderror
                             </div>
                         </div>
-
+                        
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="portofloadInput">Port Of Load</label>
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pol_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->code}}" {{$item->code == old('pol_id') || $item->code == $movement->pol_id ? 'selected':''}}>{{$item->code}}</option>
+                                        @else
                                         <option value="{{$item->code}}" {{$item->code == old('pol_id') ? 'selected':''}}>{{$item->code}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('pol_id')
@@ -101,7 +106,11 @@
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pod_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->code}}" {{$item->code == old('pod_id') || $item->code == $movement->pod_id ? 'selected':''}}>{{$item->code}}</option>
+                                        @else
                                         <option value="{{$item->code}}" {{$item->code == old('pod_id') ? 'selected':''}}>{{$item->code}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('pod_id')
@@ -115,7 +124,11 @@
                                 <select class="selectpicker form-control" id="vessel_id" data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
                                         <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -126,7 +139,7 @@
                             </div>
                             <input type="hidden" class="form-control" id="vessel" name="vessel_id"> 
                         </div>
-
+                        
                         <div class="form-row">
                             <div class="form-group col-md-4">
                             <label for="">Voyage No</label>
@@ -134,7 +147,11 @@
                                  title="{{trans('forms.select')}}">
                                  <option>Select</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>
+                                        @if(isset($movement))
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') || $item->voyage_no == $movement->voyage_id ? 'selected':''}}>{{$item->voyage_no}}</option>
+                                        @else
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>    
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -155,8 +172,14 @@
                             </div> -->
                             <div class="form-group col-md-4">
                                 <label for="booking_noInput">Booking No</label>
+                                @if(isset($movement))
+                                <input type="text" class="form-control" id="booking_noInput" name="booking_no" value="{{$movement->booking_no}}"
+                                    placeholder="Booking No" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="booking_noInput" name="booking_no" value="{{old('booking_no')}}"
                                     placeholder="Booking No" autocomplete="off">
+                                @endif
+                                
                                 @error('booking_no')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -184,7 +207,11 @@
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="booking_agent_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->name}}" {{$item->name == old('booking_agent_id') || $item->name == $movement->booking_agent_id ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
                                         <option value="{{$item->name}}" {{$item->name == old('booking_agent_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('booking_agent_id')
@@ -198,7 +225,11 @@
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="import_agent" data-size="10"
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') || $item->name == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
                                         <option value="{{$item->name}}" {{$item->name == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('import_agent')
@@ -226,8 +257,13 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="RemarkesInput">Free Time</label>
+                                @if(isset($movement))
+                                <input type="text" class="form-control" id="RemarkesInput" name="free_time" value="{{$movement->free_time}}"
+                                    placeholder="Free Time" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="RemarkesInput" name="free_time" value="{{old('free_time')}}"
                                     placeholder="Free Time" autocomplete="off">
+                                @endif
                                 @error('free_time')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -236,8 +272,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="RemarkesInput">Free Time Origin</label>
+                                @if(isset($movement))
+                                <input type="text" class="form-control" id="RemarkesInput" name="free_time_origin" value="{{$movement->free_time_origin}}"
+                                    placeholder="Free Time" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="RemarkesInput" name="free_time_origin" value="{{old('free_time_origin')}}"
                                     placeholder="Free Time" autocomplete="off">
+                                @endif
                                 @error('free_time_origin')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -246,8 +287,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="billInput">Bill Of Lading</label>
+                                @if(isset($movement))
+                                <input type="text" class="form-control" id="billInput" name="bl_no" value="{{$movement->bl_no}}"
+                                    placeholder="Bill Of Loading" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="billInput" name="bl_no" value="{{old('bl_no')}}"
                                     placeholder="Bill Of Loading" autocomplete="off">
+                                @endif
                                 @error('bl_no')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -258,8 +304,13 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="RemarkesInput">Remarkes</label>
+                                @if(isset($movement))
+                                <input type="text" class="form-control" id="RemarkesInput" name="remarkes" value="{{$movement->remarkes}}"
+                                    placeholder="Remarkes" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="RemarkesInput" name="remarkes" value="{{old('remarkes')}}"
                                     placeholder="Remarkes" autocomplete="off">
+                                @endif
                                 @error('remarkes')
                                 <div class="invalid-feedback">
                                     {{$message}}

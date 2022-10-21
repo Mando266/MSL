@@ -22,12 +22,49 @@ class MovementsImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-       
+        // CHECK if nll
+        $a = collect($row);
+        $z = $a->filter(fn($v)=>$v != null)->toArray();
+        if(empty($z))
+            return null;
+
+
+
         $containerId = $row['container_id'];
-        // dd($containerId);
+
         $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
+        
+        // Validation
+        if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
+            return Session::flash('message', "this container number: {$containerId} must have Movement Code and Activity location and Movement Date");
+        }
+        if(!$row['container_id']){
+            
+            return session()->flash('message',"this container number: {$containerId} not found ");
+        }
+        
+        
+
+
         $row['movement_date'] = Date::excelToDateTimeObject($row['movement_date']);
-        $lastMove = Movements::where('container_id',$row['container_id'])->where('movement_date','<=',$row['movement_date'])->orderBy('movement_date')->pluck('movement_id')->last();
+        
+        // Get All movements and sort it and get the last movement before this movement 
+
+        $movements = Movements::where('container_id',$row['container_id'])->orderBy('movement_date','desc')->with('movementcode')->get();
+                
+        $new = $movements;
+        $new = $new->groupBy('movement_date');
+        
+        foreach($new as $key => $move){
+            $move = $move->sortByDesc('movementcode.sequence');
+            $new[$key] = $move;
+        }
+        $new = $new->collapse();
+        
+        $movements = $new;
+        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->pluck('movement_id')->first();
+        // End Get All movements and sort it and get the last movement before this movement
+            
         
         $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
@@ -46,7 +83,7 @@ class MovementsImport implements ToModel,WithHeadingRow
         if($movementdublicate != null){
             return Session::flash('message', 'this container number: '.$containerId.' with this movement code: '.$movementCode.' already exists!');
         }
-
+        
         if(in_array($movementCode,$nextMoves)){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],

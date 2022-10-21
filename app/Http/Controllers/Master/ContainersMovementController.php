@@ -26,10 +26,13 @@ class ContainersMovementController extends Controller
         $this->authorize(__FUNCTION__,ContainersMovement::class); 
         $container_stock = StockTypes::orderBy('id')->get();
         $container_status = ContainerStatus::orderBy('id')->get();
+        $containersMovements = ContainersMovement::orderBy('id')->get();
 
         return view('master.container-movement.create',[
             'container_stock'=>$container_stock,
             'container_status'=>$container_status,
+            'containersMovements'=>$containersMovements,
+
         ]);
     }
 
@@ -47,7 +50,20 @@ class ContainersMovementController extends Controller
             'code.unique'=>'This Movement Code Already Exists ',
 
         ]);
-        ContainersMovement::create($request->except('_token'));
+        $next_move = "";
+        if($request->movement != null){
+            foreach($request->movement as $move){
+                $next_move .= $move['code'] . ', ';
+            }
+        }
+        ContainersMovement::create([
+            'next_move'=>$next_move,
+            'name'=> $request->input('name'),
+            'code'=> $request->input('code'),
+            'stock_type_id'=> $request->input('stock_type_id'),
+            'container_status_id'=> $request->input('container_status_id'),
+            'company_id'=> $request->input('company_id'),
+            ]);
         return redirect()->route('container-movement.index')->with('success',trans('Container Movement.created'));
     }
 
@@ -61,30 +77,33 @@ class ContainersMovementController extends Controller
         $this->authorize(__FUNCTION__,ContainersMovement::class);
         $container_stock = StockTypes::orderBy('id')->get();
         $container_status = ContainerStatus::orderBy('id')->get();
-
+        $containersMovements = ContainersMovement::orderBy('id')->get();
+        
+        $next_move = explode(", ", $container_movement->next_move);
+        
         return view('master.container-movement.edit',[
+            'next_move' => $next_move,
             'container_movement'=>$container_movement,
             'container_stock'=>$container_stock,
             'container_status'=>$container_status,
+            'containersMovements'=>$containersMovements,
 
         ]);
     }
 
     public function update(Request $request, ContainersMovement $container_movement)
     {
-        $request->validate([
-            'name' => 'required|unique:containers_movement|max:255',
-            'code' => 'required|unique:containers_movement|max:255',
-            'stock_type_id' => 'integer|nullable',
-            'container_statuss_id' => 'integer|nullable',
-
-        ],[
-            'name.unique'=>'This Movement Name Already Exists ',
-            'code.unique'=>'This Movement Code Already Exists ',
-
-        ]);
         $this->authorize(__FUNCTION__,ContainersMovement::class);
-        $container_movement->update($request->except('_token'));
+        $next_move = "";
+        if($request->next_move != null){
+            foreach($request->next_move as $move){
+                $next_move .= $move['code'] . ', ';
+            }
+        }
+        $container_movement->update($request->except('_token','next_move'));
+        $container_movement->next_move = $next_move;
+        $container_movement->save();
+
         return redirect()->route('container-movement.index')->with('success',trans('Container Movement.updated.success'));
     }
 

@@ -37,18 +37,7 @@ class Movements extends Model implements PermissionSeederContract
         'import_agent',
         'free_time_origin',
     ];
-
-    // public static function validateRules()
-    // {
-    //     return [
-    //         'voyage_id' =>[
-    //             'required', 
-    //                         Rule::unique('movements')
-    //                             ->where('vessel_id', $request->vessel_id)
-    //     ],
-            
-    //     ];
-    // }
+    
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
@@ -65,10 +54,6 @@ class Movements extends Model implements PermissionSeederContract
         return $this->belongsTo(Containers::class,'container_id','id');
     }
 
-    // public function plNo(){
-    //     $pl_no = Movements::where('id',$this->id)
-    //     return 
-    // }
     public function containersType(){
         return $this->belongsTo(ContainersTypes::class,'container_type_id','id');
     }

@@ -93,20 +93,20 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <select class="selectpicker form-control" id="voyageporrt" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
+                                    <select class="selectpicker form-control" id="port" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($ports as $item)
-                                                <option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>
+                                                <option value="{{$item->id}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                     </select>
                                 </td>
                                 <td>
-                                <select class="selectpicker form-control" id="terminalporrt" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
-                                            title="{{trans('forms.select')}}">
-                                            @foreach ($terminals as $item)
-                                                <option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>
-                                            @endforeach
-                                    </select>
+                                  <select class="form-control" id="terminal" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
+                                          title="{{trans('forms.select')}}">
+                                          @foreach ($terminals as $item)
+                                              <option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>
+                                          @endforeach
+                                  </select>
                                 </td>
                                 <td>
                                 <input type="text" id="roadInput" name="voyageport[0][road_no]" class="form-control" autocomplete="off">
@@ -205,8 +205,8 @@ function fixStepIndicator(n) {
      var counter  = 1;
         $("#add").click(function(){
                 var tr = '<tr>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td><select class="form-control port" id="port" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->id}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td><select class="form-control" id="terminal" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->id}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
             '<td><input type="text" name="voyageport['+counter+'][road_no]" class="form-control" autocomplete="off"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][eta]" class="form-control"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][etd]" class="form-control"></td>'+
@@ -216,6 +216,52 @@ function fixStepIndicator(n) {
             $('#voyagePort').append(tr);
         });
     });
+</script>
+
+<script>
+
+  $(document).ready(function (){
+    
+        $(function(){
+                $('#port').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/terminals/${value}`).then(function(data){
+                        let terminals = data.terminals || '';
+                        console.log(terminals);
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < terminals.length; i++){
+                            list2.push(`<option value='${terminals[i].name}'>${terminals[i].name} </option>`);
+                        }
+                let terminal = $('#terminal');
+                console.log(list2);
+                terminal.html(list2.join(''));
+                });
+            });
+        });
+  });
+    function asd()
+    {
+      const ports = document.querySelectorAll('.port');
+    console.log(ports);
+
+ports.forEach((port) => {
+  console.log(port)
+  port.on('change',function(e){
+    let value = e.target.value;
+    let response =    $.get(`/api/master/terminals/${value}`).then(function(data){
+        let terminals = data.terminals || '';
+        console.log(terminals);
+        let list2 = [`<option value=''>Select...</option>`];
+        for(let i = 0 ; i < terminals.length; i++){
+            list2.push(`<option value='${terminals[i].name}'>${terminals[i].name} </option>`);
+        }
+let terminal = $('#terminal');
+console.log(list2);
+terminal.html(list2.join(''));
+     });
+  });
+});
+    }    
 </script>
 @endpush
 
