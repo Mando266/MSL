@@ -17,6 +17,7 @@ class TrackingController extends Controller
     {
         $this->authorize(__FUNCTION__,Movements::class);
         $containers = Containers::orderBy('id')->get();
+        
         $movements = Movements::filter(new ContainersIndexFilter(request()))->join('containers', 'movements.container_id', '=', 'containers.id')
             ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')->orderBy('id','asc')
         ->get()->groupBy('code');

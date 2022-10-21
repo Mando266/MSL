@@ -25,7 +25,7 @@
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name',$terminal->name)}}"
                                  placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -35,14 +35,14 @@
                                 <input type="text" class="form-control" id="CodeInput" name="code" value="{{old('code',$terminal->code)}}"
                                     placeholder="Code" autocomplete="off">
                                 @error('Code')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="countryInput">{{trans('company.country')}}</label>
-                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" data-size="10"
+                                <select class="selectpicker form-control" id="country" data-live-search="true" data-size="10"
                                 name="country_id" title="{{trans('forms.select')}}">
                                     @foreach ($countries as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('country_id',$terminal->country_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -58,8 +58,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="portInput">Port Name</label>
-                                <select class="selectpicker form-control" id="portInput" data-live-search="true" name="port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10">
+                                <option value="">Select...</option>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('port_id',$terminal->port_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -87,3 +87,23 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+        $(function(){
+                let country = $('#country');
+                $('#country').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/ports/${country.val()}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('#port');
+                port.html(list2.join(''));
+                });
+            });
+        });
+</script>
+@endpush

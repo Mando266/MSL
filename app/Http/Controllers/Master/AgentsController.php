@@ -30,10 +30,13 @@ class AgentsController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize(__FUNCTION__,Agents::class);
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:agents|max:255',
+        ],[
+            'name.unique'=>'This Agent Already Exists ',
         ]);
+        $this->authorize(__FUNCTION__,Agents::class);
+
         $agents = Agents::create($request->except('_token'));
         return redirect()->route('agents.index')->with('success',trans('agent.created'));
     }

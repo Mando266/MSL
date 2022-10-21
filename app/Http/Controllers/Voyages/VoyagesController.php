@@ -105,7 +105,7 @@ class VoyagesController extends Controller
         $vessels = Vessels::orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
         $lines = Lines::orderBy('id')->get();
-        $terminals = Terminals::orderBy('id')->get();
+        $terminals = [];
         $ports = Ports::orderBy('id')->get();
         return view('voyages.voyages.create',[
             'vessels'=>$vessels,

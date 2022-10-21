@@ -70,71 +70,21 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="allowedInput">ALLOWED NEXT MOVES</label>
-                            </br>
-                            </br>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <input type="checkbox" id="is_on_hireInput" name="is_on_hire" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> ONHR (ON HIRE) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_off_hireInput" name="is_off_hire" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> OFHR (OFF HIRE) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_sntsInput" name="is_snts" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> SNTS (SENT TO SHIPPER) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_rcvsInput" name="is_rcvs" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> RCVS (RECEIVED FROM SHIPPER) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_load_fullInput" name="is_load_full" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> LODF (LOAD FULL) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_dchfInput" name="is_dchf" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> DCHF (DISCHARGE FULL) </a>
-                            </div>
-
-                            <div class="form-group col-md-4">
-                                <input type="checkbox" id="is_sntcInput" name="is_sntc" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> SNTC (SENT TO CONSIGNEE) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_rcvcInput" name="is_rcvc" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> RCVC (RECEIVED FROM CONSIGNEE) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_load_emptyInput" name="is_load_empty" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> LODE (LOAD EMPTY) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_dcheInput" name="is_dche" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> DCHE (DISCHARGE EMPTY) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_sntrInput" name="is_sntr" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> SNTR (SENT FOR STRIPPING) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_rcveInput" name="is_rcve" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> RCVE (RECIEVED EMPTY) </a>
-                            </div>
-
-                            <div class="form-group col-md-4">
-
-                                <input type="checkbox" id="is_lodtInput" name="is_lodt" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> LODT (LOAD FULL TRANSHIPMENT) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_dchtInput" name="is_dcht" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> DCHT (DISCHARGE FULL TRANSHIPMENT) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_trffInput" name="is_trff" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> TRFF (TRANSFER FULL CONTAINER) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_trfeInput" name="is_trfe" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> TRFE (TRANSFER EMPTY CONTAINER) </a>
-                                </br>
-                                </br>
-                                <input type="checkbox" id="is_rcvfInput" name="is_rcvf" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> RCVF (RECIEVED FULL) </a>
+                        <div class="form-group col-md-8">
+                                <label for="ContainerInput">ALLOWED NEXT MOVES</label>
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="movement[][code]" data-size="10"
+                                 title="{{trans('forms.select')}}"  multiple="multiple">
+                                    @foreach ($containersMovements as $item)
+                                    <option value="{{$item->code}}" {{$item->id == old('code') ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                                @error('code')
+                                <div class ="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
                         </div>
-
 
                        <div class="row">
                             <div class="col-md-12 text-center">

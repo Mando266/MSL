@@ -18,14 +18,19 @@
                 <div class="widget-content widget-content-area">
                 <form  action="{{route('tracking.index')}}" >
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                        <div class="form-group col-md-3">
                                 <label for="ContainerInput">Container Number </label>
-                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_id', request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" data-code="{{$item->container_type_id}}" {{$item->id == old('container_id') ||in_array($item->id, request()->container_id ?? []) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
+                                @error('container_type_id')
+                                <div class ="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="portlocationInput">Activity Location</label>

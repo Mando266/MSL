@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +88,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('quotations', 'QuotationsController');
         Route::get('{quotation}/approve',[QuotationsController::class,'approve'])->name('quotation.approve');
         Route::get('{quotation}/reject',[QuotationsController::class,'reject'])->name('quotation.reject');
+        Route::resource('localporttriff', 'LocalPortTriffController');
+        Route::get('localporttriffdetailes/{id}',[LocalPortTriffDetailesController::class,'destroy'])->name('LocalPortTriffDetailes.destroy');
     });
 
 });

@@ -31,10 +31,10 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="CodeInput">Code</label>
-                                <input type="text" class="form-control" id="CodeInput" name="code" value="{{old('code',$customer->code)}}"
+                                <label for="CodeInput">Contact Person</label>
+                                <input type="text" class="form-control" id="CodeInput" name="code" value="{{old('contact_person',$customer->contact_person)}}"
                                     placeholder="Code" autocomplete="off">
-                                @error('Code')
+                                @error('contact_person')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>

@@ -34,9 +34,14 @@ class TerminalsController extends Controller
     {
         $this->authorize(__FUNCTION__,Terminals::class);
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:terminals|max:255',
+            'code' => 'required|unique:terminals|max:255',
+        ],[
+            'name.unique'=>'This Terminal Name Already Exists ',
+            'code.unique'=>'This Terminal Code Already Exists ',
+
         ]);
-        $terminals = Terminals::create($request->except('_token'));
+            Terminals::create($request->except('_token'));
         return redirect()->route('terminals.index')->with('success',trans('Terminal.created')); 
     }
 
@@ -62,6 +67,7 @@ class TerminalsController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'code' => 'required',
         ]);
         $this->authorize(__FUNCTION__,Terminals::class);
         $terminal->update($request->except('_token'));
@@ -73,5 +79,10 @@ class TerminalsController extends Controller
         $terminal =Terminals::Find($id);
         $terminal->delete();
         return redirect()->route('terminals.index')->with('success',trans('Terminal.deleted.success')); 
+    }
+
+    public function getTerminals()
+    {
+        
     }
 }

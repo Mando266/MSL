@@ -27,6 +27,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Contact Person</th>
                                         <th>phone</th>
                                         <th>Country</th>
                                         <th>city</th>
@@ -42,6 +44,8 @@
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
+                                            <td>{{$item->code}}</td>
+                                            <td>{{$item->contact_person}}</td>
                                             <td>{{$item->phone}}</td>
                                             <td>{{optional($item->country)->name}}</td>
                                             <td>{{$item->city}}</td>
@@ -55,6 +59,13 @@
                                                     <li>
                                                         <a href="{{route('customers.edit',['customer'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endpermission
+                                                    @permission('Company-Show')
+                                                    <li>
+                                                        <a href="{{route('customers.show',['customer'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission

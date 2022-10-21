@@ -16,16 +16,16 @@
                     </br>
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="Refrance">Refrance Number </label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($quotation as $item)
-                                        <option value="{{$item->ref_no}}" {{$item->ref_no == old('ref_no') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                        <option value="{{$item->ref_no}}" {{$item->ref_no == old('ref_no',request()->input('ref_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="status">Status </label>
                                 <select class="selectpicker form-control" id="status" data-live-search="true" name="status" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -34,6 +34,45 @@
                                         <option value="rejected">Rejected</option>
                                 </select>
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="validity_from">Validity From</label>
+                                <input type="date" class="form-control" id="validity_from" name="validity_from" value="{{request()->input('validity_from')}}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="validity_to">Validity To</label>
+                                <input type="date" class="form-control" id="validity_to" name="validity_to" value="{{request()->input('validity_to')}}">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                    <label for="customer_id">Customer</label>
+                                    <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($customers as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('customer_id',request()->input('customer_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="place_of_acceptence_id">Place Of Acceptence</label>
+                                <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',request()->input('place_of_acceptence_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="place_of_delivery_id">Place Of Delivery</label>
+                                <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',request()->input('place_of_delivery_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('quotations.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
@@ -50,16 +89,18 @@
                                         <th>Agent</th>
                                         <th>Customer</th>
                                         <th>validity from</th>
-                                        <th>validity_to</th>
+                                        <th>validity to</th>
                                         <th>place of acceptence</th>
                                         <th>place of delivery</th>
-                                        <th>load port id</th>
+                                        <th>load port</th>
                                         <th>discharge port</th>
+                                        <th>OFR</th>
                                         <th>Status </th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
@@ -72,6 +113,8 @@
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{{optional($item->dischargePort)->name}}}</td>
+                                            <td>{{$item->ofr}}</td>
+
                                             <td class="text-center">
                                                 @if($item->status == "pending")
                                                     <span class="badge badge-info"> Pending </span>
@@ -79,21 +122,30 @@
                                                     <span class="badge badge-success"> Approved </span>
                                                 @elseif($item->status == "rejected")
                                                     <span class="badge badge-danger"> Rejected </span>
+                                                @elseif($item->status == "MSL count")
+                                                    <span class="badge badge-info">MSL Count </span>
+                                                @elseif($item->status == "Agent count")
+                                                    <span class="badge badge-info">Agent Count </span>
                                                 @endif
                                             </td>
-                                            <!-- <td class="text-center">
-                                                <ul class="table-controls">
-                                                    @permission('Quotation-Show')
+                                            <td class="text-center">
+                                                 <ul class="table-controls">
+                                                 @permission('Quotation-Edit')
+                                                    @if(Auth::user()->is_super_admin)
                                                     <li>
-                                                        <a href="{{route('quotations.show',['quotation'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
+                                                        <a href="{{route('quotations.edit',['quotation'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                            <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission
-                                                </ul>
-                                            </td> -->
-                                            <td class="text-center">
-                                                <ul class="table-controls">
+                                                    @elseif($item->status == 'pending' || $item->status == 'MSL count')
+                                                    
+                                                    <li>
+                                                        <a href="{{route('quotations.edit',['quotation'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                            <i class="far fa-edit text-success"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
+                                                @endpermission
                                                     @permission('Quotation-Show')
                                                     <li>
                                                         <a href="{{route('quotations.show',['quotation'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="layout-px-spacing">
+<div class="layout-px-spacing" style="background-color: #fff;">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-one">
@@ -14,10 +14,12 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <h4 style="text-align:left; color:#000;">Agent Name :  {{optional($quotation->agent)->name}}</h4>
-
-                <h4 style="text-align:left; color:#000;">Customer Name :  {{optional($quotation->customer)->name}}</h4>
-
+                <div class="col-md-12 text-center">
+                <img src="{{asset('assets/img/msl.png')}}" style="width: 300px;" alt="logo">
+                </div>
+</br>
+                <!-- <h4 style="text-align:left; color:#000;">Agent Name :  {{optional($quotation->agent)->name}}</h4> -->
+                <!-- <h4 style="text-align:left; color:#000;">Customer Name :  </h4> -->
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
@@ -46,6 +48,28 @@
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
+                            <th class="tableStyle thstyle">To</th>
+                            <th class="tableStyle thstyle">SOC</th>
+                            <th class="tableStyle thstyle">Contact Name</th>
+                            <th class="tableStyle thstyle">Quoted By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle">{{optional($quotation->customer)->name}}</td>
+                            @if($quotation->soc == 1)
+                            <td class="tableStyle">Y</td>
+                            @else
+                            <td class="tableStyle">N</td>
+                            @endif
+                            <td class="tableStyle">{{optional($quotation->customer)->contact_person}}</td>
+                            <td class="tableStyle">{{optional($quotation->user)->full_name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
                             <th class="tableStyle thstyle">Rate Applicable To</th>
                             <th class="text-center tableStyle thstyle">SH</th>
                             <th class="text-center tableStyle thstyle">CN</th>
@@ -55,7 +79,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center tableStyle"></td>
+                            <td class="tableStyle">{{optional($quotation->customer)->name}}</td>
                             @if($quotation->rate_sh == 1)
                             <td class="text-center tableStyle">Y</td>
                             @else
@@ -89,17 +113,59 @@
                             <td class="tableStyle">Load Port : &nbsp; <span>{{optional($quotation->loadPort)->name}}</span></td>
                             <td class="tableStyle"> Discharge Port : &nbsp; <span>{{optional($quotation->dischargePort)->name}}</span></td>
                         </tr>
+                        <tr>
+                            <td class="tableStyle">Place of Return  : &nbsp; <span>{{optional($quotation->placeOfReturn)->name}}</span></span></td>
+                            <td class="tableStyle">Pick Up Location : &nbsp; <span>{{optional($quotation->pickUpLocation)->name}}</span></td>
+                        </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
-                            <th class="text-center thstyle">Equipment Type / Size</th>
+                            <th class="tableStyle thstyle">Equipment Type / Size</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center tableStyle">{{optional($quotation->equipmentsType)->name}}</td>
+                            <td class="tableStyle">{{optional($quotation->equipmentsType)->name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
+                            <th class="tableStyle thstyle"> OFR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle">{{$quotation->ofr}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
+                            <th class="tableStyle thstyle"> Commodity Code</th>
+                            <th class="tableStyle thstyle"> Commodity Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle">{{$quotation->commodity_code}}</td>
+                            <td class="tableStyle">{{$quotation->commodity_des}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
+                            <th class="tableStyle thstyle"> OOG Dimenesions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle">{{$quotation->oog_dimensions}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -113,8 +179,14 @@
                         <tr>
                             <td class="tableStyle">Export Free Time</td>
                             <td class="tableStyle">{{$quotation->export_detention}}</td>
-                            <td class="tableStyle">Import Free Time</td>
-                            <td class="tableStyle">{{$quotation->import_detention}}</td>
+                            <!-- <td class="tableStyle">Import Free Time</td>
+                            <td class="tableStyle">{{$quotation->import_detention}}</td> -->
+                        </tr>
+                        <tr>
+                            <!-- <td class="tableStyle">Export Storage</td>
+                            <td class="tableStyle">{{$quotation->export_storage}}</td> -->
+                            <td class="tableStyle">Import Storage</td>
+                            <td class="tableStyle">{{$quotation->import_storage}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -134,16 +206,23 @@
                             <td class="tableStyle">{{ $item->mode }}</td>
                             <td class="tableStyle">{{ $item->currency }}</td>
                             <td class="tableStyle">{{ $item->charge_unit }}</td>
+
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                        @permission('Quotation-Delete')
-                            <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
-                            <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
-                        @endpermission
+                            @if(Auth::user()->is_super_admin && $quotation->status == 'Agent count')
+                                    <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                            @elseif(Auth::user()->is_super_admin && $quotation->status == 'pending')
+                                    <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                            @elseif(!Auth::user()->is_super_admin  && $quotation->status == 'MSL count')
+                                <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                            @endif
                         <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Quotation</button>
 
                         </div>

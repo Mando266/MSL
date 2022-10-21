@@ -24,17 +24,17 @@
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
                                  placeholder="Name" autocomplete="off" autofocus>
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="codeInput">Code</label>
+                                <label for="codeInput">Code *</label>
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
                                     placeholder="Code" autocomplete="off">
                                 @error('code')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -48,7 +48,7 @@
                                     @endforeach
                                 </select>
                                 @error('country_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -61,7 +61,7 @@
                                 <input type="text" class="form-control" id="via_portInput" name="via_port" value="{{old('via_port')}}"
                                     placeholder="Via Port" autocomplete="off">
                                 @error('via_port')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -75,7 +75,7 @@
                                     @endforeach
                                 </select>
                                 @error('port_type_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -89,7 +89,7 @@
                                     @endforeach
                                 </select>
                                 @error('agent_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -106,7 +106,7 @@
                                 @endforeach
                             </select>
                             @error('terminal_id')
-                            <div class="invalid-feedback">
+                            <div style="color: red;">
                                 {{$message}}
                             </div>
                             @enderror

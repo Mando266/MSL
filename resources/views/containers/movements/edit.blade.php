@@ -15,6 +15,10 @@
                         </ol>
                     </nav>
                 </div>
+                
+                </br>
+            <h5><span style='color:#1b55e2';>Container No :</span> {{$containers->find($movement->container_id)->code}}</h5>
+            </br>
                 <div class="widget-content widget-content-area">
                 <form id="createForm" action="{{route('movements.update',['movement'=>$movement])}}" method="POST">
                         @csrf
@@ -206,8 +210,8 @@
 
                       <div class="row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
-                                <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <button type="submit"  class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
+                                <a href="{{route('movements.index')}}" onclick="newDoc()" class="btn btn-danger mt-3">Back</a>
                             </div>
                        </div>
 
@@ -220,3 +224,10 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+            function newDoc() {
+                setTimeout(function(){window.history.go(-1)});
+            }
+</script>
+@endpush

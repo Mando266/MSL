@@ -29,6 +29,7 @@
                                         <th>Name</th>
                                         <th>Country</th>
                                         <th>City</th>
+                                        <th class="text-center">{{trans('user.status')}}</th>
                                         <th>Intermediate Payer</th>
                                         <th>port control</th>
                                         <th>Documentation Control</th>
@@ -42,7 +43,13 @@
                                             <td>{{$item->name}}</td>
                                             <td>{{optional($item->country)->name}}</td>
                                             <td>{{$item->city}}</td>
-
+                                            <td class="text-center">
+                                                        @if($item->is_active )
+                                                            <span class="badge badge-info"> Active </span>
+                                                        @else
+                                                            <span class="badge badge-danger"> Inactive </span>
+                                                        @endif
+                                                    </td>
                                             <td class="text-center">
                                                 @if($item->intermediate_payer)
                                                 <input type="checkbox" checked="checked" readonly>
@@ -79,7 +86,7 @@
                                                         <form action="{{route('agents.destroy',['agent'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
 
@@ -107,3 +114,26 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Agent?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  
+</script>
+@endpush

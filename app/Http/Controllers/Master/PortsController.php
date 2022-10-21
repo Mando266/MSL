@@ -48,7 +48,13 @@ class PortsController extends Controller
     {
         $this->authorize(__FUNCTION__,Ports::class);
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:ports|max:255',
+            'code' => 'required|unique:ports|max:255',
+
+        ],[
+            'name.unique'=>'This Port Name Already Exists ',
+            'code.unique'=>'This Port Code Already Exists ',
+
         ]);
         $ports = Ports::create($request->except('_token'));
         return redirect()->route('ports.index')->with('success',trans('port.created')); 
@@ -90,6 +96,7 @@ class PortsController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'code' => 'required',
         ]);
         $this->authorize(__FUNCTION__,Ports::class);
         $port->update($request->except('_token'));

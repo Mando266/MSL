@@ -75,14 +75,13 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="components" data-parent="#accordionExample">
+                        @permission('Ports-List')
                         <li>
                             <a href="#pages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Ports & Terminals<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
                                 <ul class="collapse list-unstyled sub-submenu" id="pages" data-parent="#pages">
-                                @permission('Ports-List')
                                     <li>
                                         <a href="{{route('ports.index')}}"> Ports </a>
                                     </li>
-                                @endpermission
 
                                 @permission('PortTypes-List')
                                     <li>
@@ -96,6 +95,8 @@
                                 @endpermission
                                 </ul>
                         </li>
+                        @endpermission
+                        @permission('Lines-List')
 
                         <li>
                             <a href="#lines" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Lines <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
@@ -113,6 +114,7 @@
                                 @endpermission
                                 </ul>
                         </li>
+                        @endpermission
 
                                 @permission('Agents-List')
                                     <li>
@@ -131,7 +133,7 @@
                                         <a href="{{route('customers.index')}}"> Customers</a>
                                     </li>
                                 @endpermission
-
+                        @permission('Vessels-List')
                         <li>
                             <a href="#vessels" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Vessels <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
                                 <ul class="collapse list-unstyled sub-submenu" id="vessels" data-parent="#lines">
@@ -148,6 +150,7 @@
                                 @endpermission
                                 </ul>
                         </li>
+                    @endpermission
             </li>
         </ul>
                 @permission('Voyages-List')
@@ -163,7 +166,6 @@
                 </li>
                 @endpermission
 
-                @permission('Movements-List')
                     <li class="menu">
                         <a href="#component3" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
@@ -235,7 +237,6 @@
                                 @endpermission
                                 </ul>
             </li>
-                                @endpermission
 
             @permission('Demurrage-List')
                     <li class="menu">
@@ -273,7 +274,7 @@
 
                                 @permission('Demurrage-List')
                                 <li>
-                                    <a href="{{route('demurrage.index')}}">Tarrif Reff</a>
+                                    <a href="{{route('demurrage.index')}}">Dentention Tarrif</a>
                                 </li>
                                 @endpermission
 
@@ -297,7 +298,11 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component8" data-parent="#accordionExample">
-
+                                @permission('LocalPortTriff-List')
+                                <li>
+                                    <a href="{{route('localporttriff.index')}}">Local Port Triff</a>
+                                </li>
+                                @endpermission
                                 @permission('Quotation-List')
                                 <li>
                                     <a href="{{route('quotations.index')}}">Quotations List</a>

@@ -24,7 +24,7 @@
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
                                  placeholder="Name" autocomplete="disabled" autofocus>
                                 @error('name')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -53,9 +53,21 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
+                        </div> 
   
                         <div class="form-row">
+                        <div class="form-group col-md-4">
+                                <label for="status">{{trans('user.status')}}</label>
+                                <select class="selectpicker form-control"  name="is_active">
+                                    <option value="1" {{ old('status') == "1" ? 'selected':'' }}>Active</option>
+                                    <option value="0" {{ old('status') == "0" ? 'selected':'' }}>Inactive</option>
+                                </select>
+                                @error('status')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                             <div class="form-group col-md-4">
                                 <input type="checkbox" id="intermediate_payerInput" name="intermediate_payer" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Intermediate Payer </a>
                                 </br>

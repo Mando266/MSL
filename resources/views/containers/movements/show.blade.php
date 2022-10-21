@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -15,9 +16,7 @@
                     @permission('Movements-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
-                                <a class="btn btn-warning" href="{{ route('export',['container_id'=>$id
-                                    ,'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
+                                <a class="btn btn-warning" href="{{ route('export') }}">Export</a>
                                 <a href="{{route('movements.create',['container_id'=>$container->id])}}" class="btn btn-primary">Add New Movement</a>
                             </div>
 
@@ -51,14 +50,19 @@
 use App\Models\Containers\Movements;
 
 if(request()->input('container_id') != null){
+    
                     $container_id = request()->input('container_id');
+                    if(is_array($container_id)){
+                        $container_id = $container_id[0];
+                    }
                 }elseif(request()->input('bl_no') != null){
                     $container_id = Movements::where('bl_no',request()->input('bl_no'))->pluck('container_id')->first();
                     
                 }elseif($id != null){
-
+                    
                     $container_id = $id;
                     }?>
+                    
                 <form action="{{ route('movements.show',['movement'=>$container_id]) }}" method="GET" enctype="multipart/form-data">
                     <div class="form-row"> 
                             <div class="form-group col-md-4">
@@ -339,7 +343,7 @@ if(request()->input('container_id') != null){
                                                         <form action="{{route('movements.destroy',['movement'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form>
                                                     </li>
                                                     @endpermission
@@ -373,4 +377,24 @@ if(request()->input('container_id') != null){
 @endpush
 @push('scripts')
 <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Movement?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  
+</script>
 @endpush
