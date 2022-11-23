@@ -15,9 +15,11 @@
                 </div>
                 <div class="widget-content widget-content-area">
                 <div class="col-md-12 text-center">
-                <img src="{{asset('assets/img/msl.png')}}" style="width: 300px;" alt="logo">
+                <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                 </div>
 </br>
+</br>
+
                 <!-- <h4 style="text-align:left; color:#000;">Agent Name :  {{optional($quotation->agent)->name}}</h4> -->
                 <!-- <h4 style="text-align:left; color:#000;">Customer Name :  </h4> -->
                 <table class="col-md-12 tableStyle">
@@ -80,22 +82,34 @@
                     <tbody>
                         <tr>
                             <td class="tableStyle">{{optional($quotation->customer)->name}}</td>
-                            @if($quotation->rate_sh == 1)
-                            <td class="text-center tableStyle">Y</td>
+                            <?php $sh = 0;$cn=0;$nt=0;$ffw=0;?>
+                            @foreach($quotation->customer->CustomerRoles as $itemRole)
+                                @if($itemRole->role_id == 1)
+                                <?php $sh = 1;?>
+                                @elseif($itemRole->role_id == 2)
+                                <?php $cn = 1;?>
+                                @elseif($itemRole->role_id == 3)
+                                <?php $nt = 1;?>
+                                @elseif($itemRole->role_id == 6)
+                                <?php $ffw = 1;?>
+                                @endif
+                            @endforeach
+                            @if($sh == 1)
+                                <td class="text-center tableStyle">Y</td>
                             @else
-                            <td class="text-center tableStyle">N</td>
+                                <td class="text-center tableStyle">N</td>
                             @endif
-                            @if($quotation->rate_cn == 1)
+                            @if($cn == 1)
                             <td class="text-center tableStyle ">y</td>
                             @else
                             <td class="text-center tableStyle">N</td>
                             @endif
-                            @if($quotation->rate_nt == 1)
+                            @if($nt == 1)
                             <td class="text-center tableStyle">y</td>
                             @else
                             <td class="text-center tableStyle">N</td>
                             @endif
-                            @if($quotation->rate_fwd == 1)
+                            @if($ffw == 1)
                             <td class="text-center tableStyle">y</td>
                             @else
                             <td class="text-center tableStyle">N</td>
@@ -114,8 +128,8 @@
                             <td class="tableStyle"> Discharge Port : &nbsp; <span>{{optional($quotation->dischargePort)->name}}</span></td>
                         </tr>
                         <tr>
+                        <td class="tableStyle">Pick Up Location : &nbsp; <span>{{optional($quotation->pickUpLocation)->name}}</span></td>
                             <td class="tableStyle">Place of Return  : &nbsp; <span>{{optional($quotation->placeOfReturn)->name}}</span></span></td>
-                            <td class="tableStyle">Pick Up Location : &nbsp; <span>{{optional($quotation->pickUpLocation)->name}}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -185,43 +199,70 @@
                         <tr>
                             <!-- <td class="tableStyle">Export Storage</td>
                             <td class="tableStyle">{{$quotation->export_storage}}</td> -->
-                            <td class="tableStyle">Import Storage</td>
-                            <td class="tableStyle">{{$quotation->import_storage}}</td>
+                            <td class="tableStyle">Import Free Time</td>
+                            <td class="tableStyle">{{$quotation->import_detention}}</td>
                         </tr>
                     </tbody>
                 </table>
+                <h4>Port Of Load Local Charges</h4>
                 <table class="col-md-12 tableStyle">
                     <thead class="tableStyle">
                         <tr>
                             <th class="col-md-6 thstyle">Charge Description</th>
-                            <th class="col-md-2 thstyle">Mode/Type</th>
-                            <th class="col-md-2 thstyle">Currency</th>
                             <th class="col-md-2 thstyle">Charges/Unit</th>
+                            <th class="col-md-2 thstyle">Selling Price</th>
+                            <th class="col-md-2 thstyle">Currency</th>
+                            <th class="col-md-2 thstyle">EQUIPMENT TYPE	</th>
                         </tr>
                     </thead>
                     <tbody class="tableStyle">
                         @foreach($quotation->quotationDesc as $item)
                         <tr>
-                            <td class="tableStyle">{{ $item->charge_desc }}</td>
-                            <td class="tableStyle">{{ $item->mode }}</td>
+                            <td class="tableStyle">{{ $item->charge_type}}</td>
+                            <td class="tableStyle">{{ $item->unit }}</td>
+                            <td class="tableStyle">{{ $item->selling_price }}</td>
                             <td class="tableStyle">{{ $item->currency }}</td>
-                            <td class="tableStyle">{{ $item->charge_unit }}</td>
-
+                            <td class="tableStyle">{{ $item->equipment_type_id}}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                @if($quotation->show_import == 1)
+                <h4>Port Of Discharge Local Charge</h4>
+                <table class="col-md-12 tableStyle">
+                    <thead class="tableStyle">
+                        <tr>
+                            <th class="col-md-6 thstyle">Charge Description</th>
+                            <th class="col-md-2 thstyle">Charges/Unit</th>
+                            <th class="col-md-2 thstyle">Selling Price</th>
+                            <th class="col-md-2 thstyle">Currency</th>
+                            <th class="col-md-2 thstyle">EQUIPMENT TYPE	</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableStyle">
+                        @foreach($quotation->quotationLoad as $item)
+                        <tr>
+                            <td class="tableStyle">{{ $item->charge_type}}</td>
+                            <td class="tableStyle">{{ $item->unit }}</td>
+                            <td class="tableStyle">{{ $item->selling_price }}</td>
+                            <td class="tableStyle">{{ $item->currency }}</td>
+                            <td class="tableStyle">{{ $item->equipment_type_id}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @endif
                     <div class="row">
                         <div class="col-md-12 text-center">
                             @if(Auth::user()->is_super_admin && $quotation->status == 'Agent count')
-                                    <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
-                                    <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                                    <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
                             @elseif(Auth::user()->is_super_admin && $quotation->status == 'pending')
-                                    <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
-                                    <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                                    <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
                             @elseif(!Auth::user()->is_super_admin  && $quotation->status == 'MSL count')
-                                <a href="{{route('quotation.approve',['quotation'=>$item->quotation_id])}}"  class="btn btn-success hide mt-3">Approve</a>
-                                <a href="{{route('quotation.reject',['quotation'=>$item->quotation_id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                                <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
                             @endif
                         <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Quotation</button>
 

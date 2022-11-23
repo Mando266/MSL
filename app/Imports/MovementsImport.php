@@ -8,6 +8,7 @@ use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
 use App\MovementImportErrors;
+use Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -28,25 +29,31 @@ class MovementsImport implements ToModel,WithHeadingRow
         if(empty($z))
             return null;
 
-
-
         $containerId = $row['container_id'];
+        $containertype = $row['container_type_id'];
 
         $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
         
         // Validation
         if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
-            return Session::flash('message', "this container number: {$containerId} must have Movement Code and Activity location and Movement Date");
+            return Session::flash('message', "This Container Number: {$containerId} Must have Movement Code and Activity location and Movement Date");
         }
         if(!$row['container_id']){
             
-            return session()->flash('message',"this container number: {$containerId} not found ");
+            return session()->flash('message',"This container Number: {$containerId} Not found ");
         }
+        if(!$row['container_type_id']){
+            
+            return session()->flash('message',"This Container Type: {$containertype} Not found ");
+        } 
         
-        
-
-
-        $row['movement_date'] = Date::excelToDateTimeObject($row['movement_date']);
+        try {
+            // code that triggers a pdo exception
+            $dateConvertion = Date::excelToDateTimeObject($row['movement_date'])->format('Y-m-d');
+          } catch (Exception $e) {
+            $dateConvertion = $row['movement_date'];
+          }
+          $row['movement_date'] = $dateConvertion;
         
         // Get All movements and sort it and get the last movement before this movement 
 
@@ -62,7 +69,7 @@ class MovementsImport implements ToModel,WithHeadingRow
         $new = $new->collapse();
         
         $movements = $new;
-        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->pluck('movement_id')->first();
+        $lastMove = $movements->where('movement_date','<',$row['movement_date'])->pluck('movement_id')->first();
         // End Get All movements and sort it and get the last movement before this movement
             
         

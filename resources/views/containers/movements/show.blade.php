@@ -211,6 +211,7 @@ if(request()->input('container_id') != null){
                                         <th>BOOKING</th>
                                         <th>BL No</th>
                                         <th>free time destination</th>
+                                        <th>import agent</th> 
                                         <th>booking agent</th>   
                                         <th>REMARKS</th>
                                         <th>Dentention</th>
@@ -239,9 +240,11 @@ if(request()->input('container_id') != null){
                                             <td>{{$items->booking_no}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
+                                            <td>{{$items->import_agent}}</td>
                                             <td>{{$items->booking_agent_id}}</td>
                                             <td>{{$items->remarkes}}</td>
                                             <td></td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Movements-Edit')
@@ -282,6 +285,8 @@ if(request()->input('container_id') != null){
                                             <td>{{$item->free_time}}</td>
                                             <td>{{$item->booking_agent_id}}</td>
                                             <td>{{$item->remarkes}}</td>
+                                            <td></td>
+
                                             @if( ($item->bl_no !=null || $item->booking_no !=null)&& optional($item->movementcode)->code == 'RCVC')
                                             <?php $hasRCVC = true; ?>
                                             @foreach($items as $tempItem)

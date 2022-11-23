@@ -22,14 +22,47 @@
                     </div>
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="ContainerInput">Container Number </label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="code" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('code') ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->code}}" {{$item->code == old('code',request()->input('code')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput">Container Type</label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_type_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($container_types as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_type_id',request()->input('container_type_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_type_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput"> Container Ownership </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id',request()->input('container_ownership_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                    <label for="remarkes">Lessor/Seller Refrence</label>
+                                    <input type="text" class="form-control" id="description" name="description" value="{{request()->input('description')}}"
+                                    placeholder="Lessor/Seller Refrence" autocomplete="off">
                             </div>
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
@@ -50,7 +83,7 @@
                                         <th>tar weight</th>
                                         <th>max payload</th>
                                         <th>production year</th>
-                                        <th>REMARKS</th>
+                                        <th>Lessor/Seller Refrence</th>
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>

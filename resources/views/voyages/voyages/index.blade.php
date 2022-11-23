@@ -19,7 +19,7 @@
                         </div>
                         @endpermission
                     </div>
-                    <form action="{{route('voyages.index')}}">
+                <form action="{{route('voyages.index')}}">
                     <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="vessel_port_idInput">Port From</label>
@@ -163,6 +163,7 @@
 
                             </table>
                         </div>
+                        
                         <div class="paginating-container">
                         </div>
                     </div>

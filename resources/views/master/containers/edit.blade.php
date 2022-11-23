@@ -49,7 +49,7 @@
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_ownership as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id,$container->container_ownership_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id',$container->container_ownership_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('container_ownership_id')
@@ -94,9 +94,9 @@
                     </div>
                     <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="descriptionInput">Note</label>
+                                <label for="descriptionInput">Lessor/Seller Refrence</label>
                                 <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description',$container->description)}}"
-                                    placeholder="Note" autocomplete="off">
+                                    placeholder="Lessor/Seller Refrence" autocomplete="off">
                                 @error('description')
                                 <div class="invalid-feedback">
                                     {{$message}}

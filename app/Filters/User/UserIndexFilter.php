@@ -10,6 +10,7 @@ class UserIndexFilter extends AbstractFilter{
         'full_name'=>FullNameFilter::class,
         'company'=>CompanyFilter::class,
         'status'=>ActiveFilter::class,
-        'role'=>RoleFilter::class
+        'role'=>RoleFilter::class,
+        'country_id'=>CountryFilter::class
     ];
 }

@@ -35,7 +35,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //});
 Route::get('vessel/voyages/{id}', [CompanyDataController::class, 'getVesselVoyages']);
 Route::get('master/ports/{id}', [CompanyDataController::class, 'portsCountry']);
+Route::get('master/customers/{id}', [CompanyDataController::class, 'customer']);
 Route::get('master/terminals/{id}', [CompanyDataController::class, 'terminalsPorts']);
-Route::get('agent/loadPrice/{id}', [PriceController::class, 'getLoadAgentPrice']);
-Route::get('agent/dischargePrice/{id}', [PriceController::class, 'getDischargeAgentPrice']);
+Route::get('agent/loadPrice/{id}/{equipment_id?}', [PriceController::class, 'getLoadAgentPrice']);
+Route::get('agent/dischargePrice/{id}/{equipment_id?}', [PriceController::class, 'getDischargeAgentPrice']);
 Route::get('agent/agentCountry/{id}', [AgentCountry::class, 'getAgentCountry']);

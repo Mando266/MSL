@@ -9,6 +9,7 @@ use App\Models\Master\VesselType;
 use App\Models\Master\VesselOperators;
 use Illuminate\Http\Request;
 use App\Filters\Voyages\VoyagesIndexFilter;
+use App\Models\Master\Lines;
 
 class VesselsController extends Controller
 {
@@ -30,7 +31,7 @@ class VesselsController extends Controller
         $this->authorize(__FUNCTION__,Vessels::class);
         $countries = Country::orderBy('name')->get();
         $vessel_types = VesselType::orderBy('name')->get();
-        $vesselOperators = VesselOperators::orderBy('name')->get();
+        $vesselOperators = Lines::orderBy('id')->get();
         return view('master.vessels.create',[
             'countries'=>$countries,
             'vessel_types'=>$vessel_types,
@@ -88,10 +89,17 @@ class VesselsController extends Controller
     public function update(Request $request, Vessels $vessel)
     {
         $request->validate([
-            'name' => 'required',
-            'code' => 'required',
+            'name' => 'required|unique:vessels|max:255',
+            'code' => 'required|unique:vessels|max:255',
+            'call_sign' => 'required|unique:vessels|max:255',
+            'imo_number' => 'required|unique:vessels|max:255',
 
-        ]);
+        ],[
+            'name.unique'=>'This Name Already Exists ',
+            'code.unique'=>'This Code Already Exists ',
+            'call_sign.unique'=>'This Call Sign Already Exists ',
+            'imo_number.unique'=>'This IMO NUMBER Already Exists ',
+         ]);
         $this->authorize(__FUNCTION__,Vessels::class);
         $vessel->update($request->except('_token'));
         return redirect()->route('vessels.index')->with('success',trans('vessel.updated.success'));

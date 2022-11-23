@@ -12,6 +12,9 @@ use App\User as AppUser;
 use App\Models\Master\Country;
 use App\Models\Master\Agents;
 use App\Filters\Quotation\QuotationIndexFilter;
+use App\Models\Master\Lines;
+use App\Models\Quotations\QuotationLoad;
+use App\Quotations\QuotationLoad as QuotationsQuotationLoad;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
@@ -51,14 +54,15 @@ class QuotationsController extends Controller
         $ports = Ports::orderBy('id')->get();
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
-        $customers = Customers::orderBy('id')->get();
+        $customers = Customers::orderBy('id')->with('CustomerRoles.role')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
+        $line = Lines::get();
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
             // $agents = AppUser::role('agent');
-            $agents = Agents::where('is_active',1)->get();
+            $agents = [];
         }else{
             $agents = [];
         }
@@ -71,6 +75,7 @@ class QuotationsController extends Controller
             'currency'=>$currency,
             'customers'=>$customers,
             'country'=>$country,
+            'line'=>$line,
             'equipment_types'=>$equipment_types,
         ]);
     }
@@ -85,11 +90,12 @@ class QuotationsController extends Controller
             'equipment_type_id' => ['required'], 
             'export_detention' => ['required'], 
             'import_detention' => ['required'], 
+            'principal_name' => ['required'], 
+            'vessel_name' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
-            'validity_to' => ['required','after:validity_from'],
-            'soc' => ['required'], 
-            'rate' => ['required'], 
+            'validity_to' => ['required','after:validity_from'], 
+            'ofr' => ['required'], 
             'commodity_des' =>['required'], 
         ],[
             'validity_to.after'=>'Validaty To Should Be After Validaty From ',
@@ -107,137 +113,144 @@ class QuotationsController extends Controller
         $customerName = Customers::where('id', $request->customer_id)->pluck('name')->first();
         $customerName = substr($customerName, 0, 5);
         $refNo = $placeOfAcceptance.$placeOfDelivery.'-'.$customerName.$validityFrom.'-';
-        $rate_sh = false;
-        $rate_cn = false;
-        $rate_nt = false;
-        $rate_fwd = false;
-        switch ($request->rate) {
-            case "rate_sh":
-                $rate_sh = true;
-                break;
-            case "rate_cn":
-                $rate_cn = true;
-                break;
-            case "rate_nt":
-                $rate_nt = true;
-                break;
-            case "rate_fwd":
-                $rate_fwd = true;
-                break;                
-    }
-    if(isset($request->agent_id)){
-        $oldQuotations = Quotation::where("rate_sh",$rate_sh)
-        ->where("rate_cn",$rate_cn)
-        ->where("rate_nt",$rate_nt)
-        ->where("rate_fwd",$rate_fwd)
-        ->where("customer_id",$request->input('customer_id'))
-        ->where("place_of_acceptence_id",$request->input('place_of_acceptence_id'))
-        ->where("place_of_delivery_id",$request->input('place_of_delivery_id'))
-        ->where("load_port_id",$request->input('load_port_id'))
-        ->where("discharge_port_id",$request->input('discharge_port_id'))
-        ->where("place_return_id",$request->input('place_return_id'))
-        ->where("equipment_type_id",$request->input('equipment_type_id'))
-        ->where("export_detention",$request->input('export_detention'))
-        ->where("import_detention",$request->input('import_detention'))
-        ->where("export_storage",$request->input('export_storage'))
-        ->where("import_storage",$request->input('import_storage'))
-        ->where("oog_dimensions",$request->input('oog_dimensions'))
-        ->get();
-        
-        if($oldQuotations->count() >0){
-            if($request->input('validity_from') < $oldQuotations[0]->validity_to){
-                return redirect()->back()->with('error', 'this quotation is dublicated with the same user in the same time');
-            }    
-        }
-        $quotations = Quotation::create([
-            'ref_no'=> "",
-            'agent_id'=>$request->agent_id,
-            'quoted_by_id'=>$user->id,
-            'validity_from'=> $request->input('validity_from'),
-            'validity_to'=> $request->input('validity_to'),
-            'rate_sh'=> $rate_sh,
-            'rate_cn'=> $rate_cn,
-            'rate_nt'=> $rate_nt,
-            'rate_fwd'=> $rate_fwd,
-            'customer_id'=> $request->input('customer_id'),
-            'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
-            'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
-            'load_port_id'=> $request->input('load_port_id'),
-            'discharge_port_id'=> $request->input('discharge_port_id'),
-            'place_return_id'=> $request->input('place_return_id'),
-            'equipment_type_id'=> $request->input('equipment_type_id'),
-            'export_detention'=> $request->input('export_detention'),
-            'import_detention'=> $request->input('import_detention'),
-            'export_storage'=>$request->input('export_storage'),
-            'import_storage'=>$request->input('import_storage'),
-            'oog_dimensions'=>$request->input('oog_dimensions'),
-            'commodity_code'=>$request->input('commodity_code'),
-            'commodity_des'=>$request->input('commodity_des'),
-            'pick_up_location'=>$request->input('pick_up_location'),
-            'ofr'=>$request->input('ofr'),
-            'status'=> "pending",
-        ]);
-        $refNo .=$quotations->id;
-        $quotations->ref_no = $refNo;
-        if($request->rate == 1){
-            $quotations->soc = 1;
+        // $rate_sh = false;
+        // $rate_cn = false;
+        // $rate_nt = false;
+        // $rate_fwd = false;
+        // switch ($request->rate) {
+        //     case "rate_sh":
+        //         $rate_sh = true;
+        //         break;
+        //     case "rate_cn":
+        //         $rate_cn = true;
+        //         break;
+        //     case "rate_nt":
+        //         $rate_nt = true;
+        //         break;
+        //     case "rate_fwd":
+        //         $rate_fwd = true;
+        //         break;                
+        // }
+        // Admin 
+        if(isset($request->agent_id)){
+            $oldQuotations = 
+            Quotation::where("customer_id",$request->input('customer_id'))
+            ->where("place_of_acceptence_id",$request->input('place_of_acceptence_id'))
+            ->where("place_of_delivery_id",$request->input('place_of_delivery_id'))
+            ->where("load_port_id",$request->input('load_port_id'))
+            ->where("discharge_port_id",$request->input('discharge_port_id'))
+            ->where("place_return_id",$request->input('place_return_id'))
+            ->where("equipment_type_id",$request->input('equipment_type_id'))
+            ->where("export_detention",$request->input('export_detention'))
+            ->where("import_detention",$request->input('import_detention'))
+            ->where("export_storage",$request->input('export_storage'))
+            ->where("import_storage",$request->input('import_storage'))
+            ->where("oog_dimensions",$request->input('oog_dimensions'))
+            ->get();
+            
+            if($oldQuotations->count() >0){
+                if($request->input('validity_from') < $oldQuotations[0]->validity_to){
+                    return redirect()->back()->with('error', 'this quotation is dublicated with the same user in the same time');
+                }    
+            }
+            //  $request->agent_id ==> Import Agent  ,  $request->discharge_agent_id   ==> Discharge Agent
+            $quotations = Quotation::create([
+                'ref_no'=> "",
+                'agent_id'=>$request->agent_id,
+                'quoted_by_id'=>$user->id,
+                'discharge_agent_id'=> $request->input('discharge_agent_id'),
+                'countryload'=> $request->input('countryload'),
+                'countrydis'=> $request->input('countrydis'),
+                'vessel_name'=> $request->input('vessel_name'),
+                'principal_name'=> $request->input('principal_name'),
+                'validity_from'=> $request->input('validity_from'),
+                'validity_to'=> $request->input('validity_to'), 
+                'soc'=>$request->soc ? $request->soc : 0,
+                'imo'=>$request->imo ? $request->imo : 0,
+                'oog'=>$request->oog ? $request->oog : 0,
+                'rf'=>$request->rf ? $request->rf : 0,
+                'customer_id'=> $request->input('customer_id'),
+                'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
+                'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
+                'load_port_id'=> $request->input('load_port_id'),
+                'discharge_port_id'=> $request->input('discharge_port_id'),
+                'place_return_id'=> $request->input('place_return_id'),
+                'equipment_type_id'=> $request->input('equipment_type_id'),
+                'export_detention'=> $request->input('export_detention'),
+                'import_detention'=> $request->input('import_detention'),
+                'export_storage'=>$request->input('export_storage'),
+                'import_storage'=>$request->input('import_storage'),
+                'oog_dimensions'=>$request->input('oog_dimensions'),
+                'commodity_code'=>$request->input('commodity_code'),
+                'commodity_des'=>$request->input('commodity_des'),
+                'pick_up_location'=>$request->input('pick_up_location'),
+                'ofr'=>$request->input('ofr'),
+                'show_import'=>$request->input('show_import'),
+                'status'=> "pending",
+            ]);
+            $refNo .=$quotations->id;
+            $quotations->ref_no = $refNo;
+            $quotations->save();
         }else{
-            $quotations->soc = 0;
+            $quotations = Quotation::create([
+                'ref_no'=> "",
+                'agent_id'=>$user->agent_id,
+                'quoted_by_id'=>$user->id,
+                'discharge_agent_id'=> $request->input('discharge_agent_id'),
+                'countryload'=> $request->input('countryload'),
+                'countrydis'=> $request->input('countrydis'),
+                'vessel_name'=> $request->input('vessel_name'),
+                'principal_name'=> $request->input('principal_name'),
+                'validity_from'=> $request->input('validity_from'),
+                'validity_to'=> $request->input('validity_to'),
+                'soc'=>$request->soc ? $request->soc : 0,
+                'imo'=>$request->imo ? $request->imo : 0,
+                'oog'=>$request->oog ? $request->oog : 0,
+                'rf'=>$request->rf ? $request->rf : 0,
+                'customer_id'=> $request->input('customer_id'),
+                'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
+                'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
+                'load_port_id'=> $request->input('load_port_id'),
+                'discharge_port_id'=> $request->input('discharge_port_id'),
+                'place_return_id'=> $request->input('place_return_id'),
+                'equipment_type_id'=> $request->input('equipment_type_id'),
+                'export_detention'=> $request->input('export_detention'),
+                'import_detention'=> $request->input('import_detention'),
+                'export_storage'=>$request->input('export_storage'),
+                'import_storage'=>$request->input('import_storage'),
+                'oog_dimensions'=>$request->input('oog_dimensions'),
+                'commodity_code'=>$request->input('commodity_code'),
+                'commodity_des'=>$request->input('commodity_des'),
+                'pick_up_location'=>$request->input('pick_up_location'),
+                'ofr'=>$request->input('ofr'),
+                'show_import'=>$request->input('show_import'),
+                'status'=> "pending",
+            ]);
+            $refNo .=$quotations->id;
+            $quotations->ref_no = $refNo;
+            $quotations->save();
         }
-        $quotations->save();
-    }else{
-        $quotations = Quotation::create([
-            'ref_no'=> "",
-            'agent_id'=>$user->agent_id,
-            'quoted_by_id'=>$user->id,
-            'validity_from'=> $request->input('validity_from'),
-            'validity_to'=> $request->input('validity_to'),
-            'rate_sh'=> $rate_sh,
-            'rate_cn'=> $rate_cn,
-            'rate_nt'=> $rate_nt,
-            'rate_fwd'=> $rate_fwd,
-            'customer_id'=> $request->input('customer_id'),
-            'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
-            'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
-            'load_port_id'=> $request->input('load_port_id'),
-            'discharge_port_id'=> $request->input('discharge_port_id'),
-            'place_return_id'=> $request->input('place_return_id'),
-            'equipment_type_id'=> $request->input('equipment_type_id'),
-            'export_detention'=> $request->input('export_detention'),
-            'import_detention'=> $request->input('import_detention'),
-            'export_storage'=>$request->input('export_storage'),
-            'import_storage'=>$request->input('import_storage'),
-            'oog_dimensions'=>$request->input('oog_dimensions'),
-            'commodity_code'=>$request->input('commodity_code'),
-            'commodity_des'=>$request->input('commodity_des'),
-            'pick_up_location'=>$request->input('pick_up_location'),
-            'ofr'=>$request->input('ofr'),
-            'status'=> "pending",
-        ]);
-        $refNo .=$quotations->id;
-        $quotations->ref_no = $refNo;
-        if($request->rate == 1){
-            $quotations->soc = 1;
-        }else{
-            $quotations->soc = 0;
-        }
-        $quotations->save();
-    }
-
-        foreach($request->input('quotationDes',[]) as $quotationDes){
+    
+        foreach($request->input('quotationDis',[]) as $quotationDis){
             QuotationDes::create([
                 'quotation_id'=>$quotations->id,
-                'charge_desc'=>$quotationDes['charge_desc'],
-                'mode'=>$quotationDes['mode'],
-                'currency'=>$quotationDes['currency'],
-                'charge_unit'=>$quotationDes['charge_unit'],
-                'selling_price'=>$quotationDes['selling_price'],
-                'cost'=>$quotationDes['cost'],
-                'agency_revene'=>$quotationDes['agency_revene'],
-                'liner'=>$quotationDes['liner'],
-                'payer'=>$quotationDes['payer'],
-                'equipment_type_id'=>$quotationDes['equipment_type_id'],
-
+                'charge_type'=>$quotationDis['charge_type'],
+                'currency'=>$quotationDis['currency'],
+                'unit'=>$quotationDis['unit'],
+                'selling_price'=>$quotationDis['selling_price'],
+                'payer'=>$quotationDis['payer'],
+                'equipment_type_id'=>$quotationDis['equipments_type'],
+            ]);
+        }
+        foreach($request->input('quotationLoad',[]) as $quotationLoad){
+            QuotationLoad::create([
+                'quotation_id'=>$quotations->id,
+                'charge_type'=>$quotationLoad['charge_type'],
+                'currency'=>$quotationLoad['currency'],
+                'unit'=>$quotationLoad['unit'],
+                'selling_price'=>$quotationLoad['selling_price'],
+                'payer'=>$quotationLoad['payer'],
+                'equipment_type_id'=>$quotationLoad['equipments_type'],
             ]);
         }
         return redirect()->route('quotations.index')->with('success',trans('Quotation.created'));
@@ -245,20 +258,22 @@ class QuotationsController extends Controller
 
     public function show($id)
     {
-        $quotation = Quotation::with('quotationDesc')->find($id);
+        $quotation = Quotation::with('quotationDesc','quotationLoad','customer.CustomerRoles.role')->find($id);
         return view('quotations.quotations.show',[
             'quotation'=>$quotation,
-
         ]);
     }
     public function edit($id)
     {
         $this->authorize(__FUNCTION__,Quotation::class);
-        $quotation = Quotation::with('quotationDesc')->find($id);
+        $quotation = Quotation::with('quotationDesc','quotationLoad')->find($id);
         $ports = Ports::orderBy('id')->get();
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
         $customers = Customers::orderBy('id')->get();
+        $country = Country::orderBy('name')->get();
+        $equipment_types = ContainersTypes::orderBy('id')->get();
+        $line = Lines::get();
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
@@ -276,6 +291,9 @@ class QuotationsController extends Controller
             'container_types'=>$container_types,
             'currency'=>$currency,
             'customers'=>$customers,
+            'line'=>$line,
+            'equipment_types'=>$equipment_types,
+            'country'=>$country,
         ]);
     }
 
@@ -290,10 +308,11 @@ class QuotationsController extends Controller
             'equipment_type_id' => ['required'], 
             'export_detention' => ['required'], 
             'import_detention' => ['required'], 
+            'principal_name' => ['required'], 
+            'vessel_name' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'validity_to' => ['required','after:validity_from'],
-            'soc' => ['required'], 
             'rate' => ['required'], 
             'commodity_des' =>['required'], 
         ],[
@@ -305,18 +324,14 @@ class QuotationsController extends Controller
 
         $this->authorize(__FUNCTION__,Quotation::class);
         $user = Auth::user();
-        $quotation = Quotation::with('quotationDesc')->find($id);
-        $rate = $request->rate;
-        $$rate = true;
-
+        $quotation = Quotation::with('quotationDesc','quotationLoad')->find($id);
+        // dd($quotation,$request->input());
         $input = [                    
             'validity_from' => $request->validity_from,
             'validity_to' => $request->validity_to,
-            'rate_sh' => $rate_sh ?? false,
-            'rate_cn' => $rate_cn ?? false,
-            'rate_nt' => $rate_nt ?? false,
-            'rate_fwd' => $rate_fwd ?? false,
             'customer_id' => $request->customer_id,
+            'countryload'=> $request->countryload,
+            'countrydis'=> $request->countrydis,
             'place_of_acceptence_id' => $request->place_of_acceptence_id,
             'place_of_delivery_id' => $request->place_of_delivery_id,
             'load_port_id' => $request->load_port_id,
@@ -331,26 +346,48 @@ class QuotationsController extends Controller
             'commodity_des' => $request->commodity_des,
             'pick_up_location' => $request->pick_up_location,
             'ofr' => $request->ofr,
-            'soc' => $request->soc,
+            'soc'=>$request->soc ? $request->soc : 0,
+            'imo'=>$request->imo ? $request->imo : 0,
+            'oog'=>$request->oog ? $request->oog : 0,
+            'rf'=>$request->rf ? $request->rf : 0,
+            'show_import'=>$request->show_import,
+            'agent_id'=>$user->agent_id,
+            'vessel_name'=> $request->vessel_name,
+            'principal_name'=> $request->principal_name,
+            'oog_dimensions'=>$request->oog_dimensions,
         ];
         if(isset($request->agent_id)){
-            $input ['agent_id'] = $request->agent_id;
+            $input ['discharge_agent_id'] = $request->discharge_agent_id;
             $input ['status'] = "MSL count";
             $quotation->update($input);
         }else{
             if($quotation->status == 'pending'){
-                $input ['agent_id'] = $user->agent_id;
+                $input ['discharge_agent_id'] = $user->discharge_agent_id;
                 $input ['status'] = "pending";
                 $quotation->update($input);
             }else{
-                $input ['agent_id'] = $user->agent_id;
+                $input ['discharge_agent_id'] = $user->discharge_agent_id;
                 $input ['status'] = "Agent count";
                 $quotation->update($input);
             }
             
         }
-        $quotation->createOrUpdateDesc($request->quotationDesc);
-        QuotationDes::destroy(explode(',',$request->removed));
+        if($quotation->discharge_agent_id != $request->discharge_agent_id){
+            $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
+            foreach($deleteOldDes as $x){
+                $x->delete();
+            }
+        }
+        $quotation->createOrUpdateDesc($request->quotationDis);
+        if($quotation->agent_id != $request->agent_id){
+            $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
+            foreach($deleteOldLoad as $x){
+                $x->delete();
+            }
+        }
+        $quotation->createOrUpdateLoad($request->quotationLoad);
+        QuotationDes::destroy(explode(',',$request->removedDesc));
+        QuotationLoad::destroy(explode(',',$request->removedLoad));
         return redirect()->route('quotations.index')->with('success',trans('Quotation.updated.success'));
     }
 

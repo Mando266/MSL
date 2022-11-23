@@ -33,15 +33,11 @@ class CreateQuotationsTable extends Migration
             $table->unsignedInteger('export_detention')->nullable();
             $table->unsignedInteger('import_detention')->nullable();
             $table->boolean('status')->nullable();
+            $table->string('oog_dimensions','255')->nullable();
             $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('quotations');

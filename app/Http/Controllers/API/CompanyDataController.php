@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Finance\AccountPeriod;
 use App\Models\Finance\OperationRate;
 use App\Models\Master\Company;
+use App\Models\Master\Customers;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use Illuminate\Http\Request;
@@ -35,10 +36,19 @@ class CompanyDataController extends Controller
 
     public function terminalsPorts($id)
     {
-        $terminals = Terminals::where('port_id',$id)->select('name','id')->get();
+        $terminals = Terminals::where('port_id',$id)->select('name','id','code')->get();
         
         return Response::json([
             'terminals' => $terminals,
+        ],200);
+    }
+
+    public function customer($id)
+    {
+        $customer = Customers::where('id',$id)->select('id','name','phone','address','email')->get();
+        
+        return Response::json([
+            'customer' => $customer,
         ],200);
     }
 }

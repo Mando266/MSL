@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ContainersMovement extends Model implements PermissionSeederContract
 {
+    use HasFilter;
     protected $table = 'containers_movement';
     protected $guarded = [];
 

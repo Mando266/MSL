@@ -103,17 +103,40 @@
                                 <ul class="collapse list-unstyled sub-submenu" id="lines" data-parent="#lines">
                                 @permission('Lines-List')
                                     <li>
-                                        <a href="{{route('lines.index')}}"> Lines </a>
+                                        <a href="{{route('lines.index')}}"> Liners & Operators </a>
                                     </li>
                                 @endpermission
 
-                                @permission('LinesTypes-List')
+                                @permission('LinesType-List')
                                     <li>
                                         <a href="{{route('line-types.index')}}"> Line Types </a>
                                     </li>
                                 @endpermission
                                 </ul>
                         </li>
+                        @endpermission
+
+                        @permission('LocalPortTriff-List')
+                                <li>
+                                    <a href="#Triffs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Triffs <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                                        <ul class="collapse list-unstyled sub-submenu" id="Triffs" data-parent="#Triffs">
+                                        @permission('LocalPortTriff-List')
+                                            <li>
+                                                <a href="{{route('localporttriff.index')}}">Local Port Triff</a>
+                                            </li>
+                                        @endpermission
+                                        @permission('Demurrage-List')
+                                            <li>
+                                                <a href="{{route('demurrage.index')}}">Demurrage and Detention Tariffs</a>
+                                            </li>
+                                        @endpermission
+                                        @permission('SupplierPrice-List')
+                                            <li>
+                                                <a href="{{route('supplierPrice.index')}}"> Slot Rates Triffs </a>
+                                            </li>
+                                        @endpermission
+                                        </ul>
+                                </li>
                         @endpermission
 
                                 @permission('Agents-List')
@@ -229,12 +252,12 @@
                                         <a href="{{route('stock-types.index')}}"> Stock Types </a>
                                     </li>
                                 @endpermission
-
+<!-- 
                                 @permission('Demurrage-List')
                                 <li>
                                     <a href="{{route('demurrage.index')}}">Demurrage & Dentention</a>
                                 </li>
-                                @endpermission
+                                @endpermission -->
                                 </ul>
             </li>
 
@@ -271,13 +294,6 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component7" data-parent="#accordionExample">
-
-                                @permission('Demurrage-List')
-                                <li>
-                                    <a href="{{route('demurrage.index')}}">Dentention Tarrif</a>
-                                </li>
-                                @endpermission
-
                                 @permission('Demurrage-List')
                                     <li>
                                         <a href="{{route('detention.view')}}"> Dentention Calculation </a>
@@ -298,11 +314,6 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component8" data-parent="#accordionExample">
-                                @permission('LocalPortTriff-List')
-                                <li>
-                                    <a href="{{route('localporttriff.index')}}">Local Port Triff</a>
-                                </li>
-                                @endpermission
                                 @permission('Quotation-List')
                                 <li>
                                     <a href="{{route('quotations.index')}}">Quotations List</a>
@@ -312,6 +323,31 @@
                                 @permission('Quotation-Create')
                                     <li>
                                         <a href="{{route('quotations.create')}}">Create New Quotation</a>
+                                    </li>
+                                @endpermission
+                        </ul>
+            </li>
+            @endpermission
+            @permission('Booking-List')
+            <li class="menu">
+                        <a href="#component10" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                            <div class="">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>      <span>Booking</span>
+                            </div>
+                            <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
+                                @permission('Booking-List')
+                                <li>
+                                    <a href="{{route('booking.index')}}">Booking List</a>
+                                </li>
+                                @endpermission
+
+                                @permission('Booking-Create')
+                                    <li>
+                                        <a href="{{route('booking.selectQuotation')}}">New Booking</a>
                                     </li>
                                 @endpermission
                         </ul>

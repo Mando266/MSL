@@ -19,7 +19,7 @@
                 <form id="createForm" action="{{route('containers.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
-                        <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label for="countryInput">Container Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_type_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -93,9 +93,9 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                                <label for="descriptionInput">Note</label>
+                                <label for="descriptionInput">Lessor/Seller Refrence</label>
                                 <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description')}}"
-                                    placeholder="Note" autocomplete="off">
+                                    placeholder="Lessor/Seller Refrence" autocomplete="off">
                                 @error('description')
                                 <div class="invalid-feedback">
                                     {{$message}}

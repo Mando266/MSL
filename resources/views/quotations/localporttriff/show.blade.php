@@ -39,7 +39,11 @@
                                     @forelse ($triffPriceDetailes as $triffPriceDetailes)
                                         <tr>
                                             <td>{{$triffPriceDetailes->charge_type}}</td>
-                                            <td>{{$triffPriceDetailes->equipment_type_id}}</td>
+                                            @if($triffPriceDetailes->equipment_type_id == 100)
+                                            <td>All</td>
+                                            @else
+                                            <td>{{{optional($triffPriceDetailes->equipment_type_id)->name}}}</td>
+                                            @endif
                                             <td>{{$triffPriceDetailes->unit}}</td>
                                             <td>{{$triffPriceDetailes->currency}}</td>
                                             <td>{{$triffPriceDetailes->selling_price}}</td>
@@ -48,10 +52,16 @@
                                             <td>{{$triffPriceDetailes->liner}}</td>
                                             <td>{{$triffPriceDetailes->payer}}</td>
                                             <td class="text-center">
-                                                @if($triffPriceDetailes->is_import_or_export )
+                                                @if($triffPriceDetailes->is_import_or_export == 0)
                                                     <span class="badge badge-info"> Import </span>
-                                                @else
+                                                @elseif($triffPriceDetailes->is_import_or_export == 1)
                                                     <span class="badge badge-danger"> Export</span>
+                                                @elseif($triffPriceDetailes->is_import_or_export == 2)
+                                                    <span class="badge badge-success"> Empty</span>
+                                                @elseif($triffPriceDetailes->is_import_or_export == 3)
+                                                    <span class="badge badge-dark">Transshipment</span>
+                                                @else
+                                                    <span class="badge badge-success"> Empty</span>
                                                 @endif
                                             </td>
                                             <td class="text-center">

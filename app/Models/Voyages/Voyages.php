@@ -26,6 +26,9 @@ class Voyages extends Model implements PermissionSeederContract
     public function line(){
         return $this->belongsTo(Lines::class,'line_id','id');
     }
+    public function principal(){
+        return $this->belongsTo(Lines::class,'principal_name','id');
+    }
     public function leg(){
         return $this->belongsTo(Legs::class,'leg_id','id');
     }

@@ -49,9 +49,7 @@ class MovementsExport implements FromCollection,WithHeadings
     public function collection()
     {
         $movements = session('items');
-        
-        
-        
+        // dd($movements);
                 foreach($movements as $movement){
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                     $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();

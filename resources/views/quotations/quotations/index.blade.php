@@ -8,7 +8,7 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a a href="javascript:void(0);">Quotations</a></li>
-                                <li class="breadcrumb-item  active"><a href="javascript:void(0);">Quotations List</a></li>
+                                <li class="breadcrumb-item  active"><a href="javascript:void(0);">Quotations Gate</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
@@ -94,9 +94,9 @@
                                         <th>place of delivery</th>
                                         <th>load port</th>
                                         <th>discharge port</th>
-                                        <th>OFR</th>
                                         <th>Status </th>
                                         <th class='text-center' style='width:100px;'></th>
+                                        <th class='text-center' style='width:100px;'> Add Booking</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,7 +113,6 @@
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{{optional($item->dischargePort)->name}}}</td>
-                                            <td>{{$item->ofr}}</td>
 
                                             <td class="text-center">
                                                 @if($item->status == "pending")
@@ -164,7 +163,20 @@
                                                     @endpermission
                                                 </ul>
                                             </td>
-                                        </tr>
+                                            <td class="text-center">
+                                                 <ul class="table-controls">
+                                                 @if($item->status == "approved")
+                                                    @permission('Booking-Create')
+                                                            <li>
+                                                                <a href="{{route('booking.create',['quotation_id'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                    <i class="fas fa-plus text-primary"></i>
+                                                                </a>
+                                                            </li>
+                                                    @endpermission
+                                                @endif
+                                            </ul>
+                                        </td>
+                                    </tr>
                                     @empty
                                         <tr class="text-center">
                                             <td colspan="20">{{ trans('home.no_data_found')}}</td>
@@ -194,7 +206,7 @@
           var name = $(this).data("name");
           event.preventDefault();
           swal({
-              title: `Are you sure you want to delete this record?`,
+              title: `Are you sure you want to delete this Quotation?`,
               icon: "warning",
               buttons: true,
               dangerMode: true,

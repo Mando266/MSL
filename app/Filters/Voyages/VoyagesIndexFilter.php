@@ -9,5 +9,7 @@ class VoyagesIndexFilter extends AbstractFilter{
         'id'       =>VesselIdFilter::class,
         'vessel_id'=>VesselFilter::class,
         'voyage_no'=>VoyageFilter::class,
+        'port_id'=>PortsFilter::class,
+
     ];
 }

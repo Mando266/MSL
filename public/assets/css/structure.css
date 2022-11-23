@@ -708,7 +708,8 @@ code {
 
 #sidebar * {
   overflow: hidden;
-  white-space: nowrap; }
+  /* white-space: nowrap; */
+ }
 
 #sidebar ul.menu-categories {
   position: relative;

@@ -13,7 +13,7 @@ class Customers extends Model implements PermissionSeederContract
 {
     protected $table = 'customers';
     protected $guarded = [];
-
+    use HasFilter;
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
@@ -24,7 +24,7 @@ class Customers extends Model implements PermissionSeederContract
         ]);
     }
     public function CustomerRoles (){
-        return $this->belongsto(CustomerRoles::class,'customer_role_id','id');
+        return $this->hasMany(CustomerRoles::class,'customer_id','id');
     }
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');
@@ -44,5 +44,20 @@ class Customers extends Model implements PermissionSeederContract
             $query->where('company_id',Auth::user()->company_id);
         }
     
+    }
+    public function createOrUpdateRoles($inputs)
+    {
+        if (is_array($inputs) || is_object($inputs)){
+            foreach($inputs as $input){
+                $input['customer_id'] = $this->id;
+                if( isset($input['id']) ){
+                    CustomerRoles::find($input['id'])
+                    ->update($input);
+                }
+                else{
+                    CustomerRoles::create($input);
+                }
+            }
+        }
     }
 }

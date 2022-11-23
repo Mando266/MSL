@@ -18,8 +18,25 @@
                             <a href="{{route('terminals.create')}}" class="btn btn-primary">Add New Terminal</a>
                             </div>
                         </div>
-                        @endpermission
+                       @endpermission
                     </div>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="port">Port </label>
+                                <select class="selectpicker form-control"  data-live-search="true" name="port_id" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($port as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('port_id',request()->input('port_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                <a href="{{route('terminals.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                            </div>
+                    </div>
+                </form>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">

@@ -7,7 +7,7 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Quotations </a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Triffs </a></li>
                             <li class="breadcrumb-item"><a a href="{{route('localporttriff.index')}}">Triff Port Triff</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">New Local Port Triff</a></li>
                             <li class="breadcrumb-item"></li>
@@ -51,7 +51,7 @@
                                     <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="agent_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                         @foreach ($agents as $item)
-                                            <option value="{{$item->name}}" {{$item->name == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('agent_id')
@@ -131,9 +131,9 @@
                                     <td>
                                         <select class="selectpicker form-control" id="equipment_types" data-live-search="true" name="triffPriceDetailes[0][equipment_type_id]" data-size="10"
                                         title="{{trans('forms.select')}}">
-                                            <option value="All">All</option>
+                                            <option value="100">All</option>
                                             @foreach ($equipment_types as $item)
-                                                <option value="{{$item->name}}" {{$item->name == old('equipment_type_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                <option value="{{$item->id}}" {{$item->id == old('equipment_type_id') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -206,6 +206,9 @@
                                             title="{{trans('forms.select')}}">
                                                 <option value="0" >IMPORt</option>
                                                 <option value="1" >Export</option>
+                                                <option value="2" >Empty</option>
+                                                <option value="3" >Transshipment</option>
+
                                         </select>
                                         @error('is_import_or_export')
                                         <div style="color:red;">
@@ -251,7 +254,7 @@
     $("#add").click(function(){
             var tr = '<tr>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="100">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][selling_price]" class="form-control"></td>'+

@@ -18,10 +18,13 @@ class ContinersController extends Controller
         $this->authorize(__FUNCTION__,Containers::class);
             $container = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
             $containers = Containers::get();
+            $container_types = ContainersTypes::orderBy('id')->get();
+            $container_ownership = ContinerOwnership::orderBy('id')->get();
         return view('master.containers.index',[
             'items'=>$container,
             'containers'=>$containers,
-
+            'container_types'=>$container_types,
+            'container_ownership'=>$container_ownership,
         ]);
     }
 
