@@ -20,6 +20,35 @@
                         </div>
                         @endpermission
                     </div>
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                            <label for="name">Customer</label>
+                            <select class="selectpicker form-control" id="name" data-live-search="true" name="name" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                @foreach ($customer as $item)
+                                    <option value="{{$item->name}}" {{$item->name == old('name',request()->input('name')) ? 'selected':''}}>{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="countryInput">{{trans('company.country')}}</label>
+                        <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
+                            title="{{trans('forms.select')}}">
+                            @foreach ($countries as $item)
+                                <option value="{{$item->id}}" {{$item->id == old('country_id',request()->input('country_id')) ? 'selected':''}}>{{$item->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12 text-center">
+                        <button  type="submit" class="btn btn-success mt-3">Search</button>
+                        <a href="{{route('customers.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                    </div>
+                </div>
+            </form>
+
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -30,9 +59,11 @@
                                         <th>Code</th>
                                         <th>Contact Person</th>
                                         <th>phone</th>
+                                        <th>landline</th>
+                                        <th>Currancy</th>
                                         <th>Country</th>
-                                        <th>city</th>
-                                        <th>tax card</th>
+                                        <!-- <th>city</th> -->
+                                        <th>addres</th>
                                         <th>sales person</th>
                                         <th>Role</th>
 
@@ -47,11 +78,19 @@
                                             <td>{{$item->code}}</td>
                                             <td>{{$item->contact_person}}</td>
                                             <td>{{$item->phone}}</td>
+                                            <td>{{$item->landline}}</td>
+                                            <td>{{$item->currency}}</td>
                                             <td>{{optional($item->country)->name}}</td>
-                                            <td>{{$item->city}}</td>
-                                            <td>{{$item->tax_card_no}}</td>
+                                            <!-- <td>{{$item->city}}</td> -->
+                                            <td>{{$item->address}} {{$item->cust_address}}</td>
                                             <td>{{optional($item->User)->name}}</td>
-                                            <td>{{{optional($item->CustomerRoles)->name}}}</td>
+                                            <td>
+                                                <ul>
+                                                    @foreach($item->CustomerRoles as $customerRole)
+                                                    <li>{{optional($customerRole->role)->name}} </li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

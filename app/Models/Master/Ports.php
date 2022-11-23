@@ -12,6 +12,7 @@ class Ports extends Model implements PermissionSeederContract
 {
     protected $table = 'ports';
     protected $guarded = [];
+    use HasFilter;
 
     use PermissionSeederTrait;
     public function getPermissionActions(){
@@ -19,7 +20,7 @@ class Ports extends Model implements PermissionSeederContract
             'List',
             'Create',
             'Edit',
-            'Delete'
+            'Delete' 
         ]);
     }
     public function country(){

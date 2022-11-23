@@ -39,7 +39,13 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
-                                            <td>{{{optional($item->LineTypes)->name}}}</td>
+                                            <td>
+                                                <ul>
+                                                @foreach($item->types as $lineType)
+                                                    <li>{{optional($lineType->type)->name}}</li>
+                                                @endforeach
+                                                </ul>
+                                            </td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

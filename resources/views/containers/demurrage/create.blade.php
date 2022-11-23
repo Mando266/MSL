@@ -7,7 +7,7 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Containers </a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Triffs </a></li>
                             <li class="breadcrumb-item"><a a href="{{route('demurrage.index')}}">Demurrage & Dentention</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Add New Demurrage & Dentention</a></li>
 
@@ -123,6 +123,35 @@
                                         @endforeach
                                     </select>
                                     @error('tariff_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="is_storge">Detention OR Storage</label>
+                                    <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
+                                    title="{{trans('forms.select')}}" autofocus>
+                                            <option value="Detention">Detention</option>
+                                            <option value="Storage">Storage</option>
+                                    </select>
+                                    @error('is_storge')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="containersTypesInput">Terminals</label>
+                                    <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="terminal_id" data-size="10"
+                                    title="{{trans('forms.select')}}" autofocus>
+                                        @foreach ($terminals as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('terminal_id')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>

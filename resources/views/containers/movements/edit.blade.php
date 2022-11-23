@@ -171,6 +171,24 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
+                                <label for="BookingInput">Import Agent </label>
+                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="import_agent" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($agents as $item)
+                                        @if(isset($movement))
+                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') || $item->name == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
+                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error('import_agent')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="BookingInput">container Status </label>
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
                                 title="{{trans('forms.select')}}">

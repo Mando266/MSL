@@ -52,7 +52,7 @@
                                     <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="agent_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                         @foreach ($agents as $item)
-                                            <option value="{{$item->name}}" {{$item->name == old('agent_id',$localporttriff->agent_id) ? 'selected':''}}>{{$item->name}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('agent_id',$localporttriff->agent_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('agent_id')
@@ -135,9 +135,9 @@
                                     <td>
                                         <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="triffPriceDetailes[{{$key}}][equipment_type_id]" data-size="10"
                                         title="{{trans('forms.select')}}" autofocus>
-                                        <option value="All" {{$item->id == old('equipment_type_id') ||  $item->equipment_type_id == "All"? 'selected':''}}>All</option>
+                                        <option value="100" {{$item->id == old('equipment_type_id') ||  $item->equipment_type_id == "100"? 'selected':''}}>All</option>
                                             @foreach ($equipment_types as $equipment_type)
-                                                <option value="{{$equipment_type->name}}" {{$item->id == old('equipment_type_id') ||  $item->equipment_type_id == $equipment_type->name? 'selected':''}}>{{$equipment_type->name}}</option>
+                                                <option value="{{$equipment_type->id}}" {{$item->id == old('equipment_type_id') ||  $item->equipment_type_id == $equipment_type->id? 'selected':''}}>{{$equipment_type->name}}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -209,6 +209,9 @@
                                             title="{{trans('forms.select')}}">
                                                 <option value="0" {{$item->id == old('is_import_or_export') ||  $item->is_import_or_export == "0"? 'selected':''}}>IMPORT</option>
                                                 <option value="1" {{$item->id == old('is_import_or_export') ||  $item->is_import_or_export == "1" ? 'selected':''}}>EXPORT</option>
+                                                <option value="2" {{$item->id == old('is_import_or_export') ||  $item->is_import_or_export == "2" ? 'selected':''}}>Empty</option>
+                                                <option value="3" {{$item->id == old('is_import_or_export') ||  $item->is_import_or_export == "3" ? 'selected':''}}>Transshipment</option>
+
                                         </select>
                                         @error('is_import_or_export')
                                         <div style="color:red;">
@@ -252,8 +255,6 @@
 @endsection
 @push('scripts')
 <script>
-
-
 var removed = [];
 function removeItem( item )
 {
@@ -270,7 +271,7 @@ $(document).ready(function(){
     $("#add").click(function(){
             var tr = '<tr>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off"></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document" >Document</option></select></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][selling_price]" class="form-control" autocomplete="off"></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][cost]" class="form-control" autocomplete="off"></td>'+
@@ -278,7 +279,7 @@ $(document).ready(function(){
         '<td><input type="text" name="triffPriceDetailes['+counter+'][agency_revene]" class="form-control"></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][liner]" class="form-control" autocomplete="off"></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0">IMPORT</option><option value="1" >EXPORT</option></select></td>'+
+        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0">IMPORT</option><option value="1" >EXPORT</option><option value="2" >Empty</option><option value="3" >Transshipment</option></select></td>'+
         '<td><label for="rate_sh">Y</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][add_to_quotation]" value="1">&nbsp;<label for="rate_sh">N</label> &nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][add_to_quotation]" value="0"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';

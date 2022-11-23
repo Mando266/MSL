@@ -7,7 +7,7 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Quotations</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Triffs</a></li>
                                 <li class="breadcrumb-item active"><a href="javascript:void(0);">Local Port Triff</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
@@ -72,7 +72,7 @@
                                             <td>{{$item->triff_no}}</td>
                                             <td>{{{optional($item->country)->name}}}</td>
                                             <td>{{{optional($item->port)->code}}}</td>
-                                            <td>{{$item->agent_id}}</td>
+                                            <td>{{{optional($item->agent)->name}}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
 
@@ -80,7 +80,7 @@
                                                 <ul class="table-controls">
                                                     @permission('LocalPortTriff-Show')
                                                     <li>
-                                                        <a href="{{route('localporttriff.show',['localporttriff'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        <a href="{{route('localporttriff.show',['localporttriff'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show" target="blank">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>

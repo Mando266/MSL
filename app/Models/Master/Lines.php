@@ -26,10 +26,14 @@ class Lines extends Model implements PermissionSeederContract
     public function LineTypes(){
         return $this->belongsTo(LinesType::class,'line_type_id','id');
     }
-    public function company (){
+
+    public function company(){
         return $this->belongsto(Company::class,'company_id','id');
     }
-
+    
+    public function types(){
+        return $this->hasMany(LinesWithType::class,'line_id','id');
+    }
     public function scopeUserLines($query){
         if(is_null(Auth::user()->company_id))
         {

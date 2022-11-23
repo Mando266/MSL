@@ -12,7 +12,7 @@ class AgentCountry extends Controller
     //
     public function getAgentCountry($id)
     {
-        $agents = Agents::where('country_id',$id)->select('name','id')->get();
+        $agents = Agents::where('country_id',$id)->where('is_active',1)->select('name','id')->get();
         
         return Response::json([
             'agents' => $agents

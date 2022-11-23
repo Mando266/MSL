@@ -41,8 +41,8 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="countryInput">Line Type</label>
-                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="line_type_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="line_type_id[][type_id]" data-size="10"
+                                 title="{{trans('forms.select')}}" multiple="multiple">
                                     @foreach ($line_types as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('line_type_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach

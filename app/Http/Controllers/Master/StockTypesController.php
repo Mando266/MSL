@@ -29,9 +29,8 @@ class StockTypesController extends Controller
         $request->validate([
             'name' => 'required',
         ]);
-        StockTypes::create([      
-        'name'=> $request->input('name'),
-        ]);
+        StockTypes::create($request->except('_token'));
+
         return redirect()->route('stock-types.index')->with('success',trans('Stock Type.created'));
     }
 

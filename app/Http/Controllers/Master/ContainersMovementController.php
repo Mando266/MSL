@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Filters\Containers\ContainersIndexFilter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Master\ContainersMovement;
@@ -14,10 +15,13 @@ class ContainersMovementController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,ContainersMovement::class);
-        $containers_movement = ContainersMovement::orderBy('id')->paginate(10);
+        $containers_movement = ContainersMovement::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(10);
+        $movementscode = ContainersMovement::orderBy('id')->get();
 
         return view('master.container-movement.index',[
             'items'=>$containers_movement,
+            'movementscode'=>$movementscode,
+
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Filters\User\UserIndexFilter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Master\Country;
@@ -17,7 +18,9 @@ class PortsController extends Controller
     {
         $this->authorize(__FUNCTION__,Ports::class);
         // if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $ports = Ports::orderBy('id')->paginate(10);
+            $ports = Ports::filter(new UserIndexFilter(request()))->orderBy('id')->paginate(10);
+            $port = Ports::get();
+
         // }
         // else
         // {
@@ -26,6 +29,8 @@ class PortsController extends Controller
         // }
         return view('master.ports.index',[
             'items'=>$ports,
+            'port'=>$port,
+
         ]);
     }
 

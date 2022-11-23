@@ -17,8 +17,7 @@
                 <div class="widget-content widget-content-area">
                 {{-- <form id="createForm" action="{{route('voyages.edit',['voyage'=>$voyage])}}" method="get"> --}}
 
-                    <h5><span style='color:#1b55e2';>Tariff Ref No:</span> {{{optional($demurrage->country)->name}}} {{{optional($demurrage->ports)->code}}} {{{optional($demurrage->bound)->name}}} </h5>
-
+                    <h5><span style='color:#1b55e2';>Tariff Ref No:</span> {{$demurrage->is_storge}} {{{optional($demurrage->bound)->name}}} {{{optional($demurrage->ports)->code}}} {{{optional($demurrage->containersType)->name}}}</h5> 
                 <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">

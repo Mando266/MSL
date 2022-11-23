@@ -43,9 +43,9 @@
                             <div class="form-group col-md-4">
                                 <label for="lineInput">Line Type</label>
                                 <select class="selectpicker form-control" id="lineInput" data-live-search="true" data-size="10"
-                                name="line_type_id" title="{{trans('forms.select')}}">
+                                name="line_type_id[][type_id]" title="{{trans('forms.select')}}" multiple="multiple">
                                     @foreach ($line_types as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('line_type_id',$line->line_type_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('line_type_id',$line->line_type_id) || in_array($item->id, $types)? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('port_type_id')

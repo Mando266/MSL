@@ -127,6 +127,8 @@ class VoyagesController extends Controller
             'voyage_no'=> $request->input('voyage_no'),
             'leg_id'=> $request->input('leg_id'),
             'line_id'=> $request->input('line_id'),
+            'notes'=> $request->input('notes'),
+            'principal_name'=> $request->input('principal_name'),
         ]);
 
         foreach($request->input('voyageport',[]) as $voyageport){

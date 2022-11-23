@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BlDraft\BlDraftController;
+use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Models\ViewModel\RootMenuNode;
@@ -43,6 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('containers', 'ContinersController');
         Route::resource('container-movement', 'ContainersMovementController');
         Route::resource('stock-types', 'StockTypesController');
+        Route::resource('supplierPrice', 'SupplierPriceController');
     });
     /*
     |-------------------------------------------
@@ -78,8 +81,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
+    Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
 
-        /*
+    /*
     |-------------------------------------------
     | Quotations routes
     |--------------------------------------------
@@ -91,7 +95,24 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('localporttriff', 'LocalPortTriffController');
         Route::get('localporttriffdetailes/{id}',[LocalPortTriffDetailesController::class,'destroy'])->name('LocalPortTriffDetailes.destroy');
     });
-
+    /*
+    |-------------------------------------------
+    | Booking routes
+    |--------------------------------------------
+    */
+        Route::prefix('booking')->namespace('Booking')->group(function () {
+        Route::resource('booking','BookingController');
+        Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
+    });
+    /*
+    |-------------------------------------------
+    | BL routes
+    |--------------------------------------------
+    */
+    Route::prefix('bldraft')->namespace('BlDraft')->group(function () {
+        Route::resource('bldraft','BlDraftController');
+        Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
+    });
 });
 Auth::routes(['register' => false]);
 

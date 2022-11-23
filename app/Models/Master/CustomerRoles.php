@@ -7,20 +7,17 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerRoles extends Model
 {
-    protected $table = 'customers_role';
+    public $timestamps = false;
+    protected $table = 'customer_roles';
     protected $guarded = [];
 
-    public function company (){
-        return $this->belongsto(Company::class,'company_id','id');
+    public function customer()
+    {
+        return $this->belongsTo(Customers::class,'customer_id','id');
     }
 
-    public function scopeUserCustomerRoles($query){
-        if(is_null(Auth::user()->company_id))
-        {
-            $query;
-        }else{
-            $query->where('company_id',Auth::user()->company_id);
-        }
-    
+    public function role()
+    {
+        return $this->belongsTo(RoleCustomer::class,'role_id','id');
     }
 }

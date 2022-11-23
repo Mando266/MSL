@@ -11,6 +11,7 @@ class Terminals extends Model implements PermissionSeederContract
 {
     protected $table = 'terminals';
     protected $guarded = [];
+    use HasFilter;
 
     use PermissionSeederTrait;
     public function getPermissionActions(){

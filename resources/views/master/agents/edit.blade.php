@@ -57,7 +57,7 @@
                         </div>
                         
                         <div class="form-row">
-                        <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label for="status">{{trans('user.status')}}</label>
                                 <select class="selectpicker form-control"  name="is_active">
                                     <option value="1" {{ old('status',$agent->is_active) == "1" ? 'selected':'' }}>Active</option>
@@ -100,6 +100,18 @@
                                     <option value="0" {{ old('status',$agent->documentation_control) == "0" ? 'selected':'' }}>No</option>
                                 </select>
                                 @error('status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="details">Customer Details</label>
+                                <textarea class="form-control" id="details" name="details" value="{{old('details',$agent->details)}}"
+                                 placeholder="Customer Details" autocomplete="off" autofocus></textarea>
+                                @error('details')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>

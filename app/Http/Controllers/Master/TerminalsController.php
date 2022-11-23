@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Filters\Voyages\VoyagesIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Country;
 use App\Models\Master\Terminals;
@@ -13,11 +14,13 @@ class TerminalsController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Terminals::class);
-        $terminals = Terminals::orderBy('id')->paginate(10);
-
+        $terminals = Terminals::filter(new VoyagesIndexFilter(request()))->orderBy('id')->paginate(10);
+        $port = Ports::orderBy('id')->get();
         return view('master.terminals.index',[
             'items'=>$terminals,
-        ]);    }
+            'port'=>$port,
+        ]);    
+    }
 
     public function create()
     {
