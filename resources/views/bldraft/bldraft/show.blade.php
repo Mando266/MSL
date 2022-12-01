@@ -15,126 +15,113 @@
                 </div>
                 <div class="widget-content widget-content-area">
                 <div class="col-md-12 text-center">
-                <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                 </div>
 </br>
 </br>
 
-                <table class="col-md-12 tableStyle">
+                <!-- <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
                             <th class="text-center thstyle">Booking Confirmation</th>
                         </tr>
                     </thead>
-                </table>
-                
+                </table> -->
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Booking Ref N : {{$booking->ref_no}}</td>
-                            <td class="tableStyle">Issue Date : {{$booking->created_at}}</td>
+                            <td class="col-md-6 tableStyle">1- Shipper </br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->customer_shipper_details }}</td>
+                            <td class="col-md-6 tableStyle text-center"><img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo"></td>
                         </tr>
                     </tbody>
                 </table>
-
-                <table class="col-md-12 tableStyle">
-                    <thead>
-                        <tr>
-                            <th class="tableStyle thstyle">Name And Address</th>
-                            <th class="tableStyle thstyle">Forwarder</th>
-                        </tr>
-                    </thead>
+                <table class="col-md-6 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">{{optional($booking->customer)->name}}</br>{{optional($booking->customer)->address}}
-                            </br>phone : {{optional($booking->customer)->phone}}</br>Email : {{optional($booking->customer)->email}}</td>
-                            <td class="tableStyle">{{optional($booking->forwarder)->name}}</br>{{optional($booking->forwarder)->address}}
-                            </br>phone : {{optional($booking->forwarder)->phone}}</br>Email : {{optional($booking->forwarder)->email}}</td>
+                            <td class="col-md-6 tableStyle">2- Consignee </br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->customer_consignee_details }}</td>
                         </tr>
                     </tbody>
                 </table>
-                <table class="col-md-12 tableStyle">
+                <table class="col-md-6 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Shipper Ref No : {{$booking->shipper_ref_no}}</td>
-                            <td class="tableStyle">Forwarder Ref No : {{$booking->forwarder_ref_no}}</td>
+                            <td class="col-md-6 tableStyle">3- Notify Party </br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->customer_notifiy_details }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">First Vessel / Voyage : @if($booking->voyage != null){{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}} @endif</td>
-                            <td class="tableStyle">ETA: {{optional($firstVoyagePort)->eta}}</br></br>ETD: {{optional($firstVoyagePort)->etd}}</td>
-                        </tr>
-                        <tr>
-                            <td class="tableStyle">Second Vessel / Voyage : @if($booking->secondvoyage != null){{ $booking->secondvoyage->vessel->name }} / {{ $booking->secondvoyage->voyage_no}} @endif</td>
-                            <td class="tableStyle">ETD: {{optional($secondVoyagePort)->etd}}</td>
+                            <td class="col-md-6 tableStyle">4- Vessel and Voyage No. </br>
+                            &nbsp &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</td>
+                            <td class="col-md-6 tableStyle">7- Place of Receipt </br>
+                            &nbsp &nbsp &nbsp{{ optional($blDraft->placeOfAcceptence)->name }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Place of Acceptance : &nbsp; <span>{{optional($booking->placeOfAcceptence)->name}}</span></td>
-                            <td class="tableStyle">Place of Delivery : &nbsp; <span>{{optional($booking->placeOfDelivery)->name}}</span></td>
+                            <td class="col-md-3 tableStyle">5- Port Of Loading </br>
+                            &nbsp &nbsp &nbsp{{ optional($blDraft->loadPort)->name }}</td>
+                            <td class="col-md-3 tableStyle">6- Port Of Discharge </br>
+                            &nbsp &nbsp &nbsp{{ optional($blDraft->dischargePort)->name }}</td>
+                            <td class="col-md-6 tableStyle">8- Place of Delivery </br>
+                            &nbsp &nbsp &nbsp{{ optional($blDraft->placeOfDelivery)->name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>&nbsp</h4>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        @foreach($blDraft->blDetails as $bldetails)
+                        <tr>
+                            <td class="col-md-3.5 tableStyle">9- Marks and Nos / Container Nos / Seal Nos </br>
+                            &nbsp &nbsp &nbsp{{ optional($bldetails->container)->code }} &nbsp {{ $bldetails->seal_no }}</td>
+                            <td class="col-md-5.5 tableStyle">10- Number and kind of Packages / Description of Goods </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->packs }} &nbsp {{ $bldetails->description }}</td>
+                            <td class="col-md-1.5 tableStyle">11- Gross Weight (kg) </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->gross_weight }}</td>
+                            <td class="col-md-1.5 tableStyle">12- Measurement (cbm) </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->measurement }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </br>
+                </br>
+                </br>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-8 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
+                            <td class="col-md-4 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
                         </tr>
                         <tr>
-                            <td class="tableStyle">Load Port : &nbsp; <span>{{optional($booking->loadPort)->name}}</span></td>
-                            <td class="tableStyle"> Discharge Port : &nbsp; <span>{{optional($booking->dischargePort)->name}}</span></td>
+                            <td class="col-md-7 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
+                            <td class="col-md-5 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
+                            <td class="col-md-4 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
+                            <td class="col-md-4 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
+                        @foreach($blDraft->blDetails as $bldetails)
                         <tr>
-                            <td class="tableStyle">Discharge Terminal : {{optional($booking->terminals)->name}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="col-md-12 tableStyle">
-                    <tbody>
-                        <tr>
-                            <td class="tableStyle">Discharge Port ETD : {{$booking->discharge_etd}}</td>
-                            <td class="tableStyle">Load Port Cutoff : {{$booking->load_port_cutoff}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="col-md-12 tableStyle">
-                    <tbody>
-                        <tr>
-                            <td class="tableStyle">BL Release : {{optional($booking->agent)->name}}</td>
-                            <td class="tableStyle">Load Port Free Days : {{$booking->load_port_dayes}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="col-md-12 tableStyle">
-                    <tbody>
-                        <tr>
-                            <td class="tableStyle">Booked By : {{optional($booking->bookedby)->full_name}}</td>
-                            <td class="tableStyle">Tarrif/Service Contract : {{optional($booking->quotation)->ref_no}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h4>Container Details :</h4>
-                <table class="col-md-12 tableStyle">
-                    <tbody>
-                        <tr>
-                            <td class="tableStyle thstyle">Items #</td>
-                            <td class="tableStyle thstyle">Size Type</td>
-                            <td class="tableStyle thstyle">Seal No</td>
-                            <td class="tableStyle thstyle">QTY</td>
-                            <td class="tableStyle thstyle">Container No</td>
-                            <td class="tableStyle thstyle">Haz / Reefer / OOG Details / Haz Approval Ref.</td>
-                        </tr>
-                        @foreach($booking->bookingContainerDetails as $details)
-                        <tr>
-                            <td class="tableStyle">{{ $loop->iteration }}</td>
-                            <td class="tableStyle">{{ optional($details->containerType)->name }}</td>
-                            <td class="tableStyle">{{ $details->seal_no }}</td>
-                            <td class="tableStyle">{{ $details->qty }}</td>
-                            <td class="tableStyle">{{ optional($details->container)->code }}</td>
-                            <td class="tableStyle">{{ $details->haz}}</td>
+                            <td class="col-md-3.5 tableStyle">9- Marks and Nos / Container Nos / Seal Nos </br>
+                            &nbsp &nbsp &nbsp{{ optional($bldetails->container)->code }} &nbsp {{ $bldetails->seal_no }}</td>
+                            <td class="col-md-5.5 tableStyle">10- Number and kind of Packages / Description of Goods </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->packs }} &nbsp {{ $bldetails->description }}</td>
+                            <td class="col-md-1.5 tableStyle">11- Gross Weight (kg) </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->gross_weight }}</td>
+                            <td class="col-md-1.5 tableStyle">12- Measurement (cbm) </br>
+                            &nbsp &nbsp &nbsp{{ $bldetails->measurement }}</td>
                         </tr>
                         @endforeach
                     </tbody>

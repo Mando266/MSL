@@ -410,7 +410,7 @@
                                 <td class="containerDetailsID">
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="containerDetails[0][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
-                                          <option value="000">Select</option>
+                                          <option value="000" selected>Select</option>
                                           @foreach ($containers as $item)
                                               <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
                                           @endforeach

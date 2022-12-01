@@ -7,8 +7,8 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a a href="javascript:void(0);">Booking</a></li>
-                                <li class="breadcrumb-item  active"><a href="javascript:void(0);">Booking Gates</a></li>
+                            <li class="breadcrumb-item"><a a href="javascript:void(0);">Bl Draft</a></li>
+                                <li class="breadcrumb-item  active"><a href="javascript:void(0);">BL Gates</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
@@ -120,7 +120,7 @@
                                                     @endpermission -->
                                                     <!-- @permission('Booking-Show')
                                                     <li>
-                                                        <a href="{{route('booking.show',['booking'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>

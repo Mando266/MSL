@@ -161,6 +161,7 @@
                                         <th>movement code</th>
                                         <th>Ownership</th>
                                         <th>movement date</th>
+                                        <th>stock status</th>
                                         <th>bl no</th>
                                         <th>VSL/VOY</th>
                                         <th>ACTIVITY LOCATION</th>
@@ -174,7 +175,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
@@ -183,6 +183,7 @@
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{{optional($item->container->containersOwner)->name}}}</td>
                                             <td>{{$item->movement_date}}</td>
+                                            <td>{{optional($item->movementcode->containerstock)->name}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
                                             <td>{{$item->port_location_id}}</td>
