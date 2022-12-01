@@ -64,10 +64,11 @@ class BlDraftController extends Controller
         $ports = Ports::orderBy('id')->get();
         $containers = Containers::orderBy('id')->get();
         $voyages    = Voyages::with('vessel')->get();
-        // $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->sum('qty');
-        $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->get();
-
+        $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
+        $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
+        // dd($booking_containers);
         return view('bldraft.bldraft.create',[
+            'booking_containers'=>$booking_containers,
             'customershipper'=>$customershipper,
             'customersConsignee'=>$customersConsignee,
             'customersNotifiy'=>$customersNotifiy,
@@ -95,22 +96,22 @@ class BlDraftController extends Controller
         ]);
         $user = Auth::user();
         $blDraft = BlDraft::create([
-            'ref_no'=> "",
-            'company_id'=>$user->company_id,
             'booking_id'=> $request->input('booking_id'),
+            'company_id'=>$user->company_id,
+            'ref_no'=> "",
             'customer_id'=> $request->input('customer_id'),
+            'customer_consignee_details'=> $request->input('customer_phone'),
+            'customer_notifiy_details'=> $request->input('customer_address'),
+            'customer_shipper_details'=> $request->input('customer_shipper_details'),
+            'descripions'=> $request->input('descripions'),
             'customer_consignee_id'=> $request->input('customer_consignee_id'),
             'customer_notifiy_id'=> $request->input('customer_notifiy_id'),
-            'customer_phone'=> $request->input('customer_phone'),
-            'customer_address'=> $request->input('customer_address'),
-            'customer_shipper_details'=> $request->input('customer_shipper_details'),
             'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
-            'load_port_id'=> $request->input('load_port_id'),
             'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
+            'load_port_id'=> $request->input('load_port_id'),
             'discharge_port_id'=> $request->input('discharge_port_id'),
             'equipment_type_id'=> $request->input('equipment_type_id'),
             'voyage_id'=> $request->input('voyage_id'),
-            'descripions'=> $request->input('descripions'),
         ]);
 
         foreach($request->input('blDraftdetails',[]) as $blDraftdetails){
@@ -129,7 +130,10 @@ class BlDraftController extends Controller
 
     public function show($id)
     {
-        //
+        $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+        return view('bldraft.bldraft.show',[
+            'blDraft'=>$blDraft
+            ]);
     }
 
     public function edit($id)

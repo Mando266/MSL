@@ -26,8 +26,8 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>code</th>
-                                        <th>name</th>
+                                        <th>USAGE AVAILABILITY</th>
+                                        <th>STOCK STATUS DESCRIPTION</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>

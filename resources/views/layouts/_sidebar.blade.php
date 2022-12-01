@@ -328,20 +328,30 @@
                         </ul>
             </li>
             @endpermission
-            @permission('Booking-List')
+
+
+
+
+            <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
             <li class="menu">
-                        <a href="#component10" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                        <a href="#booking" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>      <span>Booking</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                            <span>Documentation</span>
                             </div>
                             <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
                             </div>
                         </a>
-                        <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
+                        <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
+               
+                        @permission('Booking-List')
+                        <li>
+                            <a href="#booking2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Booking <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                                <ul class="collapse list-unstyled sub-submenu" id="booking2" data-parent="#booking">
                                 @permission('Booking-List')
                                 <li>
-                                    <a href="{{route('booking.index')}}">Booking List</a>
+                                    <a href="{{route('booking.index')}}">Booking Gates</a>
                                 </li>
                                 @endpermission
 
@@ -350,9 +360,29 @@
                                         <a href="{{route('booking.selectQuotation')}}">New Booking</a>
                                     </li>
                                 @endpermission
-                        </ul>
+                                </ul>
+                        </li>
+                        @endpermission
+                        @permission('Ports-List')
+                        <li>
+                            <a href="#bl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Bl Draft<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                                <ul class="collapse list-unstyled sub-submenu" id="bl" data-parent="#bl">
+                    
+                                @permission('BlDraft-List')
+                                    <li>
+                                        <a href="{{route('bldraft.index')}}"> Bl Gates </a>
+                                    </li>
+                                @endpermission
+                                @permission('BlDraft-Create')
+                                    <li>
+                                        <a href="{{route('bldraft.selectbooking')}}"> New BL Draft </a>
+                                    </li>
+                                @endpermission
+                                </ul>
+                        </li>
+                        @endpermission
             </li>
-            @endpermission
+        </ul>
 
     </nav>
 </div>

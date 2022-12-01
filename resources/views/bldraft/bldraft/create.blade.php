@@ -191,9 +191,11 @@
                         <div class="form-group col-md-3">
                             <label for="voyage_id">Vessel / Voyage <span style="color: red;">*</span></label>
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
-                                title="{{trans('forms.select')}}">
+                                title="{{trans('forms.select')}}" disabled>
                                 @foreach ($voyages as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                    @if($booking->voyage_id != null)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                             @error('voyage_id')
@@ -224,7 +226,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                            @foreach($booking_qyt as $key => $item)
+                            @foreach($booking_containers as $bookingContainer)
+                            <tr>
+                                <td>
+                                  <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[0][container_id]" data-size="10"
+                                          title="{{trans('forms.select')}}">
+                                          <option value="">Select</option>
+                                          @foreach ($containers as $item)
+                                              <option value="{{$item->id}}" {{$item->id == old('container_id',$bookingContainer->container->id) ? 'selected':'disabled'}}>{{$item->code}}</option>
+                                          @endforeach
+                                  </select>
+                                </td>
+                                <td>
+                                    <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[0][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" readonly>
+                                </td>
+             
+                                <td>
+                                    <input type="text" id="Packs" name="blDraftdetails[0][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                </td>
+
+                                <td>
+                                    <input type="text" id="description" name="blDraftdetails[0][description]" class="form-control input"  autocomplete="off" placeholder="Description">
+                                </td>
+
+                                <td>
+                                    <input type="text" id="gross_weight" name="blDraftdetails[0][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
+                                </td>
+
+                                <td>
+                                    <input type="text" id="measurement" name="blDraftdetails[0][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @for($i=0 ; $i < $booking_qyt ; $i++)
                             <tr>
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[0][container_id]" data-size="10"
@@ -255,7 +289,7 @@
                                     <input type="text" id="measurement" name="blDraftdetails[0][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
                                 </td>
                             </tr>
-                            @endforeach
+                            @endfor
 
                             </tbody>
                         </table>
