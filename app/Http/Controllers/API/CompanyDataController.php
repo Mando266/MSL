@@ -45,7 +45,7 @@ class CompanyDataController extends Controller
 
     public function customer($id)
     {
-        $customer = Customers::where('id',$id)->select('id','name','phone','address','email')->get();
+        $customer = Customers::where('id',$id)->get();
         
         return Response::json([
             'customer' => $customer,

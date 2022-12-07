@@ -214,6 +214,62 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="notes">Date Of Issue</label>
+                            <input type="date" name="date_of_issue" class="form-control" placeholder="Date Of Issue" autocomplete="off">
+                            @error('date_of_issue')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="notes">Declered Value</label>
+                            <input type="text" name="declerd_value" class="form-control" placeholder="Declered Value" autocomplete="off">
+                            @error('declerd_value')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                                <label for="status">Movement</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
+                                    <option value="FCL/FCL">FCL/FCL</option>
+                                </select>
+                                @error('movement')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="notes">Number Of Original Bills</label>
+                            <input type="text" name="number_of_original" class="form-control" placeholder="Number Of Original Bills" autocomplete="off">
+                            @error('number_of_original')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label for="status">Bl Kind</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
+                                    <option value="Original">Original</option>
+                                    <option value="Seaway BL">Seaway BL</option>
+                                </select>
+                                @error('bl_kind')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                    </div>
+
                     <table id="blDraft" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -317,7 +373,7 @@
                     let value = e.target.value;
                     let response =    $.get(`/api/master/customers/${customerconsignee.val()}`).then(function(data){
                         let consIgnees = data.customer[0] ;
-                    let consignee = $('#consignee').val('Phone :' + ' ' + consIgnees.phone + ' ' + '-' + ' ' +'Email :' +' ' + consIgnees.email +  ' ' + '-' + ' ' + 'Address :' +' ' + consIgnees.address );
+                    let consignee = $('#consignee').val('Phone :' + ' ' + consIgnees.phone + ' ' + '-' + ' ' +'Email :' +' ' + consIgnees.email +  ' ' + '-' + ' ' + 'Address Line1 :' +' ' + consIgnees.address + ' ' + '-' + ' ' + 'Address Line2 :' +' ' + consIgnees.cust_address + ' ' + '-' + ' ' +' Fax :' +' ' + consIgnees.fax);
                     consignee.html(list2.join(''));
                 });
             });
@@ -331,7 +387,7 @@
                     let value = e.target.value;
                     let response =    $.get(`/api/master/customers/${customernotifiy.val()}`).then(function(data){
                         let notIfiy = data.customer[0] ;
-                    let notifiy = $('#notifiy').val('Phone :' + ' ' + notIfiy.phone + ' ' + '-' + ' ' +'Email :' +' ' + notIfiy.email +  ' ' + '-' + ' ' + 'Address :' +' ' + notIfiy.address );
+                        let notifiy = $('#notifiy').val('Phone :' + ' ' + notIfiy.phone + ' ' + '-' + ' ' +'Email :' +' ' + notIfiy.email +  ' ' + '-' + ' ' + 'Address Line1 :' +' ' + notIfiy.address + ' ' + '-' + ' ' + 'Address Line2 :' +' ' + notIfiy.cust_address + ' ' + '-' + ' ' +' Fax :' +' ' + notIfiy.fax);
                     notifiy.html(list2.join(''));
                 });
             });

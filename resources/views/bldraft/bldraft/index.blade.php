@@ -118,13 +118,13 @@
                                                         </a>
                                                     </li>
                                                     @endpermission -->
-                                                    <!-- @permission('Booking-Show')
+                                                    @permission('Booking-Show')
                                                     <li>
                                                         <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission  -->
+                                                    @endpermission 
                                                     @permission('BlDraft-Delete')
                                                     <li>
                                                         <form action="{{route('bldraft.destroy',['bldraft'=>$item->id])}}" method="post">

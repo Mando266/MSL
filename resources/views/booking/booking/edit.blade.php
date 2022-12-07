@@ -18,7 +18,7 @@
                             @csrf
                             @method('put')
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                 <label for="customer_id">Customer <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -54,6 +54,18 @@
                                             {{$message}}
                                         </div>
                                         @enderror
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="status">Booking Status<span style="color: red;">*</span></label>
+                                    <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" data-live-search="true">
+                                        <option value="1" {{$booking->booking_confirm == old('booking_confirm',$quotation->booking_confirm) ? 'selected':''}}>Confirm</option>
+                                        <option value="0" {{$booking->booking_confirm == old('booking_confirm',$quotation->booking_confirm) ? 'selected':''}}>Draft</option>
+                                    </select>
+                                    @error('booking_confirm')
+                                    <div style="color:red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
                                 </div>
                                 <div class="form-group col-md-4" style="padding-top: 30px;">
                                     <div class="form-check">

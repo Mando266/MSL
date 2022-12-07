@@ -78,7 +78,7 @@
                     <tbody>
                         @foreach($blDraft->blDetails as $bldetails)
                         <tr>
-                            <td class="col-md-3.5 tableStyle">9- Marks and Nos / Container Nos / Seal Nos </br>
+                            <td class="col-md-3.5 tableStyle" >9- Marks and Nos / Container Nos / Seal Nos </br>
                             &nbsp &nbsp &nbsp{{ optional($bldetails->container)->code }} &nbsp {{ $bldetails->seal_no }}</td>
                             <td class="col-md-5.5 tableStyle">10- Number and kind of Packages / Description of Goods </br>
                             &nbsp &nbsp &nbsp{{ $bldetails->packs }} &nbsp {{ $bldetails->description }}</td>
@@ -96,34 +96,34 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="col-md-8 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
-                            <td class="col-md-4 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-7 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
-                            <td class="col-md-5 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-4 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
-                            <td class="col-md-4 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid</td>
-                            <td class="col-md-4 tableStyle">(NOT NEGOTIABLE UNLESS CONSIGNED TO ORDER)</td>
+                            <td class="col-md-9 tableStyle">13- Freight Payable At Cargo shall not be delivered unless Freight & charges are paid </br>
+                            &nbsp &nbsp &nbsp</td>
+                            <td class="col-md-3 tableStyle"></td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
-                        @foreach($blDraft->blDetails as $bldetails)
                         <tr>
-                            <td class="col-md-3.5 tableStyle">9- Marks and Nos / Container Nos / Seal Nos </br>
-                            &nbsp &nbsp &nbsp{{ optional($bldetails->container)->code }} &nbsp {{ $bldetails->seal_no }}</td>
-                            <td class="col-md-5.5 tableStyle">10- Number and kind of Packages / Description of Goods </br>
-                            &nbsp &nbsp &nbsp{{ $bldetails->packs }} &nbsp {{ $bldetails->description }}</td>
-                            <td class="col-md-1.5 tableStyle">11- Gross Weight (kg) </br>
-                            &nbsp &nbsp &nbsp{{ $bldetails->gross_weight }}</td>
-                            <td class="col-md-1.5 tableStyle">12- Measurement (cbm) </br>
-                            &nbsp &nbsp &nbsp{{ $bldetails->measurement }}</td>
+                            <td class="col-md-3 tableStyle">14- Date of Issue </br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->date_of_issue }}</td>
+                            <td class="col-md-3 tableStyle">15- Place of Issue </br>
+                            &nbsp &nbsp &nbsp</td>
+                            <td class="col-md-3 tableStyle">16- Movement </br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->movement }}</td>
+                            <td class="col-md-3 tableStyle"></td>
                         </tr>
-                        @endforeach
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-5 tableStyle">17- Declerd Value (Only Applicable if Ad Valer)</br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->declerd_value }}</td>
+                            <td class="col-md-4 tableStyle"></br>
+                            &nbsp &nbsp &nbsp{{ $blDraft->number_of_original }}</td>
+                            <td class="col-md-3 tableStyle"></td>
+                        </tr>
                     </tbody>
                 </table>
                 </div>
