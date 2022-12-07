@@ -12,14 +12,14 @@ class PortTyepsController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,PortTypes::class);
-        // if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
             $port_types = PortTypes::orderBy('id')->paginate(10);
-        // }
-        // else
-        // {
-        //     $port_types = PortTypes::where('company_id',Auth::user()
-        //     ->company_id)->UserPortsTypes()->orderBy('id')->paginate(10);
-        // }
+        }
+        else
+        {
+            $port_types = PortTypes::where('company_id',Auth::user()
+            ->company_id)->UserPortsTypes()->orderBy('id')->paginate(10);
+        }
         return view('master.port-types.index',[
             'items'=>$port_types,
         ]); 
@@ -34,9 +34,13 @@ class PortTyepsController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $request->validate([
-            'name' => 'required',
-        ]);
+        $name = request()->input('name');
+        $NameDublicate  = PortTypes::where('company_id',$user->company_id)->where('name',$name)->first();
+
+        if($NameDublicate != null){
+            return back()->with('alert','This Port Type Name Already Exists');
+        }
+
         PortTypes::create([      
         'name'=> $request->input('name'),
         'company_id'=>$user->company_id,
@@ -59,9 +63,13 @@ class PortTyepsController extends Controller
 
     public function update(Request $request, PortTypes $port_type)
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
+        $user = Auth::user();
+        $name = request()->input('name');
+        $NameDublicate  = PortTypes::where('company_id',$user->company_id)->where('name',$name)->first();
+
+        if($NameDublicate != null){
+            return back()->with('alert','This Port Type Name Already Exists');
+        }
         $this->authorize(__FUNCTION__,PortTypes::class);
         $port_type->update($request->except('_token'));
         return redirect()->route('port-types.index')->with('success',trans('Port Type.updated.success'));    

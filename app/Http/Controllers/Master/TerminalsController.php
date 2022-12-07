@@ -8,17 +8,23 @@ use App\Models\Master\Country;
 use App\Models\Master\Terminals;
 use App\Models\Master\Ports;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TerminalsController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Terminals::class);
-        $terminals = Terminals::filter(new VoyagesIndexFilter(request()))->orderBy('id')->paginate(10);
-        $port = Ports::orderBy('id')->get();
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+            $terminals = Terminals::filter(new VoyagesIndexFilter(request()))->orderBy('id')->paginate(10);
+            $port = Ports::orderBy('id')->get();
+        }else{
+            $terminals = Terminals::filter(new VoyagesIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(10);
+            $port = Ports::orderBy('id')->where('company_id',Auth::user()->company_id)->get();   
+        }
         return view('master.terminals.index',[
-            'items'=>$terminals,
-            'port'=>$port,
+                'items'=>$terminals,
+                'port'=>$port,
         ]);    
     }
 
@@ -36,15 +42,23 @@ class TerminalsController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Terminals::class);
-        $request->validate([
-            'name' => 'required|unique:terminals|max:255',
-            'code' => 'required|unique:terminals|max:255',
-        ],[
-            'name.unique'=>'This Terminal Name Already Exists ',
-            'code.unique'=>'This Terminal Code Already Exists ',
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
 
-        ]);
-            Terminals::create($request->except('_token'));
+        $CodeDublicate  = Terminals::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Terminal Code Already Exists');
+        }
+
+        $NameDublicate  = Terminals::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Terminal Name Already Exists');
+        }
+
+        $terminals = Terminals::create($request->except('_token'));
+        $terminals->company_id = $user->company_id;
+        $terminals->save();
         return redirect()->route('terminals.index')->with('success',trans('Terminal.created')); 
     }
 
@@ -68,10 +82,19 @@ class TerminalsController extends Controller
 
     public function update(Request $request, Terminals $terminal)
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-        ]);
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
+
+        $CodeDublicate  = Terminals::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Terminal Code Already Exists');
+        }
+
+        $NameDublicate  = Terminals::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Terminal Name Already Exists');
+        }
         $this->authorize(__FUNCTION__,Terminals::class);
         $terminal->update($request->except('_token'));
         return redirect()->route('terminals.index')->with('success',trans('Terminal.updated.success')); 
@@ -82,10 +105,5 @@ class TerminalsController extends Controller
         $terminal =Terminals::Find($id);
         $terminal->delete();
         return redirect()->route('terminals.index')->with('success',trans('Terminal.deleted.success')); 
-    }
-
-    public function getTerminals()
-    {
-        
     }
 }

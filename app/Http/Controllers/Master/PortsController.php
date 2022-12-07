@@ -11,22 +11,23 @@ use App\Models\Master\Ports;
 use App\Models\Master\Terminals;
 use App\Models\Master\Agents;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class PortsController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Ports::class);
-        // if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $ports = Ports::filter(new UserIndexFilter(request()))->orderBy('id')->paginate(10);
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
+            $ports = Ports::filter(new UserIndexFilter(request()))->orderBy('id')->paginate(30);
             $port = Ports::get();
-
-        // }
-        // else
-        // {
-        //     $ports = Ports::where('company_id',Auth::user()
-        //     ->company_id)->UserPorts()->orderBy('id')->paginate(10);
-        // }
+         }
+        else
+        {
+            $ports = Ports::filter(new UserIndexFilter(request()))->orderBy('id')->where('company_id',Auth::user()
+            ->company_id)->UserPorts()->orderBy('id')->paginate(30);
+            $port = Ports::where('company_id',Auth::user()->company_id)->get();
+        }
         return view('master.ports.index',[
             'items'=>$ports,
             'port'=>$port,
@@ -51,17 +52,24 @@ class PortsController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize(__FUNCTION__,Ports::class);
-        $request->validate([
-            'name' => 'required|unique:ports|max:255',
-            'code' => 'required|unique:ports|max:255',
+        $this->authorize(__FUNCTION__,Ports::class);        
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
+        $CodeDublicate  = Ports::where('company_id',$user->company_id)->where('code',$code)->first();
 
-        ],[
-            'name.unique'=>'This Port Name Already Exists ',
-            'code.unique'=>'This Port Code Already Exists ',
+        if($CodeDublicate != null){
+            return back()->with('alert','This Port Code Already Exists');
+        }
+        $NameDublicate  = Ports::where('company_id',$user->company_id)->where('name',$name)->first();
 
-        ]);
+        if($NameDublicate != null){
+            return back()->with('alert','This Port Name Already Exists');
+        }
         $ports = Ports::create($request->except('_token'));
+        $ports->company_id = $user->company_id;
+        $ports->save();
+        
         return redirect()->route('ports.index')->with('success',trans('port.created')); 
     }
 
@@ -99,10 +107,20 @@ class PortsController extends Controller
 
     public function update(Request $request, Ports $port)
     {
-        $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-        ]);
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
+        $CodeDublicate  = Ports::where('company_id',$user->company_id)->where('code',$code)->first();
+
+        if($CodeDublicate != null){
+            return back()->with('alert','This Port Code Already Exists');
+        }
+        $NameDublicate  = Ports::where('company_id',$user->company_id)->where('name',$name)->first();
+
+        if($NameDublicate != null){
+            return back()->with('alert','This Port Name Already Exists');
+        }
+
         $this->authorize(__FUNCTION__,Ports::class);
         $port->update($request->except('_token'));
         return redirect()->route('ports.index')->with('success',trans('Port.updated.success')); 
@@ -112,7 +130,6 @@ class PortsController extends Controller
     {
         $port =Ports::Find($id);
         $port->delete();
-
         return redirect()->route('ports.index')->with('success',trans('Port.deleted.success'));
     }
 }
