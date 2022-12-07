@@ -197,11 +197,11 @@ class QuotationsController extends Controller
         }else{
             $quotations = Quotation::create([
                 'ref_no'=> "",
-                'agent_id'=>$user->agent_id,
+                'discharge_agent_id'=>$user->agent_id,
                 'quoted_by_id'=>$user->id,
-                'discharge_agent_id'=> $request->input('discharge_agent_id'),
+                'agent_id'=> $request->input('discharge_agent_id'),
                 'countryload'=> $request->input('countryload'),
-                'countrydis'=> $request->input('countrydis'),
+                'countrydis'=> $user->agent->country_id,
                 'vessel_name'=> $request->input('vessel_name'),
                 'principal_name'=> $request->input('principal_name'),
                 'validity_from'=> $request->input('validity_from'),
@@ -316,7 +316,6 @@ class QuotationsController extends Controller
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'validity_to' => ['required','after:validity_from'],
-            'rate' => ['required'], 
             'commodity_des' =>['required'], 
         ],[
             'validity_to.after'=>'Validaty To Should Be After Validaty From ',
@@ -328,7 +327,9 @@ class QuotationsController extends Controller
         $this->authorize(__FUNCTION__,Quotation::class);
         $user = Auth::user();
         $quotation = Quotation::with('quotationDesc','quotationLoad')->find($id);
-        // dd($quotation,$request->input());
+        // dd($request->removedDesc);
+        // dd($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id);
+        // dd($request->input());
         $input = [                    
             'validity_from' => $request->validity_from,
             'validity_to' => $request->validity_to,
@@ -354,12 +355,29 @@ class QuotationsController extends Controller
             'oog'=>$request->oog ? $request->oog : 0,
             'rf'=>$request->rf ? $request->rf : 0,
             'show_import'=>$request->show_import,
-            'agent_id'=>$user->agent_id,
+            'agent_id'=>$request->agent_id,
             'vessel_name'=> $request->vessel_name,
             'principal_name'=> $request->principal_name,
             'oog_dimensions'=>$request->oog_dimensions,
         ];
-        if(isset($request->agent_id)){
+        if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
+            $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
+            foreach($deleteOldDes as $x){
+                $x->delete();
+            }
+        }
+        $quotation->createOrUpdateDesc($request->quotationDis);
+        // dd($quotation);
+        
+        if($quotation->agent_id != $request->agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
+            $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
+            foreach($deleteOldLoad as $y){
+                $y->delete();
+            }
+        }
+        $quotation->createOrUpdateLoad($request->quotationLoad);
+        // dd($user);
+        if(isset($request->discharge_agent_id)){
             $input ['discharge_agent_id'] = $request->discharge_agent_id;
             $input ['status'] = "MSL count";
             $quotation->update($input);
@@ -373,22 +391,8 @@ class QuotationsController extends Controller
                 $input ['status'] = "Agent count";
                 $quotation->update($input);
             }
-            
         }
-        if($quotation->discharge_agent_id != $request->discharge_agent_id){
-            $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
-            foreach($deleteOldDes as $x){
-                $x->delete();
-            }
-        }
-        $quotation->createOrUpdateDesc($request->quotationDis);
-        if($quotation->agent_id != $request->agent_id){
-            $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
-            foreach($deleteOldLoad as $x){
-                $x->delete();
-            }
-        }
-        $quotation->createOrUpdateLoad($request->quotationLoad);
+
         QuotationDes::destroy(explode(',',$request->removedDesc));
         QuotationLoad::destroy(explode(',',$request->removedLoad));
         return redirect()->route('quotations.index')->with('success',trans('Quotation.updated.success'));

@@ -75,7 +75,7 @@ class Quotation extends Model implements PermissionSeederContract
             if( isset($input['id']) ){
                 $des = QuotationDes::find($input['id']);
                 $des->update([
-                    'quotation_id'=>$input['id'],
+                    'quotation_id'=>$input['quotation_id'],
                     'charge_type'=>$input['charge_type'],
                     'currency'=>$input['currency'],
                     'unit'=>$input['unit'],
