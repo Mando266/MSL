@@ -101,6 +101,7 @@ class BookingController extends Controller
             'voyage_id' => ['required'],
             'commodity_description' =>['required'],
             'bl_release' =>['required'],
+            'booking_confirm' =>['required'],
 
         ],[
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
@@ -136,6 +137,8 @@ class BookingController extends Controller
             'rf'=>$request->input('rf') != null? 1 : 0,
             'oog'=>$request->input('oog') != null? 1 : 0,
             'ffw_id'=>$request->input('ffw_id'),
+            'booking_confirm'=>$request->input('booking_confirm'),
+
         ]);
         foreach($request->input('containerDetails',[]) as $details){
             BookingContainerDetails::create([

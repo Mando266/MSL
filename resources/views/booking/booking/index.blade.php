@@ -107,12 +107,12 @@
                                                 </table>
                                                 @endforeach
                                             </td>
+                                            <?php $qty = 0;?>
                                             <td>
                                                 @foreach($item->bookingContainerDetails as $bookingContainerDetail)
-                                                <table style="border: hidden;">
-                                                    <td>{{optional($bookingContainerDetail)->qty}}</td>
-                                                </table>
+                                                    <?php $qty += $bookingContainerDetail->qty;?>
                                                 @endforeach
+                                                {{ $qty }}
                                             </td>
                                             <td>{{{$item->created_at}}}</td>
 

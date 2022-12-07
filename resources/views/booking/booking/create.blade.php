@@ -18,7 +18,7 @@
                             @csrf
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="customer_id">Customer <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -58,21 +58,18 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <!-- <div class="form-group col-md-3">
-                                <label for="oog_dimensions">OOG Dimensions</label>
-                                @if($quotation->oog_dimensions != null)
-                                <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions',$quotation->oog_dimensions)}}"
-                                    placeholder="OOG Dimensions" autocomplete="off" readonly>
-                                @else
-                                <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions',$quotation->oog_dimensions)}}"
-                                    placeholder="OOG Dimensions" autocomplete="off">
-                                @endif
-                                @error('oog_dimensions')
-                                <div style="color: red;">
+                            <div class="form-group col-md-2">
+                                <label for="status">Booking Status<span style="color: red;">*</span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}">
+                                    <option value="1">Confirm</option>
+                                    <option value="0">Draft</option>
+                                </select>
+                                @error('booking_confirm')
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> -->
+                            </div>
                             <div class="form-group col-md-4" style="padding-top: 30px;">
                                 <div class="form-check">
                                 <input type="checkbox" id="soc" name="soc" value="1"  onclick="return false;" readonly {{$quotation->soc == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>

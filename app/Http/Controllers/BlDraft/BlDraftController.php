@@ -38,7 +38,7 @@ class BlDraftController extends Controller
     public function selectBooking()
     {
         $this->authorize(__FUNCTION__,Booking::class);
-        $booking  = Booking::orderBy('id','desc')->with('customer')->get();
+        $booking  = Booking::orderBy('id','desc')->where('booking_confirm',1)->with('customer')->get();
         return view('bldraft.bldraft.selectBooking',[
             'booking'=>$booking,
         ]);
@@ -112,6 +112,11 @@ class BlDraftController extends Controller
             'discharge_port_id'=> $request->input('discharge_port_id'),
             'equipment_type_id'=> $request->input('equipment_type_id'),
             'voyage_id'=> $request->input('voyage_id'),
+            'number_of_original'=> $request->input('number_of_original'),
+            'declerd_value'=> $request->input('declerd_value'),
+            'bl_kind'=> $request->input('bl_kind'),
+            'movement'=> $request->input('movement'),
+            'date_of_issue'=> $request->input('date_of_issue'),
         ]);
 
         foreach($request->input('blDraftdetails',[]) as $blDraftdetails){
