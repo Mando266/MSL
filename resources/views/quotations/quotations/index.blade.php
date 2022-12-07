@@ -12,6 +12,11 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
+                        <div class="row">
+                            <div class="col-md-12 text-right mb-6">
+                                <a class="btn btn-primary" href="{{ route('export.quotation') }}">Export</a>
+                            </div>
+                        </div>
                     </div>
                     </br>
                     <form>
@@ -90,6 +95,7 @@
                                         <th>Customer</th>
                                         <th>validity from</th>
                                         <th>validity to</th>
+                                        <th>Equipment Type</th>
                                         <th>place of acceptence</th>
                                         <th>place of delivery</th>
                                         <th>load port</th>
@@ -109,6 +115,7 @@
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
+                                            <td>{{optional($item->equipmentsType)->name}}</td>
                                             <td>{{optional($item->placeOfAcceptence)->name}}</td>
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
