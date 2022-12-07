@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
 use App\Exports\MovementsExportSearch;
+use App\Exports\QuotationExport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -33,6 +34,10 @@ class ImportExportController extends Controller
     public function exportAll() 
     {
         return Excel::download(new MovementsExportAll, 'Movements.xlsx');
+    }
+    public function exportQuotation() 
+    {
+        return Excel::download(new QuotationExport, 'Quotations.xlsx');
     }
     public function exportSearch() 
     {
