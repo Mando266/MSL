@@ -57,6 +57,9 @@ class Quotation extends Model implements PermissionSeederContract
     public function agent(){
         return $this->belongsTo(Agents::class,'agent_id','id');
     }
+    public function disAgent(){
+        return $this->belongsTo(Agents::class,'discharge_agent_id','id');
+    }
     public function user(){
         return $this->belongsTo(User::class,'quoted_by_id','id');
     }
@@ -70,10 +73,12 @@ class Quotation extends Model implements PermissionSeederContract
     }
     public function createOrUpdateDesc($inputs)
     {
+        if($inputs != null){
         foreach($inputs as $input){
             $input['quotation_id'] = $this->id;
             if( isset($input['id']) ){
                 $des = QuotationDes::find($input['id']);
+                // dd($des,$inputs);
                 $des->update([
                     'quotation_id'=>$input['quotation_id'],
                     'charge_type'=>$input['charge_type'],
@@ -95,10 +100,12 @@ class Quotation extends Model implements PermissionSeederContract
                     'equipment_type_id'=>$input['equipments_type'],
                 ]);
             }
+        }   
         }
     }
     public function createOrUpdateLoad($inputs)
     {
+        if($inputs != null){
         foreach($inputs as $input){
             $input['quotation_id'] = $this->id;
             if( isset($input['id']) ){
@@ -124,7 +131,8 @@ class Quotation extends Model implements PermissionSeederContract
                     'equipment_type_id'=>$input['equipments_type'],
                 ]);
             }
-        }
+        }   
+    }
     }
 
 }

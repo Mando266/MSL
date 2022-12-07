@@ -35,7 +35,7 @@ class QuotationsController extends Controller
         }
         else
         {
-            $quotations = Quotation::where('agent_id',Auth::user()->agent_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+            $quotations = Quotation::where('discharge_agent_id',Auth::user()->agent_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
             $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id')->where('agent_id',Auth::user()->agent_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->get();
             $quotation = Quotation::get();
             $customers = Customers::orderBy('id')->get();
