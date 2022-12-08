@@ -116,14 +116,16 @@ class DemurageController extends Controller
     public function edit(Demurrage $demurrage)
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
+        $user = Auth::user();
+
         $demurrage = $demurrage->load('periods');
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
+        $ports = Ports::where('company_id',$user->company_id)->orderBy('id')->get();
         $triffs = Triff::all();
         $currency = Currency::all();
-        $terminals = Terminals::all();
+        $terminals = Terminals::where('company_id',$user->company_id)->all();
         return view('containers.demurrage.edit',[
             'terminals'=>$terminals,
             'demurrage' => $demurrage,

@@ -25,7 +25,7 @@ class SupplierPriceController extends Controller
             $supplierPrice = SupplierPrice::where('company_id',Auth::user()->company_id)->filter(new SupplierPriceIndexFilter(request()))->orderBy('id','desc')->paginate(10);
             $equipment_types = ContainersTypes::orderBy('id')->get();
             $line = Lines::where('company_id',Auth::user()->company_id)->get();
-            $ports = Ports::orderBy('id')->get();
+            $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         }
         return view('master.supplierPrice.index',[
             'items'=>$supplierPrice,
@@ -39,8 +39,8 @@ class SupplierPriceController extends Controller
     {
         $this->authorize(__FUNCTION__,SupplierPrice::class);
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::get();
-        $ports = Ports::orderBy('id')->get();
+        $line = Lines::where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
         return view('master.supplierPrice.create',[
             'ports'=>$ports,
@@ -52,6 +52,7 @@ class SupplierPriceController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,SupplierPrice::class);
+        $user = Auth::user();
         $request->validate([
             'validity_from' => ['required'], 
             'validity_to' => ['required','after:validity_from'],
@@ -62,7 +63,9 @@ class SupplierPriceController extends Controller
             'validity_to.after'=>'Validaty To Should Be After Validaty From',
             'pod_id.different'=>'Pod The Same  Pol',
         ]);
-        SupplierPrice::create($request->except('_token'));
+        $supplierPrice = SupplierPrice::create($request->except('_token'));
+        $supplierPrice->company_id = $user->company_id;
+        $supplierPrice->save();
         return redirect()->route('supplierPrice.index')->with('success',trans('Supplier Price.created'));
     }
      
@@ -76,8 +79,8 @@ class SupplierPriceController extends Controller
     {
         $this->authorize(__FUNCTION__,SupplierPrice::class);
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::get();
-        $ports = Ports::orderBy('id')->get();
+        $line = Lines::where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
         return view('master.supplierPrice.edit',[
             'supplierPrice'=>$supplierPrice,
