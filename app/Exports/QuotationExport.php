@@ -45,5 +45,5 @@ class QuotationExport implements FromCollection,WithHeadings
         }
         
         return $quotations;
-    }
+    }    
 }

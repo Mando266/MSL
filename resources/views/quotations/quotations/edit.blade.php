@@ -20,7 +20,7 @@
                             @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="countryInput">Discharge Country</label>
+                                <label for="countryInput">Export Country</label>
                                 <select class="selectpicker form-control" id="countryDis" name="countrydis" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($country as $item)
@@ -34,7 +34,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="agent_id">Discharge Agent</label>
+                                <label for="agent_id">Export Agent</label>
                                 <select class="form-control" id="agentDis" data-live-search="true" name="discharge_agent_id" data-size="10">
                                  <option value="">Select...</option>
                                     @foreach ($agents as $item)
@@ -48,7 +48,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="countryInput">Load Country </label>
+                                <label for="countryInput">Import Country </label>
                                 <select class="selectpicker form-control" id="country" name="countryload" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($country as $item)
@@ -62,7 +62,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="agent_id">Load Agent</label>
+                                <label for="agent_id">Import Agent</label>
                                 <select class="form-control" id="agentload" data-live-search="true" name="agent_id" data-size="10">
                                  <option value="">Select...</option>
                                     @foreach ($agents as $item)
@@ -132,19 +132,7 @@
                             </div>
                             @else
                             @endif
-                            <div class="form-group col-md-3">
-                                <div class="form-check">
-                                    <label for="rate">Agreement Party</label><br>
-                                    <input type="radio" name="rate" id="rate_sh" value="rate_sh" {{$quotation->rate_sh == 1 ? 'checked="checked"' :''}}>
-                                    <label for="rate_sh">SH</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_cn" value="rate_cn" {{$quotation->rate_cn == 1 ? 'checked="checked"' :''}}>
-                                    <label for="rate_cn">CN</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_nt" value="rate_nt" {{$quotation->rate_nt == 1 ? 'checked="checked"' :''}}>
-                                    <label for="rate_nt">NT</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_fwd" value="rate_fwd" {{$quotation->rate_fwd == 1 ? 'checked="checked"' :''}}>
-                                    <label for="rate_fwd">FWD</label>
-                                </div>
-                            </div>
+                            
                             
                             <div class="form-group col-md-3" style="padding-top: 30px;">
                                 <div class="form-check">
@@ -368,7 +356,7 @@
                             </div>
                         </div>
 
-                        <h4>Discharge Price</h4>
+                        <h4>Export Price</h4>
                             <table id="quotationTriffDischarge" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -469,7 +457,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <h4>Load Price</h4>
+                            <h4>Import Price</h4>
                             <table id="quotationTriffLoad" class="table table-bordered">
                                 <thead>
                                     <tr>
