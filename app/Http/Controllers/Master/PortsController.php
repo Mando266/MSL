@@ -38,10 +38,11 @@ class PortsController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Ports::class);
+        $user = Auth::user();
         $countries = Country::orderBy('name')->get();
         $port_types = PortTypes::orderBy('name')->get();
-        $agents = Agents::orderBy('name')->get();
-        $terminals = Terminals::orderBy('name')->get();
+        $agents = Agents::where('company_id',$user->company_id)->orderBy('name')->get();
+        $terminals = Terminals::where('company_id',$user->company_id)->orderBy('name')->get();
         return view('master.ports.create',[
             'countries'=>$countries,
             'port_types'=>$port_types,
@@ -92,10 +93,11 @@ class PortsController extends Controller
     public function edit(Ports $port)
     {
         $this->authorize(__FUNCTION__,Ports::class);
+        $user = Auth::user();
         $countries = Country::orderBy('name')->get();
-        $agents = Agents::orderBy('name')->get();
+        $agents = Agents::where('company_id',$user->company_id)->orderBy('name')->get();
         $port_types = PortTypes::orderBy('name')->get();
-        $terminals = Terminals::orderBy('name')->get();
+        $terminals = Terminals::where('company_id',$user->company_id)->orderBy('name')->get();
         return view('master.ports.edit',[
             'port'=>$port,
             'countries'=>$countries,

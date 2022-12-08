@@ -9,16 +9,24 @@ use App\Models\Master\Ports;
 use App\Models\Master\Lines;
 use App\Models\Master\ContainersTypes;
 use App\Filters\SupplierPrice\SupplierPriceIndexFilter;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierPriceController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,SupplierPrice::class);
-        $supplierPrice = SupplierPrice::filter(new SupplierPriceIndexFilter(request()))->orderBy('id','desc')->paginate(10);
-        $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::get();
-        $ports = Ports::orderBy('id')->get();
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+            $supplierPrice = SupplierPrice::filter(new SupplierPriceIndexFilter(request()))->orderBy('id','desc')->paginate(10);
+            $equipment_types = ContainersTypes::orderBy('id')->get();
+            $line = Lines::get();
+            $ports = Ports::orderBy('id')->get();
+        }else{
+            $supplierPrice = SupplierPrice::where('company_id',Auth::user()->company_id)->filter(new SupplierPriceIndexFilter(request()))->orderBy('id','desc')->paginate(10);
+            $equipment_types = ContainersTypes::orderBy('id')->get();
+            $line = Lines::where('company_id',Auth::user()->company_id)->get();
+            $ports = Ports::orderBy('id')->get();
+        }
         return view('master.supplierPrice.index',[
             'items'=>$supplierPrice,
             'ports'=>$ports,

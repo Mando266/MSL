@@ -14,6 +14,7 @@ use App\Models\Master\Country;
 use App\Models\Master\Currency;
 use App\Models\Containers\Bound;
 use App\Models\Master\Terminals;
+use Illuminate\Support\Facades\Auth;
 use DB;
 
 class DemurageController extends Controller
@@ -21,14 +22,19 @@ class DemurageController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
-        $demurrage = Demurrage::get();
-        $demurrages = Demurrage::filter(new ContainersIndexFilter(request()))->get();
-        $countries = Country::orderBy('name')->get();
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+            $demurrage = Demurrage::get();
+            $demurrages = Demurrage::filter(new ContainersIndexFilter(request()))->get();
+            $countries = Country::orderBy('name')->get();
+        }else{
+            $demurrage = Demurrage::where('company_id',Auth::user()->company_id)->get();
+            $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->filter(new ContainersIndexFilter(request()))->get();
+            $countries = Country::orderBy('name')->get();
+        }
         return view('containers.demurrage.index',[
             'countries'=>$countries,
             'items'=>$demurrages,
             'demurrage'=>$demurrage,
-
         ]);
     }
 
@@ -38,10 +44,10 @@ class DemurageController extends Controller
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $triffs = Triff::all();
+        $ports = Ports::orderBy('id')->where('company_id',Auth::user()->company_id)->get();
+        $triffs = Triff::get();
         $currency = Currency::all();
-        $terminals = Terminals::all();
+        $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
         return view('containers.demurrage.create',[
             'terminals'=>$terminals,
             'countries'=>$countries,
@@ -55,6 +61,7 @@ class DemurageController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
         $demurrages = Demurrage::create([
             'country_id'=> $request->input('country_id'),
             'terminal_id'=>$request->input('terminal_id'),
@@ -65,7 +72,7 @@ class DemurageController extends Controller
             'currency'=> $request->input('currency'),
             'bound_id'=> $request->input('bound_id'),
             'tariff_id'=> $request->input('tariff_id'),
-
+            'company_id'=>$user->company_id,
         ]);
 
         foreach($request->input('period',[]) as $period){
@@ -74,7 +81,6 @@ class DemurageController extends Controller
                 'rate'=>$period['rate'],
                 'period'=>$period['period'],
                 'number_off_dayes'=>$period['number_off_dayes'],
-
             ]);
         }
         return redirect()->route('demurrage.index')->with('success',trans('Demurrage.created'));

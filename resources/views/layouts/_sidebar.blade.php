@@ -9,7 +9,11 @@
                 </a>
             </li>
             <li class="nav-item theme-text">
-                <a href="{{route('home')}}" class="nav-link"> MSL </a>
+                @if (Auth::user()->company_id == 1)
+                    <a href="{{route('home')}}" class="nav-link"> MSL </a>
+                            @else
+                    <a href="{{route('home')}}" class="nav-link"> MAS </a>
+                @endif
             </li>
             <li class="nav-item toggle-sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -166,7 +170,7 @@
                                     </li>
                                 @endpermission
 
-                                @permission('VesselsTypes-List')
+                                @permission('VesselType-List')
                                     <li>
                                         <a href="{{route('vessel-types.index')}}"> Vessel Types </a>
                                     </li>

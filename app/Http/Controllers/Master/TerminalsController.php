@@ -85,7 +85,7 @@ class TerminalsController extends Controller
         $user = Auth::user();
         $code = request()->input('code');
         $name = request()->input('name');
-
+        
         $CodeDublicate  = Terminals::where('company_id',$user->company_id)->where('code',$code)->first();
         if($CodeDublicate != null){
             return back()->with('alert','This Terminal Code Already Exists');

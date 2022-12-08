@@ -17,12 +17,24 @@ class UserController extends Controller
 {
     public function index(){
         $this->authorize(__FUNCTION__,User::class);
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
         $users = User::where('is_super_admin',0)
                         ->filter(new UserIndexFilter(request()))
                         ->orderBy('name')
                         ->with('roles')
                         ->paginate(30);
         $roles = Role::orderBy('name')->get();
+        }
+        else
+        {
+            $users = User::where('is_super_admin',0)
+            ->filter(new UserIndexFilter(request()))
+            ->orderBy('name')
+            ->with('roles')->where('company_id',Auth::user()
+            ->company_id)
+            ->paginate(30);
+            $roles = Role::orderBy('name')->get();
+        }
         return view('admin.user.index',[
             'items'=>$users,
             'roles'=>$roles

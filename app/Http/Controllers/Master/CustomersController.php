@@ -11,14 +11,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\Currency;
 use App\Models\Master\RoleCustomer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class CustomersController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Customers::class);
-        $customers = Customers::filter(new UserIndexFilter(request()))->with('CustomerRoles.role')->orderBy('id')->paginate(10);
-        $customer = Customers::get();
-        $countries = Country::orderBy('name')->get();
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
+            $customers = Customers::filter(new UserIndexFilter(request()))->with('CustomerRoles.role')->orderBy('id')->paginate(10);
+            $customer = Customers::get();
+            $countries = Country::orderBy('name')->get();
+        }
+        else{
+            $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(10);
+            $customer = Customers::where('company_id',Auth::user()->company_id)->get();
+            $countries = Country::orderBy('name')->get();
+        }
         return view('master.customers.index',[
             'items'=>$customers,
             'customer'=>$customer,
@@ -33,7 +42,7 @@ class CustomersController extends Controller
         $customer_roles = RoleCustomer::all();
        // dd($customer_roles);
         $currency = Currency::get();
-        $users = User::orderBy('id')->get();
+        $users = User::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('master.customers.create',[
             'countries'=>$countries,
             'customer_roles'=>$customer_roles,
@@ -59,7 +68,7 @@ class CustomersController extends Controller
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
-
+        $user = Auth::user();
         $country = Country::where('id',$request->country_id)->pluck('prefix')->first();
         $code = $country.$request->input('name').'-';
         $customers = Customers::create([
@@ -81,6 +90,7 @@ class CustomersController extends Controller
             'customers_website'=>$request->input('customers_website'),
             'fax'=>$request->input('fax'),
             'notes'=>$request->input('notes'),
+            'company_id'=>$user->company_id,
         ]);
         foreach($request->input('customerRole',[]) as $customerRole){
             CustomerRoles::create([
@@ -124,7 +134,6 @@ class CustomersController extends Controller
             'users'=>$users,
             'currency'=>$currency,
             'customer_role_id'=>$customer_role_id,
-
         ]); 
     }
 
