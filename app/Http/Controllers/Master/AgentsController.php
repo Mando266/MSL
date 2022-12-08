@@ -12,9 +12,13 @@ class AgentsController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Agents::class);
-        $agents = Agents::orderBy('id')->paginate(10);
-
-        return view('master.agents.index',[
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
+            $agents = Agents::orderBy('id')->paginate(30);
+        }
+        else{
+            $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30); 
+        }
+            return view('master.agents.index',[
             'items'=>$agents,
         ]);
     }
@@ -30,14 +34,18 @@ class AgentsController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:agents|max:255',
-        ],[
-            'name.unique'=>'This Agent Already Exists ',
-        ]);
         $this->authorize(__FUNCTION__,Agents::class);
+        $user = Auth::user();
+        $name = request()->input('name');
 
+        $NameDublicate  = Agents::where('company_id',$user->company_id)->where('name',$name)->first();
+
+        if($NameDublicate != null){
+            return back()->with('alert','This Port Name Already Exists');
+        }
         $agents = Agents::create($request->except('_token'));
+        $agents->company_id = $user->company_id;
+        $agents->save();
         return redirect()->route('agents.index')->with('success',trans('agent.created'));
     }
 

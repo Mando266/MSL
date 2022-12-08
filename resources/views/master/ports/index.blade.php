@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="layout-px-spacing">
-        <div class="row layout-top-spacing">
+        <div class="row layout-top-spacing"> 
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-one">
                     <div class="widget-heading">
@@ -81,7 +81,7 @@
                                                         <form action="{{route('ports.destroy',['port'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
                                                     @endpermission
@@ -115,3 +115,26 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Port?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  
+</script>
+@endpush

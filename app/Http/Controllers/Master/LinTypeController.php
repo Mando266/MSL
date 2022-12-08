@@ -12,8 +12,11 @@ class LinTypeController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,LinesType::class);
-        $line_types = LinesType::orderBy('id')->paginate(10);
-
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+        $line_types = LinesType::orderBy('id')->paginate(30);
+        }else{
+            $line_types = LinesType::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(10);;
+        }
         return view('master.line-types.index',[
             'items'=>$line_types,
         ]); 
@@ -30,17 +33,19 @@ class LinTypeController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $request->validate([
-            'name' => 'required',
-        ]);
+        $name = request()->input('name');
+
+        $NameDublicate  = LinesType::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Line Type Name Already Exists');
+        }
+
         LinesType::create([      
         'name'=> $request->input('name'),
         'company_id'=>$user->company_id,
         ]);
         return redirect()->route('line-types.index')->with('success',trans('Line Type.created'));
-
     }
-
 
     public function show($id)
     {
@@ -57,9 +62,14 @@ class LinTypeController extends Controller
 
     public function update(Request $request,LinesType $line_type)
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
+        $user = Auth::user();
+        $name = request()->input('name');
+
+        $NameDublicate  = LinesType::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Line Type Name Already Exists');
+        }
+
         $this->authorize(__FUNCTION__,LinesType::class);
         $line_type->update($request->except('_token'));
         return redirect()->route('line-types.index')->with('success',trans('Line Type.updated.success'));

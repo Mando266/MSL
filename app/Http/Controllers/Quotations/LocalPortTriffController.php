@@ -13,9 +13,9 @@ use App\Models\Master\Country;
 use Illuminate\Support\Carbon;
 use App\Filters\Quotation\QuotationIndexFilter;
 use App\Models\Master\Currency;
-use CreateQuotationTriffDetails;
 use App\Models\Master\Agents;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class LocalPortTriffController extends Controller
 {
@@ -29,9 +29,13 @@ class LocalPortTriffController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
             $localporttriff = LocalPortTriff::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
             $localport = LocalPortTriff::get();
-
+        }else{
+            $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+            $localport = LocalPortTriff::where('company_id',Auth::user()->company_id)->get();
+        }
             return view('quotations.localporttriff.index',[
                 'items'=>$localporttriff,
                 'localport'=>$localport,
@@ -41,12 +45,12 @@ class LocalPortTriffController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
-            $ports = Ports::orderBy('id')->get();
+            $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipment_types = ContainersTypes::orderBy('id')->get();
-            $terminals = Terminals::orderBy('id')->get();
+            $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $country = Country::orderBy('id')->get();
             $currency = Currency::all();
-            $agents = Agents::orderBy('id')->get();
+            $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
             return view('quotations.localporttriff.create',[
                 'ports'=>$ports,
@@ -62,7 +66,7 @@ class LocalPortTriffController extends Controller
     
     public function store(Request $request)
     {
-        
+        $user = Auth::user();
         $request->validate([
             'country_id' => ['required'],  
             'port_id' => ['required'], 
@@ -72,8 +76,7 @@ class LocalPortTriffController extends Controller
         ],[
             'validity_to.after'=>'Validaty To Should Be After Validaty From ',
         ]);
-        // dd($request->input());
-        // dd($request->triffPriceDetailes[0]['equipment_type_id']);
+
         $country = Country::where('id',$request->country_id)->pluck('prefix')->first();
         $port = Ports::where('id',$request->port_id)->pluck('code')->first();
         $validityFrom = Carbon::parse($request->validity_from)->format('d-m-Y');
@@ -86,13 +89,10 @@ class LocalPortTriffController extends Controller
             'terminal_id'=> $request->input('terminal_id'),
             'validity_from'=> $request->input('validity_from'),
             'validity_to'=> $request->input('validity_to'),
+            'company_id'=>$user->company_id,
         ]);
-        // $type = "";
+
         foreach($request->input('triffPriceDetailes') as $triffPriceDetailes){
-            
-            // foreach($triffPriceDetailes['equipment_type_id'] as $type_id){
-            //     $type .= $type_id . ', ';
-            // }
                 LocalPortTriffDetailes::create([
                 'quotation_triff_id'=>$localporttriff->id,
                 'charge_type'=>$triffPriceDetailes['charge_type'],
@@ -106,9 +106,7 @@ class LocalPortTriffController extends Controller
                 'currency'=> $triffPriceDetailes['currency'],
                 'equipment_type_id'=> $triffPriceDetailes['equipment_type_id'],
                 'is_import_or_export'=> $triffPriceDetailes['is_import_or_export'],
-
             ]);
-            
             $triff_no .=$localporttriff->id;
             $localporttriff->triff_no = $triff_no;
             $localporttriff->save();
@@ -122,7 +120,7 @@ class LocalPortTriffController extends Controller
         $localporttriff = LocalPortTriff::find($id);
         $triffPriceDetailes = LocalPortTriffDetailes::where('quotation_triff_id',$id)->get();
         $TriffNo = LocalPortTriff::where('id',$id)->select('triff_no')->first();
-// dd($triffPriceDetailes);
+        // dd($triffPriceDetailes);
         return view('quotations.localporttriff.show',[
             'localporttriff'=>$localporttriff,
             'triffPriceDetailes'=>$triffPriceDetailes,
@@ -133,13 +131,13 @@ class LocalPortTriffController extends Controller
     public function edit($id)
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
-        $localporttriff = LocalPortTriff::with('triffPriceDetailes')->find($id);
-        $ports = Ports::orderBy('id')->get();
+        $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->with('triffPriceDetailes')->find($id);
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $terminals = Terminals::orderBy('id')->get();
+        $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('id')->get();
         $currency = Currency::all();
-        $agents = Agents::orderBy('id')->get();
+        $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         
         return view('quotations.localporttriff.edit',[
             'localporttriff'=>$localporttriff,
@@ -149,7 +147,6 @@ class LocalPortTriffController extends Controller
             'country'=>$country,
             'currency'=>$currency,
             'agents'=>$agents,
-
         ]);
     }
 

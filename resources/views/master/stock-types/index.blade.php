@@ -26,8 +26,8 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>USAGE AVAILABILITY</th>
                                         <th>STOCK STATUS DESCRIPTION</th>
+                                        <th>USAGE AVAILABILITY</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -35,8 +35,8 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td>{{$item->code}}</td>
                                             <td>{{$item->name}}</td>
+                                            <td>{{$item->code}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('StockTypes-Edit')
@@ -51,7 +51,7 @@
                                                         <form action="{{route('stock-types.destroy',['stock_type'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
 
@@ -79,3 +79,26 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Stock Type?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  
+</script>
+@endpush

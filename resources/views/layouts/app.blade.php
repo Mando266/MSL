@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    @if (Auth::user()->company_id == 1)
     <title>Middle East Shipping Line</title>
+    @else
+    <title>MAS</title>
+    @endif
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/logo.png')}}"/>
     <link href="{{asset('assets/css/loader.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{asset('assets/js/loader.js')}}"></script>
@@ -58,7 +62,11 @@
                 <li class="nav-item align-self-center page-heading">
                     <div class="page-header">
                         <div class="page-title">
+                        @if (Auth::user()->company_id == 1)
                             <h3> Middle East Shipping Line </h3>
+                            @else
+                            <h3> MAS </h3>
+                        @endif
                         </div>
                     </div>
                 </li>

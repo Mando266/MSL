@@ -14,7 +14,11 @@ class LinesController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Lines::class);
-        $lines = Lines::with('types.type')->orderBy('id')->paginate(10);
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
+            $lines = Lines::with('types.type')->orderBy('id')->paginate(10);
+        }else{
+            $lines = Lines::where('company_id',Auth::user()->company_id)->with('types.type')->orderBy('id')->paginate(10);
+        }
         return view('master.lines.index',[
             'items'=>$lines,
         ]);
@@ -23,7 +27,7 @@ class LinesController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Lines::class);
-        $line_types = LinesType::orderBy('name')->get();
+        $line_types = LinesType::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         return view('master.lines.create',[
             'line_types'=>$line_types,
         ]); 
@@ -32,10 +36,21 @@ class LinesController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Lines::class);
-        $request->validate([
-            'name' => 'required',
-        ]);
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
+
+        $CodeDublicate  = Lines::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Line Code Already Exists');
+        }
+        $NameDublicate  = Lines::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Line Name Already Exists');
+        }
         $line = Lines::create($request->except('_token','line_type_id'));
+        $line->company_id = $user->company_id;
+        $line->save();
         if(isset($request->line_type_id)){
             if(count($request->line_type_id) > 0){
                 foreach($request->line_type_id as $lineType){
@@ -57,7 +72,7 @@ class LinesController extends Controller
     public function edit(Lines $line)
     {
         $this->authorize(__FUNCTION__,Lines::class);
-        $line_types = LinesType::orderBy('name')->get();
+        $line_types = LinesType::orderBy('name')->where('company_id',Auth::user()->company_id)->get();
         $types = LinesWithType::where('line_id',$line->id)->get()->pluck('type_id')->toarray();
         return view('master.lines.edit',[
             'types'=>$types,
@@ -68,9 +83,20 @@ class LinesController extends Controller
 
     public function update(Request $request,Lines $line)
     {
-        $request->validate([
-            'name' => 'required',
-            ]);
+        $user = Auth::user();
+        $code = request()->input('code');
+        $name = request()->input('name');
+
+        $CodeDublicate  = Lines::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Line Code Already Exists');
+        }
+
+        $NameDublicate  = Lines::where('company_id',$user->company_id)->where('name',$name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','This Line Name Already Exists');
+        }
+
         $this->authorize(__FUNCTION__,Lines::class);
         $line->update($request->except('_token','line_type_id'));
         $newTypes = [];

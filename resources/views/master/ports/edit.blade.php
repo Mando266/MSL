@@ -19,6 +19,9 @@
                 <form id="createForm" action="{{route('ports.update',['port'=>$port])}}" method="POST">
                         @csrf
                         @method('put')
+                            @if(session('alert'))
+                                <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
+                            @endif
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="nameInput">Name *</label>

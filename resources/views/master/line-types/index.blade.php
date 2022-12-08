@@ -12,7 +12,7 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('LineTypes-Create')
+                        @permission('LinesType-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('line-types.create')}}" class="btn btn-primary">Add New Line Type</a>
@@ -37,19 +37,19 @@
                                             <td>{{$item->name}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('LineTypes-Edit')
+                                                    @permission('LinesType-Edit')
                                                     <li>
                                                         <a href="{{route('line-types.edit',['line_type'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('LineTypes-Delete')
+                                                    @permission('LinesType-Delete')
                                                     <li>
                                                         <form action="{{route('line-types.destroy',['line_type'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
 
@@ -77,3 +77,26 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Line Type?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  
+</script>
+@endpush

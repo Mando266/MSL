@@ -9,6 +9,7 @@ use App\Models\Master\ContainersTypes;
 use App\Models\Master\ContinerOwnership;
 use App\Filters\Containers\ContainersIndexFilter;
 use App\Models\Containers\Movements;
+use Illuminate\Support\Facades\Auth;
 
 class ContinersController extends Controller
 {
@@ -16,10 +17,18 @@ class ContinersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Containers::class);
+        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
             $container = Containers::filter(new ContainersIndexFilter(request()))->orderBy('id')->paginate(30);
             $containers = Containers::get();
             $container_types = ContainersTypes::orderBy('id')->get();
             $container_ownership = ContinerOwnership::orderBy('id')->get();
+        }else{
+            $container = Containers::filter(new ContainersIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30);
+            $containers = Containers::where('company_id',Auth::user()->company_id)->get();
+            $container_types = ContainersTypes::orderBy('id')->get();
+            $container_ownership = ContinerOwnership::orderBy('id')->get();
+        }
+
         return view('master.containers.index',[
             'items'=>$container,
             'containers'=>$containers,
@@ -43,22 +52,28 @@ class ContinersController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Containers::class);
+        $user = Auth::user();
+        $code = request()->input('code');
+
         $request->validate([
             'container_type_id' =>'required',
-            'code' => 'required|unique:containers|max:255',
+            'code' => 'required',
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
-        ],[
-            'code.unique'=>'This container Already Exists ',
         ]);
-        $container = Containers::create($request->input());
 
+        $CodeDublicate  = Containers::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Container Code Already Exists');
+        }
+        $container = Containers::create($request->input());
+        $container->company_id = $user->company_id;
+        $container->save();
         if($request->hasFile('certificat')){
             $path = $request->file('certificat')->getClientOriginalName();
             $request->certificat->move(public_path('certificat'), $path);
             $container->update(['certificat'=>"certificat/".$path]);
-
         }
         return redirect()->route('containers.index')->with('success',trans('container.created'));
     }
@@ -86,7 +101,9 @@ class ContinersController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->files);
-
+        $user = Auth::user();
+        $code = request()->input('code');
+        
         $request->validate([
             'container_type_id' => 'required',
             'code' => 'required',
@@ -94,6 +111,10 @@ class ContinersController extends Controller
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
         ]);
+        $CodeDublicate  = Containers::where('company_id',$user->company_id)->where('code',$code)->first();
+        if($CodeDublicate != null){
+            return back()->with('alert','This Container Code Already Exists');
+        }
         $container = Containers::find($id);
         $container->update($request->except('_token'));
         if($request->hasFile('certificat')){
