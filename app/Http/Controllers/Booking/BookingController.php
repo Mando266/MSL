@@ -168,8 +168,8 @@ class BookingController extends Controller
     public function show($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
-        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name','like',optional($booking->dischargePort)->name)->first();
-        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name','like',optional($booking->dischargePort)->name)->first();
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->dischargePort)->id)->first();
         
         //dd($booking);
         return view('booking.booking.show',[

@@ -12,6 +12,12 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
+                        <div class="row">
+                                <div class="col-md-12 text-right mb-6">
+                                    <a class="btn btn-warning" href="{{ route('export.customers') }}">Export</a>
+                                </div>
+                            </div>
+                            <br>
                         @permission('Customers-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
@@ -62,7 +68,7 @@
                                         <th>landline</th>
                                         <th>Country</th>
                                         <!-- <th>city</th> -->
-                                        <th>addres</th>
+                                        <th>address</th>
                                         <th>sales person</th>
                                         <th>Role</th>
                                         <th>Status</th>
