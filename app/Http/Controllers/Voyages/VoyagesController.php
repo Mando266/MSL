@@ -35,16 +35,29 @@ class VoyagesController extends Controller
             ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
             ->groupBy('id')
             ->paginate(30);
+        $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+            ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+            ->with('voyagePorts')
+            ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
+            ->groupBy('id')
+            ->get();
             
             // SEARCH FROM PART
             if(isset($FromPort) && !isset($ToPort)){
                 $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
-                ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
-                ->with('voyagePorts')
-                ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
-                ->where('port_from_name','>=', $FromPort)
-                ->groupBy('id')
-                ->paginate(30);
+                    ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                    ->with('voyagePorts')
+                    ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
+                    ->where('port_from_name','>=', $FromPort)
+                    ->groupBy('id')
+                    ->paginate(30);
+                $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+                    ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                    ->with('voyagePorts')
+                    ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
+                    ->where('port_from_name','>=', $FromPort)
+                    ->groupBy('id')
+                    ->get();
                 
                 foreach ($voyages as $key => $voyage) {
                     $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
@@ -61,16 +74,27 @@ class VoyagesController extends Controller
             }//check for filter from : to
             elseif(isset($FromPort) && isset($ToPort)){
                 $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
-                ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
-                ->with('voyagePorts')
-                ->filter(new VoyagesIndexFilter(request()))
-                ->where('company_id',$user->company_id)
-                ->where(function ($query) use ($FromPort,$ToPort) {
-                    $query->where('port_from_name','>=', $FromPort)
-                    ->orWhere('port_from_name','<=', $ToPort);
-                })
-                ->groupBy('id')
-                ->paginate(30);
+                    ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                    ->with('voyagePorts')
+                    ->filter(new VoyagesIndexFilter(request()))
+                    ->where('company_id',$user->company_id)
+                    ->where(function ($query) use ($FromPort,$ToPort) {
+                        $query->where('port_from_name','>=', $FromPort)
+                        ->orWhere('port_from_name','<=', $ToPort);
+                    })
+                    ->groupBy('id')
+                    ->paginate(30);
+                $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
+                    ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
+                    ->with('voyagePorts')
+                    ->filter(new VoyagesIndexFilter(request()))
+                    ->where('company_id',$user->company_id)
+                    ->where(function ($query) use ($FromPort,$ToPort) {
+                        $query->where('port_from_name','>=', $FromPort)
+                        ->orWhere('port_from_name','<=', $ToPort);
+                    })
+                    ->groupBy('id')
+                    ->get();
                                 
                 foreach ($voyages as $key => $voyage) {
                     $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
@@ -100,7 +124,7 @@ class VoyagesController extends Controller
         }
         $vessels = Vessels::where('company_id',$user->company_id)->orderBy('name')->get();
         $ports = Ports::where('company_id',$user->company_id)->orderBy('name')->get();
-        // dd($voyages);
+        session()->flash('voyages',$voyagesExport);
         return view('voyages.voyages.index',[
             'items'=>$voyages,
             'vessels'=>$vessels, 
