@@ -118,6 +118,13 @@
 
                                             <td class="text-center">
                                                  <ul class="table-controls">
+                                                 @if($item->certificat == !null)
+                                                    <li>
+                                                        <a href='{{asset($item->certificat)}}' target="_blank">
+                                                            <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
                                                     @permission('Booking-Edit')
                                                     <li>
                                                         <a href="{{route('booking.edit',['booking'=>$item->id,'quotation_id'=>$item->quotation_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">

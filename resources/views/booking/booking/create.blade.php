@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="createForm" action="{{route('booking.store')}}" method="POST">
+                    <form id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
@@ -353,6 +353,35 @@
                                     placeholder="Commodity Description" autocomplete="off">
                                 @error('commodity_description')
                                 <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="details">Notes</label>
+                                <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
+                                 placeholder="Notes" autocomplete="off" autofocus></textarea>
+                                @error('notes')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <div class="custom-file-container" data-upload-id="certificat">
+                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label class="custom-file-container__custom-file" >
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" accept="pdf">
+                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                                </div>
+                                @error('certificat')
+                                <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
