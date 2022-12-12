@@ -59,7 +59,7 @@ class VesselsController extends Controller
             if($CodeDublicate != null){
                 return back()->with('alert','This Vessel Code Already Exists');
             }
-        
+         
         $CallSignDublicate  = Vessels::where('company_id',$user->company_id)->where('call_sign',$request->call_sign)->first();
             if($CallSignDublicate != null && $CallSignDublicate->call_sign != null ){
                 return back()->with('alert','This Vessel Call Sign Already Exists');
@@ -72,7 +72,14 @@ class VesselsController extends Controller
 
         $vessels = Vessels::create($request->except('_token'));
         $vessels->company_id = $user->company_id;
+
         $vessels->save();
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $vessels->update(['certificat'=>"certificat/".$path]);
+        }
+
         return redirect()->route('vessels.index')->with('success',trans('vessel.created'));
     }
 
@@ -123,21 +130,31 @@ class VesselsController extends Controller
             }
         
         $CallSignDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('call_sign',$request->call_sign)->first();
-            if($CallSignDublicate->count() > 0){
-                if($CallSignDublicate->call_sign != null){
-                    return back()->with('alert','This Vessel Call Sign Already Exists');
-                }
+            
+            if($CallSignDublicate != null){
+                if($CallSignDublicate->count() > 0){
+                        if($CallSignDublicate->call_sign != null){
+                            return back()->with('alert','This Vessel Call Sign Already Exists');
+                        }
+                    }
             }
 
         $ImoNumberDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('imo_number',$request->imo_number)->first();
+        if($ImoNumberDublicate != null){    
             if($ImoNumberDublicate->count() > 0  ){
                 if($CallSignDublicate->imo_number != null ){
                     return back()->with('alert','This Vessel Imo Number Already Exists');
                 }
             }
+        }
 
         $this->authorize(__FUNCTION__,Vessels::class);
         $vessel->update($request->except('_token'));
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $vessel->update(['certificat'=>"certificat/".$path]);
+        }
         return redirect()->route('vessels.index')->with('success',trans('vessel.updated.success'));
     }
 

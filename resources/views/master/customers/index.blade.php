@@ -82,7 +82,7 @@
                                             <!-- <td>{{$item->currency}}</td> -->
                                             <td>{{optional($item->country)->name}}</td>
                                             <!-- <td>{{$item->city}}</td> -->
-                                            <td>{{$item->address}} {{$item->cust_address}}</td>
+                                            <td>{{$item->address}} / {{$item->cust_address}}</td>
                                             <td>{{optional($item->User)->name}}</td>
                                             <td>
                                                 <ul>
@@ -173,6 +173,5 @@
             }
           });
       });
-  
 </script>
 @endpush
