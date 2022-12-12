@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CustomerExport;
 use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
 use App\Exports\MovementsExportSearch;
 use App\Exports\QuotationExport;
+use App\Exports\VoyageExport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -38,6 +40,14 @@ class ImportExportController extends Controller
     public function exportQuotation() 
     {
         return Excel::download(new QuotationExport, 'Quotations.xlsx');
+    }
+    public function exportCustomers() 
+    {
+        return Excel::download(new CustomerExport, 'Customers.xlsx');
+    }
+    public function exportVoyages() 
+    {
+        return Excel::download(new VoyageExport, 'Voyages.xlsx');
     }
     public function exportSearch() 
     {

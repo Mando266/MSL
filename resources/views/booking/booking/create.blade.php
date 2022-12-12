@@ -291,9 +291,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="discharge_etd">Discharge ETD</label>
+                                <label for="discharge_etd">Discharge ETA</label>
                                 <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd')}}"
-                                    placeholder="Discharge ETD" autocomplete="off">
+                                    placeholder="Discharge ETA" autocomplete="off">
                                 @error('discharge_etd')
                                 <div style="color: red;">
                                     {{$message}}
