@@ -79,6 +79,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('export', 'ImportExportController@export')->name('export');
     Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
     Route::get('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
+    Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
+    Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
