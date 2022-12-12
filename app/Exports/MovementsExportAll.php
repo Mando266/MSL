@@ -5,6 +5,7 @@ use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -42,8 +43,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
 
     public function collection()
     {
-       
-        $movements = Movements::all();
+        $movements = Movements::where('company_id',Auth::user()->company_id)->get();
 
         foreach($movements as $movement){
             $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();

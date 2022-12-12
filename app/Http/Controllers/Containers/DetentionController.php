@@ -9,6 +9,7 @@ use App\Models\Containers\Period;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersTypes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DetentionController extends Controller
 {
@@ -25,8 +26,8 @@ class DetentionController extends Controller
 
     public function showDetentionView()
     {
-        $demurrages = Demurrage::get();
-        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
+        $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
         $movements = [];
         return view('containers.detention.detentionView',[
             'items'=>$demurrages,
@@ -41,7 +42,7 @@ class DetentionController extends Controller
         $period = Period::where('demurrage_id',$request->Triff_id)->select('rate','number_off_dayes','period')->get();
         $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
         $demurrage = Demurrage::where('id',$request->Triff_id)->get();
-        $demurrages = Demurrage::get();
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
         $movements = Movements::where('bl_no',$request->bl_no)->with('movementcode','container')->get();
         $period = Period::where('demurrage_id',$request->Triff_id)->select('rate','number_off_dayes','period')->get();
         $periodtimeTotal = 0;
@@ -64,7 +65,7 @@ class DetentionController extends Controller
     {           
         $movement = Movements::find($id);
         $containerType  = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
-        $demurrages = Demurrage::get();
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
         
         $container_no = Containers::where('id',$movement->container_id)->pluck('code')->first();
 
@@ -88,7 +89,7 @@ class DetentionController extends Controller
         $detention = $request->detention;
         $period = Period::where('demurrage_id',$request->Triff_id)->select('rate','number_off_dayes','period')->get();
         $demurrage = Demurrage::where('id',$request->Triff_id)->get();
-        $demurrages = Demurrage::get();
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
         $containerType  = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
         $dchfDate = $request->dchfDate;
         $rcvcDate = $request->rcvcDate;

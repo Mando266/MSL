@@ -22,15 +22,11 @@ class DemurageController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $demurrage = Demurrage::get();
-            $demurrages = Demurrage::filter(new ContainersIndexFilter(request()))->get();
-            $countries = Country::orderBy('name')->get();
-        }else{
+ 
             $demurrage = Demurrage::where('company_id',Auth::user()->company_id)->get();
             $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->filter(new ContainersIndexFilter(request()))->get();
             $countries = Country::orderBy('name')->get();
-        }
+            
         return view('containers.demurrage.index',[
             'countries'=>$countries,
             'items'=>$demurrages,

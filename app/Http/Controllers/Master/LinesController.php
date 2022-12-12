@@ -14,11 +14,9 @@ class LinesController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Lines::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $lines = Lines::with('types.type')->orderBy('id')->paginate(10);
-        }else{
+
             $lines = Lines::where('company_id',Auth::user()->company_id)->with('types.type')->orderBy('id')->paginate(10);
-        }
+        
         return view('master.lines.index',[
             'items'=>$lines,
         ]);
@@ -36,15 +34,17 @@ class LinesController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Lines::class);
+        $request->validate([ 
+            'code' => 'required', 
+            'name' => 'required', 
+        ]);
         $user = Auth::user();
-        $code = request()->input('code');
-        $name = request()->input('name');
 
-        $CodeDublicate  = Lines::where('company_id',$user->company_id)->where('code',$code)->first();
+        $CodeDublicate  = Lines::where('company_id',$user->company_id)->where('code',$request->code)->first();
         if($CodeDublicate != null){
             return back()->with('alert','This Line Code Already Exists');
         }
-        $NameDublicate  = Lines::where('company_id',$user->company_id)->where('name',$name)->first();
+        $NameDublicate  = Lines::where('company_id',$user->company_id)->where('name',$request->name)->first();
         if($NameDublicate != null){
             return back()->with('alert','This Line Name Already Exists');
         }
@@ -84,16 +84,13 @@ class LinesController extends Controller
     public function update(Request $request,Lines $line)
     {
         $user = Auth::user();
-        $code = request()->input('code');
-        $name = request()->input('name');
 
-        $CodeDublicate  = Lines::where('company_id',$user->company_id)->where('code',$code)->first();
-        if($CodeDublicate != null){
+        $CodeDublicate  = Lines::where('id','!=',$line->id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
+        if($CodeDublicate > 0){
             return back()->with('alert','This Line Code Already Exists');
         }
-
-        $NameDublicate  = Lines::where('company_id',$user->company_id)->where('name',$name)->first();
-        if($NameDublicate != null){
+        $NameDublicate  = Lines::where('id','!=',$line->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+        if($NameDublicate > 0){
             return back()->with('alert','This Line Name Already Exists');
         }
 

@@ -12,11 +12,9 @@ class LinTypeController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,LinesType::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-        $line_types = LinesType::orderBy('id')->paginate(30);
-        }else{
+    
             $line_types = LinesType::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(10);;
-        }
+        
         return view('master.line-types.index',[
             'items'=>$line_types,
         ]); 
@@ -33,9 +31,8 @@ class LinTypeController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $name = request()->input('name');
 
-        $NameDublicate  = LinesType::where('company_id',$user->company_id)->where('name',$name)->first();
+        $NameDublicate  = LinesType::where('company_id',$user->company_id)->where('name',$request->name)->first();
         if($NameDublicate != null){
             return back()->with('alert','This Line Type Name Already Exists');
         }
@@ -63,10 +60,9 @@ class LinTypeController extends Controller
     public function update(Request $request,LinesType $line_type)
     {
         $user = Auth::user();
-        $name = request()->input('name');
 
-        $NameDublicate  = LinesType::where('company_id',$user->company_id)->where('name',$name)->first();
-        if($NameDublicate != null){
+        $NameDublicate  = LinesType::where('id','!=',$line_type->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+        if($NameDublicate > 0){
             return back()->with('alert','This Line Type Name Already Exists');
         }
 

@@ -1,10 +1,7 @@
 <?php
 
 namespace App\Exports;
-use App\Models\Containers\Movements;
-use App\Models\Master\Containers;
-use App\Models\Master\ContainersMovement;
-use App\Models\Master\ContainersTypes;
+use App\Models\Quotations\Quotation;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -33,7 +30,8 @@ class QuotationExport implements FromCollection,WithHeadings
     {
        
         $quotations = session('quotations');
-        
+        //$quotations = Quotation::all();
+
         foreach($quotations as $quotation){
             $quotation->agent_id = optional($quotation->agent)->name;
             $quotation->customer_id = optional($quotation->customer)->name;

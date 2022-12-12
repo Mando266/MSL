@@ -18,16 +18,11 @@ class CustomersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Customers::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
-            $customers = Customers::filter(new UserIndexFilter(request()))->with('CustomerRoles.role')->orderBy('id')->paginate(10);
-            $customer = Customers::get();
-            $countries = Country::orderBy('name')->get();
-        }
-        else{
+
             $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(10);
             $customer = Customers::where('company_id',Auth::user()->company_id)->get();
             $countries = Country::orderBy('name')->get();
-        }
+        
         return view('master.customers.index',[
             'items'=>$customers,
             'customer'=>$customer,
@@ -55,7 +50,8 @@ class CustomersController extends Controller
     {
        // dd(request()->input());
         $this->authorize(__FUNCTION__,Customers::class);
-        $request->validate([
+        if ($request->input('customer_kind') == 1){
+        $request->validate([ 
             'name' => 'required', 
             'country_id' => ['required'], 
             'city' => ['required'], 
@@ -64,10 +60,18 @@ class CustomersController extends Controller
             'address' => ['required'], 
             'currency' => ['required'], 
             'othercurrency' => ['different:currency'],
+            'customer_kind' => ['required'],   
         ],[
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
+        }else{
+            $request->validate([ 
+                'name' => 'required', 
+                'country_id' => ['required'],  
+                'customer_kind' => ['required'],   
+            ]); 
+        }
         $user = Auth::user();
         $country = Country::where('id',$request->country_id)->pluck('prefix')->first();
         $code = $country.$request->input('name').'-';
@@ -91,6 +95,7 @@ class CustomersController extends Controller
             'fax'=>$request->input('fax'),
             'notes'=>$request->input('notes'),
             'company_id'=>$user->company_id,
+            'customer_kind'=>$request->input('customer_kind'),
         ]);
         foreach($request->input('customerRole',[]) as $customerRole){
             CustomerRoles::create([
@@ -101,6 +106,11 @@ class CustomersController extends Controller
         $code .=$customers->id;
         $customers->code = $code;
         $customers->save();
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $customers->update(['certificat'=>"certificat/".$path]);
+        }
         return redirect()->route('customers.index')->with('success',trans('Customer.created'));
     }
 
@@ -139,16 +149,40 @@ class CustomersController extends Controller
 
     public function update(Request $request, Customers $customer)
     {
-        $request->validate([
-            'name' => 'required',
+        if ($request->input('customer_kind') == 1){
+        $request->validate([ 
+            'name' => 'required', 
+            'country_id' => ['required'], 
+            'city' => ['required'], 
+            'phone' => ['required'], 
+            'email' => ['required'], 
+            'address' => ['required'], 
+            'currency' => ['required'], 
+            'othercurrency' => ['different:currency'],
+            'customer_kind' => ['required'],   
+        ],[
+            'othercurrency.different'=>'Other Currency The Same Currency',
+
         ]);
+        }else{
+            $request->validate([ 
+                'name' => 'required', 
+                'country_id' => ['required'],  
+                'customer_kind' => ['required'],   
+            ]); 
+        }
+
         $this->authorize(__FUNCTION__,Customers::class);
         $inputs = request()->all();
         unset($inputs['customerRole'],$inputs['_token'],$inputs['removed']);
         $customer->update($inputs);
         CustomerRoles::destroy(explode(',',$request->removed));
         $customer->createOrUpdateRoles($request->customerRole);
-    
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $customer->update(['certificat'=>"certificat/".$path]);
+        }
         return redirect()->route('customers.index')->with('success',trans('customer.updated.success'));
     }
 

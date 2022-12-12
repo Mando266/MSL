@@ -129,6 +129,7 @@
                                 <td class="terminal">
                                   <select class="form-control" id="terminal" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
                                           title="{{trans('forms.select')}}">
+                                      <option value="">Select..</option>
                                           @foreach ($terminals as $item)
                                               <option value="{{$item->id}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>
                                           @endforeach
@@ -245,7 +246,6 @@ function fixStepIndicator(n) {
 </script>
 
 <script>
-
   $(document).ready(function (){
     
         $(function(){
@@ -259,7 +259,7 @@ function fixStepIndicator(n) {
                       //  console.log(terminals);
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < terminals.length; i++){
-                            list2.push(`<option value='${terminals[i].name}'>${terminals[i].name} ${terminals[i].code}</option>`);
+                            list2.push(`<option value='${terminals[i].id}'>${terminals[i].name} ${terminals[i].code}</option>`);
                         }
                // let terminal = $('.terminal',parent);
                 terminal.html(list2.join(''));

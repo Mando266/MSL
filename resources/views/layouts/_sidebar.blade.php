@@ -4,9 +4,15 @@
 
         <ul class="navbar-nav theme-brand flex-row  text-center">
             <li class="nav-item theme-logo">
+            @if (Auth::user()->company_id == 1)
                 <a href="{{route('home')}}">
                     <img src="{{asset('assets/img/logo.png')}}" style="width: 71px; height: 66px;" class="navbar-logo" alt="logo">
                 </a>
+                @else
+                <a href="{{route('home')}}">
+                    <img src="{{asset('assets/img/mas1.png')}}" style="width: 81px; height: 72px;" class="navbar-logo" alt="logo">
+                </a>
+            @endif
             </li>
             <li class="nav-item theme-text">
                 @if (Auth::user()->company_id == 1)
@@ -320,7 +326,7 @@
                         <ul class="collapse submenu list-unstyled" id="component8" data-parent="#accordionExample">
                                 @permission('Quotation-List')
                                 <li>
-                                    <a href="{{route('quotations.index')}}">Quotations List</a>
+                                    <a href="{{route('quotations.index')}}">Quotations Gates</a>
                                 </li>
                                 @endpermission
 
@@ -332,9 +338,6 @@
                         </ul>
             </li>
             @endpermission
-
-
-
 
             <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
             <li class="menu">

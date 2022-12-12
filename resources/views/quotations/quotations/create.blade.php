@@ -76,6 +76,7 @@
                             </div>
                         </div>
                         @endif
+                        @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span style="color: red;">*</span></label>
@@ -106,6 +107,7 @@
                                 @enderror
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -487,9 +489,10 @@
 <script>
         $(function(){
                 let country = $('#country');
+                let company_id = "{{optional(Auth::user())->company->id}}";
                 $('#country').on('change',function(e){
                     let value = e.target.value;
-                    let response =    $.get(`/api/agent/agentCountry/${country.val()}`).then(function(data){
+                    let response =    $.get(`/api/agent/agentCountry/${country.val()}/${company_id}`).then(function(data){
                         let agents = data.agents || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < agents.length; i++){
@@ -505,9 +508,10 @@
 <script>
         $(function(){
                 let country = $('#countryDis');
+                let company_id = "{{optional(Auth::user())->company->id}}";
                 $('#countryDis').on('change',function(e){
                     let value = e.target.value;
-                    let response =    $.get(`/api/agent/agentCountry/${country.val()}`).then(function(data){
+                    let response =    $.get(`/api/agent/agentCountry/${country.val()}/${company_id}`).then(function(data){
                         let agents = data.agents || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < agents.length; i++){
@@ -526,7 +530,8 @@
 <script>
         $(function(){
                 let agent = $('#agentload');
-                
+                let company_id = "{{optional(Auth::user())->company->id}}";
+
                 $('#agentload').on('change',function(e){
                     let agentLoadLength = $('#quotationTriffLoad').find('tr').length;
                     for(let rowscount = 0 ; rowscount < agentLoadLength ; rowscount++){
@@ -534,7 +539,7 @@
                     }
                     let equipment = $('#equipment_type_id').val();
                     let value = e.target.value;
-                    let response =    $.get(`/api/agent/loadPrice/${agent.val()}/${equipment}`).then(function(data){
+                    let response =    $.get(`/api/agent/loadPrice/${agent.val()}/${equipment}/${company_id}`).then(function(data){
                         let agentTriff = data.agentTriff || '';
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
@@ -588,6 +593,7 @@
 <script>
         $(function(){
                 let agent = $('#agentDis');
+                let company_id = "{{optional(Auth::user())->company->id}}";
                 $('#agentDis').on('change',function(e){
                     let agentDisLength = $('#quotationTriffDischarge').find('tr').length;
                     for(let rowscount = 0 ; rowscount < agentDisLength; rowscount++){
@@ -595,7 +601,7 @@
                     }
                     let equipment = $('#equipment_type_id').val();
                     let value = e.target.value;
-                    let response =    $.get(`/api/agent/dischargePrice/${agent.val()}/${equipment}`).then(function(data){
+                    let response =    $.get(`/api/agent/dischargePrice/${agent.val()}/${equipment}/${company_id}`).then(function(data){
                         let agentTriff = data.agentTriff || '';
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
@@ -649,6 +655,10 @@
                     let agentDis = $('#agentDis');
                     let agentLoad = $('#agentload');
                     let equipment = $('#equipment_type_id');
+                    let superAdmin = "{{ $isSuperAdmin }}";
+                    let agent_id = "{{ $user->agent_id }}";
+                    let company_id = "{{ optional(Auth::user())->company->id }}";
+
                 $('#equipment_type_id').on('change',function(e){
                     let agentDisLength = $('#quotationTriffDischarge').find('tr').length;
                     let agentLoadLength = $('#quotationTriffLoad').find('tr').length;
@@ -661,8 +671,9 @@
                     }
                     let value = e.target.value;
                     
-                    if(agentDis.val() != ''){
-                        let response =    $.get(`/api/agent/dischargePrice/${agentDis.val()}/${equipment.val()}`).then(function(data){
+                    if(superAdmin){
+                        if(agentDis.val() != ''){
+                        let response =    $.get(`/api/agent/dischargePrice/${agentDis.val()}/${equipment.val()}/${company_id}`).then(function(data){
                         let agentTriff = data.agentTriff || '';
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
@@ -707,11 +718,61 @@
                         let agentTriffs = $('#Discharch');
                         agentTriffs.html(list2.join(''));
                         });
+                        }
+                    }else{
+                        if(agent_id != ''){
+                        let response =    $.get(`/api/agent/dischargePrice/${agent_id}/${equipment.val()}/${company_id}`).then(function(data){
+                        let agentTriff = data.agentTriff || '';
+                        let list2 = [];
+                        for(let i = 0 ; i < agentTriff.length; i++){
+                            var table = document.getElementById("quotationTriffDischarge");
+                            
+                            // Create an empty <tr> element and add it to the 1st position of the table:
+                            var row = table.insertRow();
+                            row.setAttribute("id", "quotationTriffDischargeRow");
+                            for(x in agentTriff[i])
+                            {
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                    var cell = row.insertCell();
+                                    var input = document.createElement("INPUT");
+                                    input.setAttribute("type", "text");
+                                    input.setAttribute("name", "quotationDis["+exportCount+"]["+x+"]");
+                                    input.setAttribute('readonly', true);
+                                    if(x == 'equipments_type'){
+                                        if(agentTriff[i]['equipment_type_id'] == 100){
+                                            input.value = "ALL"
+                                        }else{
+                                            input.value = agentTriff[i][x]['name']
+                                        }
+                                    }else{
+                                        input.value = agentTriff[i][x]
+                                    }
+                                    input.classList.add("form-control");
+                                    cell.appendChild(input);
+                                }
+                            }
+                            var buttonCell = row.insertCell()
+                            var myButton = document.createElement("BUTTON")
+                            myButton.classList.add("btn","btn-danger" ,"remove")
+                            myButton.setAttribute('type','button')
+                            let icon = document.createElement('i')
+                            icon.classList.add("fa","fa-trash")
+                            myButton.append(icon)
+                            buttonCell.appendChild(myButton)
+                            exportCount++;
+                            // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
+                        }
+                                
+                        let agentTriffs = $('#Discharch');
+                        agentTriffs.html(list2.join(''));
+                        });
+                        }
                     }
                     
                     
+                    
                     if(agentLoad.val() != ''){
-                        let response =    $.get(`/api/agent/loadPrice/${agentLoad.val()}/${equipment.val()}`).then(function(data){
+                        let response =    $.get(`/api/agent/loadPrice/${agentLoad.val()}/${equipment.val()}/${company_id}`).then(function(data){
                         let agentTriff = data.agentTriff || '';
                         let list2 = [];
                         

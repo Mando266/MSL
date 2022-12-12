@@ -95,6 +95,15 @@
                                                                     <i class="far fa-eye text-primary"></i>
                                                                 </a>
                                                             </li>
+                                                            @endpermission 
+                                                            @permission('User-Delete')
+                                                            <li>
+                                                                <form action="{{route('users.destroy',['user'=>$item->id])}}" method="post">
+                                                                    @method('DELETE')
+                                                                    @csrf
+                                                                <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
+                                                                </form> 
+                                                            </li>
                                                             @endpermission
                                                         </ul>
                                                     </td>

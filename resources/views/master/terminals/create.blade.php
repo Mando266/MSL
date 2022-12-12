@@ -95,9 +95,10 @@
 <script>
         $(function(){
                 let country = $('#country');
+                let company_id = "{{optional(Auth::user())->company->id}}";
                 $('#country').on('change',function(e){
                     let value = e.target.value;
-                    let response =    $.get(`/api/master/ports/${country.val()}`).then(function(data){
+                    let response =    $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
                         let ports = data.ports || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < ports.length; i++){

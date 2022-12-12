@@ -14,7 +14,7 @@
                         </nav>
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
-                                <a class="btn btn-primary" href="{{ route('export.quotation') }}">Export</a>
+                                <a class="btn btn-warning" href="{{ route('export.quotation') }}">Export</a>
                             </div>
                         </div>
                     </div>

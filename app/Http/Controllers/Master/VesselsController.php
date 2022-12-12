@@ -18,13 +18,8 @@ class VesselsController extends Controller
     {
         $this->authorize(__FUNCTION__,Vessels::class);
 
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $vessels = Vessels::filter(new VoyagesIndexFilter(request()))->orderBy('id')->paginate(30);
-            $vessel = Vessels::orderBy('name')->get();
-        }else{
             $vessels = Vessels::filter(new VoyagesIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30);
             $vessel = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
-        }
 
         return view('master.vessels.index',[
             'items'=>$vessels,
@@ -38,7 +33,7 @@ class VesselsController extends Controller
         $this->authorize(__FUNCTION__,Vessels::class);
         $countries = Country::orderBy('name')->get();
         $vessel_types = VesselType::orderBy('name')->get();
-        $vesselOperators = Lines::orderBy('id')->get();
+        $vesselOperators = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('master.vessels.create',[
             'countries'=>$countries,
             'vessel_types'=>$vessel_types,
@@ -49,32 +44,32 @@ class VesselsController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Vessels::class);
-
+        $request->validate([ 
+            'code' => 'required', 
+            'name' => 'required', 
+        ]);
         $user = Auth::user();
-        $name = request()->input('name');
-        $code = request()->input('code');
-        $call_sign = request()->input('call_sign');
-        $imo_number = request()->input('imo_number');
 
-        $NameDublicate  = Vessels::where('company_id',$user->company_id)->where('name',$name)->first();
+        $NameDublicate  = Vessels::where('company_id',$user->company_id)->where('name',$request->name)->first();
             if($NameDublicate != null){
                 return back()->with('alert','This Vessel Name Already Exists');
             }
 
-        $CodeDublicate  = Vessels::where('company_id',$user->company_id)->where('code',$code)->first();
+        $CodeDublicate  = Vessels::where('company_id',$user->company_id)->where('code',$request->code)->first();
             if($CodeDublicate != null){
                 return back()->with('alert','This Vessel Code Already Exists');
             }
         
-        $CallSignDublicate  = Vessels::where('company_id',$user->company_id)->where('call_sign',$call_sign)->first();
-            if($CallSignDublicate != null){
+        $CallSignDublicate  = Vessels::where('company_id',$user->company_id)->where('call_sign',$request->call_sign)->first();
+            if($CallSignDublicate != null && $CallSignDublicate->call_sign != null ){
                 return back()->with('alert','This Vessel Call Sign Already Exists');
             }
 
-        $ImoNumberDublicate  = Vessels::where('company_id',$user->company_id)->where('imo_number',$imo_number)->first();
-            if($ImoNumberDublicate != null){
+        $ImoNumberDublicate  = Vessels::where('company_id',$user->company_id)->where('imo_number',$request->imo_number)->first();
+            if($ImoNumberDublicate != null && $CallSignDublicate->imo_number != null ){
                 return back()->with('alert','This Vessel Imo Number Already Exists');
             }
+
         $vessels = Vessels::create($request->except('_token'));
         $vessels->company_id = $user->company_id;
         $vessels->save();
@@ -86,7 +81,7 @@ class VesselsController extends Controller
         $this->authorize(__FUNCTION__,Vessels::class);
         $countries = Country::orderBy('name')->get();
         $vessel_types = VesselType::orderBy('name')->get();
-        $vesselOperators = VesselOperators::orderBy('name')->get();
+        $vesselOperators = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('master.vessels.show',[
             'vessel'=>$vessel,
             'countries'=>$countries,
@@ -100,7 +95,7 @@ class VesselsController extends Controller
         $this->authorize(__FUNCTION__,Vessels::class);
         $countries = Country::orderBy('name')->get();
         $vessel_types = VesselType::orderBy('name')->get();
-        $vesselOperators = VesselOperators::orderBy('name')->get();
+        $vesselOperators = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('master.vessels.edit',[
             'vessel'=>$vessel,
             'countries'=>$countries,
@@ -111,30 +106,34 @@ class VesselsController extends Controller
 
     public function update(Request $request, Vessels $vessel)
     {
+        $request->validate([ 
+            'code' => 'required', 
+            'name' => 'required', 
+        ]);
         $user = Auth::user();
-        $name = request()->input('name');
-        $code = request()->input('code');
-        $call_sign = request()->input('call_sign');
-        $imo_number = request()->input('imo_number');
 
-        $NameDublicate  = Vessels::where('company_id',$user->company_id)->where('name',$name)->first();
-            if($NameDublicate != null){
+        $NameDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+            if($NameDublicate > 0){
                 return back()->with('alert','This Vessel Name Already Exists');
             }
 
-        $CodeDublicate  = Vessels::where('company_id',$user->company_id)->where('code',$code)->first();
-            if($CodeDublicate != null){
+        $CodeDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
+            if($CodeDublicate > 0){
                 return back()->with('alert','This Vessel Code Already Exists');
             }
         
-        $CallSignDublicate  = Vessels::where('company_id',$user->company_id)->where('call_sign',$call_sign)->first();
-            if($CallSignDublicate != null){
-                return back()->with('alert','This Vessel Call Sign Already Exists');
+        $CallSignDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('call_sign',$request->call_sign)->first();
+            if($CallSignDublicate->count() > 0){
+                if($CallSignDublicate->call_sign != null){
+                    return back()->with('alert','This Vessel Call Sign Already Exists');
+                }
             }
 
-        $ImoNumberDublicate  = Vessels::where('company_id',$user->company_id)->where('imo_number',$imo_number)->first();
-            if($ImoNumberDublicate != null){
-                return back()->with('alert','This Vessel Imo Number Already Exists');
+        $ImoNumberDublicate  = Vessels::where('id','!=',$vessel->id)->where('company_id',$user->company_id)->where('imo_number',$request->imo_number)->first();
+            if($ImoNumberDublicate->count() > 0  ){
+                if($CallSignDublicate->imo_number != null ){
+                    return back()->with('alert','This Vessel Imo Number Already Exists');
+                }
             }
 
         $this->authorize(__FUNCTION__,Vessels::class);

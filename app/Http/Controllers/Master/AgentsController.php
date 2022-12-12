@@ -12,12 +12,9 @@ class AgentsController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Agents::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
-            $agents = Agents::orderBy('id')->paginate(30);
-        }
-        else{
+
             $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30); 
-        }
+            
             return view('master.agents.index',[
             'items'=>$agents,
         ]);
@@ -35,10 +32,14 @@ class AgentsController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Agents::class);
-        $user = Auth::user();
-        $name = request()->input('name');
 
-        $NameDublicate  = Agents::where('company_id',$user->company_id)->where('name',$name)->first();
+        $request->validate([ 
+            'name' => 'required', 
+        ]);
+
+        $user = Auth::user();
+
+        $NameDublicate  = Agents::where('company_id',$user->company_id)->where('name',$request->name)->first();
 
         if($NameDublicate != null){
             return back()->with('alert','This Port Name Already Exists');
@@ -66,10 +67,17 @@ class AgentsController extends Controller
 
     public function update(Request $request, Agents $agent)
     {
+        $this->authorize(__FUNCTION__,Agents::class);
         $request->validate([
             'name' => 'required',
         ]);
-        $this->authorize(__FUNCTION__,Agents::class);
+        $user = Auth::user();
+
+        $NameDublicate  = Agents::where('id','!=',$agent->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+
+        if($NameDublicate > 0){
+            return back()->with('alert','This Port Name Already Exists');
+        }
         $agent->update($request->except('_token'));
         return redirect()->route('agents.index')->with('success',trans('agent.updated.success'));
     }
