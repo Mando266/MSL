@@ -21,7 +21,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="countryInput">Select Triff</label>
                                     <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
-                                     title="{{trans('forms.select')}}">
+                                     title="{{trans('forms.select')}}" required>
                                         @foreach ($items as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('Triff_id',request()->input('Triff_id')) ? 'selected':''}}>{{$item->is_storge}} {{{optional($item->bound)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->containersType)->name}}} </option>
                                         @endforeach
@@ -35,7 +35,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="BLNo">BL No</label>
                                     <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($movementsBlNo as $item)
                                             @if($item != null)
                                             <option value="{{$item}}" {{$item == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$item}}</option>

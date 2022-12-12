@@ -26,12 +26,12 @@ class BookingController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Booking::class);
-        $booking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->with('bookingContainerDetails')->paginate(30);
+        $booking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails')->paginate(30);
         // dd($booking);
-        $bookingNo = Booking::get();
-        $quotation = Quotation::get();
-        $ports = Ports::orderBy('id')->get();
-        $customers = Customers::orderBy('id')->get();
+        $bookingNo = Booking::where('company_id',Auth::user()->company_id)->get();
+        $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('booking.booking.index',[
             'items'=>$booking,
             'bookingNo'=>$bookingNo,
@@ -42,8 +42,7 @@ class BookingController extends Controller
     }
     public function selectQuotation()
     {
-        $this->authorize(__FUNCTION__,Booking::class);
-        $quotation  = Quotation::where('status','approved')->with('customer','equipmentsType')->get();
+        $quotation  = Quotation::where('company_id',Auth::user()->company_id)->where('status','approved')->with('customer','equipmentsType')->get();
         return view('booking.booking.selectQuotation',[
             'quotation'=>$quotation,
         ]);
@@ -54,27 +53,27 @@ class BookingController extends Controller
         request()->validate([
             'quotation_id' => ['required'],
         ]);
-        $ffw = Customers::whereHas('CustomerRoles', function ($query) {
+        $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);
         })->with('CustomerRoles.role')->get();
-        $customers  = Customers::whereHas('CustomerRoles', function ($query) {
+        $customers  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', '!=', 6);
         })->with('CustomerRoles.role')->get();
-        $terminals = Terminals::all();
+        $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
         if(request('quotation_id') == 'draft'){
             $quotation = new Quotation();
         }else{
             $quotation = Quotation::findOrFail(request('quotation_id'));
-            $terminals = Terminals::where('port_id',$quotation->discharge_port_id)->get();
+            $terminals = Terminals::where('company_id',Auth::user()->company_id)->where('port_id',$quotation->discharge_port_id)->get();
         }
         // dd($quotation);
-        $agents = Agents::where('is_active',1)->get();
+        $agents = Agents::where('company_id',Auth::user()->company_id)->where('is_active',1)->get();
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
-        $terminal   = Terminals::get();
-        $vessels    = Vessels::get();
-        $voyages    = Voyages::with('vessel')->get();
-        $ports = Ports::orderBy('id')->get();
-        $containers = Containers::all();
+        $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
+        $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->get();
         return view('booking.booking.create',[
             'ffw'=>$ffw,
             'containers'=>$containers,
@@ -184,10 +183,10 @@ class BookingController extends Controller
     {
         $this->authorize(__FUNCTION__,Booking::class);
         $booking_details = BookingContainerDetails::where('booking_id',$booking->id)->get();
-        $ffw = Customers::whereHas('CustomerRoles', function ($query) {
+        $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);
         })->with('CustomerRoles.role')->get();
-        $customers  = Customers::whereHas('CustomerRoles', function ($query) {
+        $customers  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', '!=', 6);
         })->with('CustomerRoles.role')->get();
 
@@ -195,15 +194,15 @@ class BookingController extends Controller
             $quotation = new Quotation();
         }else{
             $quotation = Quotation::findOrFail(request('quotation_id'));
-            $terminals = Terminals::where('port_id',$quotation->discharge_port_id)->get();
+            $terminals = Terminals::where('company_id',Auth::user()->company_id)->where('port_id',$quotation->discharge_port_id)->get();
         }
-        $agents = Agents::where('is_active',1)->get();
+        $agents = Agents::where('company_id',Auth::user()->company_id)->where('is_active',1)->get();
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
-        $terminal   = Terminals::get();
-        $vessels    = Vessels::get();
-        $voyages    = Voyages::with('vessel')->get();
-        $ports = Ports::orderBy('id')->get();
-        $containers = Containers::all();
+        $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
+        $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
+        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->get();
 
         return view('booking.booking.edit',[
             'booking_details'=>$booking_details,

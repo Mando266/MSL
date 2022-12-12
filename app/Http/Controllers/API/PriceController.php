@@ -6,15 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Quotations\LocalPortTriff;
 use App\Models\Quotations\LocalPortTriffDetailes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
 class PriceController extends Controller
 {
     //
-    public function getLoadAgentPrice($id,$equipment_id = null)
+    public function getLoadAgentPrice($id,$equipment_id = null,$company_id)
     {
         
-        $agentTriff = LocalPortTriff::where('agent_id',$id)->pluck('id')->first();
+        $agentTriff = LocalPortTriff::where('company_id',$company_id)->where('agent_id',$id)->pluck('id')->first();
         if($equipment_id != null){
             $agentTriff = LocalPortTriffDetailes::where('quotation_triff_id',$agentTriff)
             ->where('is_import_or_export', 0)->where('add_to_quotation', 1)->where(function ($query) use($equipment_id){
@@ -30,9 +31,9 @@ class PriceController extends Controller
             'agentTriff' => $agentTriff
         ],200);
     }
-    public function getDischargeAgentPrice($id,$equipment_id = null)
+    public function getDischargeAgentPrice($id,$equipment_id = null,$company_id)
     {
-        $agentTriff = LocalPortTriff::where('agent_id',$id)->pluck('id')->first();
+        $agentTriff = LocalPortTriff::where('company_id',$company_id)->where('agent_id',$id)->pluck('id')->first();
         if($equipment_id != null){
             $agentTriff = LocalPortTriffDetailes::where('quotation_triff_id',$agentTriff)
             ->where('is_import_or_export', 1)->where('add_to_quotation', 1)->where(function ($query) use($equipment_id){

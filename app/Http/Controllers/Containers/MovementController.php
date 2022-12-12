@@ -33,7 +33,7 @@ class MovementController extends Controller
         // dd($filteredData);
                 // $movements = Movements::where('movement_id', request('movement_id'))->paginate(30);
         $plNo = request()->input('bl_no');
-        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+        $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
         
         
         // remove element if last movement doesn't include movement_id or port_location_id
@@ -140,7 +140,7 @@ class MovementController extends Controller
             }
         
         
-        $movements = Movements::wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner')->paginate(30);
+        $movements = Movements::wherein('id',$temp)->where('company_id',Auth::user()->company_id)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner')->paginate(30);
         
         foreach($movements as $move){
             // Get All movements and sort it and get the last movement before this movement 
@@ -254,9 +254,9 @@ class MovementController extends Controller
         
         // End of Export Movements
 
-        $containers = Containers::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $voyages = Voyages::orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $items = Movements::wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
         session()->flash('items',$exportMovements);
@@ -434,12 +434,12 @@ class MovementController extends Controller
     {
         $this->authorize(__FUNCTION__,Movements::class);
         $container_id =  request()->input('container_id');
-        $voyages = Voyages::orderBy('id')->get();
-        $vessels = Vessels::orderBy('id')->get();
+        $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $agents = Agents::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
 
         if(isset($container_id)){
@@ -471,7 +471,7 @@ class MovementController extends Controller
             }
             
         }else{
-            $containers = Containers::orderBy('id')->get();
+            $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             return view('containers.movements.create',[
                 'voyages'=>$voyages,
                 'vessels'=>$vessels,
@@ -491,6 +491,7 @@ class MovementController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->input());
         $this->authorize(__FUNCTION__,Movements::class);
 
         $request->validate([
@@ -530,10 +531,9 @@ class MovementController extends Controller
             }
         
         }
-        $user = Auth::user();
         foreach($request->movement as $move){
+            $user = Auth::user();
             Movements::create([
-                'company_id'=>$user->company_id,
                 'container_id'=>$move['container_id'],
                 'container_type_id'=> $request->input('container_type_id'),
                 'movement_id'=> $request->input('movement_id'),
@@ -553,6 +553,7 @@ class MovementController extends Controller
                 'free_time_origin'=> $request->input('free_time_origin'),
                 'bl_no'=> $request->input('bl_no'),
                 'remarkes'=> $request->input('remarkes'),
+                'company_id'=>$user->company_id,
                 ]);
         }
         
@@ -577,7 +578,7 @@ class MovementController extends Controller
         $container = Containers::find($id);
         $movementId = false;
         $movementsArray = false;
-        $demurrages = Demurrage::get();
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
 
         if(request('plNo') == null){
             $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$id)->with('movementcode');
@@ -714,13 +715,13 @@ class MovementController extends Controller
     public function edit(Movements $movement)
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        $voyages = Voyages::orderBy('id')->get();
-        $vessels = Vessels::orderBy('id')->get();
-        $containers = Containers::orderBy('id')->get();
+        $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $agents = Agents::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
         return view('containers.movements.edit',[
             'movement'=>$movement,

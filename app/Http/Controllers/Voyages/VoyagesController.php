@@ -13,11 +13,14 @@ use App\Models\Voyages\VoyagePorts;
 use App\Filters\Voyages\VoyagesIndexFilter;
 use Illuminate\Support\Facades\Http;
 use DB;
+use Illuminate\Support\Facades\Auth;
+
 class VoyagesController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Voyages::class);
+        $user = Auth::user();
         $where = [];
         $Port =  request()->input('Port');
         if ($Port) $where[] = ['port_from_name', $Port];
@@ -29,19 +32,20 @@ class VoyagesController extends Controller
         $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
             ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
             ->with('voyagePorts')
-            ->filter(new VoyagesIndexFilter(request()))
+            ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
             ->groupBy('id')
-            ->get();
+            ->paginate(30);
             
             // SEARCH FROM PART
             if(isset($FromPort) && !isset($ToPort)){
                 $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
                 ->with('voyagePorts')
-                ->filter(new VoyagesIndexFilter(request()))
+                ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
                 ->where('port_from_name','>=', $FromPort)
                 ->groupBy('id')
-                ->get();
+                ->paginate(30);
+                
                 foreach ($voyages as $key => $voyage) {
                     $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
                     if(!isset($tempPortsFrom[0])){
@@ -60,23 +64,30 @@ class VoyagesController extends Controller
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no')
                 ->with('voyagePorts')
                 ->filter(new VoyagesIndexFilter(request()))
-                ->where('port_from_name','>=', $FromPort)
-                ->orWhere('port_from_name','<=', $ToPort)
+                ->where('company_id',$user->company_id)
+                ->where(function ($query) use ($FromPort,$ToPort) {
+                    $query->where('port_from_name','>=', $FromPort)
+                    ->orWhere('port_from_name','<=', $ToPort);
+                })
                 ->groupBy('id')
-                ->get();
-            foreach ($voyages as $key => $voyage) {
-                $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
-                $tempPortsTo = $voyage->voyagePorts->where('port_from_name', $ToPort)->pluck('id')->toArray();
-                if(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0])){
-                    unset($voyages[$key]);
+                ->paginate(30);
+                                
+                foreach ($voyages as $key => $voyage) {
+                    $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
+                    $tempPortsTo = $voyage->voyagePorts->where('port_from_name', $ToPort)->pluck('id')->toArray();
+                    if(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0])){
+                        unset($voyages[$key]);
                 }
                     $voyageports = VoyagePorts::where('voyage_id',$voyage->id)
                     ->where(function ($query) use ($FromPort,$ToPort) {
                         $query->where('port_from_name', $FromPort)
                               ->orWhere('port_from_name', $ToPort);
                     })->get();
-                    if($voyageports[0]->port_from_name != $FromPort){
+                    if($voyageports->count() == 0){
                         unset($voyages[$key]);
+                    }elseif($voyageports[0]->port_from_name != $FromPort){
+                        unset($voyages[$key]);
+
                     }else{
                         $voyageports = $voyageports->pluck('id')->toArray();
                         foreach($voyage->voyagePorts as $key => $voyagePort){
@@ -87,12 +98,12 @@ class VoyagesController extends Controller
                     }
             }
         }
-        $vessels = Vessels::orderBy('name')->get();
-        $ports = Ports::orderBy('name')->get();
+        $vessels = Vessels::where('company_id',$user->company_id)->orderBy('name')->get();
+        $ports = Ports::where('company_id',$user->company_id)->orderBy('name')->get();
         // dd($voyages);
         return view('voyages.voyages.index',[
             'items'=>$voyages,
-            'vessels'=>$vessels,
+            'vessels'=>$vessels, 
             'ports'=>$ports,
             'FromPort'=> $FromPort,
             'ToPort'=> $ToPort
@@ -102,11 +113,12 @@ class VoyagesController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Voyages::class);
-        $vessels = Vessels::orderBy('name')->get();
+        $user = Auth::user();
+        $vessels = Vessels::where('company_id',$user->company_id)->orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
-        $lines = Lines::orderBy('id')->get();
+        $lines = Lines::where('company_id',$user->company_id)->orderBy('id')->get();
         $terminals = [];
-        $ports = Ports::orderBy('id')->get();
+        $ports = Ports::where('company_id',$user->company_id)->orderBy('id')->get();
         return view('voyages.voyages.create',[
             'vessels'=>$vessels,
             'legs'=>$legs,
@@ -118,10 +130,12 @@ class VoyagesController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
         $request->validate([
             'voyage_no' => 'required',
             'vessel_id' => 'required',
         ]);
+        
         $voyages = Voyages::create([
             'vessel_id'=> $request->input('vessel_id'),
             'voyage_no'=> $request->input('voyage_no'),
@@ -129,6 +143,7 @@ class VoyagesController extends Controller
             'line_id'=> $request->input('line_id'),
             'notes'=> $request->input('notes'),
             'principal_name'=> $request->input('principal_name'),
+            'company_id'=>$user->company_id,
         ]);
 
         foreach($request->input('voyageport',[]) as $voyageport){
@@ -197,11 +212,11 @@ class VoyagesController extends Controller
     public function edit(VoyagePorts $voyage)
     {
         $this->authorize(__FUNCTION__,VoyagePorts::class);
-        $vessels = Vessels::orderBy('name')->get();
+        $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
-        $lines = Lines::orderBy('id')->get();
-        $terminals = Terminals::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
+        $lines = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
         return view('voyages.voyages.edit',[
             'voyage'=>$voyage,

@@ -56,16 +56,16 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Code</th>
+                                        <!-- <th>Code</th> -->
                                         <th>Contact Person</th>
                                         <th>phone</th>
                                         <th>landline</th>
-                                        <th>Currancy</th>
                                         <th>Country</th>
                                         <!-- <th>city</th> -->
                                         <th>addres</th>
                                         <th>sales person</th>
                                         <th>Role</th>
+                                        <th>Status</th>
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -75,11 +75,11 @@
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
-                                            <td>{{$item->code}}</td>
+                                            <!-- <td>{{$item->code}}</td> -->
                                             <td>{{$item->contact_person}}</td>
                                             <td>{{$item->phone}}</td>
                                             <td>{{$item->landline}}</td>
-                                            <td>{{$item->currency}}</td>
+                                            <!-- <td>{{$item->currency}}</td> -->
                                             <td>{{optional($item->country)->name}}</td>
                                             <!-- <td>{{$item->city}}</td> -->
                                             <td>{{$item->address}} {{$item->cust_address}}</td>
@@ -91,9 +91,22 @@
                                                     @endforeach
                                                 </ul>
                                             </td>
-
+                                            <td class="text-center">
+                                                        @if($item->customer_kind == 0)
+                                                            <span class="badge badge-info"> Primary </span>
+                                                        @else
+                                                            <span class="badge badge-danger"> Validated </span>
+                                                        @endif
+                                                    </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
+                                                    @if($item->certificat == !null)
+                                                    <li>
+                                                        <a href='{{asset($item->certificat)}}' target="_blank">
+                                                            <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
                                                     @permission('Customers-Edit')
                                                     <li>
                                                         <a href="{{route('customers.edit',['customer'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">

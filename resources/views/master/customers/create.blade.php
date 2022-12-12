@@ -16,9 +16,23 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('customers.store')}}" method="POST">
+                <form id="createForm" action="{{route('customers.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
+                        <div class="form-group col-md-4">
+                                <label for="customer_kind">Customer Kind<span style="color: red;">*</span></label>
+                                <select class="selectpicker form-control" id="customer_kind" data-live-search="true" name="customer_kind" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                        <option value="0">Primary</option>
+                                        <option value="1">Validated</option>
+                                </select>
+                                @error('customer_kind')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+
                             <div class="form-group col-md-4">
                                 <label for="nameInput">Name <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
@@ -39,7 +53,10 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                        </div>
+  
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
                                 <label for="countryInput">{{trans('company.country')}} <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -53,9 +70,6 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-  
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="cityInput">City <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="cityInput" name="city" value="{{old('city')}}"
@@ -76,18 +90,18 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-4">
-                                <label for="cust_address">Address Line 2</label>
-                                <input type="text" class="form-control" id="cust_address" name="cust_address" value="{{old('cust_address')}}"
-                                    placeholder="Address Line 2" autocomplete="off">
-                                @error('cust_address')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="cust_address">Address Line 2</label>
+                            <input type="text" class="form-control" id="cust_address" name="cust_address" value="{{old('cust_address')}}"
+                                placeholder="Address Line 2" autocomplete="off">
+                            @error('cust_address')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
                         <div class="form-group col-md-4">
                             <label for="phoneInput">Phone <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="phoneInput" name="phone" value="{{old('phone')}}"
@@ -108,6 +122,9 @@
                             </div>
                             @enderror
                         </div>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="emailInput">Email <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="emailInput" name="email" value="{{old('email')}}"
@@ -118,9 +135,6 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="tax_card_noInput">Tax Card</label>
                             <input type="text" class="form-control" id="tax_card_noInput" name="tax_card_no" value="{{old('tax_card_no')}}"
@@ -145,6 +159,8 @@
                             </div>
                             @enderror
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="fax">Fax</label>
                             <input type="text" class="form-control" id="fax" name="fax" value="{{old('fax')}}"
@@ -155,8 +171,6 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="countryInput">Currency</label>
                             <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
@@ -175,21 +189,12 @@
                             <label for="countryInput">Other Currency</label>
                             <select class="selectpicker form-control" id="othercurrency" data-live-search="true" name="othercurrency" data-size="10"
                             title="{{trans('forms.select')}}" autofocus>
+                            <option value="">Select...</option>
                                 @foreach ($currency as $item)
                                     <option value="{{$item->name}}" {{$item->name == old('othercurrency') ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                             @error('othercurrency')
-                            <div style="color: red;">
-                                {{$message}}
-                            </div>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="customers_website">Customer Website Url</label>
-                            <input type="text" class="form-control" id="customers_website" name="customers_website" value="{{old('customers_website')}}"
-                                placeholder="Customer Website Url" autocomplete="off">
-                            @error('customers_website')
                             <div style="color: red;">
                                 {{$message}}
                             </div>
@@ -207,8 +212,35 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
+                        <div class="form-group col-md-4">
+                            <label for="customers_website">Customer Website Url</label>
+                            <input type="text" class="form-control" id="customers_website" name="customers_website" value="{{old('customers_website')}}"
+                                placeholder="Customer Website Url" autocomplete="off">
+                            @error('customers_website')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-4">
+                                <div class="custom-file-container" data-upload-id="certificat">
+                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label class="custom-file-container__custom-file" >
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" accept="pdf">
+                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                            </div>
 
+                                @error('certificat')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                    </div>
+ 
                     <table id="customerRole" class="table table-bordered">
                             <thead>
                                 <tr>

@@ -22,11 +22,11 @@ class BlDraftController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,BlDraft::class);
-        $blDrafts = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->with('blDetails')->paginate(30);
+        $blDrafts = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->paginate(30);
         //dd($blDrafts);
-        $blDraftNo = BlDraft::get();
-        $ports = Ports::orderBy('id')->get();
-        $customers = Customers::orderBy('id')->get();
+        $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         return view('bldraft.bldraft.index',[
             'items'=>$blDrafts,
             'blDraftNo'=>$blDraftNo,
@@ -37,8 +37,7 @@ class BlDraftController extends Controller
 
     public function selectBooking()
     {
-        $this->authorize(__FUNCTION__,Booking::class);
-        $booking  = Booking::orderBy('id','desc')->where('booking_confirm',1)->with('customer')->get();
+        $booking  = Booking::orderBy('id','desc')->where('booking_confirm',1)->where('company_id',Auth::user()->company_id)->with('customer')->get();
         return view('bldraft.bldraft.selectBooking',[
             'booking'=>$booking,
         ]);
@@ -50,20 +49,20 @@ class BlDraftController extends Controller
         request()->validate([
             'booking_id' => ['required'],
         ]);
-        $customershipper  = Customers::whereHas('CustomerRoles', function ($query) {
+        $customershipper  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', '=', 1);
         })->with('CustomerRoles.role')->get();
-        $customersConsignee  = Customers::whereHas('CustomerRoles', function ($query) {
+        $customersConsignee  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', '=', 2);
         })->with('CustomerRoles.role')->get();
-        $customersNotifiy = Customers::whereHas('CustomerRoles', function ($query) {
+        $customersNotifiy = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->whereIn('role_id', [2,3]);
         })->with('CustomerRoles.role')->get();
         $booking = Booking::findOrFail(request('booking_id'));
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $containers = Containers::orderBy('id')->get();
-        $voyages    = Voyages::with('vessel')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         // dd($booking_containers);

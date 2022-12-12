@@ -5,7 +5,7 @@
 
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-one">
-                <div class="widget-heading">
+                <div class="widget-heading"> 
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
@@ -16,10 +16,23 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('customers.update',['customer'=>$customer])}}" method="POST">
+                <form id="createForm" action="{{route('customers.update',['customer'=>$customer])}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('put')
                         <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="customer_kind">Customer Kind<span style="color: red;">*</span></label>
+                                <select class="selectpicker form-control" id="customer_kind" data-live-search="true" name="customer_kind" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                        <option value="0" {{$customer->id == old('customer_kind') ||  $customer->customer_kind == "0"? 'selected':''}}>Primary</option>
+                                        <option value="1" {{$customer->id == old('customer_kind') ||  $customer->customer_kind == "1"? 'selected':''}}>Validated</option>
+                                </select>
+                                @error('customer_kind')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                             <div class="form-group col-md-4">
                                 <label for="nameInput">Name <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name',$customer->name)}}"
@@ -40,6 +53,8 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="countryInput">{{trans('company.country')}} <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" data-size="10"
@@ -54,8 +69,6 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="cityInput">City <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="cityInput" name="city" value="{{old('city',$customer->city)}}"
@@ -76,18 +89,18 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-4">
-                                <label for="cust_address">Address Line 2</label>
-                                <input type="text" class="form-control" id="cust_address" name="cust_address" value="{{old('cust_address',$customer->cust_address)}}"
-                                    placeholder="Address Line 2" autocomplete="off">
-                                @error('cust_address')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="cust_address">Address Line 2</label>
+                            <input type="text" class="form-control" id="cust_address" name="cust_address" value="{{old('cust_address',$customer->cust_address)}}"
+                                placeholder="Address Line 2" autocomplete="off">
+                            @error('cust_address')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
                         <div class="form-group col-md-4">
                             <label for="phoneInput">Phone <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="phoneInput" name="phone" value="{{old('phone',$customer->phone)}}"
@@ -98,14 +111,14 @@
                             <input type="text" class="form-control" id="landline" name="landline" value="{{old('landline',$customer->landline)}}"
                                 placeholder="Landline" autocomplete="off">
                         </div>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="emailInput">Email <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="emailInput" name="email" value="{{old('email',$customer->email)}}"
                                 placeholder="Email" autocomplete="off">
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="tax_card_noInput">Tax Card</label>
                             <input type="text" class="form-control" id="tax_card_noInput" name="tax_card_no" value="{{old('tax_card_no',$customer->tax_card_no)}}"
@@ -120,6 +133,8 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="fax">Fax</label>
                             <input type="text" class="form-control" id="fax" name="fax" value="{{old('fax',$customer->fax)}}"
@@ -130,8 +145,6 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="countryInput">Currency<span style="color: red;">*</span></label>
                             <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
@@ -150,6 +163,8 @@
                                 @endforeach
                             </select>
                         </div> 
+                    </div>   
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="customers_website">Customer Website Url</label>
                             <input type="text" class="form-control" id="customers_website" name="customers_website" value="{{old('customers_website',$customer->customers_website)}}"
@@ -160,8 +175,6 @@
                             </div>
                             @enderror
                         </div>
-                    </div>   
-                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="notes">Note</label>
                             <input type="text" class="form-control" id="notes" name="notes" value="{{old('notes',$customer->notes)}}"
@@ -172,6 +185,17 @@
                             </div>
                             @enderror
                         </div>  
+                        <div class="form-group col-md-4">
+                            <div class="custom-file-container" data-upload-id="certificat">
+                                <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                <label class="custom-file-container__custom-file" >
+                                    <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" value="{{old('certificat',$customer->certificat)}}" accept="pdf">
+                                    <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                    <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                </label>
+                                <div class="custom-file-container__image-preview"></div>
+                            </div>
+                        </div>
                     </div>   
 
                     <table id="customerRole" class="table table-bordered">

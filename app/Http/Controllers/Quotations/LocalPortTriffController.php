@@ -29,13 +29,10 @@ class LocalPortTriffController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $localporttriff = LocalPortTriff::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
-            $localport = LocalPortTriff::get();
-        }else{
+
             $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
             $localport = LocalPortTriff::where('company_id',Auth::user()->company_id)->get();
-        }
+            
             return view('quotations.localporttriff.index',[
                 'items'=>$localporttriff,
                 'localport'=>$localport,

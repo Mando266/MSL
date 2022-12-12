@@ -7,15 +7,16 @@ use App\Models\Master\Terminals;
 use App\Models\Master\Ports;
 use App\Models\Voyages\VoyagePorts;
 use DB;
+use Illuminate\Support\Facades\Auth;
 class VoyageportsController extends Controller
 {
 
 
     public function create()
     {
-        $this->authorize(__FUNCTION__,VoyagePorts::class);
-        $terminals = Terminals::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
+        $user = Auth::user();
+        $terminals = [];
+        $ports = Ports::where('company_id',$user->company_id)->orderBy('id')->get();
         return view('voyages.voyageports.create',[
             'terminals'=>$terminals,
             'ports'=>$ports,

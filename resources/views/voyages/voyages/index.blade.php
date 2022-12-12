@@ -26,7 +26,7 @@
                                 <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="From" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('From',request()->input('From')) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('From',request()->input('From')) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -35,7 +35,7 @@
                                 <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="To" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('To',request()->input('To')) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('To',request()->input('To')) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -90,7 +90,7 @@
                                             <td>
                                                 @foreach($item->voyagePorts as $voyagePort)
                                                 <table style="border: hidden;">
-                                                    <td>{{$voyagePort->port_from_name}}</td>
+                                                    <td>{{ optional($voyagePort->port)->name}}</td>
                                                 </table>
                                                 @endforeach
                                             </td>
@@ -111,7 +111,7 @@
                                             <td>
                                                 @foreach($item->voyagePorts as $voyagePort)
                                                 <table style="border: hidden;">
-                                                    <td>{{$voyagePort->terminal_name}}</td>
+                                                    <td>{{ optional($voyagePort->terminal)->name}}</td>
                                                 </table>
                                                 @endforeach
                                             </td>
@@ -165,6 +165,7 @@
                         </div>
                         
                         <div class="paginating-container">
+                        {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

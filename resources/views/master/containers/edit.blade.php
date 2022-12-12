@@ -19,6 +19,9 @@
                 <form id="createForm" action="{{route('containers.update',['container'=>$container])}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('put')
+                        @if(session('alert'))
+                            <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
+                        @endif
                         <div class="form-row">
                         <div class="form-group col-md-4">
                                 <label for="countryInput">Container Type</label>
@@ -112,7 +115,7 @@
                                         <span class="custom-file-container__custom-file__custom-file-control"></span>
                                     </label>
                                     <div class="custom-file-container__image-preview"></div>
-                            </div>
+                                </div>
                             </div>
                             <!-- <div class="form-group col-md-4">
                                 <label for="last_movementInput">Last Movement</label>

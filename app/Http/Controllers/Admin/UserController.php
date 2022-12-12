@@ -17,24 +17,14 @@ class UserController extends Controller
 {
     public function index(){
         $this->authorize(__FUNCTION__,User::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){ 
-        $users = User::where('is_super_admin',0)
-                        ->filter(new UserIndexFilter(request()))
-                        ->orderBy('name')
-                        ->with('roles')
-                        ->paginate(30);
-        $roles = Role::orderBy('name')->get();
-        }
-        else
-        {
-            $users = User::where('is_super_admin',0)
-            ->filter(new UserIndexFilter(request()))
+
+            $users = User::filter(new UserIndexFilter(request()))
             ->orderBy('name')
             ->with('roles')->where('company_id',Auth::user()
             ->company_id)
             ->paginate(30);
             $roles = Role::orderBy('name')->get();
-        }
+
         return view('admin.user.index',[
             'items'=>$users,
             'roles'=>$roles
@@ -60,13 +50,12 @@ class UserController extends Controller
     public function create(){
         $this->authorize(__FUNCTION__,User::class);
         $companies = Company::orderBy('name')->get();
-        $user = User::where('agent_id',Auth::user()->id)->first();
-        $user_agent = $user->id;
+        $user_agent = Agents::where('company_id',Auth::user()->company_id)->get();
         $roles = Role::orderBy('name')->get();
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
-            $agents = Agents::get();
+            $agents = Agents::where('company_id',Auth::user()->company_id)->get();
         }else{
             $agents = [];
         }
@@ -76,18 +65,18 @@ class UserController extends Controller
             'agents'=>$agents,
             'user_agent'=>$user_agent,
             'isSuperAdmin'=>$isSuperAdmin
-
         ]);
     }
 
     public function store(Request $request){
         $this->authorize(__FUNCTION__,User::class);
         $this->validate($request,$this->rules(),$this->messages());
+        $user = Auth::user();
         $data = array_merge($request->except('_token','password_confirmation','role'),[
             'password'=>Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request),
             'is_super_admin'=>0,
-            'company_id'=>Company::getCompanyId()
+            'company_id'=>$user->company_id,
         ]);
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
@@ -105,10 +94,11 @@ class UserController extends Controller
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
         $userCompanis = $user->companies()->pluck('company_users.company_id')->all();
+        $user_agent = Agents::where('company_id',Auth::user()->company_id)->get();
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
-            $agents = Agents::get();
+            $agents = Agents::where('company_id',Auth::user()->company_id)->get();
         }else{
             $agents = [];
         }
@@ -118,7 +108,8 @@ class UserController extends Controller
             'agents'=>$agents,
             'roles'=>$roles,
             'user'=>$user,
-            'userCompanis'=>$userCompanis
+            'userCompanis'=>$userCompanis,
+            'user_agent'=>$user_agent,
         ]);
     }
 
@@ -169,6 +160,13 @@ class UserController extends Controller
     }
     protected function storeAvatar(Request $request,$url = null){
         return $request->hasFile('avatar') ? $request->file('avatar')->store('avatars',['disk' => 'public']) : $url;
+    }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+        $user->delete(); 
+        return redirect()->route('users.index')->with('success',trans('User.deleted.success'));
     }
 
 }

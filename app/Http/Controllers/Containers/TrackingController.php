@@ -11,20 +11,21 @@ use App\Models\Master\ContainersMovement;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use DB;
+use Illuminate\Support\Facades\Auth;
+
 class TrackingController extends Controller
 {
     public function index()
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        $containers = Containers::orderBy('id')->get();
-        
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $movements = Movements::filter(new ContainersIndexFilter(request()))->join('containers', 'movements.container_id', '=', 'containers.id')
             ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')->orderBy('id','asc')
         ->get()->groupBy('code');
-        $ports = Ports::orderBy('id')->get();
-        $voyages = Voyages::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
-        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+        $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
 
         return view('containers.tracking.index',[
             'items'=>$movements,
@@ -40,11 +41,11 @@ class TrackingController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Movements::class);
-        $containers = Containers::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->get();
-        $voyages = Voyages::orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
-        $movementsBlNo = Movements::select('bl_no')->distinct()->get()->pluck('bl_no');
+        $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
 
         return view('containers.tracking.create',[
             'containers'=>$containers,

@@ -12,7 +12,7 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('ContainerTypes-Create')
+                        @permission('ContainersTypes-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('container-types.create')}}" class="btn btn-primary">Add New Container Type</a>
@@ -47,14 +47,14 @@
                                             <td>{{$item->lenght}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
-                                                    @permission('ContainerTypes-Edit')
+                                                    @permission('ContainersTypes-Edit')
                                                     <li>
                                                         <a href="{{route('container-types.edit',['container_type'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('ContainerTypes-Delete')
+                                                    @permission('ContainersTypes-Delete')
                                                     <li>
                                                         <form action="{{route('container-types.destroy',['container_type'=>$item->id])}}" method="post">
                                                             @method('DELETE')

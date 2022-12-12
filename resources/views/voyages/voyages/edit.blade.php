@@ -24,7 +24,7 @@
                                 <select class="selectpicker form-control" id="ports" data-live-search="true" name="port_from_name" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                    <option value="{{$item->name}}" {{$item->name == old('port_from_name',$voyage->port_from_name) ? 'selected':''}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('port_from_name',$voyage->port_from_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('port_from_name')
@@ -38,7 +38,7 @@
                                 <select class="selectpicker form-control" id="terminals" data-live-search="true" name="terminal_name" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($terminals as $item)
-                                    <option value="{{$item->name}}" {{$item->name == old('terminal_name',$voyage->terminal_name) ? 'selected':''}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('terminal_name',$voyage->terminal_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('terminal_name')

@@ -32,21 +32,22 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>
-                                    <select class="selectpicker form-control" id="voyageporrt" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
+                            <td class="ports">  
+                                    <select class="selectpicker form-control" id="port" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($ports as $item)
-                                                <option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>
+                                                <option value="{{$item->id}}" {{$item->id == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                     </select>
                                 </td>
-                                <td>
-                                <select class="selectpicker form-control" id="terminalporrt" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
-                                            title="{{trans('forms.select')}}">
-                                            @foreach ($terminals as $item)
-                                                <option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>
-                                            @endforeach
-                                    </select>
+                                <td class="terminal">
+                                  <select class="form-control" id="terminal" data-live-search="true" name="voyageport[0][terminal_name]" data-size="10"
+                                          title="{{trans('forms.select')}}">
+                                          <option value="">Select...</option>
+                                          @foreach ($terminals as $item)
+                                              <option value="{{$item->id}}" {{$item->id == old('terminal_name') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>
+                                          @endforeach
+                                  </select>
                                 </td>
                                 <td>
                                 <input type="text" id="roadInput" name="voyageport[0][road_no]" class="form-control" autocomplete="off">
@@ -76,7 +77,6 @@
 </div>
 @endsection
 @push('scripts')
-
 <script>
       $(document).ready(function(){
         $("#voyagePort").on("click", ".remove", function () {
@@ -85,8 +85,8 @@
      var counter  = 1;
         $("#add").click(function(){
                 var tr = '<tr>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->name}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
-            '<td><select class="form-control" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->name}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td class="ports"><select class="form-control port" id="port" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->id}}" {{$item->id == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td class="terminal"><select class="form-control" id="terminal" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->id}}" {{$item->id == old('terminal_name') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>@endforeach</select></td>'+
             '<td><input type="text" name="voyageport['+counter+'][road_no]" class="form-control" autocomplete="off"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][eta]" class="form-control"></td>'+
             '<td><input type="date" name="voyageport['+counter+'][etd]" class="form-control"></td>'+
@@ -96,6 +96,31 @@
             $('#voyagePort').append(tr);
         });
     });
+</script>
+
+<script>
+
+  $(document).ready(function (){
+    
+        $(function(){
+                $('#voyagePort').on('change','td.ports select' , function(e){
+                  let self = $(this);
+                  let parent = self.closest('tr');
+                    let value = e.target.value;
+                    let terminal = $('td.terminal select' , parent);
+                    let response =    $.get(`/api/master/terminals/${value}`).then(function(data){
+                        let terminals = data.terminals || '';
+                      //  console.log(terminals);
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < terminals.length; i++){
+                            list2.push(`<option value='${terminals[i].id}'>${terminals[i].name} ${terminals[i].code}</option>`);
+                        }
+               // let terminal = $('.terminal',parent);
+                terminal.html(list2.join(''));
+                });
+            });
+        });
+  });  
 </script>
 @endpush
 

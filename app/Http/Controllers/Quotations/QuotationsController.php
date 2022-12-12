@@ -26,41 +26,33 @@ class QuotationsController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Quotation::class);
-        if(Auth::user()->is_super_admin){
-            $quotations = Quotation::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
-            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id')->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->get();
-            $quotation = Quotation::get();
-            $customers = Customers::orderBy('id')->get();
-            $ports = Ports::orderBy('id')->get();
-        }
-        else
-        {
-            $quotations = Quotation::where('discharge_agent_id',Auth::user()->agent_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
-            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id')->where('agent_id',Auth::user()->agent_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->get();
-            $quotation = Quotation::get();
-            $customers = Customers::orderBy('id')->get();
-            $ports = Ports::orderBy('id')->get();
-        }
-        session()->flash('quotations',$exportQuotations);
+
+            $quotations = Quotation::filter(new QuotationIndexFilter(request()))->where('discharge_agent_id',Auth::user()->agent_id)->where('company_id',Auth::user()->company_id)->orderBy('id','desc')->paginate(30);
+            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','status')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
+            $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
+            $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            session()->flash('quotations',$exportQuotations);
+        
         return view('quotations.quotations.index',[
             'items'=>$quotations,
             'quotation'=>$quotation,
             'ports'=>$ports,
             'customers'=>$customers,
-
         ]);    
     }
 
     public function create()
     {
         $this->authorize(__FUNCTION__,Quotation::class);
-        $ports = Ports::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
-        $customers = Customers::orderBy('id')->with('CustomerRoles.role')->get();
+        $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->with('CustomerRoles.role')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::get();
+        $line = Lines::where('company_id',Auth::user()->company_id)->get();
+
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
@@ -69,8 +61,9 @@ class QuotationsController extends Controller
         }else{
             $agents = [];
         }
-
+        $user = Auth::user();
         return view('quotations.quotations.create',[
+            'user'=>$user,
             'ports'=>$ports,
             'isSuperAdmin'=>$isSuperAdmin,
             'agents'=>$agents,
@@ -92,9 +85,7 @@ class QuotationsController extends Controller
             'load_port_id' => ['required'], 
             'equipment_type_id' => ['required'], 
             'export_detention' => ['required'], 
-            'import_detention' => ['required'], 
-            'principal_name' => ['required'], 
-            'vessel_name' => ['required'],
+            'import_detention' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'validity_to' => ['required','after:validity_from'], 
@@ -161,6 +152,7 @@ class QuotationsController extends Controller
                 'ref_no'=> "",
                 'agent_id'=>$request->agent_id,
                 'quoted_by_id'=>$user->id,
+                'company_id'=>$user->company_id,
                 'discharge_agent_id'=> $request->input('discharge_agent_id'),
                 'countryload'=> $request->input('countryload'),
                 'countrydis'=> $request->input('countrydis'),
@@ -198,12 +190,11 @@ class QuotationsController extends Controller
             $quotations = Quotation::create([
                 'ref_no'=> "",
                 'discharge_agent_id'=>$user->agent_id,
+                'company_id'=>$user->company_id,
                 'quoted_by_id'=>$user->id,
                 'agent_id'=> $request->input('discharge_agent_id'),
                 'countryload'=> $request->input('countryload'),
                 'countrydis'=> $user->agent->country_id,
-                'vessel_name'=> $request->input('vessel_name'),
-                'principal_name'=> $request->input('principal_name'),
                 'validity_from'=> $request->input('validity_from'),
                 'validity_to'=> $request->input('validity_to'),
                 'soc'=>$request->soc ? $request->soc : 0,
@@ -270,23 +261,25 @@ class QuotationsController extends Controller
     {
         $this->authorize(__FUNCTION__,Quotation::class);
         $quotation = Quotation::with('quotationDesc','quotationLoad')->find($id);
-        $ports = Ports::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
-        $customers = Customers::orderBy('id')->get();
+        $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::get();
+        $line = Lines::where('company_id',Auth::user()->company_id)->get();
+
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
             // $agents = AppUser::role('agent');
-            $agents = Agents::where('is_active',1)->get();
+            $agents = Agents::where('company_id',Auth::user()->company_id)->where('is_active',1)->get();
         }else{
             $agents = [];
         }
-
+        $user = Auth::user();
         return view('quotations.quotations.edit',[
+            'user'=>$user,
             'quotation'=>$quotation,
             'ports'=>$ports,
             'isSuperAdmin'=>$isSuperAdmin,
@@ -301,8 +294,7 @@ class QuotationsController extends Controller
     }
 
     public function update(Request $request,$id)
-    {
-        
+    {   
         $request->validate([
             'validity_from' => ['required'], 
             'customer_id' => ['required'], 
@@ -311,8 +303,6 @@ class QuotationsController extends Controller
             'equipment_type_id' => ['required'], 
             'export_detention' => ['required'], 
             'import_detention' => ['required'], 
-            'principal_name' => ['required'], 
-            'vessel_name' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'validity_to' => ['required','after:validity_from'],
@@ -356,25 +346,42 @@ class QuotationsController extends Controller
             'rf'=>$request->rf ? $request->rf : 0,
             'show_import'=>$request->show_import,
             'agent_id'=>$request->agent_id,
-            'vessel_name'=> $request->vessel_name,
-            'principal_name'=> $request->principal_name,
             'oog_dimensions'=>$request->oog_dimensions,
         ];
-        if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
-            $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
-            foreach($deleteOldDes as $x){
-                $x->delete();
+        if($user->is_super_admin){
+            if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
+                $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
+                foreach($deleteOldDes as $x){
+                    $x->delete();
+                }
+            }
+            if($quotation->agent_id != $request->agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
+                $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
+                foreach($deleteOldLoad as $y){
+                    $y->delete();
+                }
+            }
+            $input ['vessel_name'] = $request->vessel_name;
+            $input ['principal_name'] = $request->principal_name;
+        }else{
+            if($request->equipment_type_id != $quotation->equipment_type_id){
+                $deleteOldDes = QuotationDes::where('quotation_id',$quotation->id)->get();
+                foreach($deleteOldDes as $x){
+                    $x->delete();
+                }
+            }
+            if($request->equipment_type_id != $quotation->equipment_type_id){
+                $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
+                foreach($deleteOldLoad as $y){
+                    $y->delete();
+                }
             }
         }
+
         $quotation->createOrUpdateDesc($request->quotationDis);
         // dd($quotation);
         
-        if($quotation->agent_id != $request->agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
-            $deleteOldLoad = QuotationLoad::where('quotation_id',$quotation->id)->get();
-            foreach($deleteOldLoad as $y){
-                $y->delete();
-            }
-        }
+        
         $quotation->createOrUpdateLoad($request->quotationLoad);
         // dd($user);
         if(isset($request->discharge_agent_id)){
@@ -383,11 +390,10 @@ class QuotationsController extends Controller
             $quotation->update($input);
         }else{
             if($quotation->status == 'pending'){
-                $input ['discharge_agent_id'] = $user->discharge_agent_id;
+                // dd($user);
                 $input ['status'] = "pending";
                 $quotation->update($input);
             }else{
-                $input ['discharge_agent_id'] = $user->discharge_agent_id;
                 $input ['status'] = "Agent count";
                 $quotation->update($input);
             }

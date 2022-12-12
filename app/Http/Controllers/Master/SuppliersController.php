@@ -13,11 +13,9 @@ class SuppliersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Suppliers::class);
-        if(Auth::user()->is_super_admin || is_null(Auth::user()->company_id)){
-            $suppliers = Suppliers::orderBy('id')->paginate(30);
-        }else{
+
             $suppliers = Suppliers::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30);
-        }
+            
         return view('master.suppliers.index',[
             'items'=>$suppliers,
         ]);
@@ -36,9 +34,8 @@ class SuppliersController extends Controller
     {
         $this->authorize(__FUNCTION__,Suppliers::class);
         $user = Auth::user();
-        $name = request()->input('name');
 
-        $NameDublicate  = Suppliers::where('company_id',$user->company_id)->where('name',$name)->first();
+        $NameDublicate  = Suppliers::where('company_id',$user->company_id)->where('name',$request->name)->first();
         if($NameDublicate != null){
             return back()->with('alert','This Supplier Name Already Exists');
         }
@@ -67,13 +64,16 @@ class SuppliersController extends Controller
 
     public function update(Request $request,Suppliers $supplier)
     {
+        $request->validate([ 
+            'name' => 'required', 
+        ]);
         $user = Auth::user();
-        $name = request()->input('name');
 
-        $NameDublicate  = Suppliers::where('company_id',$user->company_id)->where('name',$name)->first();
-        if($NameDublicate != null){
+        $NameDublicate  = Suppliers::where('id','!=',$supplier->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+        if($NameDublicate > 0){
             return back()->with('alert','This Supplier Name Already Exists');
         }
+
         $this->authorize(__FUNCTION__,Suppliers::class);
         $supplier->update($request->except('_token'));
         return redirect()->route('suppliers.index')->with('success',trans('supplier.updated.success'));
