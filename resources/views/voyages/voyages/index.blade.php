@@ -11,6 +11,11 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
+                        <div class="row">
+                                <div class="col-md-12 text-right mb-6">
+                                    <a class="btn btn-warning" href="{{ route('export.voyages') }}">Export</a>
+                                </div>
+                            </div>
                         @permission('Voyages-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
