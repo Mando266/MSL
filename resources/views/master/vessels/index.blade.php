@@ -76,6 +76,13 @@
 
                                             <td class="text-center">
                                                 <ul class="table-controls">
+                                                    @if($item->certificat == !null)
+                                                    <li>
+                                                        <a href='{{asset($item->certificat)}}' target="_blank">
+                                                            <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
                                                     @permission('Vessels-Edit')
                                                     <li>
                                                         <a href="{{route('vessels.edit',['vessel'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -88,7 +95,7 @@
                                                         <form action="{{route('vessels.destroy',['vessel'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
+                                                        <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form>
                                                     </li>
                                                     @endpermission
@@ -115,3 +122,25 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to delete this Vessel?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+</script>
+@endpush

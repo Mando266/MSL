@@ -74,6 +74,12 @@ class CustomersController extends Controller
             ]); 
         }
         $user = Auth::user();
+
+        $NameDublicate  = Customers::where('company_id',$user->company_id)->where('name',$request->name)->first();
+        if($NameDublicate != null){
+            return back()->with('alert','Customer Name Already Exists');
+        }
+
         $country = Country::where('id',$request->country_id)->pluck('prefix')->first();
         $code = $country.$request->input('name').'-';
         $customers = Customers::create([
@@ -118,7 +124,7 @@ class CustomersController extends Controller
     public function show(Customers $customer)
     {
         $this->authorize(__FUNCTION__,Customers::class);
-        $customer = $customer->load('country');
+        $customer = $customer->load('country'); 
         $customer_roles = CustomerRoles::where('customer_id',$customer->id)->with('role')->get();
         $roles = RoleCustomer::all();
         return view('master.customers.show',[
@@ -172,7 +178,12 @@ class CustomersController extends Controller
                 'customer_kind' => ['required'],   
             ]); 
         }
+        $user = Auth::user();
 
+        $NameDublicate  = Customers::where('id','!=',$customer->id)->where('company_id',$user->company_id)->where('name',$request->name)->count();
+        if($NameDublicate > 0){
+            return back()->with('alert','Customer Name Already Exists');
+        }
         $this->authorize(__FUNCTION__,Customers::class);
         $inputs = request()->all();
         unset($inputs['customerRole'],$inputs['_token'],$inputs['removed']);

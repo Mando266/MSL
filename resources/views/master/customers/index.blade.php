@@ -12,19 +12,15 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        <div class="row">
-                                <div class="col-md-12 text-right mb-6">
-                                    <a class="btn btn-warning" href="{{ route('export.customers') }}">Export</a>
-                                </div>
-                            </div>
                             <br>
-                        @permission('Customers-Create')
                         <div class="row">
-                            <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('customers.create')}}" class="btn btn-primary">Add New Customer</a>
+                            <div class="col-md-12 text-right mb-12">
+                                @permission('Customers-Create')
+                                    <a href="{{route('customers.create')}}" class="btn btn-primary">Add New Customer</a>
+                                @endpermission
+                                    <a class="btn btn-warning" href="{{ route('export.customers') }}">Export</a>
                             </div>
                         </div>
-                        @endpermission
                     </div>
             <form>
                 <div class="form-row">
@@ -88,7 +84,7 @@
                                             <!-- <td>{{$item->currency}}</td> -->
                                             <td>{{optional($item->country)->name}}</td>
                                             <!-- <td>{{$item->city}}</td> -->
-                                            <td>{{$item->address}} {{$item->cust_address}}</td>
+                                            <td>{{$item->address}} / {{$item->cust_address}}</td>
                                             <td>{{optional($item->User)->name}}</td>
                                             <td>
                                                 <ul>
@@ -98,12 +94,12 @@
                                                 </ul>
                                             </td>
                                             <td class="text-center">
-                                                        @if($item->customer_kind == 0)
-                                                            <span class="badge badge-info"> Primary </span>
-                                                        @else
-                                                            <span class="badge badge-danger"> Validated </span>
-                                                        @endif
-                                                    </td>
+                                                @if($item->customer_kind == 0)
+                                                    <span class="badge badge-info"> Primary </span>
+                                                @else
+                                                    <span class="badge badge-danger"> Validated </span>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @if($item->certificat == !null)
@@ -179,6 +175,5 @@
             }
           });
       });
-  
 </script>
 @endpush

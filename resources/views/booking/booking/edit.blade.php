@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST">
+                    <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
                             <div class="form-row">
@@ -298,7 +298,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="commodity_description">Commodity Description <span style="color: red;">*</span></label>
-                                <input type="text" class="form-control" id="commodity_description" name="commodity_description" value="{{old('commodity_description')}}"
+                                <input type="text" class="form-control" id="commodity_description" name="commodity_description" value="{{old('commodity_description',$booking->commodity_description)}}"
                                     placeholder="Commodity Description" autocomplete="off">
                                 @error('commodity_description')
                                 <div style="color: red;">
@@ -307,7 +307,29 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="details">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes" value="{{old('notes',$booking->notes)}}"
+                                 placeholder="Notes" autocomplete="off" autofocus></textarea>
+                                @error('notes')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="custom-file-container" data-upload-id="certificat">
+                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label class="custom-file-container__custom-file" >
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" value="{{old('certificat',$booking->certificat)}}" accept="pdf">
+                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                                </div>
+                            </div>
+                    </div>
                         <h4>Container Details</h4>
                             <table id="containerDetails" class="table table-bordered">
                                 <thead>

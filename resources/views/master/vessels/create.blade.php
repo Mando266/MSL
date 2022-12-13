@@ -16,9 +16,9 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('vessels.store')}}" method="POST">
+                <form id="createForm" action="{{route('vessels.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        @if(session('alert'))
+                            @if(session('alert'))
                                 <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
                             @endif
                         <div class="form-row">
@@ -164,6 +164,25 @@
                             @enderror
                         </div>
                 </div>
+                <div class="form-row">
+                        <div class="form-group col-md-4">
+                                <div class="custom-file-container" data-upload-id="certificat">
+                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label class="custom-file-container__custom-file" >
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" accept="pdf">
+                                        <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                            </div>
+
+                                @error('certificat')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
 
                        <div class="row">
                             <div class="col-md-12 text-center">

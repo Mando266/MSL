@@ -136,9 +136,10 @@ class BookingController extends Controller
             'rf'=>$request->input('rf') != null? 1 : 0,
             'oog'=>$request->input('oog') != null? 1 : 0,
             'ffw_id'=>$request->input('ffw_id'),
-            'booking_confirm'=>$request->input('booking_confirm'),
-
+            'booking_confirm'=>$request->input('booking_confirm'), 
+            'notes'=>$request->input('notes'), 
         ]);
+
         foreach($request->input('containerDetails',[]) as $details){
             BookingContainerDetails::create([
                 'seal_no'=>$details['seal_no'],
@@ -162,6 +163,13 @@ class BookingController extends Controller
         $bookingCounter->save();
         $booking->ref_no = $booking->loadPort->code . sprintf('%05u', $bookingCounter->counter);
         $booking->save();
+
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $booking->update(['certificat'=>"certificat/".$path]);
+        }
+
         return redirect()->route('booking.index')->with('success',trans('Booking.created'));
     }
 
@@ -227,6 +235,7 @@ class BookingController extends Controller
             'voyage_id' => ['required'],
             'commodity_description' =>['required'],
             'bl_release' =>['required'],
+            'customer_id' => ['required'], 
         ]);
         
         $this->authorize(__FUNCTION__,Booking::class);
@@ -234,8 +243,13 @@ class BookingController extends Controller
         unset($inputs['containerDetails'],$inputs['_token'],$inputs['removed']);
         $booking->update($inputs);
         BookingContainerDetails::destroy(explode(',',$request->removed));
-        $booking->createOrUpdateContainerDetails($request->containerDetails);
 
+        $booking->createOrUpdateContainerDetails($request->containerDetails);
+        if($request->hasFile('certificat')){
+            $path = $request->file('certificat')->getClientOriginalName();
+            $request->certificat->move(public_path('certificat'), $path);
+            $booking->update(['certificat'=>"certificat/".$path]);
+        }
         return redirect()->route('booking.index')->with('success',trans('Booking.Updated.Success'));
 
     }

@@ -86,6 +86,8 @@
                                         <th>Equipment Type</th>
                                         <th>qty</th>
                                         <th>Booking Creation</th>
+                                        <th>Booking Status</th>
+                                        <th class='text-center' style='width:100px;'></th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -103,7 +105,7 @@
                                             <td>
                                                 @foreach($item->bookingContainerDetails as $bookingContainerDetail)
                                                 <table style="border: hidden;">
-                                                    <td>{{ optional($bookingContainerDetail->containerType)->name }}</td>
+                                                    <td>{{ optional($bookingContainerDetail->containerType)->name}}</td>
                                                 </table>
                                                 @endforeach
                                             </td>
@@ -115,9 +117,22 @@
                                                 {{ $qty }}
                                             </td>
                                             <td>{{{$item->created_at}}}</td>
-
+                                            <td class="text-center">
+                                                @if($item->booking_confirm == 1)
+                                                    <span class="badge badge-info"> Confirm </span>
+                                                @else
+                                                    <span class="badge badge-danger"> Draft </span>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
+                                                 @if($item->certificat == !null)
+                                                    <li>
+                                                        <a href='{{asset($item->certificat)}}' target="_blank">
+                                                            <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
                                                     @permission('Booking-Edit')
                                                     <li>
                                                         <a href="{{route('booking.edit',['booking'=>$item->id,'quotation_id'=>$item->quotation_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -141,8 +156,21 @@
                                                         </form> 
                                                     </li>
                                                     @endpermission
-                                                </ul>
+                                                </ul> 
                                             </td>
+                                            <td class="text-center">
+                                                 <ul class="table-controls">
+                                                 @if($item->booking_confirm == "1")
+                                                    @permission('Booking-Create')
+                                                            <li>
+                                                                <a href="{{route('bldraft.create',['booking_id'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                    <i class="fas fa-plus text-primary"></i>
+                                                                </a>
+                                                            </li>
+                                                    @endpermission
+                                                @endif
+                                            </ul>
+                                        </td>
                                         </tr>
                                     @empty
                                         <tr class="text-center">
