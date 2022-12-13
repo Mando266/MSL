@@ -25,7 +25,12 @@ class VoyageportsController extends Controller
 
     public function store(Request $request)
     {
-
+        $request->validate([
+            'eta' => 'required',
+            'etd' => ['required','after:eta'],
+        ],[
+            'etd.after'=>'ETD Should Be After ETA',
+        ]);
         foreach($request->input('voyageport',[]) as $voyageport){
             VoyagePorts::create([
                 'voyage_id'=> $request->input('voyage_id'),

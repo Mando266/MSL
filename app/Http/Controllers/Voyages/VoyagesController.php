@@ -255,6 +255,13 @@ class VoyagesController extends Controller
 
     public function update(Request $request, VoyagePorts $voyage)
     {
+        $request->validate([
+            'eta' => 'required',
+            'etd' => ['required','after:eta'],
+        ],[
+            'etd.after'=>'ETD Should Be After ETA',
+        ]);
+        
         $this->authorize(__FUNCTION__,VoyagePorts::class);
         $voyage->update($request->except('_token'));
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));

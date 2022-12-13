@@ -235,6 +235,7 @@ class BookingController extends Controller
             'voyage_id' => ['required'],
             'commodity_description' =>['required'],
             'bl_release' =>['required'],
+            'customer_id' => ['required'], 
         ]);
         
         $this->authorize(__FUNCTION__,Booking::class);

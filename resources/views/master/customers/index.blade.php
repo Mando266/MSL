@@ -94,12 +94,12 @@
                                                 </ul>
                                             </td>
                                             <td class="text-center">
-                                                        @if($item->customer_kind == 0)
-                                                            <span class="badge badge-info"> Primary </span>
-                                                        @else
-                                                            <span class="badge badge-danger"> Validated </span>
-                                                        @endif
-                                                    </td>
+                                                @if($item->customer_kind == 0)
+                                                    <span class="badge badge-info"> Primary </span>
+                                                @else
+                                                    <span class="badge badge-danger"> Validated </span>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @if($item->certificat == !null)

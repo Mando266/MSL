@@ -14,6 +14,9 @@
                         </nav>
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
+                                @permission('Quotation-Edit')
+                                <a href="{{route('quotations.create')}}" class="btn btn-primary">New Quotation</a>
+                                @endpermission
                                 <a class="btn btn-warning" href="{{ route('export.quotation') }}">Export</a>
                             </div>
                         </div>
@@ -96,6 +99,7 @@
                                         <th>validity from</th>
                                         <th>validity to</th>
                                         <th>Equipment Type</th>
+                                        <th>Ofr</th>
                                         <th>place of acceptence</th>
                                         <th>place of delivery</th>
                                         <th>load port</th>
@@ -116,6 +120,7 @@
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td>
+                                            <td>{{$item->ofr}}</td>
                                             <td>{{optional($item->placeOfAcceptence)->name}}</td>
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>

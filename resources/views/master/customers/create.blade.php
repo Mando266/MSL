@@ -17,9 +17,12 @@
                 </div>
                 <div class="widget-content widget-content-area">
                 <form id="createForm" action="{{route('customers.store')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                        @csrf 
+                        @if(session('alert'))
+                            <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
+                        @endif
                         <div class="form-row">
-                        <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label for="customer_kind">Customer Kind<span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customer_kind" data-live-search="true" name="customer_kind" data-size="10"
                                     title="{{trans('forms.select')}}">
