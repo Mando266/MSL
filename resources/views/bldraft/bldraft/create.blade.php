@@ -74,7 +74,7 @@
                             </div> 
                             <div class="form-group col-md-8">
                                 <label for="customer_id">Customer Consignee Details</label>
-                                    <textarea id="consignee" class="form-control"  name="customer_shipper_details"
+                                    <textarea id="consignee" class="form-control"  name="customer_consignee_details"
                                     placeholder="Customer Consignee Details" autocomplete="off"></textarea>
                             </div> 
                     </div>
@@ -95,7 +95,7 @@
                             </div>
                             <div class="form-group col-md-8">
                                 <label for="customer_id">Customer Notifiy Details</label>
-                                    <textarea id="notifiy" class="form-control"  name="customer_shipper_details"
+                                    <textarea id="notifiy" class="form-control"  name="customer_notifiy_details"
                                     placeholder="Customer Notifiy Details" autocomplete="off"></textarea>
                             </div> 
                     </div>
@@ -282,10 +282,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                            @foreach($booking_containers as $bookingContainer)
+                            @foreach($booking_containers as $key => $bookingContainer)
                             <tr>
                                 <td>
-                                  <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[0][container_id]" data-size="10"
+                                  <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
                                           <option value="">Select</option>
                                           @foreach ($containers as $item)
@@ -294,30 +294,30 @@
                                   </select>
                                 </td>
                                 <td>
-                                    <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[0][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" readonly>
+                                    <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
                                 </td>
              
                                 <td>
-                                    <input type="text" id="Packs" name="blDraftdetails[0][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                    <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
 
                                 <td>
-                                    <input type="text" id="description" name="blDraftdetails[0][description]" class="form-control input"  autocomplete="off" placeholder="Description">
+                                    <input type="text" id="description" name="blDraftdetails[{{ $key }}][description]" class="form-control input"  autocomplete="off" placeholder="Description">
                                 </td>
 
                                 <td>
-                                    <input type="text" id="gross_weight" name="blDraftdetails[0][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
+                                    <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
                                 </td>
 
                                 <td>
-                                    <input type="text" id="measurement" name="blDraftdetails[0][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
+                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
                                 </td>
                             </tr>
                             @endforeach
                             @for($i=0 ; $i < $booking_qyt ; $i++)
                             <tr>
                                 <td>
-                                  <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[0][container_id]" data-size="10"
+                                  <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
                                           <option value="">Select</option>
                                           @foreach ($containers as $item)
@@ -326,23 +326,23 @@
                                   </select>
                                 </td>
                                 <td>
-                                    <input type="text" id="seal_no" name="blDraftdetails[0][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
+                                    <input type="text" id="seal_no" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
                                 </td>
              
                                 <td>
-                                    <input type="text" id="Packs" name="blDraftdetails[0][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                    <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
 
                                 <td>
-                                    <input type="text" id="description" name="blDraftdetails[0][description]" class="form-control input"  autocomplete="off" placeholder="Description">
+                                    <input type="text" id="description" name="blDraftdetails[{{ $key }}][description]" class="form-control input"  autocomplete="off" placeholder="Description">
                                 </td>
 
                                 <td>
-                                    <input type="text" id="gross_weight" name="blDraftdetails[0][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
+                                    <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
                                 </td>
 
                                 <td>
-                                    <input type="text" id="measurement" name="blDraftdetails[0][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
+                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement">
                                 </td>
                             </tr>
                             @endfor

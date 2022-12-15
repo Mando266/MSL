@@ -76,7 +76,8 @@
                                         <th>#</th>
                                         <th>Quotation no</th>
                                         <th>Booking ref no</th>
-                                        <th>Customer</th>
+                                        <th>Shipper</th>
+                                        <th>Forwarder</th>
                                         <!-- <th>eta</th>
                                         <th>etd</th> -->
                                         <th>place of acceptence</th>
@@ -98,6 +99,7 @@
                                             <td>{{optional($item->quotation)->ref_no}}</td>
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
+                                            <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->placeOfAcceptence)->name}}</td>
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
