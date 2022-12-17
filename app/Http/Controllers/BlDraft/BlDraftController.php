@@ -99,8 +99,8 @@ class BlDraftController extends Controller
             'company_id'=>$user->company_id,
             'ref_no'=> "",
             'customer_id'=> $request->input('customer_id'),
-            'customer_consignee_details'=> $request->input('customer_phone'),
-            'customer_notifiy_details'=> $request->input('customer_address'),
+            'customer_consignee_details'=> $request->input('customer_consignee_details'),
+            'customer_notifiy_details'=> $request->input('customer_notifiy_details'),
             'customer_shipper_details'=> $request->input('customer_shipper_details'),
             'descripions'=> $request->input('descripions'),
             'customer_consignee_id'=> $request->input('customer_consignee_id'),
@@ -135,6 +135,7 @@ class BlDraftController extends Controller
     public function show($id)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+        //dd($blDraft);
         return view('bldraft.bldraft.show',[
             'blDraft'=>$blDraft
             ]);
