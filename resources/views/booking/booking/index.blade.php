@@ -17,6 +17,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
+                            <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
                             </div>
                         </div>
                     @endpermission

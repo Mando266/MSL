@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BookingExport;
 use App\Exports\CustomerExport;
 use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
@@ -44,6 +45,10 @@ class ImportExportController extends Controller
     public function exportCustomers() 
     {
         return Excel::download(new CustomerExport, 'Customers.xlsx');
+    }
+    public function exportBooking() 
+    {
+        return Excel::download(new BookingExport, 'Bookings.xlsx');
     }
     public function exportVoyages() 
     {

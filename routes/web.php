@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
     Route::get('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
+    Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
