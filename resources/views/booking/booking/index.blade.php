@@ -106,11 +106,11 @@
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{optional($item->dischargePort)->name}}</td>
                                             <td>
-                                                @foreach($item->bookingContainerDetails as $bookingContainerDetail)
+                                                
                                                 <table style="border: hidden;">
-                                                    <td>{{ optional($bookingContainerDetail->containerType)->name}}</td>
+                                                
+                                                    <td>{{ optional($item->bookingContainerDetails[0]->containerType)->name }}</td>
                                                 </table>
-                                                @endforeach
                                             </td>
                                             <?php $qty = 0;?>
                                             <td>
@@ -136,6 +136,7 @@
                                                         </a>
                                                     </li>
                                                     @endif
+                                                @if($item->booking_confirm != 1)
                                                     @permission('Booking-Edit')
                                                     <li>
                                                         <a href="{{route('booking.edit',['booking'=>$item->id,'quotation_id'=>$item->quotation_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -143,6 +144,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                @endif
                                                     @permission('Booking-Show')
                                                     <li>
                                                         <a href="{{route('booking.show',['booking'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">

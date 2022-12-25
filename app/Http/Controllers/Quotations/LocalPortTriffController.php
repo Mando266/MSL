@@ -68,6 +68,7 @@ class LocalPortTriffController extends Controller
             'country_id' => ['required'],  
             'port_id' => ['required'], 
             'terminal_id' => ['required'], 
+            'agent_id' => ['required'], 
             'validity_from' => ['required'], 
             'validity_to' => ['required','after:validity_from'],
         ],[
@@ -86,6 +87,7 @@ class LocalPortTriffController extends Controller
             'terminal_id'=> $request->input('terminal_id'),
             'validity_from'=> $request->input('validity_from'),
             'validity_to'=> $request->input('validity_to'),
+            'agent_id'=> $request->input('agent_id'),
             'company_id'=>$user->company_id,
         ]);
 
@@ -117,6 +119,8 @@ class LocalPortTriffController extends Controller
         $localporttriff = LocalPortTriff::find($id);
         $triffPriceDetailes = LocalPortTriffDetailes::where('quotation_triff_id',$id)->get();
         $TriffNo = LocalPortTriff::where('id',$id)->select('triff_no')->first();
+        session()->flash('TriffNo',$TriffNo);
+        session()->flash('triffPriceDetailes',$triffPriceDetailes);
         // dd($triffPriceDetailes);
         return view('quotations.localporttriff.show',[
             'localporttriff'=>$localporttriff,

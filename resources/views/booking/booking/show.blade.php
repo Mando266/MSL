@@ -23,7 +23,11 @@
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
+                        @if($booking->booking_confirm == 1)
                             <th class="text-center thstyle">Booking Confirmation</th>
+                        @else
+                            <th class="text-center thstyle">Draft Booking</th>
+                        @endif
                         </tr>
                     </thead>
                 </table>

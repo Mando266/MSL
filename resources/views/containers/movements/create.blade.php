@@ -30,7 +30,7 @@
                                     <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value="{{request()->input('container_type_id')}}">
                                 @else
                                     <option value="{{$container->id}}" selected data-code="{{$container->container_type_id}}" {{$container->id == old('container_id') ? 'selected':''}}>{{$container->code}}</option>
-                                    <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value="1">
+                                    <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value={{$container_type}}>
                                 @endif
                                 </select>
                                 @error('container_type_id')
@@ -145,7 +145,7 @@
                             <label for="">Voyage No</label>
                                 <select class="form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                 <option>Select</option>
+                                 <option value="">Select</option>
                                     @foreach ($voyages as $item)
                                         @if(isset($movement))
                                         <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') || $item->voyage_no == $movement->voyage_id ? 'selected':''}}>{{$item->voyage_no}}</option>

@@ -93,17 +93,10 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->input());
         $request->validate([
-            'customer_id' => ['required'], 
-            'place_of_acceptence_id' => ['required'], 
-            'load_port_id' => ['required'], 
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
-            'voyage_id' => ['required'],
-            'commodity_description' =>['required'],
-            'bl_release' =>['required'],
-            'booking_confirm' =>['required'],
-
         ],[
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
             'discharge_port_id.different'=>'Load Port The Same  Discharge Port',
@@ -178,8 +171,8 @@ class BookingController extends Controller
     public function show($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
-        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
-        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
         
         //dd($booking);
         return view('booking.booking.show',[

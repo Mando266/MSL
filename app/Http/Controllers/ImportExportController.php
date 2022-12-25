@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\BookingExport;
 use App\Exports\CustomerExport;
+use App\Exports\LocalPortTriffShowExport;
 use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
@@ -45,6 +46,10 @@ class ImportExportController extends Controller
     public function exportCustomers() 
     {
         return Excel::download(new CustomerExport, 'Customers.xlsx');
+    }
+    public function LocalPortTriffShow() 
+    {
+        return Excel::download(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx');
     }
     public function exportBooking() 
     {

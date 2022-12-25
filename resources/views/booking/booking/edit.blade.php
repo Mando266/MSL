@@ -19,18 +19,27 @@
                             @method('put')
                             <div class="form-row">
                                 <div class="form-group col-md-4">
+                                    <label for="ref_no">Booking Ref No</label>
+                                        <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$booking->ref_no)}}"
+                                            placeholder="Shipper Ref No" autocomplete="off">
+                                        @error('ref_no')
+                                        <div style="color: red;">
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
                                 <label for="customer_id">Customer <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($customers as $item)
-                                        @if($quotation->customer_id != null)
-                                            @if(optional($quotation->customer)->CustomerRoles->count() == 1 && optional($quotation->customer)->CustomerRoles->first()->role_id == 6)
+                                        @if($booking->customer_id != null)
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            @elseif($quotation->customer_id != null) 
                                             <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                            @else
-                                            <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                            @endif
-                                        @else
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                         @endif
                                     @endforeach
                                     </select>
@@ -310,8 +319,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
-                                <textarea class="form-control" id="notes" name="notes" value="{{old('notes',$booking->notes)}}"
-                                 placeholder="Notes" autocomplete="off" autofocus></textarea>
+                                <textarea class="form-control" id="notes" name="notes" 
+                                 placeholder="Notes" autocomplete="off" autofocus>{{ old('notes',$booking->notes) }}</textarea>
                                 @error('notes')
                                 <div class="invalid-feedback">
                                     {{$message}}

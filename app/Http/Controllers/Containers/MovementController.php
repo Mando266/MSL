@@ -197,11 +197,11 @@ class MovementController extends Controller
 
         // prepare export movements
 
-        $exportMovements = Movements::wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();
+        $exportMovements = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();
         
         foreach($exportMovements as $move){
             // Get All movements and sort it and get the last movement before this movement 
-            $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            $tempMovements = Movements::where('company_id',Auth::user()->company_id)->where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
                         
             $new = $tempMovements;
             $new = $new->groupBy('movement_date');
@@ -258,7 +258,7 @@ class MovementController extends Controller
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
-        $items = Movements::wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
+        $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
         session()->flash('items',$exportMovements);
         if(count($temp) != 1){
             return view('containers.movements.index',[
@@ -427,9 +427,6 @@ class MovementController extends Controller
         
     }
 
-
-
-
     public function create()
     {
         $this->authorize(__FUNCTION__,Movements::class);
@@ -445,6 +442,8 @@ class MovementController extends Controller
         if(isset($container_id)){
             $container = Containers::find($container_id);
             $movement = Movements::where('container_id',$container_id)->with('movementcode','container','containersType')->orderBy('movement_date','desc')->orderBy('id','desc')->first();
+            $container_type = $movement->container_type_id;
+            // dd($container_type);
             if($movement->movementcode['code'] == 'RCVC' || $movement->movementcode['code'] == 'DCHE' || $movement->movementcode['code'] == 'RCVE'){
                 return view('containers.movements.create',[
                     'voyages'=>$voyages,
@@ -455,6 +454,7 @@ class MovementController extends Controller
                     'ports'=>$ports,
                     'agents'=>$agents,
                     'containerstatus'=>$containerstatus,
+                    'container_type'=>$container_type,
                 ]);
             }else{
                 return view('containers.movements.create',[
@@ -467,6 +467,7 @@ class MovementController extends Controller
                     'ports'=>$ports,
                     'agents'=>$agents,
                     'containerstatus'=>$containerstatus,
+                    'container_type'=>$container_type,
                 ]);
             }
             
@@ -481,7 +482,6 @@ class MovementController extends Controller
                 'ports'=>$ports,
                 'agents'=>$agents,
                 'containerstatus'=>$containerstatus,
-
             ]);
         }
         
@@ -491,7 +491,7 @@ class MovementController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->input());
+    // dd($request->input());
         $this->authorize(__FUNCTION__,Movements::class);
 
         $request->validate([
@@ -532,8 +532,9 @@ class MovementController extends Controller
         
         }
         foreach($request->movement as $move){
+        //dd($user->company_id);
             $user = Auth::user();
-            Movements::create([
+            $movem = Movements::create([
                 'container_id'=>$move['container_id'],
                 'container_type_id'=> $request->input('container_type_id'),
                 'movement_id'=> $request->input('movement_id'),
@@ -553,8 +554,10 @@ class MovementController extends Controller
                 'free_time_origin'=> $request->input('free_time_origin'),
                 'bl_no'=> $request->input('bl_no'),
                 'remarkes'=> $request->input('remarkes'),
-                'company_id'=>$user->company_id,
                 ]);
+                $movem->company_id = $user->company_id;
+                $movem->save();
+               //dd($movem);
         }
         
         // Movements::create($request->except('_token'));
