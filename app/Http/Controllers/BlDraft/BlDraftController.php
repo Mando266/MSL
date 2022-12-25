@@ -114,8 +114,10 @@ class BlDraftController extends Controller
             'number_of_original'=> $request->input('number_of_original'),
             'declerd_value'=> $request->input('declerd_value'),
             'bl_kind'=> $request->input('bl_kind'),
+            'payment_kind'=> $request->input('payment_kind'),
             'movement'=> $request->input('movement'),
             'date_of_issue'=> $request->input('date_of_issue'),
+            'bl_status'=> $request->input('bl_status'),
         ]);
 
         foreach($request->input('blDraftdetails',[]) as $blDraftdetails){
@@ -141,14 +143,53 @@ class BlDraftController extends Controller
             ]);
     }
 
-    public function edit($id)
+    public function edit(BlDraft $bldraft)
     {
-        //
+        $this->authorize(__FUNCTION__,BlDraft::class);
+        $bldraft = $bldraft->load('blDetails');
+        $customershipper  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', '=', 1);
+        })->with('CustomerRoles.role')->get();
+        $customersConsignee  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', '=', 2);
+        })->with('CustomerRoles.role')->get();
+        $customersNotifiy = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->whereIn('role_id', [2,3]);
+        })->with('CustomerRoles.role')->get();
+        $booking = Booking::findOrFail(request('booking_id'));
+        $equipmentTypes = ContainersTypes::orderBy('id')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
+        $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
+        $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
+    // dd($booking_containers);
+        return view('bldraft.bldraft.edit',[
+            'booking_containers'=>$booking_containers,
+            'customershipper'=>$customershipper,
+            'customersConsignee'=>$customersConsignee,
+            'customersNotifiy'=>$customersNotifiy,
+            'bldraft'=>$bldraft,
+            'equipmentTypes'=>$equipmentTypes,
+            'ports'=>$ports,
+            'containers'=>$containers,
+            'voyages'=>$voyages,
+            'booking_qyt'=>$booking_qyt,
+        ]);
+
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, BlDraft $bldraft)
     {
-        //
+        $this->authorize(__FUNCTION__,BlDraft::class);
+        
+        $bldraft = $bldraft ->load('blDetails');
+        $inputs = request()->all();
+        unset($inputs['blDraftdetails'],$inputs['_token'],$inputs['removed']);
+        $bldraft->update($inputs);
+        $bldraft->UpdateBlDetails($request->blDraftdetails);
+
+        return redirect()->route('bldraft.index')->with('success',trans('BL Draft.Updated.Success'));
     }
 
     public function destroy($id)

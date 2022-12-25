@@ -86,8 +86,6 @@
                                 <a href="{{route('voyages.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                        </div>
-
-
                     </form>
                 </div>
             </div>

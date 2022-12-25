@@ -283,6 +283,7 @@ if(request()->input('container_id') != null){
                                             <td>{{$item->booking_no}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->free_time}}</td>
+                                            <td>{{$item->import_agent}}</td>
                                             <td>{{$item->booking_agent_id}}</td>
                                             <td>{{$item->remarkes}}</td>
                                             <td></td>

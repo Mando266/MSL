@@ -62,7 +62,7 @@ class LocalPortTriff extends Model implements PermissionSeederContract
             if( isset($input['id']) ){
                 LocalPortTriffDetailes::find($input['id'])
                 ->update($input);
-            }
+            } 
             else{
                 LocalPortTriffDetailes::create($input);
             }

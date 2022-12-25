@@ -257,11 +257,11 @@ class VoyagesController extends Controller
     {
         $request->validate([
             'eta' => 'required',
-            'etd' => ['required','after:eta'],
+            'etd' => ['required','after_or_equal:eta'],
         ],[
-            'etd.after'=>'ETD Should Be After ETA',
+            'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
         ]);
-        
+
         $this->authorize(__FUNCTION__,VoyagePorts::class);
         $voyage->update($request->except('_token'));
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));

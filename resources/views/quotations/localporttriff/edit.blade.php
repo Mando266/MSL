@@ -121,7 +121,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($localporttriff->triffPriceDetailes as $key=>$item)
-                                <tr>
+                                <tr> 
                                 <input type="hidden" value ="{{ $item->id }}" name="triffPriceDetailes[{{ $key }}][id]">
                                     <td>
                                         <input type="text" id="triffPriceDetailes" name="triffPriceDetailes[{{$key}}][charge_type]" class="form-control" autocomplete="off"  value="{{old('charge_type',$item->charge_type)}}">

@@ -19,6 +19,7 @@ class MovementsExport implements FromCollection,WithHeadings
     {
         return [
             "id",
+            "company_id",
             "container_id",
             "container_type_id",
             "movement_id",

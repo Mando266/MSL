@@ -19,9 +19,9 @@
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer <span style="color: red;">*</span></label>
+                                <label for="customer_id">Customer <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customers as $item)
                                         @if($quotation->customer_id != null)
                                             @if(optional($quotation->customer)->CustomerRoles->count() == 1 && optional($quotation->customer)->CustomerRoles->first()->role_id == 6)
@@ -41,9 +41,9 @@
                                 @enderror
                             </div> 
                             <div class="form-group col-md-2">
-                                <label for="equipment_type_id">Equipment Type <span style="color: red;">*</span></label>
+                                <label for="equipment_type_id">Equipment Type <span class="text-warning"> *</span></label>
                                  <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($equipmentTypes as $item)
                                         @if($quotation->equipment_type_id != null)
                                         <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -59,8 +59,8 @@
                                 @enderror
                             </div> 
                             <div class="form-group col-md-2">
-                                <label for="status">Booking Status<span style="color: red;">*</span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}">
+                                <label for="status">Booking Status<span class="text-warning"> * </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}" required>
                                     <option value="1">Confirm</option>
                                     <option value="0">Draft</option>
                                 </select>
@@ -107,9 +107,9 @@
                             </div> 
                             
                             <div class="form-group col-md-6">
-                                <label for="bl_release">BL Release <span style="color: red;">*</span></label>
+                                <label for="bl_release">BL Release <span class="text-warning"> * (Required.) </span></label>
                                  <select class="selectpicker form-control" id="bl_release" data-live-search="true" name="bl_release" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($agents as $item)
                                         @if($quotation->discharge_bl_release != null)
                                         <option value="{{$item->id}}" {{$item->id == old('bl_release',$quotation->discharge_bl_release) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -128,9 +128,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="place_of_acceptence_id">Place Of Acceptence <span style="color: red;">*</span></label>
+                                <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
                                  <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
 
                                     @foreach ($ports as $item)
                                         @if($quotation->place_of_acceptence_id != null)
@@ -147,9 +147,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="load_port_id">Load Port <span style="color: red;">*</span></label>
+                                <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
                                  <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         @if($quotation->load_port_id != null)
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -177,9 +177,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="place_of_delivery_id">Place Of Delivery <span style="color: red;">*</span></label>
+                                <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         @if($quotation->place_of_delivery_id != null)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -195,10 +195,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="discharge_port_id">Discharge Port <span style="color: red;">*</span></label>
-                                
+                                <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                 
                                     @foreach ($ports as $item)
                                     @if($quotation->discharge_port_id != null)
@@ -227,9 +226,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="voyage_id">First Vessel / Voyage <span style="color: red;">*</span></label>
+                                <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($voyages as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
                                     @endforeach
@@ -255,9 +254,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="terminal_id">Discharge Terminal <span style="color: red;">*</span></label>
+                                <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($terminals as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -348,9 +347,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="commodity_description"> <span style="color: red;">*</span>Commodity Description</label>
+                                <label for="commodity_description"> Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_description" name="commodity_description" value="{{old('commodity_description')}}"
-                                    placeholder="Commodity Description" autocomplete="off">
+                                    placeholder="Commodity Description" autocomplete="off" required>
                                 @error('commodity_description')
                                 <div style="color: red;">
                                     {{$message}}
@@ -362,7 +361,7 @@
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
-                                 placeholder="Notes" autocomplete="off" autofocus></textarea>
+                                 placeholder="Notes" autocomplete="off"></textarea>
                                 @error('notes')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -425,7 +424,7 @@
                                 </td>
                                 
                                 <td>
-                                    <input type="text" id="etaInput" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" required>
+                                    <input type="text" id="etaInput" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" requiredd>
                                     @error('qty')
                                     <div style="color: red;">
                                         {{$message}}
@@ -449,7 +448,7 @@
                                     placeholder="" autocomplete="off">
                                 @else
                                 <input type="text" class="form-control" id="haz" name="containerDetails[0][haz]" value="{{old('haz')}}"
-                                    placeholder="" autocomplete="off">
+                                    placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off">
                                 @endif
                                 </td>
                                 <td></td>
@@ -472,26 +471,26 @@
 @endsection
 @push('scripts')
 <script>
-        var count = 0;
         $(document).ready(function(){
         $("#containerDetails").on("click", ".remove", function () {
-            count--;
             $(this).closest("tr").remove();
     });
+    var counter  = 1;
     $("#add").click(function(){
             var tr = '<tr>'+
-                '<td><input type="text" name="containerDetails['+count+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
-                '<td><select class="form-control" data-live-search="true" name="containerDetails['+count+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
-                '<td><input type="text" name="containerDetails['+count+'][qty]" class="form-control input" autocomplete="off" placeholder="QTY"></td>'+
-                '<td class="containerDetailsID"><select id="containerDetailsID" class="form-control" data-live-search="true" name="containerDetails['+count+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
-                '<td><input type="text" value="{{$quotation->oog_dimensions}}" name="containerDetails['+count+'][haz]" class="form-control" autocomplete="off"></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
+                '<td><select class="form-control" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" placeholder="QTY"></td>'+
+                '<td class="containerDetailsID"><select id="containerDetailsID" class="form-control" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
+                '<td><input type="text" value="{{$quotation->oog_dimensions}}" name="containerDetails['+counter+'][haz]" class="form-control" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off"></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
             '</tr>';
-            count++;
+            counter++;
         $('#containerDetails').append(tr);
     });
 });
-
+</script>
+<script>
     $(function(){
             $('#discharge_port_id').on('change',function(e){
                 let value = e.target.value;

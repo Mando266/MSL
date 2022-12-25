@@ -19,7 +19,7 @@
                         @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="countryInput">Export Country <span style="color: red;">*</span></label>
+                                <label for="countryInput">Export Country <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="countryDis" name="countrydis" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" required>
                                     @foreach ($country as $item)
@@ -33,7 +33,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="agent_id">Export Agent <span style="color: red;">*</span></label>
+                                <label for="agent_id">Export Agent <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="agentDis" data-live-search="true" name="discharge_agent_id" data-size="10" required>
                                  <option value="">Select...</option>
                                     @foreach ($agents as $item)
@@ -47,7 +47,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="countryInput">Import Country <span style="color: red;">*</span></label>
+                                <label for="countryInput">Import Country <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="country" name="countryload" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" required>
                                     @foreach ($country as $item)
@@ -61,7 +61,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="agent_id">Import Agent <span style="color: red;">*</span></label>
+                                <label for="agent_id">Import Agent <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="agentload" data-live-search="true" name="agent_id" data-size="10" required>
                                  <option value="">Select...</option>
                                     @foreach ($agents as $item)
@@ -79,9 +79,9 @@
                         @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="Principal">Principal Name <span style="color: red;">*</span></label>
+                                <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
-                                title="{{trans('forms.select')}}">
+                                title="{{trans('forms.select')}}" required>
                                     @foreach ($line as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('principal_name') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -93,9 +93,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="vessel_name">Vessel Operator <span style="color: red;">*</span></label>
+                                <label for="vessel_name">Vessel Operator <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="vessel_name" data-live-search="true" name="vessel_name" data-size="10"
-                                title="{{trans('forms.select')}}">
+                                title="{{trans('forms.select')}}" required>
                                     @foreach ($line as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_name') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -111,9 +111,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="customer_id">Customer <span style="color: red;">*</span></label>
+                                <label for="customer_id">Customer <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customers as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                     @endforeach
@@ -167,9 +167,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="OFR">OFR <span style="color: red;">*</span></label>
+                                <label for="OFR">OFR <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="ofr" name="ofr" value="{{old('ofr')}}"
-                                     autocomplete="off" placeholder="OFR">
+                                     autocomplete="off" placeholder="OFR" required>
                                 @error('ofr')
                                 <div style="color: red;">
                                     {{$message}}
@@ -177,9 +177,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="validity_from">Validity From <span style="color: red;">*</span></label>
+                                <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                 <input type="date" class="form-control" id="validity_from" name="validity_from" value="{{old('validity_from')}}"
-                                     autocomplete="off" >
+                                     autocomplete="off" required>
                                 @error('validity_from')
                                 <div style="color: red;">
                                     {{$message}}
@@ -187,9 +187,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="validity_to">Validity To<span style="color: red;">*</span></label>
+                                <label for="validity_to">Validity To<span class="text-warning"> * (Required.) </span></label>
                                 <input type="date" class="form-control" id="validity_to" name="validity_to" value="{{old('validity_to')}}"
-                                     autocomplete="off" >
+                                     autocomplete="off" required>
                                 @error('validity_to')
                                 <div style="color: red;">
                                     {{$message}}
@@ -200,9 +200,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="place_of_acceptence_id">Place Of Acceptence <span style="color: red;">*</span></label>
+                                <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -214,9 +214,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="load_port_id">Load Port <span style="color: red;">*</span></label>
+                                <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -245,9 +245,9 @@
                         </div>
                         <div class="form-row">
                         <div class="form-group col-md-4">
-                                <label for="place_of_delivery_id">Place Of Delivery <span style="color: red;">*</span></label>
+                                <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -259,9 +259,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="discharge_port_id">Discharge Port <span style="color: red;">*</span></label>
+                                <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -290,9 +290,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="equipment_type_id">Equipment Type <span style="color: red;">*</span></label>
+                                <label for="equipment_type_id">Equipment Type <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($container_types as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('equipment_type_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -304,9 +304,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="export_detention">Additional Export Free Time <span style="color: red;">*</span></label>
+                                <label for="export_detention">Additional Export Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="export_detention" name="export_detention" value="{{old('export_detention')}}"
-                                    placeholder="Additional Export Detention" autocomplete="off">
+                                    placeholder="Additional Export Detention" autocomplete="off" required>
                                 @error('export_detention')
                                 <div style="color: red;">
                                     {{$message}}
@@ -314,9 +314,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="import_detention">Additional Import Free Time <span style="color: red;">*</span></label>
+                                <label for="import_detention">Additional Import Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="import_detention" name="import_detention" value="{{old('import_detention')}}"
-                                    placeholder="Additional Import Free Time" autocomplete="off">
+                                    placeholder="Additional Import Free Time" autocomplete="off" required>
                                 @error('import_detention')
                                 <div style="color: red;">
                                     {{$message}}
@@ -366,9 +366,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="commodity_des">Commodity Description <span style="color: red;">*</span></label>
+                                <label for="commodity_des">Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_des" name="commodity_des" value="{{old('commodity_des')}}"
-                                    placeholder="Commodity Description" autocomplete="off">
+                                    placeholder="Commodity Description" autocomplete="off" required>
                                 @error('commodity_des')
                                 <div style="color: red;">
                                     {{$message}}

@@ -56,21 +56,17 @@ class BlDraft extends Model implements PermissionSeederContract
     {
         return $this->hasMany(BlDraftDetails::class ,'bl_id','id');
     }
-    public function createOrUpdateBlDetails($inputs)
+
+    public function UpdateBlDetails($inputs)
     {
         if (is_array($inputs) || is_object($inputs)){
         foreach($inputs as $input){
             
             $input['bl_id'] = $this->id;
 
-            if( isset($input['id']) ){
-                BlDraftDetails::find($input['id'])
-                ->update($input);
-            }
-            else{
-                BlDraftDetails::create($input);
-            }
+            BlDraftDetails::find($input['id'])
+            ->update($input);
         }
     }
- }
+}
 }

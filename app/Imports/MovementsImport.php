@@ -9,6 +9,7 @@ use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
 use App\MovementImportErrors;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -90,7 +91,7 @@ class MovementsImport implements ToModel,WithHeadingRow
         if($movementdublicate != null){
             return Session::flash('message', 'this container number: '.$containerId.' with this movement code: '.$movementCode.' already exists!');
         }
-        
+        $user = Auth::user();
         if(in_array($movementCode,$nextMoves)){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],
@@ -113,6 +114,8 @@ class MovementsImport implements ToModel,WithHeadingRow
                 'import_agent' => $row['import_agent'],
                 'free_time_origin' => $row['free_time_origin'],
             ]);
+            $movement->company_id = $user->company_id;
+            $movement->save();
         }elseif($nextMoves[0] == ""){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],
@@ -135,11 +138,10 @@ class MovementsImport implements ToModel,WithHeadingRow
                 'import_agent' => $row['import_agent'],
                 'free_time_origin' => $row['free_time_origin'],
             ]);
+            $movement->company_id = $user->company_id;
+            $movement->save();
         }else{
-            // return '<script type="text/javascript">alert("hello!");</script>';
-            // $movement = new Movements();
-            // return $movement;
-
+   
             MovementImportErrors::create([
                 'container_id' => $containerId,
                 'date' => $row['movement_date'],

@@ -84,6 +84,8 @@
                                         <th>Equipment Type</th>
                                         <th>containers</th>
                                         <th>Bl Draft Creation</th>
+                                        <th>BL Status</th>
+
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -98,7 +100,7 @@
                                             <td>{{optional($item->placeOfDelivery)->name}}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{optional($item->dischargePort)->name}}</td>
-                                            <td>{{optional($item->equipmentsType)->name}}</td>
+                                            <td>{{optional($item->equipmentsType)->name}}</td> 
                                             <td>
                                                 @foreach($item->blDetails as $blDetail)
                                                 <table style="border: hidden;">
@@ -108,16 +110,22 @@
                                             </td>
 
                                             <td>{{{$item->created_at}}}</td>
-
+                                            <td class="text-center">
+                                                @if($item->bl_status == 1)
+                                                    <span class="badge badge-info"> Confirm </span>
+                                                @else
+                                                    <span class="badge badge-danger"> Draft </span>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
-                                                    <!-- @permission('Booking-Edit')
+                                                    @permission('Booking-Edit')
                                                     <li>
-                                                        <a href="{{route('booking.edit',['booking'=>$item->id,'quotation_id'=>$item->quotation_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('bldraft.edit',['bldraft'=>$item->id,'booking_id'=>$item->booking_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission -->
+                                                    @endpermission
                                                     @permission('Booking-Show')
                                                     <li>
                                                         <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">

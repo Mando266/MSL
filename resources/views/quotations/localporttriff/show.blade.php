@@ -13,6 +13,11 @@
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
+                    <div class="row">
+                            <div class="col-md-12 text-right mb-6">
+                                <a class="btn btn-warning" href="{{ route('export.Localportshow') }}">Export</a>
+                            </div>
+                        </div>
                 </div>
                 <div class="widget-content widget-content-area">
                     <h5><span style='color:#1b55e2';>Tariff No:</span> {{$TriffNo->triff_no}}</h5>
@@ -42,7 +47,7 @@
                                             @if($triffPriceDetailes->equipment_type_id == 100)
                                             <td>All</td>
                                             @else
-                                            <td>{{{optional($triffPriceDetailes->equipment_type_id)->name}}}</td>
+                                            <td>{{{optional($triffPriceDetailes->equipmentsType)->name}}}</td>
                                             @endif
                                             <td>{{$triffPriceDetailes->unit}}</td>
                                             <td>{{$triffPriceDetailes->currency}}</td>

@@ -257,10 +257,10 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
-                                <label for="status">Bl Kind</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
-                                    <option value="Original">Original</option>
-                                    <option value="Seaway BL">Seaway BL</option>
+                                <label for="status">Bl Payment</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                    <option value="Prepaid">Prepaid </option>
+                                    <option value="Collect">Collect</option>
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
@@ -268,6 +268,30 @@
                                 </div>
                                 @enderror
                         </div>
+                        <div class="form-group col-md-3">
+                                <label for="status">Bl Kind</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
+                                    <option value="Original">Original</option>
+                                    <option value="Seaway BL">Seaway BL</option>
+                                </select>
+                                @error('bl_kind')
+                                <div style="color:red;">
+                                    {{$message}} 
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                                <label for="status">Bl Status<span style="color: red;">*</span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="bl_status" title="{{trans('forms.select')}}">
+                                    <option value="1">Confirm</option>
+                                    <option value="0">Draft</option>
+                                </select>
+                                @error('bl_status')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                     </div>
 
                     <table id="blDraft" class="table table-bordered">
@@ -277,7 +301,8 @@
                                         <th class="text-center">Seal No.s</th>
                                         <th class="text-center">Packs</th>
                                         <th class="text-center">Description</th>
-                                        <th class="text-center">Weight Kgs</th>
+                                        <th class="text-center">Gross Weight Kgs</th>
+                                        <th class="text-center">Net Weight Kgs</th>
                                         <th class="text-center">Measure cbm</th>
                                     </tr>
                                 </thead>
@@ -310,11 +335,16 @@
                                 </td>
 
                                 <td>
+                                    <input type="text" id="net_weight" name="blDraftdetails[{{ $key }}][net_weight]" class="form-control input"  autocomplete="off" placeholder="Net Weight" required>
+                                </td>
+
+                                <td>
                                     <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
                                 </td>
                             </tr>
                             @endforeach
                             @for($i=0 ; $i < $booking_qyt ; $i++)
+                            <?php $key = $key + 1; ?>
                             <tr>
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
@@ -340,7 +370,9 @@
                                 <td>
                                     <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
                                 </td>
-
+                                <td>
+                                    <input type="text" id="net_weight" name="blDraftdetails[{{ $key }}][net_weight]" class="form-control input"  autocomplete="off" placeholder="Net Weight" required>
+                                </td>
                                 <td>
                                     <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement">
                                 </td>
@@ -348,7 +380,7 @@
                             @endfor
 
                             </tbody>
-                        </table>
+                    </table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>

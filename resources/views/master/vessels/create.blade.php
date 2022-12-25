@@ -182,7 +182,18 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-8">
+                                <label for="notes">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes" value="{{old('notes')}}"
+                                 placeholder="Notes" autocomplete="off" autofocus></textarea>
+                                @error('notes')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
+                       
 
                        <div class="row">
                             <div class="col-md-12 text-center">
