@@ -59,6 +59,7 @@ class BlDraftController extends Controller
             return $query->whereIn('role_id', [2,3]);
         })->with('CustomerRoles.role')->get();
         $booking = Booking::findOrFail(request('booking_id'));
+        //dd($booking);
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
@@ -97,7 +98,7 @@ class BlDraftController extends Controller
         $blDraft = BlDraft::create([
             'booking_id'=> $request->input('booking_id'),
             'company_id'=>$user->company_id,
-            'ref_no'=> "",
+            'ref_no'=> $request->input('ref_no'),
             'customer_id'=> $request->input('customer_id'),
             'customer_consignee_details'=> $request->input('customer_consignee_details'),
             'customer_notifiy_details'=> $request->input('customer_notifiy_details'),

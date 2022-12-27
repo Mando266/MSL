@@ -20,9 +20,9 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="ContainerInput">Container Number *</label>
+                                <label for="ContainerInput">Container Number <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="movement[][container_id]" data-size="10"
-                                 title="{{trans('forms.select')}}"  multiple="multiple">
+                                 title="{{trans('forms.select')}}"  multiple="multiple" required>
                                  @if(isset($containers))
                                     @foreach ($containers as $item)
                                         <option value="{{$item->id}}" data-code="{{$item->container_type_id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
@@ -33,7 +33,7 @@
                                     <input type="hidden" id="containersTypesInput" class="form-control" name="container_type_id" placeholder="Container Type" autocomplete="off" value={{$container_type}}>
                                 @endif
                                 </select>
-                                @error('container_type_id')
+                                @error('container_id')
                                 <div class ="invalid-feedback">
                                     {{$message}}
                                 </div>
@@ -43,21 +43,21 @@
                         
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="containersMovementsInput">Movement *</label>
+                                <label for="containersMovementsInput">Movement <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containersMovements as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('movement_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('container_type_id')
+                                @error('movement_id')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="movement_dateInput">Movement Date *</label>
+                                <label for="movement_dateInput">Movement Date <span class="text-warning"> * (Required.) </span></label>
                                 <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{old('movement_date')}}"
                                      autocomplete="off" >
                                 @error('movement_date')
@@ -67,7 +67,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="portlocationInput">Activity Location *</label>
+                                <label for="portlocationInput">Activity Location <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)

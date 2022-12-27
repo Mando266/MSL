@@ -17,10 +17,21 @@
                     <form id="editForm" action="{{route('bldraft.update',['bldraft'=>$bldraft])}}" method="POST">
                             @csrf
                             @method('put')
-
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Shipper <span style="color: red;">*</span></label>
+                                <label for="ref_no">BL Ref No</label>
+                                    <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$bldraft->ref_no)}}"
+                                        placeholder="BL Ref No" autocomplete="off">
+                                    @error('ref_no')
+                                    <div style="color: red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="customer_id">Customer Shipper <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($customershipper as $item)
@@ -41,7 +52,7 @@
                         </div> 
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Consignee <span style="color: red;">*</span></label>
+                                <label for="customer_id">Customer Consignee <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customerconsignee" data-live-search="true" name="customer_consignee_id" data-size="10"
                                  title="{{trans('forms.select')}}" >
                                     @foreach ($customersConsignee as $item)
@@ -62,7 +73,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Notifiy <span style="color: red;">*</span></label>
+                                <label for="customer_id">Customer Notifiy <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customernotifiy" data-live-search="true" name="customer_notifiy_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($customersNotifiy as $item)
@@ -83,7 +94,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="place_of_acceptence_id">Place Of Acceptence <span style="color: red;">*</span></label>
+                                <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
@@ -97,7 +108,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="load_port_id">Load Port <span style="color: red;">*</span></label>
+                                <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
@@ -113,7 +124,7 @@
                         </div>
                         <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="place_of_delivery_id">Place Of Delivery <span style="color: red;">*</span></label>
+                            <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($ports as $item)
@@ -127,7 +138,7 @@
                             @enderror
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="discharge_port_id">Discharge Port <span style="color: red;">*</span></label>
+                            <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($ports as $item)
@@ -144,7 +155,7 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-3">
-                            <label for="equipment_type_id">Equipment Type <span style="color: red;">*</span></label>
+                            <label for="equipment_type_id">Equipment Type <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($equipmentTypes as $item)
@@ -158,7 +169,7 @@
                             @enderror
                         </div> 
                         <div class="form-group col-md-3">
-                            <label for="voyage_id">Vessel / Voyage <span style="color: red;">*</span></label>
+                            <label for="voyage_id">Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($voyages as $item)
@@ -248,7 +259,7 @@
                                 @enderror
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="status">Bl Status<span style="color: red;">*</span></label>
+                            <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" data-live-search="true" name="bl_status" data-live-search="true">
                                 <option value="1" {{$bldraft->id == old('bl_status') ||  $bldraft->bl_status == "1"? 'selected':''}}>Confirm</option>
                                 <option value="0" {{$bldraft->id == old('bl_status') ||  $bldraft->bl_status == "0"? 'selected':''}}>Draft</option>
