@@ -17,6 +17,7 @@
                     <form id="createForm" action="{{route('bldraft.store')}}" method="POST">
                             @csrf
                         <div class="form-row">
+                            <input type="hidden" value="{{$booking->ref_no}}" name="ref_no">
                             <input type="hidden" value="{{$booking->id}}" name="booking_id">
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Shipper <span style="color: red;">*</span></label>

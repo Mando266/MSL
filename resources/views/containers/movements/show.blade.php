@@ -286,7 +286,6 @@ if(request()->input('container_id') != null){
                                             <td>{{$item->import_agent}}</td>
                                             <td>{{$item->booking_agent_id}}</td>
                                             <td>{{$item->remarkes}}</td>
-                                            <td></td>
 
                                             @if( ($item->bl_no !=null || $item->booking_no !=null)&& optional($item->movementcode)->code == 'RCVC')
                                             <?php $hasRCVC = true; ?>

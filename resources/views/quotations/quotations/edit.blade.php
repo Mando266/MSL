@@ -599,7 +599,7 @@ function removeLoad( item )
             $(this).closest("tr").remove();
         });
     
-    // var importCount = 1;
+    // var importCount = 1; 
 
     $("#add").click(function(){
             var tr = '<tr>'+
@@ -614,8 +614,10 @@ function removeLoad( item )
                 '<td><select class="form-control" data-live-search="true" name="quotationLoad['+importCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
             '</tr>';
+            $('#quotationTriffLoad').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#load').selectpicker();
         importCount++;
-        $('#quotationTriffLoad').append(tr);
     });
 });
 

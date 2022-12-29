@@ -93,15 +93,29 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->input());
         $request->validate([
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
         ],[
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
             'discharge_port_id.different'=>'Load Port The Same  Discharge Port',
-        ]);
-        $user = Auth::user();
+            ]);
+            // Validate Containers Unique
+            $uniqueContainers = array();
+            foreach($request->containerDetails as $container){
+                if(!in_array($container['container_id'],$uniqueContainers) ){
+                    if($container['container_id'] != "000"){
+                        array_push($uniqueContainers,$container['container_id']);
+                    }
+                }else{
+                    return redirect()->back()->with('error','Container Numbers Must be unique')->withInput($request->input());
+                }
+            }
+            // Validate Expiration Date
+            $quotation = Quotation::find($request->quotation_id);
+             $etaDate = VoyagePorts::select()->where()
+            dd($request->input(),$quotation);
+            $user = Auth::user();
         $booking = Booking::create([
             'ref_no'=> "",
             'booked_by'=>$user->id,
@@ -232,7 +246,12 @@ class BookingController extends Controller
             'bl_release' =>['required'],
             'customer_id' => ['required'], 
         ]);
-        
+        $user = Auth::user();
+        $ReferanceNumber  = Booking::where('id','!=',$booking->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
+
+        if($ReferanceNumber > 0){
+            return back()->with('alert','The Booking Refrance Number Already Exists');
+        }
         $this->authorize(__FUNCTION__,Booking::class);
         $inputs = request()->all();
         unset($inputs['containerDetails'],$inputs['_token'],$inputs['removed']);

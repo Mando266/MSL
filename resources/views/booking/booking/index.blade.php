@@ -81,8 +81,9 @@
                                         <th>Forwarder</th>
                                         <!-- <th>eta</th>
                                         <th>etd</th> -->
+                                        <th>voyage</th>
                                         <th>place of acceptence</th>
-                                        <th>place of delivery</th>
+                                        <!-- <th>place of delivery</th> -->
                                         <th>load port</th>
                                         <th>discharge port</th>
                                         <th>Equipment Type</th>
@@ -101,8 +102,9 @@
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
+                                            <td>{{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{optional($item->placeOfAcceptence)->name}}</td>
-                                            <td>{{optional($item->placeOfDelivery)->name}}</td>
+                                            <!-- <td>{{optional($item->placeOfDelivery)->name}}</td> -->
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{optional($item->dischargePort)->name}}</td>
                                             <td>
@@ -136,7 +138,6 @@
                                                         </a>
                                                     </li>
                                                     @endif
-                                                @if($item->booking_confirm != 1)
                                                     @permission('Booking-Edit')
                                                     <li>
                                                         <a href="{{route('booking.edit',['booking'=>$item->id,'quotation_id'=>$item->quotation_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -144,7 +145,6 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                @endif
                                                     @permission('Booking-Show')
                                                     <li>
                                                         <a href="{{route('booking.show',['booking'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
@@ -200,7 +200,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
@@ -217,6 +217,5 @@
             }
           });
       });
-  
 </script>
 @endpush
