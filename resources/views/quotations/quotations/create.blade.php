@@ -445,18 +445,20 @@
     $("#add").click(function(){
             var tr = '<tr>'+
                 '<td><input type="text" name="quotationLoad['+importCount+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationLoad['+importCount+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="load" name="quotationLoad['+importCount+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
                 '<td><input type="text" name="quotationLoad['+importCount+'][selling_price]" class="form-control"></td>'+
                 // '<td><input type="text" name="quotationLoad['+importCount+'][cost]" class="form-control"></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationLoad['+importCount+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" name="quotationLoad['+importCount+'][currency]" data-size="10" id="load" ><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                 // '<td><input type="text" name="quotationLoad['+importCount+'][agency_revene]" class="form-control" autocomplete="off" required></td>'+
                 // '<td><input type="text" name="quotationLoad['+importCount+'][liner]" class="form-control" autocomplete="off" required></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationLoad['+importCount+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationLoad['+importCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="load"  name="quotationLoad['+importCount+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="load"  name="quotationLoad['+importCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
             '</tr>';
+            $('#quotationTriffLoad').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#load').selectpicker();
         importCount++;
-        $('#quotationTriffLoad').append(tr);
     });
 });
 
@@ -469,19 +471,21 @@
     });
     $("#adddis").click(function(){
             var tr = '<tr>'+
-            '<td><input type="text" name="quotationDis['+exportCount+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationDis['+exportCount+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
+                '<td><input type="text" name="quotationDis['+exportCount+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="charges"  name="quotationDis['+exportCount+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
                 '<td><input type="text" name="quotationDis['+exportCount+'][selling_price]" class="form-control"></td>'+
                 // '<td><input type="text" name="quotationDis['+exportCount+'][cost]" class="form-control"></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationDis['+exportCount+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="charges"  name="quotationDis['+exportCount+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                 // '<td><input type="text" name="quotationDis['+exportCount+'][agency_revene]" class="form-control" autocomplete="off" required></td>'+
                 // '<td><input type="text" name="quotationDis['+exportCount+'][liner]" class="form-control" autocomplete="off" required></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationDis['+exportCount+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
-                '<td><select class="form-control" data-live-search="true" name="quotationDis['+exportCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="charges" name="quotationDis['+exportCount+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="charges" name="quotationDis['+exportCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
+            $('#quotationTriffDischarge').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#charges').selectpicker();
         exportCount++;
-        $('#quotationTriffDischarge').append(tr);
     });
 });
 

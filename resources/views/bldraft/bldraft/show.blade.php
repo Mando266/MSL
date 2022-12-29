@@ -93,7 +93,7 @@
                             @endforeach
                             <tr>
                                 <td class="col-md-3.5 tdstyle" ></td>
-                                <td class="col-md-5.5 tdstyle">NO. Of PKGS : {{$packages}}<br>
+                                <td class="col-md-5.5 tdstyle word">NO. Of PKGS : {{$packages}}<br>
                                 {{ $blDraft->descripions }}</td>
                                 <td class="col-md-1.5 tdstyle">{{ $gross_weight }} <br>
                                 KGS <br><br>
@@ -224,5 +224,10 @@
         font-size: 16px;
         font-weight: bolder !important;
     }
- 
+    .word {
+            width: 350Px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
 </style>
