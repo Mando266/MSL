@@ -17,16 +17,14 @@
                     <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
+                            @if(session('alert'))
+                                <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
+                            @endif
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Booking Ref No</label>
                                         <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$booking->ref_no)}}"
-                                            placeholder="Booking Ref No" autocomplete="off">
-                                        @error('ref_no')
-                                        <div style="color: red;">
-                                            {{$message}}
-                                        </div>
-                                        @enderror
+                                            placeholder="Booking Ref No" autocomplete="off"> 
                                 </div>
                             </div>
 

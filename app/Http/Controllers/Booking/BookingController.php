@@ -108,12 +108,12 @@ class BookingController extends Controller
                         array_push($uniqueContainers,$container['container_id']);
                     }
                 }else{
-                    return redirect()->back()->with('error','Container Numbers must be unique')->withInput($request->input());
+                    return redirect()->back()->with('error','Container Numbers Must be unique')->withInput($request->input());
                 }
             }
             // Validate Expiration Date
             $quotation = Quotation::find($request->quotation_id);
-            $etaDate = VoyagePorts::select()->where()
+             $etaDate = VoyagePorts::select()->where()
             dd($request->input(),$quotation);
             $user = Auth::user();
         $booking = Booking::create([
@@ -246,7 +246,12 @@ class BookingController extends Controller
             'bl_release' =>['required'],
             'customer_id' => ['required'], 
         ]);
-        
+        $user = Auth::user();
+        $ReferanceNumber  = Booking::where('id','!=',$booking->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
+
+        if($ReferanceNumber > 0){
+            return back()->with('alert','The Booking Refrance Number Already Exists');
+        }
         $this->authorize(__FUNCTION__,Booking::class);
         $inputs = request()->all();
         unset($inputs['containerDetails'],$inputs['_token'],$inputs['removed']);

@@ -182,8 +182,13 @@ class BlDraftController extends Controller
 
     public function update(Request $request, BlDraft $bldraft)
     {
+        $user = Auth::user();
+        $ReferanceNumber  = BlDraft::where('id','!=',$bldraft->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
+
+        if($ReferanceNumber > 0){
+            return back()->with('alert','The BL Refrance Number Already Exists');
+        }
         $this->authorize(__FUNCTION__,BlDraft::class);
-        
         $bldraft = $bldraft ->load('blDetails');
         $inputs = request()->all();
         unset($inputs['blDraftdetails'],$inputs['_token'],$inputs['removed']);
