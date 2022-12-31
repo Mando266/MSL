@@ -17,9 +17,6 @@
                     <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
-                            @if(session('alert'))
-                                <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
-                            @endif
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Booking Ref No</label>
@@ -49,7 +46,7 @@
                                 </div>
 
                                 <div class="form-group col-md-2">
-                                    <label for="equipment_type_id">Equipment Type <span class="text-warning"> * (Required.) </span></label>
+                                    <label for="equipment_type_id">Equipment Type <span class="text-warning"> *</span></label>
                                     <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                         @foreach ($equipmentTypes as $item)
@@ -63,7 +60,7 @@
                                         @enderror
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <label for="status">Booking Status<span class="text-warning"> * (Required.) </span></label>
+                                    <label for="status">Booking Status<span class="text-warning"> *</span></label>
                                     <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" data-live-search="true">
                                         <option value="1" {{$booking->booking_confirm == old('booking_confirm',$quotation->booking_confirm) ? 'selected':''}}>Confirm</option>
                                         <option value="0" {{$booking->booking_confirm == old('booking_confirm',$quotation->booking_confirm) ? 'selected':''}}>Draft</option>

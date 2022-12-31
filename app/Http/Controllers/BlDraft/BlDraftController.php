@@ -177,7 +177,6 @@ class BlDraftController extends Controller
             'voyages'=>$voyages,
             'booking_qyt'=>$booking_qyt,
         ]);
-
     }
 
     public function update(Request $request, BlDraft $bldraft)
@@ -186,7 +185,7 @@ class BlDraftController extends Controller
         $ReferanceNumber  = BlDraft::where('id','!=',$bldraft->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
 
         if($ReferanceNumber > 0){
-            return back()->with('alert','The BL Refrance Number Already Exists');
+            return back()->with('error','The BL Refrance Number Already Exists');
         }
         $this->authorize(__FUNCTION__,BlDraft::class);
         $bldraft = $bldraft ->load('blDetails');

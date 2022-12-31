@@ -113,41 +113,45 @@ class BookingController extends Controller
             }
             // Validate Expiration Date
             $quotation = Quotation::find($request->quotation_id);
-             $etaDate = VoyagePorts::select()->where()
-            dd($request->input(),$quotation);
+            $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
+            if($etaDate > $quotation->validity_to || $etaDate < $quotation->validity_from){
+                return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
+                ->withInput($request->input());
+            }
             $user = Auth::user();
-        $booking = Booking::create([
-            'ref_no'=> "",
-            'booked_by'=>$user->id,
-            'company_id'=>$user->company_id,
-            'quotation_id'=> $request->input('quotation_id'),
-            'customer_id'=> $request->input('customer_id'),
-            'equipment_type_id'=> $request->input('equipment_type_id'),
-            'bl_release'=> $request->input('bl_release'),
-            'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
-            'load_port_id'=> $request->input('load_port_id'),
-            'shipper_ref_no'=> $request->input('shipper_ref_no'),
-            'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
-            'discharge_port_id'=> $request->input('discharge_port_id'),
-            'forwarder_ref_no'=> $request->input('forwarder_ref_no'),
-            'voyage_id'=> $request->input('voyage_id'),
-            'voyage_id_second'=> $request->input('voyage_id_second'),
-            'terminal_id'=> $request->input('terminal_id'),
-            'agent_id'=>$request->input('agent_id'),
-            'discharge_etd'=>$request->input('discharge_etd'),
-            'load_port_cutoff'=>$request->input('load_port_cutoff'),
-            'load_port_dayes'=>$request->input('load_port_dayes'),
-            'tariff_service'=>$request->input('tariff_service'),
-            'commodity_code'=>$request->input('commodity_code'),
-            'commodity_description'=>$request->input('commodity_description'),
-            'soc'=>$request->input('soc') != null? 1 : 0,
-            'imo'=>$request->input('imo') != null? 1 : 0,
-            'rf'=>$request->input('rf') != null? 1 : 0,
-            'oog'=>$request->input('oog') != null? 1 : 0,
-            'ffw_id'=>$request->input('ffw_id'),
-            'booking_confirm'=>$request->input('booking_confirm'), 
-            'notes'=>$request->input('notes'), 
-        ]);
+
+            $booking = Booking::create([
+                'ref_no'=> "",
+                'booked_by'=>$user->id,
+                'company_id'=>$user->company_id,
+                'quotation_id'=> $request->input('quotation_id'),
+                'customer_id'=> $request->input('customer_id'),
+                'equipment_type_id'=> $request->input('equipment_type_id'),
+                'bl_release'=> $request->input('bl_release'),
+                'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
+                'load_port_id'=> $request->input('load_port_id'),
+                'shipper_ref_no'=> $request->input('shipper_ref_no'),
+                'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
+                'discharge_port_id'=> $request->input('discharge_port_id'),
+                'forwarder_ref_no'=> $request->input('forwarder_ref_no'),
+                'voyage_id'=> $request->input('voyage_id'),
+                'voyage_id_second'=> $request->input('voyage_id_second'),
+                'terminal_id'=> $request->input('terminal_id'),
+                'agent_id'=>$request->input('agent_id'),
+                'discharge_etd'=>$request->input('discharge_etd'),
+                'load_port_cutoff'=>$request->input('load_port_cutoff'),
+                'load_port_dayes'=>$request->input('load_port_dayes'),
+                'tariff_service'=>$request->input('tariff_service'),
+                'commodity_code'=>$request->input('commodity_code'),
+                'commodity_description'=>$request->input('commodity_description'),
+                'soc'=>$request->input('soc') != null? 1 : 0,
+                'imo'=>$request->input('imo') != null? 1 : 0,
+                'rf'=>$request->input('rf') != null? 1 : 0,
+                'oog'=>$request->input('oog') != null? 1 : 0,
+                'ffw_id'=>$request->input('ffw_id'),
+                'booking_confirm'=>$request->input('booking_confirm'), 
+                'notes'=>$request->input('notes'), 
+            ]);
 
         foreach($request->input('containerDetails',[]) as $details){
             BookingContainerDetails::create([
@@ -250,7 +254,7 @@ class BookingController extends Controller
         $ReferanceNumber  = Booking::where('id','!=',$booking->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
 
         if($ReferanceNumber > 0){
-            return back()->with('alert','The Booking Refrance Number Already Exists');
+            return back()->with('error','The Booking Refrance Number Already Exists');
         }
         $this->authorize(__FUNCTION__,Booking::class);
         $inputs = request()->all();
