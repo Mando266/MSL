@@ -119,16 +119,13 @@
                                 </div>
                                 @enderror
                             </div>
+                            @if(isset($movement))
                             <div class="form-group col-md-4">
                                 <label for="vessel_id">Vessel Name</label>
-                                <select class="selectpicker form-control" id="vessel_id" data-live-search="true"  data-size="10"
+                                <select class="selectpicker form-control" id="vessel_id" name="vessel_id" data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        @if(isset($movement))
-                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
-                                        @else
-                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
-                                        @endif
+                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -137,7 +134,23 @@
                                 </div>
                                 @enderror
                             </div>
-                            <input type="hidden" class="form-control" id="vessel" name="vessel_id"> 
+                            @else
+                            <div class="form-group col-md-4">
+                                <label for="vessel_id">Vessel Name</label>
+                                <select class="selectpicker form-control" id="vessel_id"  data-live-search="true"  data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($vessels as $item)
+                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('vessel_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <input type="text" class="form-control" id="vessel" name="vessel_id"> 
+                            @endif
                         </div>
                         
                         <div class="form-row">
