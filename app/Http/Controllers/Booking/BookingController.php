@@ -28,7 +28,8 @@ class BookingController extends Controller
         $this->authorize(__FUNCTION__,Booking::class);
         $booking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails')->paginate(30);
         $exportbooking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails')->get();
-        // dd($booking);
+        //  dd($exportbooking);
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $bookingNo = Booking::where('company_id',Auth::user()->company_id)->get();
         $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
@@ -37,6 +38,7 @@ class BookingController extends Controller
         return view('booking.booking.index',[
             'items'=>$booking,
             'bookingNo'=>$bookingNo,
+            'voyages'=>$voyages,
             'quotation'=>$quotation,
             'ports'=>$ports,
             'customers'=>$customers,

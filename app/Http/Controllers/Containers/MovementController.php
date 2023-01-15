@@ -258,11 +258,13 @@ class MovementController extends Controller
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
+        $containerstatus = ContainerStatus::orderBy('id')->get();
         $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
         session()->flash('items',$exportMovements);
         if(count($temp) != 1){
             return view('containers.movements.index',[
                 'items'=>$movements,
+                'containerstatus'=>$containerstatus,
                 'movementsBlNo'=>$movementsBlNo,
                 'containers'=>$containers,
                 'movementerrors' => $movementErrors,

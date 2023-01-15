@@ -83,6 +83,7 @@ class BlDraftController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->input('bl_status') == 0){
         $request->validate([
             'customer_id' => ['required'], 
             'place_of_acceptence_id' => ['required'], 
@@ -94,6 +95,34 @@ class BlDraftController extends Controller
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
             'discharge_port_id.different'=>'Load Port The Same  Discharge Port',
         ]);
+        }else{
+            $request->validate([
+                'customer_id' => ['required'], 
+                'place_of_acceptence_id' => ['required'], 
+                'load_port_id' => ['required'], 
+                'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
+                'discharge_port_id' => ['required','different:load_port_id'],
+                'voyage_id' => ['required'],
+                'date_of_issue' =>['required'],
+                'payment_kind' =>['required'],
+                'bl_kind' =>['required'],
+                'date_of_issue' =>['required'],
+            ],[
+                'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
+                'discharge_port_id.different'=>'Load Port The Same  Discharge Port',
+            ]);
+        }
+
+        $uniqueContainers = array();
+        foreach($request->blDraftdetails as $container){
+            if(!in_array($container['container_id'],$uniqueContainers) ){
+                if($container['container_id'] != "000"){
+                    array_push($uniqueContainers,$container['container_id']);
+                }
+            }else{
+                return redirect()->back()->with('error','Container Numbers Must be unique')->withInput($request->input());
+            }
+        }
         $user = Auth::user();
         $blDraft = BlDraft::create([
             'booking_id'=> $request->input('booking_id'),
@@ -129,6 +158,7 @@ class BlDraftController extends Controller
                 'seal_no'=>$blDraftdetails['seal_no'],
                 'description'=>$blDraftdetails['description'],
                 'gross_weight'=>$blDraftdetails['gross_weight'],
+                'net_weight'=>$blDraftdetails['net_weight'],
                 'measurement'=>$blDraftdetails['measurement'],
             ]);
         }
@@ -138,7 +168,11 @@ class BlDraftController extends Controller
     public function show($id)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
-        //dd($blDraft);
+        if(Auth::user()->company_id == 2){
+            return view('bldraft.bldraft.showMas',[
+                'blDraft'=>$blDraft
+                ]);
+        }
         return view('bldraft.bldraft.show',[
             'blDraft'=>$blDraft
             ]);
@@ -181,6 +215,14 @@ class BlDraftController extends Controller
 
     public function update(Request $request, BlDraft $bldraft)
     {
+        if ($request->input('bl_status') == 1){
+            $request->validate([
+                'date_of_issue' =>['required'],
+                'payment_kind' =>['required'],
+                'bl_kind' =>['required'],
+                'date_of_issue' =>['required'],
+            ]);
+        }
         $user = Auth::user();
         $ReferanceNumber  = BlDraft::where('id','!=',$bldraft->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
 

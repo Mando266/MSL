@@ -33,7 +33,7 @@ class MovementsImport implements ToModel,WithHeadingRow
         $containerId = $row['container_id'];
         $containertype = $row['container_type_id'];
 
-        $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
+        $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         
         // Validation
         if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
@@ -72,7 +72,10 @@ class MovementsImport implements ToModel,WithHeadingRow
         $movements = $new;
         $lastMove = $movements->where('movement_date','<',$row['movement_date'])->pluck('movement_id')->first();
         // End Get All movements and sort it and get the last movement before this movement
-            
+        
+        // Check same move type
+        dd($containertype);
+        if(	$lastMove->container_type_id)
         
         $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
@@ -116,6 +119,7 @@ class MovementsImport implements ToModel,WithHeadingRow
             ]);
             $movement->company_id = $user->company_id;
             $movement->save();
+             
         }elseif($nextMoves[0] == ""){
             $movement = Movements::create([
                 'container_id' => $row['container_id'],

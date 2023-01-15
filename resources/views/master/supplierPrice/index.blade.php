@@ -15,7 +15,7 @@
                         @permission('SupplierPrice-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('supplierPrice.create')}}" class="btn btn-primary">Add New supplier Price</a>
+                            <a href="{{route('supplierPrice.create')}}" class="btn btn-primary">Add New Rate</a>
                             </div>
                         </div>
                         @endpermission

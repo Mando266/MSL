@@ -40,7 +40,7 @@
                             </div>
                             <div class="form-group col-md-3">
                             <label for="">Voyage No</label>
-                                <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
+                               <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
                                         <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}}</option>
@@ -217,7 +217,6 @@
                             </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>

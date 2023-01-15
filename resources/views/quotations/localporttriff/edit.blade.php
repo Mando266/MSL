@@ -19,9 +19,9 @@
                             @method('put')
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput">{{trans('company.country')}} *</label>
+                                    <label for="countryInput">{{trans('company.country')}} <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="country" data-live-search="true" name="country_id" data-size="10"
-                                     title="{{trans('forms.select')}}">
+                                     title="{{trans('forms.select')}}" required>
                                         @foreach ($country as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('country_id',$localporttriff->country_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -33,9 +33,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="port">Port *</label>
+                                    <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
                                     <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10"
-                                            title="{{trans('forms.select')}}">
+                                            title="{{trans('forms.select')}}" required>
                                             <option value="">Select...</option>
                                             @foreach ($ports as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('port_id',$localporttriff->port_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -48,9 +48,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="BookingInput"> Agent *</label>
+                                    <label for="BookingInput"> Agent <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="agent_id" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($agents as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('agent_id',$localporttriff->agent_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -64,9 +64,9 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Trminal *</label>
+                                    <label for="containersTypesInput">Trminal <span class="text-warning"> * (Required.) </span></label>
                                     <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                     <option value="">Select...</option>
                                         @foreach ($terminals as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('terminal_id',$localporttriff->terminal_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -79,9 +79,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity From *</label>
+                                    <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_from" value="{{old('validity_from',$localporttriff->validity_from)}}"
-                                     placeholder="Validity From" autocomplete="off" >
+                                     placeholder="Validity From" autocomplete="off" required>
                                     @error('validity_from')
                                     <div style="color:red;">
                                         {{$message}}
@@ -89,9 +89,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity to *</label>
+                                    <label for="validity_from">Validity to <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_to" value="{{old('validity_to',$localporttriff->validity_to)}}"
-                                     placeholder="Validity To" autocomplete="off" >
+                                     placeholder="Validity To" autocomplete="off" required>
                                     @error('validity_to')
                                     <div style="color:red;">
                                         {{$message}}

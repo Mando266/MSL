@@ -13,15 +13,17 @@
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
-                    @permission('Movements-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
-                                <a class="btn btn-warning" href="{{ route('export') }}">Export</a>
-                                <a href="{{route('movements.create',['container_id'=>$container->id])}}" class="btn btn-primary">Add New Movement</a>
+                                @permission('Movements-List')
+                                    <a class="btn btn-warning" href="{{ route('export') }}">Export</a>
+                                @endpermission
+                                @permission('Movements-Create')
+                                    <a href="{{route('movements.create',['container_id'=>$containers->id])}}" class="btn btn-primary">Add New Movement</a>
+                                @endpermission
                             </div>
 
                         </div>
-                    @endpermission
                 </div>
             </br>
             <h5><span style='color:#1b55e2';>Container No / Type:</span> {{$containers->code}} / {{{optional($containers->containersTypes)->name}}}</h5>

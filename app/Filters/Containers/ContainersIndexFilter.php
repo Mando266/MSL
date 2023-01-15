@@ -21,6 +21,6 @@ class ContainersIndexFilter extends AbstractFilter{
         'id'=>IDFilter::class,
         'container_type_id'=>ContainerTypeFilter::class,
         'container_ownership_id'=>ContainerOwnershipFilter::class,
-
+        'container_status'=>ContainerStatusFilter::class,
     ];
 }

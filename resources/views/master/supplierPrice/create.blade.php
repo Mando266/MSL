@@ -20,9 +20,9 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="supplier">Supplier *</label>
+                                <label for="supplier">Supplier <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="supplier" data-live-search="true" name="supplier_id" data-size="10"
-                                title="{{trans('forms.select')}}" >
+                                title="{{trans('forms.select')}}" required>
                                     @foreach ($line as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('supplier_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -35,9 +35,9 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="Rate_refInput">Rate Ref *</label>
+                                <label for="Rate_refInput">Rate Ref <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="rateInput" name="ref_rate" value="{{old('ref_rate')}}"
-                                 placeholder="Rate Ref" autocomplete="off">
+                                 placeholder="Rate Ref" autocomplete="off" required>
                                 @error('code')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -45,9 +45,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="Pol">Pol *</label>
+                                <label for="Pol">Pol <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="pol_id" data-live-search="true" name="pol_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('pol_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -59,9 +59,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="Pod">Pod *</label>
+                                <label for="Pod">Pod <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="Pod" data-live-search="true" name="pod_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('pod_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -90,9 +90,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="validity_from">Validity From *</label>
+                                <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                 <input type="date" class="form-control" id="validity_from" name="validity_from" value="{{old('validity_from')}}"
-                                     autocomplete="off" >
+                                     autocomplete="off" required>
                                 @error('validity_from')
                                 <div style="color: red;">
                                     {{$message}}
@@ -100,9 +100,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="validity_to">Validity To *</label>
+                                <label for="validity_to">Validity To <span class="text-warning"> * (Required.) </span></label>
                                 <input type="date" class="form-control" id="validity_to" name="validity_to" value="{{old('validity_to')}}"
-                                     autocomplete="off" >
+                                     autocomplete="off" required>
                                 @error('validity_to')
                                 <div style="color: red;">
                                     {{$message}}

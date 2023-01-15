@@ -19,19 +19,25 @@
                         @if(Session::has('message'))
                         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
                         @endif
-                        @permission('Movements-Create')
+                        @permission('Movements-List')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
                             @if(!$items->isEmpty())
                                         <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
                                         'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
                             @endif
+                        @endpermission
+                        @permission('Movements-List')
                                 <a class="btn btn-warning" href="{{ route('export.all') }}">Export All Data</a>
+                        @endpermission
+                        @permission('Movements-Create')
+
                                 <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
+                        @endpermission
 
                             </div>
                         </div>
-
+                        @permission('Movements-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
                                 @if($movementerrors->count() == 0)
@@ -60,8 +66,7 @@
                         @endpermission
                         </br>
 
-                    <form>
-                        
+                    <form>  
                         <div class="form-row">
                             <div class="form-group col-md-9">
                                 <label for="ContainerInput">Container Number</label>
@@ -126,16 +131,26 @@
                                         <option value="{{$item}}" {{$item == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$item}}</option>
                                         @endif
                                     @endforeach
-                                </select>
+                                </select> 
                             </div>
+                            
                             <div class="form-group col-md-3">
-                                <label for="BLNo">Booking No</label>
-                                <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
-                                placeholder="Booking No" autocomplete="off">
+                                <label for="BookingInput">Container Status </label>
+                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($containerstatus as $item)
+                                        <option value="{{$item->name}}" {{$item->name == old('container_status',request()->input('container_status')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div> 
 
                         <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label for="BLNo">Booking No</label>
+                                <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
+                                placeholder="Booking No" autocomplete="off">
+                            </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Remarkes</label>
                                     <input type="text" class="form-control" id="remarkes" name="remarkes" value="{{request()->input('remarkes')}}"

@@ -32,7 +32,7 @@
                                     @endforeach
                                 </select>
                                 @error('container_type_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -41,8 +41,8 @@
                                 <label for="CodeInput">Container Number</label>
                                 <input type="text" class="form-control" id="CodeInput" name="code" value="{{old('code',$container->code)}}"
                                     placeholder="Container Numbere" autocomplete="off">
-                                @error('Code')
-                                <div class="invalid-feedback">
+                                @error('code')
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -56,7 +56,7 @@
                                     @endforeach
                                 </select>
                                 @error('container_ownership_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -69,7 +69,7 @@
                                 <input type="text" class="form-control" id="tar_weightInput" name="tar_weight" value="{{old('tar_weight',$container->tar_weight)}}"
                                     placeholder="Tare Weight" autocomplete="off">
                                 @error('tar_weight')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -79,7 +79,7 @@
                                 <input type="text" class="form-control" id="max_payloadInput" name="max_payload" value="{{old('max_payload',$container->max_payload)}}"
                                     placeholder="Max Payload" autocomplete="off">
                                 @error('max_payload')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -89,7 +89,7 @@
                                 <input type="text" class="form-control" id="production_yearInput" name="production_year" value="{{old('production_year',$container->production_year)}}"
                                     placeholder="Production Year" autocomplete="off">
                                 @error('production_year')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -101,7 +101,7 @@
                                 <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description',$container->description)}}"
                                     placeholder="Lessor/Seller Refrence" autocomplete="off">
                                 @error('description')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -122,7 +122,7 @@
                                 <input type="text" class="form-control" id="last_movementInput" name="last_movement" value="{{old('last_movement')}}"
                                     placeholder="Last Movement" autocomplete="off">
                                 @error('last_movement')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror

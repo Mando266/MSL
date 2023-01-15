@@ -24,7 +24,6 @@
                                             placeholder="Booking Ref No" autocomplete="off"> 
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                 <label for="customer_id">Customer <span class="text-warning"> * (Required.) </span></label>

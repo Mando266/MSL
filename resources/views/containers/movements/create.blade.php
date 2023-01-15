@@ -65,7 +65,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
+                            </div> 
                             <div class="form-group col-md-4">
                                 <label for="portlocationInput">Activity Location <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"

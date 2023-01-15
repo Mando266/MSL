@@ -19,9 +19,9 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput">{{trans('company.country')}} *</label>
+                                    <label for="countryInput">{{trans('company.country')}} <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="country" data-live-search="true" name="country_id" data-size="10"
-                                     title="{{trans('forms.select')}}">
+                                     title="{{trans('forms.select')}}" required>
                                         @foreach ($country as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -33,8 +33,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="port">Port *</label>
-                                    <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10">
+                                    <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
+                                    <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10" required>
                                         <option value="">Select...</option>
                                             @foreach ($ports as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -47,9 +47,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="BookingInput"> Agent </label>
+                                    <label for="BookingInput"> Agent <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="agent_id" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($agents as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -63,8 +63,8 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Trminal *</label>
-                                    <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10">
+                                    <label for="containersTypesInput">Trminal <span class="text-warning"> * (Required.) </span></label>
+                                    <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10" required>
                                         <option value="">Select...</option>
                                         @foreach ($terminals as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -77,9 +77,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity From *</label>
+                                    <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_from" value="{{old('validity_from')}}"
-                                     placeholder="Validity From" autocomplete="off" >
+                                     placeholder="Validity From" autocomplete="off" required>
                                     @error('validity_from')
                                     <div style="color:red;">
                                         {{$message}}
@@ -87,9 +87,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity to *</label>
+                                    <label for="validity_from">Validity to <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_to" value="{{old('validity_to')}}"
-                                     placeholder="Validity To" autocomplete="off" >
+                                     placeholder="Validity To" autocomplete="off" required>
                                     @error('validity_to')
                                     <div style="color:red;">
                                         {{$message}}
@@ -204,7 +204,7 @@
                                     <td>
                                         <select class="selectpicker form-control" id="unit" data-live-search="true" name="triffPriceDetailes[0][is_import_or_export]" data-size="10"
                                             title="{{trans('forms.select')}}">
-                                                <option value="0" >IMPORt</option>
+                                                <option value="0" >Import</option>
                                                 <option value="1" >Export</option>
                                                 <option value="2" >Empty</option>
                                                 <option value="3" >Transshipment</option>
@@ -254,20 +254,22 @@
     $("#add").click(function(){
             var tr = '<tr>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="100">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="100">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][selling_price]" class="form-control"></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][cost]" class="form-control"></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][agency_revene]" class="form-control" autocomplete="off" ></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][liner]" class="form-control" autocomplete="off"></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
-        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0">IMPORT</option><option value="1">EXPORT</option></select></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0" >Import</option><option value="1" >Export</option><option value="2" >Empty</option><option value="3" >Transshipment</option></select></td>'+
         '<td><label for="rate_sh">Y</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][add_to_quotation]" value="1">&nbsp;<label for="rate_sh">N</label>&nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][add_to_quotation]" value="0"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
         counter++;
-        $('#triffPriceDetailes').append(tr);
+            $('#triffPriceDetailes').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#selectpickers').selectpicker();
     });
 });
 </script>

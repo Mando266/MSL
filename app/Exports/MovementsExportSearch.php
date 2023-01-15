@@ -52,15 +52,17 @@ class MovementsExportSearch implements FromCollection,WithHeadings
     public function collection()
     {
         $movements = session('items');
-        
-        
+
+        if (is_array($movements) || is_object($movements))
+            {
+
             foreach($movements as $movement){
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                 $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
                 $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
             }
-        
         // dd($movements);
         return $movements;
     }
+}
 }
