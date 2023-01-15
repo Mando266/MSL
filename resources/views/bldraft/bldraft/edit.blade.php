@@ -42,7 +42,7 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Shipper Details</label>
                                     <textarea class="form-control"  name="customer_shipper_details"    
                                     placeholder="Customer Shipper Details" autocomplete="off"> {{ old('customer_shipper_details',$bldraft->customer_shipper_details) }}</textarea>
@@ -52,7 +52,7 @@
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Consignee <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customerconsignee" data-live-search="true" name="customer_consignee_id" data-size="10"
-                                 title="{{trans('forms.select')}}" >
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customersConsignee as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$bldraft->customer_consignee_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -63,7 +63,7 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Consignee Details</label>
                                     <textarea id="consignee" class="form-control"  name="customer_consignee_details"
                                     placeholder="Customer Consignee Details" autocomplete="off">{{ old('customer_consignee_details',$bldraft->customer_consignee_details) }}</textarea>
@@ -73,7 +73,7 @@
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Notifiy <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customernotifiy" data-live-search="true" name="customer_notifiy_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customersNotifiy as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_notifiy_id',$bldraft->customer_notifiy_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -84,7 +84,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Notifiy Details</label>
                                     <textarea id="notifiy" class="form-control"  name="customer_notifiy_details"
                                     placeholder="Customer Notifiy Details" autocomplete="off">{{ old('customer_notifiy_details',$bldraft->customer_notifiy_details) }}</textarea>
@@ -180,7 +180,7 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-6" id="summernote">
                             <label for="descripions">DESCRIPTION</label>
                             <textarea name="descripions" class="form-control" placeholder="Descripion" autocomplete="off">{{ old('descripions',$bldraft->descripions) }}</textarea>
                             @error('descripions')
@@ -324,7 +324,7 @@
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
-                                    <a href="{{route('booking.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                    <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>
                     </form>

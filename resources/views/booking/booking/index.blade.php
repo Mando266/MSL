@@ -61,6 +61,20 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="voyage_id">Vessel / Voyage </label>
+                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                    @endforeach
+                                </select>
+                                @error('voyage_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-12 text-center">
@@ -81,8 +95,8 @@
                                         <th>Forwarder</th>
                                         <!-- <th>eta</th>
                                         <th>etd</th> -->
+                                        <th>vessel</th>
                                         <th>voyage</th>
-                                        <th>place of acceptence</th>
                                         <!-- <th>place of delivery</th> -->
                                         <th>load port</th>
                                         <th>discharge port</th>
@@ -102,8 +116,8 @@
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
+                                            <td>{{optional($item->voyage)->vessel->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
-                                            <td>{{optional($item->placeOfAcceptence)->name}}</td>
                                             <!-- <td>{{optional($item->placeOfDelivery)->name}}</td> -->
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{optional($item->dischargePort)->name}}</td>

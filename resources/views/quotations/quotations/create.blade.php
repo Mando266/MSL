@@ -469,6 +469,7 @@
     $("#quotationTriffDischarge").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
+    let equipment = $('#equipment_type_id').val();
     $("#adddis").click(function(){
             var tr = '<tr>'+
                 '<td><input type="text" name="quotationDis['+exportCount+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
@@ -479,9 +480,9 @@
                 // '<td><input type="text" name="quotationDis['+exportCount+'][agency_revene]" class="form-control" autocomplete="off" required></td>'+
                 // '<td><input type="text" name="quotationDis['+exportCount+'][liner]" class="form-control" autocomplete="off" required></td>'+
                 '<td><select class="selectpicker form-control" data-live-search="true" id="charges" name="quotationDis['+exportCount+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
-                '<td><select class="selectpicker form-control" data-live-search="true" id="charges" name="quotationDis['+exportCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+                '<td><select class="selectpicker form-control" data-live-search="true" id="charges" name="quotationDis['+exportCount+'][equipments_type]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)@if($item->id == '+equipment+')<option value="{{$item->name}}" >{{$item->name}}</option>@endif@endforeach</select></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-        '</tr>';
+                '</tr>';
             $('#quotationTriffDischarge').append(tr);
             $('.selectpicker').selectpicker("render");
             $('#charges').selectpicker();

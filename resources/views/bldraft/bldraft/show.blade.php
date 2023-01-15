@@ -29,26 +29,38 @@
                     <table class="col-md-12 tableStyle" style="margin-bottom: 0rem;">
                         <tbody>
                             <tr>
-                                <td class="col-md-6 tableStyle" style="border-left-style: hidden; height: 150px;">1- Shipper </br>
-                                &nbsp &nbsp &nbsp{{ $blDraft->customer_shipper_details }}</td>
+                                <td class="col-md-6 tableStyle" style="border-left-style: hidden; height: 150px;">1- Shipper
+                                <textarea class="tableStyle" name="shipper"  style="border-style: hidden; height: 150px; width: 706px; resize: none; background-color: white;" cols="30" rows="10" readonly>
+                                    {{ old('shipper',$blDraft->customer_shipper_details) }}
+                                    </textarea>
+                                </td>
                                 <td class="col-md-6 tableStyle " style="border-right-style: hidden; border-top-style: hidden;">B/L No: <br>
                                 Book No: {{ optional($blDraft->booking)->ref_no }} <br>
                                 REFERENCE:</td>
                             </tr>
                             <tr>
                                 <td class="col-md-6 tableStyle" style="border-left-style: hidden; height: 150px;">2- Consignee </br>
-                                &nbsp &nbsp &nbsp{{ $blDraft->customer_consignee_details }}</td>
+                                    <textarea class="tableStyle" name="consignee"  style="border-style: hidden; height: 150px; width: 706px; resize: none; background-color: white;" cols="30" rows="10" readonly>
+                                    {!! $blDraft->customer_consignee_details !!}
+                                    </textarea>
+                                </td>
                                 <td class="col-md-6 tableStyle" style="border-right-style: hidden;"></td>
                             </tr>
                             <tr>
                                 <td class="col-md-6 tableStyle" style="border-left-style: hidden; height: 150px;">3- Notify Party </br>
-                                &nbsp &nbsp &nbsp{{ $blDraft->customer_notifiy_details }}</td>
+                                    <textarea class="tableStyle" name="notify"  style="border-style: hidden; height: 150px; width: 706px; resize: none; background-color: white;" cols="30" rows="10" readonly>
+                                    {!! $blDraft->customer_notifiy_details !!}
+                                    </textarea>
+                                </td>
                                 <td class="col-md-6 tableStyle" style="border-right-style: hidden; border-top-style: hidden;"></td>
                             </tr>
                             <tr>
                                 <td class="col-md-6 tableStyle" style="border-left-style: hidden;">4- Vessel and Voyage No. </br>
                                 &nbsp &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</td>
-                                <td class="col-md-6 tableStyle" style="border-right-style: hidden;" >7- Place of Receipt </br>
+                                <td class="col-md-6 tableStyle" style="border-right-style: hidden;
+                                
+                                
+                                " >7- Place of Receipt </br>
                                 &nbsp &nbsp &nbsp{{ optional($blDraft->placeOfAcceptence)->name }}</td>
                             </tr>
                             <tr>
@@ -93,8 +105,10 @@
                             @endforeach
                             <tr>
                                 <td class="col-md-3.5 tdstyle" ></td>
-                                <td class="col-md-5.5 tdstyle word">NO. Of PKGS : {{$packages}}<br>
-                                {{ $blDraft->descripions }}</td>
+                                <td class="col-md-5.5 tdstyle word">&nbsp &nbsp NO. Of PKGS : {{$packages}}
+                                <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; height: 150px; width: 706px; resize: none; background-color: white;" cols="30" rows="10" readonly>
+                                    {!!  $blDraft->descripions  !!}
+                                    </textarea></td>
                                 <td class="col-md-1.5 tdstyle">{{ $gross_weight }} <br>
                                 KGS <br><br>
                                 NET WT <br>
@@ -198,6 +212,18 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    let a = document.getElementsByName("shipper")[0].value
+    document.getElementsByName("shipper")[0].value = a.trim()
+    let b = document.getElementsByName("consignee")[0].value
+    document.getElementsByName("consignee")[0].value = b.trim()
+    let c = document.getElementsByName("notify")[0].value
+    document.getElementsByName("notify")[0].value = c.trim()
+    let d = document.getElementsByName("maindesc")[0].value
+    document.getElementsByName("maindesc")[0].value = d.trim()
+</script>
+@endpush
 @push('styles')
 <style>
     @media print {

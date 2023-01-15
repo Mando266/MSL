@@ -120,6 +120,14 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle">Commodity Description : {{$booking->commodity_description}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <h4>Container Details :</h4>
                 <table class="col-md-12 tableStyle">
                     <tbody>
@@ -143,6 +151,12 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                </div>
+                <div class="row">
+                        <div class="col-md-12 text-center">
+                <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Booking</button>
+                </div>
                 </div>
             </div>
         </div>

@@ -32,8 +32,9 @@ class BookingExport implements FromCollection,WithHeadings
        
         $bookings = session('bookings');
         $exportBookings = collect();
-        $qty = 0;
+        
         foreach($bookings as $booking){
+            $qty = 0;
             foreach($booking->bookingContainerDetails as $bookingDetail){
                 $qty += $bookingDetail->qty;
             }

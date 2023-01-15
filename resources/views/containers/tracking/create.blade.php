@@ -20,7 +20,7 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="ContainerInput">Container Number </label>
-                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
                                         <option value="{{$item->id}}" data-code="{{$item->container_type_id}}" {{$item->id == old('container_id') ||in_array($item->id, request()->container_id ?? []) ? 'selected':''}}>{{$item->code}}</option>
@@ -85,7 +85,7 @@
                         </div>
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
-                                <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('tracking.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
                     </form>

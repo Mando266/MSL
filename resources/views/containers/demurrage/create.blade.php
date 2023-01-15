@@ -20,9 +20,9 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput">{{trans('company.country')}} *</label>
+                                    <label for="countryInput">{{trans('company.country')}} <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
-                                     title="{{trans('forms.select')}}">
+                                     title="{{trans('forms.select')}}" required>
                                         @foreach ($countries as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -34,9 +34,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="port">Port *</label>
+                                    <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="porrt" data-live-search="true" name="port_id" data-size="10"
-                                            title="{{trans('forms.select')}}">
+                                            title="{{trans('forms.select')}}" required>
                                             @foreach ($ports as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
@@ -48,9 +48,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Container Type *</label>
+                                    <label for="containersTypesInput">Container Type <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="container_type_id" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($containersTypes as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -64,9 +64,9 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="bounds">Bound *</label>
+                                    <label for="bounds">Bound <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="bounds" data-live-search="true" name="bound_id" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($bounds as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('bound_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -78,9 +78,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="currency">Currency</label>
+                                    <label for="currency">Currency <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
+                                    title="{{trans('forms.select')}}" required>
                                         @foreach ($currency as $item)
                                             <option value="{{$item->name}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -92,9 +92,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity From</label>
+                                    <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_from" value="{{old('validity_from')}}"
-                                     placeholder="Validity From" autocomplete="off" >
+                                     placeholder="Validity From" autocomplete="off"required >
                                     @error('validity_from')
                                     <div class="invalid-feedback">
                                         {{$message}}
@@ -104,9 +104,9 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="validity_from">Validity to</label>
+                                    <label for="validity_from">Validity to <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_to" value="{{old('validity_to')}}"
-                                     placeholder="Validity To" autocomplete="off" >
+                                     placeholder="Validity To" autocomplete="off" required>
                                     @error('validity_to')
                                     <div class="invalid-feedback">
                                         {{$message}}

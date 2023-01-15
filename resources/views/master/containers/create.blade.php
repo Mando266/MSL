@@ -31,7 +31,7 @@
                                     @endforeach
                                 </select>
                                 @error('container_type_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -55,7 +55,7 @@
                                     @endforeach
                                 </select>
                                 @error('container_ownership_id')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -68,7 +68,7 @@
                                 <input type="text" class="form-control" id="tar_weightInput" name="tar_weight" value="{{old('tar_weight')}}"
                                     placeholder="Tare Weight" autocomplete="off">
                                 @error('tar_weight')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -78,7 +78,7 @@
                                 <input type="text" class="form-control" id="max_payloadInput" name="max_payload" value="{{old('max_payload')}}"
                                     placeholder="Max Payload" autocomplete="off">
                                 @error('max_payload')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -88,7 +88,7 @@
                                 <input type="text" class="form-control" id="production_yearInput" name="production_year" value="{{old('production_year')}}"
                                     placeholder="Production Year" autocomplete="off">
                                 @error('production_year')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -100,7 +100,7 @@
                                 <input type="text" class="form-control" id="descriptionInput" name="description" value="{{old('description')}}"
                                     placeholder="Lessor/Seller Refrence" autocomplete="off">
                                 @error('description')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -110,7 +110,7 @@
                                 <input type="text" class="form-control" id="last_movementInput" name="last_movement" value="{{old('last_movement')}}"
                                     placeholder="Last Movement" autocomplete="off">
                                 @error('last_movement')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -127,7 +127,7 @@
                             </div>
 
                                 @error('certificat')
-                                <div class="invalid-feedback">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror

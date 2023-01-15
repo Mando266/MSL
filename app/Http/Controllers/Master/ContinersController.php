@@ -49,7 +49,7 @@ class ContinersController extends Controller
         
         $request->validate([
             'container_type_id' =>'required',
-            'code' => 'required',
+            'code' => ['required','regex:/^[A-Z]{4}[0-9]{7}/','string','min:11','max:11'],
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
@@ -58,7 +58,7 @@ class ContinersController extends Controller
             
         $CodeDublicate  = Containers::where('company_id',$user->company_id)->where('code',$request->code)->first();
         if($CodeDublicate != null){
-            return back()->with('alert','This Container Code Already Exists');
+            return back()->with('alert','This Container Number Already Exists');
         }
         $container = Containers::create($request->input());
         $container->company_id = $user->company_id;
@@ -93,9 +93,10 @@ class ContinersController extends Controller
 
     public function update(Request $request, $id)
     {   
+    $this->authorize(__FUNCTION__,Containers::class);
         $request->validate([
             'container_type_id' => 'required',
-            'code' => 'required',
+            'code' =>  ['required','regex:/^[A-Z]{4}[0-9]{7}/','string','min:11','max:11'],
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
@@ -104,7 +105,7 @@ class ContinersController extends Controller
             
         $CodeDublicate  = Containers::where('id','!=',$id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
         if($CodeDublicate > 0){
-            return back()->with('alert','This Container Code Already Exists');
+            return back()->with('alert','This Container Number Already Exists');
         }
         $container = Containers::find($id);
         $container->update($request->except('_token'));
@@ -113,8 +114,6 @@ class ContinersController extends Controller
             $request->certificat->move(public_path('certificat'), $path);
             $container->update(['certificat'=>"certificat/".$path]);
         }
-
-        $this->authorize(__FUNCTION__,Containers::class);
         return redirect()->route('containers.index')->with('success',trans('containers.updated.success'));
     }
 

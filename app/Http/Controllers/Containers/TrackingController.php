@@ -19,7 +19,8 @@ class TrackingController extends Controller
     {
         $this->authorize(__FUNCTION__,Movements::class);
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        $movements = Movements::filter(new ContainersIndexFilter(request()))->join('containers', 'movements.container_id', '=', 'containers.id')
+        $movements = Movements::filter(new ContainersIndexFilter(request()))
+        ->join('containers', 'movements.container_id', '=', 'containers.id')->where('movements.company_id',Auth::user()->company_id)
             ->select('movements.*', 'containers.code')->orderBy('movement_date','asc')->orderBy('movement_id','asc')->orderBy('id','asc')
         ->get()->groupBy('code');
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();

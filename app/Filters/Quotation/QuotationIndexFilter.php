@@ -14,5 +14,6 @@ class QuotationIndexFilter extends AbstractFilter{
         'customer_id'=>CustomerFilter::class,
         'place_of_acceptence_id'=>POLFilter::class,
         'place_of_delivery_id'=>PODFilter::class,
+        'voyage_id'=>VoyageFilter::class,
     ];
 }

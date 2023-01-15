@@ -36,13 +36,15 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <div class="form-group col-md-8">
-                                <label for="customer_id">Customer Shipper Details</label>
-                                @if($booking->customer_id != null)
+                            <div class="form-group col-md-8" id="summernote">
+                            <label for="customer_id">Customer Shipper Details</label>
+                            @if($booking->customer_id != null)
                                     <textarea class="form-control"  name="customer_shipper_details"
                                     placeholder="Customer Shipper Details" autocomplete="off">Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}</textarea>
                                 @endif
-                            </div> 
+                            </div>
+    
+                            
                             <!-- <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Phone <span style="color: red;">*</span></label>
                                 @if($booking->customer_id != null)
@@ -62,7 +64,7 @@
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Consignee <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customerconsignee" data-live-search="true" name="customer_consignee_id" data-size="10"
-                                 title="{{trans('forms.select')}}" >
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customersConsignee as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -73,7 +75,7 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Consignee Details</label>
                                     <textarea id="consignee" class="form-control"  name="customer_consignee_details"
                                     placeholder="Customer Consignee Details" autocomplete="off"></textarea>
@@ -83,7 +85,7 @@
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Notifiy <span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customernotifiy" data-live-search="true" name="customer_notifiy_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($customersNotifiy as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_notifiy_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -94,13 +96,13 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Notifiy Details</label>
                                     <textarea id="notifiy" class="form-control"  name="customer_notifiy_details"
                                     placeholder="Customer Notifiy Details" autocomplete="off"></textarea>
                             </div> 
                     </div>
-
+                    
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="place_of_acceptence_id">Place Of Acceptence <span style="color: red;">*</span></label>
@@ -205,7 +207,7 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-6" id="summernote">
                             <label for="notes">DESCRIPTION</label>
                             <textarea name="descripions" class="form-control" placeholder="Descripion" autocomplete="off"></textarea>
                             @error('notes')
@@ -308,6 +310,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if($booking_containers->count() != 0)
                             @foreach($booking_containers as $key => $bookingContainer)
                             <tr>
                                 <td>
@@ -344,6 +347,7 @@
                                 </td>
                             </tr>
                             @endforeach
+                            @endif
                             @for($i=0 ; $i < $booking_qyt ; $i++)
                             <?php $key = $key + 1; ?>
                             <tr>

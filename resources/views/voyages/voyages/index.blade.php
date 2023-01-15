@@ -125,22 +125,32 @@
                                                 </table>
                                                 @endforeach
                                             </td>
+
                                             <td>
                                                 @foreach($item->voyagePorts as $voyagePort)
                                                 <table style="border: hidden;">
+                                                @permission('Voyages-Edit')
                                                 <td>
                                                     <a href="{{route('voyages.edit',['voyage'=>$voyagePort->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                         <i class="far fa-edit text-success"></i>
                                                     </a>
                                                     </td>
+                                                @endpermission
+
                                                 </table>
+
                                                 @endforeach
+
                                             </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
+                                                @permission('Voyages-Create')
+
                                                     <li>
                                                         <a href="{{route('voyageports.create',['voyage_id' => $item->id])}}"  data-toggle="tooltip" data-placement="top" title="" data-original-title="show"> <i class="fas fa-plus text-primary"></i> </a>
                                                     </li>
+                                                @endpermission
+
                                             </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
