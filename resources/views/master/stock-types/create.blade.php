@@ -20,25 +20,26 @@
                         @csrf
                         <div class="form-row">
                         <div class="form-group col-md-6">
-                                <label for="codeInput">Code *</label>
-                            <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
-                                 placeholder="Code" autocomplete="off" autofocus>
-                                @error('code')
-                                <div class="invalid-feedback">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="nameInput">Name *</label>
+                                <label for="nameInput">STOCK STATUS DESCRIPTION *</label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Name" autocomplete="off" autofocus>
+                                 placeholder="STOCK STATUS DESCRIPTION" autocomplete="off" autofocus>
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
+                        <div class="form-group col-md-6">
+                                <label for="codeInput">USAGE AVAILABILITY *</label>
+                            <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
+                                 placeholder="USAGE AVAILABILITY" autocomplete="off" autofocus>
+                                @error('code')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+
                         </div>
                        <div class="row">
                             <div class="col-md-12 text-center">

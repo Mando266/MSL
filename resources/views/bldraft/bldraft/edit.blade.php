@@ -275,6 +275,7 @@
                                 <th class="text-center">Container</th>
                                 <th class="text-center">Seal No.s</th>
                                 <th class="text-center">Packs</th>
+                                <th class="text-center">Packs Type</th>
                                 <th class="text-center">Description</th>
                                 <th class="text-center">Gross Weight Kgs</th>
                                 <th class="text-center">Net Weight Kgs</th>
@@ -295,11 +296,15 @@
                                   </select>
                                 </td>
                                 <td>
-                                    <input type="text" id="seal_no" value="{{$blDetail->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
+                                    <input type="text" id="seal_no" value="{{$blDetail->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" required>
                                 </td>
                                 
                                 <td>
                                     <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" value="{{old('packs',$blDetail->packs)}}" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                </td>
+
+                                <td>
+                                    <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][pack_type]" value="{{old('pack_type',$blDetail->pack_type)}}" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
 
                                 <td>
@@ -313,7 +318,7 @@
                                     <input type="text" id="net_weight" name="blDraftdetails[{{ $key }}][net_weight]" value="{{old('net_weight',$blDetail->net_weight)}}" class="form-control input"  autocomplete="off" placeholder="Net Weight" required>
                                 </td>
                                 <td>
-                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" value="{{old('measurement',$blDetail->measurement)}}" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
+                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" value="{{old('measurement',$blDetail->measurement)}}" class="form-control input"  autocomplete="off" placeholder="Measurement" >
                                 </td>
                             </tr>
                             @endforeach
