@@ -37,7 +37,7 @@ class BlDraftController extends Controller
 
     public function selectBooking()
     {
-        $booking  = Booking::orderBy('id','desc')->where('booking_confirm',1)->where('company_id',Auth::user()->company_id)->with('customer')->get();
+        $booking  = Booking::orderBy('id','desc')->where('booking_confirm',1)->where('has_bl',0)->where('company_id',Auth::user()->company_id)->with('customer')->get();
         return view('bldraft.bldraft.selectBooking',[
             'booking'=>$booking,
         ]);
@@ -124,6 +124,7 @@ class BlDraftController extends Controller
             }
         }
         $user = Auth::user();
+        
         $blDraft = BlDraft::create([
             'booking_id'=> $request->input('booking_id'),
             'company_id'=>$user->company_id,
@@ -149,7 +150,9 @@ class BlDraftController extends Controller
             'date_of_issue'=> $request->input('date_of_issue'),
             'bl_status'=> $request->input('bl_status'),
         ]);
-
+        $booking = Booking::where('id',$request->input('booking_id'))->first();
+        $booking->has_bl = 1;
+        $booking->save();
         foreach($request->input('blDraftdetails',[]) as $blDraftdetails){
             BlDraftDetails::create([
                 'bl_id'=>$blDraft->id,
@@ -242,6 +245,9 @@ class BlDraftController extends Controller
     public function destroy($id)
     {
         $bldraft = BlDraft::find($id);
+        $booking = Booking::where('id',$bldraft->booking_id)->first();
+        $booking->has_bl = 0;
+        $booking->save();
         BlDraftDetails::where('bl_id',$id)->delete();
         $bldraft->delete(); 
         return back()->with('success',trans('BlDraft.Deleted.Success'));
