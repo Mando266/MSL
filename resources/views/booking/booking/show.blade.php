@@ -4,18 +4,10 @@
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-one">
-                <div class="widget-heading hide">
-                    <nav class="breadcrumb-two" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
-                            <li class="breadcrumb-item"></li>
-                        </ol>
-                    </nav>
-                </div>
+
                 <div class="widget-content widget-content-area">
                 <div class="col-md-12 text-center">
-                <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
+                <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
                 </div>
 </br>
 </br>
@@ -35,8 +27,8 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Booking Ref N : {{$booking->ref_no}}</td>
-                            <td class="tableStyle">Issue Date : {{$booking->created_at}}</td>
+                            <td class="tableStyle" style="width: 50%;" style="width: 50%;">Booking Ref N : {{$booking->ref_no}}</td>
+                            <td class="tableStyle" style="width: 50%;">Issue Date : {{$booking->created_at}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -50,9 +42,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="tableStyle">{{optional($booking->customer)->name}}</br>{{optional($booking->customer)->address}}
+                            <td class="tableStyle" style="width: 50%;">{{optional($booking->customer)->name}}</br>{{optional($booking->customer)->address}}
                             </br>phone : {{optional($booking->customer)->phone}}</br>Email : {{optional($booking->customer)->email}}</td>
-                            <td class="tableStyle">{{optional($booking->forwarder)->name}}</br>{{optional($booking->forwarder)->address}}
+                            <td class="tableStyle" style="width: 50%;">{{optional($booking->forwarder)->name}}</br>{{optional($booking->forwarder)->address}}
                             </br>phone : {{optional($booking->forwarder)->phone}}</br>Email : {{optional($booking->forwarder)->email}}</td>
                         </tr>
                     </tbody>
@@ -60,70 +52,70 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Shipper Ref No : {{$booking->shipper_ref_no}}</td>
-                            <td class="tableStyle">Forwarder Ref No : {{$booking->forwarder_ref_no}}</td>
+                            <td class="tableStyle" style="width: 50%;">Shipper Ref No : {{$booking->shipper_ref_no}}</td>
+                            <td class="tableStyle" style="width: 50%;">Forwarder Ref No : {{$booking->forwarder_ref_no}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">First Vessel / Voyage : @if($booking->voyage != null){{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}} @endif</td>
-                            <td class="tableStyle">ETA: {{optional($firstVoyagePort)->eta}}</br></br>ETD: {{optional($firstVoyagePort)->etd}}</td>
+                            <td class="tableStyle" style="width: 50%;">First Vessel / Voyage : @if($booking->voyage != null){{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}} @endif</td>
+                            <td class="tableStyle" style="width: 50%;">ETA: {{optional($firstVoyagePort)->eta}}</br></br>ETD: {{optional($firstVoyagePort)->etd}}</td>
                         </tr>
                         <tr>
-                            <td class="tableStyle">Second Vessel / Voyage : @if($booking->secondvoyage != null){{ $booking->secondvoyage->vessel->name }} / {{ $booking->secondvoyage->voyage_no}} @endif</td>
-                            <td class="tableStyle">ETD: {{optional($secondVoyagePort)->etd}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="col-md-12 tableStyle">
-                    <tbody>
-                        <tr>
-                            <td class="tableStyle">Place of Acceptance : &nbsp; <span>{{optional($booking->placeOfAcceptence)->name}}</span></td>
-                            <td class="tableStyle">Place of Delivery : &nbsp; <span>{{optional($booking->placeOfDelivery)->name}}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="tableStyle">Load Port : &nbsp; <span>{{optional($booking->loadPort)->name}}</span></td>
-                            <td class="tableStyle"> Discharge Port : &nbsp; <span>{{optional($booking->dischargePort)->name}}</span></td>
+                            <td class="tableStyle" style="width: 50%;">Second Vessel / Voyage : @if($booking->secondvoyage != null){{ $booking->secondvoyage->vessel->name }} / {{ $booking->secondvoyage->voyage_no}} @endif</td>
+                            <td class="tableStyle" style="width: 50%;">ETD: {{optional($secondVoyagePort)->etd}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Discharge Terminal : {{optional($booking->terminals)->name}}</td>
+                            <td class="tableStyle" style="width: 50%;">Place of Acceptance : &nbsp; <span>{{optional($booking->placeOfAcceptence)->name}}</span></td>
+                            <td class="tableStyle" style="width: 50%;">Place of Delivery : &nbsp; <span>{{optional($booking->placeOfDelivery)->name}}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="tableStyle" style="width: 50%;">Load Port : &nbsp; <span>{{optional($booking->loadPort)->name}}</span></td>
+                            <td class="tableStyle" style="width: 50%;"> Discharge Port : &nbsp; <span>{{optional($booking->dischargePort)->name}}</span></td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Discharge Port ETD : {{$booking->discharge_etd}}</td>
-                            <td class="tableStyle">Load Port Cutoff : {{$booking->load_port_cutoff}}</td>
+                            <td class="tableStyle" style="width: 50%;">Discharge Terminal : {{optional($booking->terminals)->name}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">BL Release : {{optional($booking->agent)->name}}</td>
-                            <td class="tableStyle">Load Port Free Days : {{$booking->load_port_dayes}}</td>
+                            <td class="tableStyle" style="width: 50%;">Discharge Port ETD : {{$booking->discharge_etd}}</td>
+                            <td class="tableStyle" style="width: 50%;">Load Port Cutoff : {{$booking->load_port_cutoff}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Booked By : {{optional($booking->bookedby)->full_name}}</td>
-                            <td class="tableStyle">Tarrif/Service Contract : {{optional($booking->quotation)->ref_no}}</td>
+                            <td class="tableStyle" style="width: 50%;">BL Release : {{optional($booking->agent)->name}}</td>
+                            <td class="tableStyle" style="width: 50%;">Load Port Free Days : {{$booking->load_port_dayes}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle">Commodity Description : {{$booking->commodity_description}}</td>
+                            <td class="tableStyle" style="width: 50%;">Booked By : {{optional($booking->bookedby)->full_name}}</td>
+                            <td class="tableStyle" style="width: 50%;">Tarrif/Service Contract : {{optional($booking->quotation)->ref_no}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle" style="width: 50%;">Commodity Description : {{$booking->commodity_description}}</td>
                         </tr>
                     </tbody>
                 </table>

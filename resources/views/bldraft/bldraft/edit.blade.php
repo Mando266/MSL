@@ -29,7 +29,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Shipper <span class="text-warning"> * (Required.) </span></label>
+                                <label for="customer_id">Shipping Customer <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($customershipper as $item)
@@ -43,7 +43,7 @@
                                 @enderror
                             </div> 
                             <div class="form-group col-md-8" id="summernote">
-                                <label for="customer_id">Customer Shipper Details</label>
+                                <label for="customer_id">Shipping Customer Details</label>
                                     <textarea class="form-control"  name="customer_shipper_details"    
                                     placeholder="Customer Shipper Details" autocomplete="off"> {{ old('customer_shipper_details',$bldraft->customer_shipper_details) }}</textarea>
                             </div> 

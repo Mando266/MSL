@@ -24,7 +24,7 @@
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="Refrance">Refrance Number </label>
+                                <label for="Refrance">Bl Number </label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($blDraftNo as $item)
@@ -32,9 +32,9 @@
                                     @endforeach
                                 </select>
                             </div>
-
+ 
                             <div class="form-group col-md-3">
-                                    <label for="customer_id">Customer</label>
+                                    <label for="customer_id">Shipping Customer</label>
                                     <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                         title="{{trans('forms.select')}}">
                                         @foreach ($customers as $item)
@@ -61,6 +61,23 @@
                                 </select>
                             </div>
                         </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="voyage_id">Vessel / Voyage </label>
+                            <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                @endforeach
+                            </select>
+                            @error('voyage_id')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+
                         <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
@@ -83,6 +100,7 @@
                                         <th>discharge port</th>
                                         <th>Equipment Type</th>
                                         <th>containers</th>
+                                        <th>voyage vessel</th>
                                         <th>Bl Draft Creation</th>
                                         <th>BL Status</th>
 
@@ -108,7 +126,7 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-
+                                            <td>{{optional($item->voyage)->voyage_no}} - {{optional($item->voyage)->vessel->name}}</td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
