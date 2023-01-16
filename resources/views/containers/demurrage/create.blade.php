@@ -21,32 +21,33 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="countryInput">{{trans('company.country')}} <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
+                                    <select class="selectpicker form-control" id="country" data-live-search="true" name="country_id" data-size="10"
                                      title="{{trans('forms.select')}}" required>
                                         @foreach ($countries as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('country_id')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
+                                    <div style="color:red;">
+                                        {{$message}} 
                                     </div>
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="selectpicker form-control" id="porrt" data-live-search="true" name="port_id" data-size="10"
-                                            title="{{trans('forms.select')}}" required>
+                                    <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10" required>
+                                        <option value="">Select...</option>
                                             @foreach ($ports as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
                                     </select>
                                     @error('port_id')
-                                    <div class="invalid-feedback">
+                                    <div style="color:red;">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
+  
                                 <div class="form-group col-md-4">
                                     <label for="containersTypesInput">Container Type <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="container_type_id" data-size="10"
@@ -131,7 +132,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="is_storge">Detention OR Storage</label>
                                     <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
+                                    title="{{trans('forms.select')}}">
                                             <option value="Detention">Detention</option>
                                             <option value="Storage">Storage</option>
                                     </select>
@@ -143,20 +144,34 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Terminals</label>
-                                    <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="terminal_id" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
+                                <div class="form-group col-md-8">
+                                    <label for="containersTypesInput">Trminal <span class="text-warning"> * (Required.) </span></label>
+                                    <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10" required>
+                                        <option value="">Select...</option>
                                         @foreach ($terminals as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('terminal_id')
-                                    <div class="invalid-feedback">
+                                    <div style="color:red;">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
+                                <div class="form-group col-md-4">
+                                <label for="BookingInput">Container Status </label>
+                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
+                                title="{{trans('forms.select')}}" required>
+                                    @foreach ($containerstatus as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_status') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_status')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                             </div>
                             <table id="period" class="table table-bordered">
                                 <thead>
@@ -217,5 +232,40 @@
         $('#period').append(tr);
     });
 });
+</script>
+<script>
+        $(function(){
+                let country = $('#country');
+                let company_id = "{{optional(Auth::user())->company->id}}";
+                $('#country').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('#port');
+                port.html(list2.join(''));
+                });
+            });
+        });
+</script>
+<script>
+        $(function(){
+                let port = $('#port');
+                $('#port').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/terminals/${port.val()}`).then(function(data){
+                        let terminals = data.terminals || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < terminals.length; i++){
+                            list2.push(`<option value='${terminals[i].id}'>${terminals[i].name} </option>`);
+                        }
+                let terminal = $('#terminal');
+                terminal.html(list2.join(''));
+                });
+            });
+        });
 </script>
 @endpush

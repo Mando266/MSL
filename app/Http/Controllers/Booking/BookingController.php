@@ -187,7 +187,19 @@ class BookingController extends Controller
 
         return redirect()->route('booking.index')->with('success',trans('Booking.created'));
     }
-
+    
+    public function showShippingOrder($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        
+        return view('booking.booking.showShippingOrder',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
     public function show($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);

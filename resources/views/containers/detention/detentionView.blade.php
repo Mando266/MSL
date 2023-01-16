@@ -121,6 +121,7 @@
                                                 @endif
                                                 <td class="text-center">{{$actualDays}}</td>
                                                 <?php 
+                                                $remainingFreeTime = $freetime;
                                                     if(sizeof($periods) > 0){
                                                             if($freetime > $periodtimeTotal){
                                                                 $thereafter = true;
