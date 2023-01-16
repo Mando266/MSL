@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @section('content')
-
+<div class="widget-heading hide">
+                    <nav class="breadcrumb-two" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Bl Draft Confirmation</a></li>
+                            <li class="breadcrumb-item"></li>
+                        </ol> 
+                    </nav>
+                </div>
                 <div class="widget-content widget-content-area">
                     <div class="col-md-12 text-center">
                     </div>
@@ -260,7 +268,7 @@ original Bills of Lading stated below right, all of this tenor and date.</td>
                 <div class="row">
                         <div class="col-md-12 text-center">
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Bl</button>
-                <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
                 </div>
     
 </div>

@@ -54,7 +54,7 @@ class BlDraft extends Model implements PermissionSeederContract
     }
     public function loadPort(){
         return $this->belongsTo(Ports::class,'load_port_id','id');
-    }
+    } 
     public function dischargePort(){
         return $this->belongsTo(Ports::class,'discharge_port_id','id');
     }

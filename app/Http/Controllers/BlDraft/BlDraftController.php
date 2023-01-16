@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 class BlDraftController extends Controller
 {
 
-    public function index()
+    public function index() 
     {
         $this->authorize(__FUNCTION__,BlDraft::class);
         $blDrafts = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->paginate(30);
@@ -27,11 +27,14 @@ class BlDraftController extends Controller
         $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        //dd($voyages);
         return view('bldraft.bldraft.index',[
             'items'=>$blDrafts,
             'blDraftNo'=>$blDraftNo,
             'ports'=>$ports,
             'customers'=>$customers,
+            'voyages'=>$voyages,
         ]); 
     }
 
@@ -158,6 +161,7 @@ class BlDraftController extends Controller
                 'bl_id'=>$blDraft->id,
                 'container_id'=>$blDraftdetails['container_id'],
                 'packs'=>$blDraftdetails['packs'],
+                'pack_type'=>$blDraftdetails['pack_type'],
                 'seal_no'=>$blDraftdetails['seal_no'],
                 'description'=>$blDraftdetails['description'],
                 'gross_weight'=>$blDraftdetails['gross_weight'],

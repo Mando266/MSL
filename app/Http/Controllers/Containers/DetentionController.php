@@ -26,7 +26,7 @@ class DetentionController extends Controller
 
     public function showDetentionView()
     {
-        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
+        $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->where('is_storge','Detention')->get();
         $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
         $movements = [];
         return view('containers.detention.detentionView',[
