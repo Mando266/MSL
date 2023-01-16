@@ -73,18 +73,25 @@ class MovementsImport implements ToModel,WithHeadingRow
         $lastMove = $movements->where('movement_date','<',$row['movement_date'])->pluck('movement_id')->first();
         // End Get All movements and sort it and get the last movement before this movement
         
-        // Check same move type
-        dd($containertype);
-        if(	$lastMove->container_type_id)
-        
         $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
         $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
+        $moveType = $movements->first()->container_type_id;
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
         
+        // Check same move type
+        if(  $row['container_type_id'] != $moveType){
+        return session()->flash('message',"This Container Type: {$containertype} must be same as Movements container type ");
+        }
+
+        // Check same move type
+        if(  $row['vessel_id'] == null){
+            return session()->flash('message',"you must enter a ve");
+        }
+
         $movementdublicate  = Movements::where('container_id',$row['container_id'])->where('movement_id',$row['movement_id'])->where('movement_date',$row['movement_date'])->first();
         
         if($containerId == null){
