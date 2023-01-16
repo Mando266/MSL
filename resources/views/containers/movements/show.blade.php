@@ -246,7 +246,7 @@ if(request()->input('container_id') != null){
                                             <td>{{$items->booking_agent_id}}</td>
                                             <td>{{$items->remarkes}}</td>
                                             <td></td>
-
+                                            
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Movements-Edit')

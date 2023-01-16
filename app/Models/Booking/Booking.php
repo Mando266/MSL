@@ -17,7 +17,7 @@ use App\Traits\HasFilter;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Booking extends Model implements PermissionSeederContract
+class   Booking extends Model implements PermissionSeederContract
 {
     use HasFilter;
     protected $table = 'booking';

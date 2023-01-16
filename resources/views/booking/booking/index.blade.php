@@ -181,11 +181,13 @@
                                                  <ul class="table-controls">
                                                  @if($item->booking_confirm == "1")
                                                     @permission('Booking-Create')
+                                                        @if($item->has_bl == 0)
                                                             <li>
                                                                 <a href="{{route('bldraft.create',['booking_id'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                                     <i class="fas fa-plus text-primary"></i>
                                                                 </a>
                                                             </li>
+                                                        @endif
                                                     @endpermission
                                                 @endif
                                             </ul>
