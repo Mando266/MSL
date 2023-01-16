@@ -106,6 +106,7 @@
                                         <th>Booking Status</th>
                                         <th class='text-center' style='width:100px;'></th>
                                         <th class='text-center' style='width:100px;'></th>
+                                        <th>Shipping Order</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -190,8 +191,21 @@
                                                         @endif
                                                     @endpermission
                                                 @endif
-                                            </ul>
-                                        </td>
+                                                </ul>
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('Booking-Show')
+                                                    <ul class="table-controls">
+                                                    @if($item->booking_confirm == 1)
+                                                        <li>
+                                                            <a href="{{route('booking.showShippingOrder',['booking'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr class="text-center">

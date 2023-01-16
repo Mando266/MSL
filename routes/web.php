@@ -108,6 +108,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('booking')->namespace('Booking')->group(function () {
         Route::resource('booking','BookingController');
         Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
+        Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
     });
     /*
     |-------------------------------------------

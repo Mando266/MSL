@@ -44,7 +44,7 @@ class DetentionController extends Controller
         //dd($movementsBlNo);
         $demurrage = Demurrage::where('id',$request->Triff_id)->get();
         $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
-        $movements = Movements::where('bl_no',$request->bl_no)->with('movementcode','container')->get();
+        $movements = Movements::where('company_id',Auth::user()->company_id)->where('bl_no',$request->bl_no)->with('movementcode','container')->get();
         $period = Period::where('demurrage_id',$request->Triff_id)->select('rate','number_off_dayes','period')->get();
         $periodtimeTotal = 0;
         foreach($period as $per){

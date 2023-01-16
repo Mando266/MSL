@@ -169,7 +169,9 @@
                                             @else
                                             <td class="text-center">{{$item->number_off_dayes}}</td>
                                             @endif
-                                            
+                                            @php 
+                                                $fromDate = date('Y-m-d', strtotime($dchfDate. ' + '.$item->number_off_dayes .' days'));
+                                            @endphp
                                             @if($freetime < $periodtimeTotal)
                                                 @if($item->period == "free time")
                                                 <td class="text-center">{{$dchfDate}}</td>
@@ -180,9 +182,7 @@
                                                 }
                                                  
                                                 ?>
-                                                <?php 
-                                                $fromDate = date('Y-m-d', strtotime($dchfDate. ' + '.$item->number_off_dayes .' days'));
-                                                ?>
+                                                
                                                     @if($remaining_days > $freetime)
                                                     <?php 
                                                     $remaining_days -= $item->number_off_dayes; 
