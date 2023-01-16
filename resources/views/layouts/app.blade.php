@@ -137,9 +137,9 @@
             @endif
             @yield('content')
 
-            <div class="footer-wrapper">
+            <div class="footer-wrapper hide">
                 <div class="footer-section f-section-1">
-                    <p class="">Copyright © 2021 Middle East Shipping Line, All rights reserved.</p>
+                    <p class="hide">Copyright © 2021 Middle East Shipping Line, All rights reserved.</p>
                 </div>
                 <div class="footer-section f-section-2">
                     <a href="https://dejatec.com/">Developed By <span style="color:red;">Deja Technology</span></a>
@@ -239,4 +239,12 @@
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     @stack('scripts')
 </body>
+<style>
+@media print {
+    .search_row,
+    .hide {
+        display: none !important;
+        }
+    }
+</style>
 </html>

@@ -424,7 +424,7 @@
                                 </td>
                                 
                                 <td>
-                                    <input type="text" id="etaInput" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" requiredd>
+                                    <input type="text" id="etaInput" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" required>
                                     @error('qty')
                                     <div style="color: red;">
                                         {{$message}}
