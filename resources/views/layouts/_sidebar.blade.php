@@ -1,6 +1,6 @@
 <div class="sidebar-wrapper sidebar-theme">
 
-    <nav id="sidebar">
+    <nav id="sidebar" class="hide">
 
         <ul class="navbar-nav theme-brand flex-row  text-center">
             <li class="nav-item theme-logo">
@@ -393,3 +393,11 @@
 
     </nav>
 </div>
+<style>
+@media print {
+    .search_row,
+    .hide {
+        display: none !important;
+        }
+    }
+</style>

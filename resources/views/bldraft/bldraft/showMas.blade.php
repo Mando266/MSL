@@ -49,7 +49,7 @@
                                 <tr>
                                     <th rowspan="2" class="col-md-6 tableStyle" style=" height: 52px;">Consignee (full style and address) or Order </br></br>
                                         <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customerConsignee)->name }}</span>
-                                        <textarea class="tableStyle" name="consignee"  style="border-style: hidden; overflow: hidden; height: 52px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                        <textarea class="tableStyle" name="consignee"  style="border-style: hidden; overflow: hidden; height: 53px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
                                          {!! $blDraft->customer_consignee_details !!}
                                         </textarea>
                                     </th>
@@ -70,7 +70,7 @@
                                 <tr>
                                     <th rowspan="2" class="col-md-6 tableStyle" style=" height: 52px;">Notify Party (full style and address) </br></br>
                                     <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customerNotify)->name }}</span>
-                                    <textarea class="tableStyle" name="notify"  style="border-style: hidden; overflow: hidden; height: 52px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                    <textarea class="tableStyle" name="notify"  style="border-style: hidden; overflow: hidden; height: 53px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
                                     {!! $blDraft->customer_notifiy_details !!}
                                     </textarea>
                                     </th>
@@ -105,7 +105,7 @@
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                             </tr>
-                            
+                            @if($blDraft->blDetails->count() <= 4)
                             <tr>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden; border-right-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
@@ -119,7 +119,7 @@
                                 </td>
                                 <td class="col-md-4 tableStyle" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
-                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} {{ $bldetails->pack_type }} <br>
+                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} <br>
                                 @endforeach
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
@@ -129,17 +129,19 @@
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
+                                @if($bldetails->measurement != 0)
                                 {{ $bldetails->measurement }} <br>
+                                @endif
                                 @endforeach
                                 </td>
                             </tr>
-                            
+                            @endif
                             <tr>
                                 <td class="col-md-2 tableStyle text-center" style="border-right-style: hidden;"></td>
                                 <td class="col-md-2 tableStyle text-center" ></td>
-                                <td class="col-md-4 tableStyle text-center" ></td>
-                                <td class="col-md-2 tableStyle text-center" ></td>
-                                <td class="col-md-2 tableStyle text-center" ></td>
+                                <td class="col-md-4 tableStyle " >Total No. Of packs {{$packages}}</td>
+                                <td class="col-md-2 tableStyle text-center" >Total GW {{$gross_weight}}</td>
+                                <td class="col-md-2 tableStyle text-center" >@if($measurement != 0)Total  {{$measurement}} @endif</td>
                             </tr>
                         </tbody>
                     </table>
@@ -211,6 +213,55 @@ original Bills of Lading stated below right, all of this tenor and date.</td>
                             </tr>
                         </tbody>
                     </table>
+                    @if($blDraft->blDetails->count() > 4)
+                    <h5 class="text-center"><u>ATTACHED SHEET</u></h5>
+                    <table class="col-md-12 tableStyle" style="border-top-style: hidden; border-right-style: hidden; margin-bottom: 1rem;">
+                        <thead>
+                            <tr>
+                                <th class="col-md-4 tableStyle text-center" style="border-left-style: hidden; font-size: 9px;">BL NUMBER </th>
+                                <th class="col-md-4 tableStyle text-center" style="border-left-style: hidden;font-size: 9px;">VESSEL NAME </th>
+                                <th class="col-md-4 tableStyle text-center" style="border-left-style: hidden;font-size: 9px;">VOYAGE </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-md-4 tableStyle text-center" style="border-left-style: hidden;"></td>
+                                <td class="col-md-4 tableStyle text-center" style="border-left-style: hidden;">{{ optional($blDraft->voyage->vessel)->name }}</td>
+                                <td class="col-md-4 tableStyle text-center" style="border-left-style: hidden;">{{ optional($blDraft->voyage)->voyage_no }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="col-md-12 tableStyle" style="border-style: hidden;">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden; font-size: 9px;">CONTAINER</th>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden;font-size: 9px;">TYPE</th>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden;font-size: 9px;">SEAL No</th>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden;font-size: 9px;">PACKAGES</th>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden;font-size: 9px;">Measurement, m3</th>
+                                <th class="col-md-2 tableStyle" style="border-style: hidden;font-size: 9px;">GR WT(KGS)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($blDraft->blDetails as  $bldetails)
+                        <tr>
+                            <td class="col-md-2 tdstyle">{{ optional($bldetails->container)->code }}</td>
+                            <td class="col-md-2 tdstyle">{{ optional($blDraft->equipmentsType)->name }}</td>
+                            <td class="col-md-2 tdstyle">{{ $bldetails->seal_no }}</td>
+                            <td class="col-md-2 tdstyle">{{ $bldetails->packs }}</td>
+                            <td class="col-md-2 tdstyle">{{ $bldetails->measurement }}</td>
+                            <td class="col-md-2 tdstyle">{{ $bldetails->gross_weight }}</td>
+                        </tr>
+                        @endforeach
+                        
+                        </tbody>
+                    </table>
+                @endif
+                <div class="row">
+                        <div class="col-md-12 text-center">
+                <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Bl</button>
+                <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
+                </div>
     
 </div>
 @endsection
