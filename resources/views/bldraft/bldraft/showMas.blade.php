@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @section('content')
-
+<div class="widget-heading hide">
+                    <nav class="breadcrumb-two" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Bl Draft Confirmation</a></li>
+                            <li class="breadcrumb-item"></li>
+                        </ol> 
+                    </nav>
+                </div>
                 <div class="widget-content widget-content-area">
                     <div class="col-md-12 text-center">
                     </div>

@@ -4,7 +4,15 @@
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-one">
-
+                <div class="widget-heading hide">
+                    <nav class="breadcrumb-two" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
+                            <li class="breadcrumb-item"></li>
+                        </ol>
+                    </nav>
+                </div>
                 <div class="widget-content widget-content-area">
                 <div class="col-md-12 text-center">
                 <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">

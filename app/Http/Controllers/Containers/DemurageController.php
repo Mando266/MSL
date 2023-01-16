@@ -13,6 +13,7 @@ use App\Models\Master\Ports;
 use App\Models\Master\Country;
 use App\Models\Master\Currency;
 use App\Models\Containers\Bound;
+use App\Models\Master\ContainerStatus;
 use App\Models\Master\Terminals;
 use Illuminate\Support\Facades\Auth;
 use DB;
@@ -44,6 +45,7 @@ class DemurageController extends Controller
         $triffs = Triff::get();
         $currency = Currency::all();
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
+        $containerstatus = ContainerStatus::orderBy('id')->get();
         return view('containers.demurrage.create',[
             'terminals'=>$terminals,
             'countries'=>$countries,
@@ -52,6 +54,7 @@ class DemurageController extends Controller
             'ports'=>$ports,
             'triffs'=>$triffs,
             'currency'=>$currency,
+            'containerstatus'=>$containerstatus,
         ]);
     }
 
@@ -121,7 +124,8 @@ class DemurageController extends Controller
         $ports = Ports::where('company_id',$user->company_id)->orderBy('id')->get();
         $triffs = Triff::all();
         $currency = Currency::all();
-        $terminals = Terminals::where('company_id',$user->company_id)->all();
+        $terminals = Terminals::where('company_id',$user->company_id)->get();
+        $containerstatus = ContainerStatus::orderBy('id')->get();
         return view('containers.demurrage.edit',[
             'terminals'=>$terminals,
             'demurrage' => $demurrage,
@@ -131,16 +135,10 @@ class DemurageController extends Controller
             'ports'=>$ports,
             'triffs'=>$triffs,
             'currency'=>$currency,
+            'containerstatus'=>$containerstatus,
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Demurrage $demurrage)
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
@@ -156,6 +154,7 @@ class DemurageController extends Controller
             'validity_to' => $request->validity_to,
             'tariff_id' => $request->tariff_id,
             'is_storge' => $request->is_storge,
+            'container_status' => $request->container_status,
         ];
         $demurrage->update($input);
         $demurrage->createOrUpdatePeriod($request->period);
