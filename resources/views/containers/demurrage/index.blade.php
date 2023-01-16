@@ -74,6 +74,7 @@
                                             <th>validity from</th>
                                             <th>validity to</th>
                                             <th>Container Type/Size</th>
+                                            <th>Detention OR Storage</th>
                                             <th>period Details</th>
                                             {{-- <th>period</th>
                                             <th>calendar days</th>
@@ -89,6 +90,7 @@
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                             <td>{{{optional($item->containersType)->name}}}</td>
+                                            <td>{{$item->is_storge}}</td>
                                             {{-- <td>{{$item->period}}</td>
                                             <td>{{$item->number_off_dayes}}</td>
                                             <td>{{$item->rate}}</td> --}}
