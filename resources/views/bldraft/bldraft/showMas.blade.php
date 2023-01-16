@@ -119,7 +119,7 @@
                                 </td>
                                 <td class="col-md-4 tableStyle" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
-                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} <br>
+                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} {{ $bldetails->pack_type }} <br>
                                 @endforeach
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
@@ -129,7 +129,7 @@
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
-                                {{ $bldetails->net_weight }} <br>
+                                {{ $bldetails->measurement }} <br>
                                 @endforeach
                                 </td>
                             </tr>

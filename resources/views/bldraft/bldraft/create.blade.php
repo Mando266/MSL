@@ -20,7 +20,7 @@
                             <input type="hidden" value="{{$booking->ref_no}}" name="ref_no">
                             <input type="hidden" value="{{$booking->id}}" name="booking_id">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Shipper <span style="color: red;">*</span></label>
+                                <label for="customer_id">Shipping Customer<span style="color: red;">*</span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($customershipper as $item)
@@ -37,7 +37,7 @@
                                 @enderror
                             </div> 
                             <div class="form-group col-md-8" id="summernote">
-                            <label for="customer_id">Customer Shipper Details</label>
+                            <label for="customer_id">Shipping Customer Details</label>
                             @if($booking->customer_id != null)
                                     <textarea class="form-control"  name="customer_shipper_details"
                                     placeholder="Customer Shipper Details" autocomplete="off">Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}</textarea>
@@ -303,6 +303,7 @@
                                     <th class="text-center">Container</th>
                                         <th class="text-center">Seal No.s</th>
                                         <th class="text-center">Packs</th>
+                                        <th class="text-center">Packs Type</th>
                                         <th class="text-center">Description</th>
                                         <th class="text-center">Gross Weight Kgs</th>
                                         <th class="text-center">Net Weight Kgs</th>
@@ -323,11 +324,15 @@
                                   </select>
                                 </td>
                                 <td>
-                                    <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
+                                    <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" required>
                                 </td>
              
                                 <td>
                                     <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                </td>
+
+                                <td>
+                                    <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][pack_type]" class="form-control input"  autocomplete="off" placeholder="Packs Type" required>
                                 </td>
 
                                 <td>
@@ -343,7 +348,7 @@
                                 </td>
 
                                 <td>
-                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement" required>
+                                    <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement">
                                 </td>
                             </tr>
                             @endforeach
@@ -361,13 +366,15 @@
                                   </select>
                                 </td>
                                 <td>
-                                    <input type="text" id="seal_no" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S">
+                                    <input type="text" id="seal_no" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" required>
                                 </td>
              
                                 <td>
                                     <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
-
+                                <td>
+                                    <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][pack_type]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
+                                </td>
                                 <td>
                                     <input type="text" id="description" name="blDraftdetails[{{ $key }}][description]" class="form-control input"  autocomplete="off" placeholder="Description">
                                 </td>
