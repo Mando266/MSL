@@ -2,20 +2,15 @@
 
 namespace App\Exports;
 
-use App\Filters\Containers\ContainersIndexFilter;
-use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
+use App\Models\Master\ContainerStatus;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
 
 class MovementsExportSearch implements FromCollection,WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */  
-    // use Exportable;
 
     public function headings(): array
     {
@@ -60,6 +55,7 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                 $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
                 $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
+                $movement->container_status = ContainerStatus::where('id',$movement->container_status)->pluck('name')->first();
             }
         // dd($movements);
         return $movements;
