@@ -154,8 +154,11 @@ class BookingController extends Controller
                 'booking_confirm'=>$request->input('booking_confirm'), 
                 'notes'=>$request->input('notes'), 
             ]);
-
+                $has_gate_in = 0;
         foreach($request->input('containerDetails',[]) as $details){
+            if($details['container_id'] != null && $details['container_id'] != 000){
+                $has_gate_in = 1;
+            }
             BookingContainerDetails::create([
                 'seal_no'=>$details['seal_no'],
                 'qty'=>$details['qty'],
@@ -165,6 +168,8 @@ class BookingController extends Controller
                 'haz'=>$details['haz'],
             ]);
         }
+
+        $booking->has_gate_in = $has_gate_in;
         $booking = $booking->load('loadPort');
         $bookingCounter = BookingRefNo::where('company_id',$user->company_id)->where('port_of_load_id',$booking->load_port_id)->first();
         if(!isset($bookingCounter)){
@@ -195,6 +200,30 @@ class BookingController extends Controller
         $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
         
         return view('booking.booking.showShippingOrder',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
+    public function showGateIn($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        
+        return view('booking.booking.showGateIn',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
+    public function showGateOut($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        
+        return view('booking.booking.showGateOut',[
             'booking'=>$booking,
             'firstVoyagePort'=>$firstVoyagePort,
             'secondVoyagePort'=>$secondVoyagePort

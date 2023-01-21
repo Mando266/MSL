@@ -125,7 +125,7 @@
                                 <select class="selectpicker form-control" id="vessel_id" name="vessel_id" data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -140,7 +140,7 @@
                                 <select class="selectpicker form-control" id="vessel_id"  data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -149,7 +149,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <input type="text" class="form-control" id="vessel" name="vessel_id"> 
+                            <input type="hidden" class="form-control" id="vessel" name="vessel_id"> 
                             @endif
                         </div>
                         

@@ -14,10 +14,10 @@
                         </nav>
                         </br>
                         @if(Session::has('stauts'))
-                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('stauts') }}</p>
+                        <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('stauts') }}</p>
                         @endif
                         @if(Session::has('message'))
-                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+                        <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
                         @endif
                         @permission('Movements-List')
                         <div class="row">
@@ -198,7 +198,7 @@
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{{optional($item->container->containersOwner)->name}}}</td>
                                             <td>{{$item->movement_date}}</td>
-                                            <td>{{optional($item->movementcode->containerstock)->name}}</td>
+                                            <td>{{optional($item->movementcode->containerstatus)->name}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
                                             <td>{{$item->port_location_id}}</td>
@@ -247,7 +247,6 @@
     </div>
 @endsection
 @push('scripts')
-
 <script>
 function unlock(){
     document.getElementById('buttonSubmit').removeAttribute("disabled");

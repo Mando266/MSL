@@ -84,7 +84,7 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
          
         if($containerId == null){
-            return Session::flash('stauts', 'cannot container number be null please check excel sheet');
+            return Session::flash('stauts', 'Cannot Container Number be Null Please Check Excel Sheet');
         }
 
         if(in_array($movementCode,$nextMoves)){

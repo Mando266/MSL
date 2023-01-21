@@ -104,9 +104,11 @@
                                         <th>qty</th>
                                         <th>Booking Creation</th>
                                         <th>Booking Status</th>
-                                        <th class='text-center' style='width:100px;'></th>
-                                        <th class='text-center' style='width:100px;'></th>
+                                        <th class='text-center' style='width:100px;'>add bl</th>
                                         <th>Shipping Order</th>
+                                        <th>Gate In</th>
+                                        <th>Gate Out</th>
+                                        <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -144,6 +146,61 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
+
+                                            <td class="text-center">
+                                                 <ul class="table-controls">
+                                                 @if($item->booking_confirm == "1")
+                                                    @permission('Booking-Create')
+                                                        @if($item->has_bl == 0)
+                                                            <li>
+                                                                <a href="{{route('bldraft.create',['booking_id'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                    <i class="fas fa-plus text-primary"></i>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endpermission
+                                                @endif
+                                                </ul>
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('Booking-Show')
+                                                    <ul class="table-controls">
+                                                    @if($item->booking_confirm == 1)
+                                                        <li>
+                                                            <a href="{{route('booking.showShippingOrder',['booking'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('Booking-Show')
+                                                    <ul class="table-controls">
+                                                    @if($item->booking_confirm == 1 && $item->has_gate_in == 1)
+                                                        <li>
+                                                            <a href="{{route('booking.showGateIn',['booking'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('Booking-Show')
+                                                    <ul class="table-controls">
+                                                    @if($item->booking_confirm == 1)
+                                                        <li>
+                                                            <a href="{{route('booking.showGateOut',['booking'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                  @if($item->certificat == !null)
@@ -177,34 +234,6 @@
                                                     </li>
                                                     @endpermission
                                                 </ul> 
-                                            </td>
-                                            <td class="text-center">
-                                                 <ul class="table-controls">
-                                                 @if($item->booking_confirm == "1")
-                                                    @permission('Booking-Create')
-                                                        @if($item->has_bl == 0)
-                                                            <li>
-                                                                <a href="{{route('bldraft.create',['booking_id'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                                    <i class="fas fa-plus text-primary"></i>
-                                                                </a>
-                                                            </li>
-                                                        @endif
-                                                    @endpermission
-                                                @endif
-                                                </ul>
-                                            </td>
-                                            <td class="text-center">
-                                                @permission('Booking-Show')
-                                                    <ul class="table-controls">
-                                                    @if($item->booking_confirm == 1)
-                                                        <li>
-                                                            <a href="{{route('booking.showShippingOrder',['booking'=>$item->id])}}" target="_blank">
-                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    </ul>
-                                                @endpermission
                                             </td>
                                         </tr>
                                     @empty

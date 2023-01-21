@@ -31,7 +31,6 @@
                         </tr>
                     </thead>
                 </table>
-                
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>

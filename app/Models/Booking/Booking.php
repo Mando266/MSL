@@ -84,9 +84,12 @@ class   Booking extends Model implements PermissionSeederContract
 
     public function createOrUpdateContainerDetails($inputs)
     {
+        $has_gate_in = 0;
         if (is_array($inputs) || is_object($inputs)){
         foreach($inputs as $input){
-            
+            if($input['container_id'] != null && $input['container_id'] != 000){
+                $has_gate_in = 1;
+            }
             $input['booking_id'] = $this->id;
 
             if( isset($input['id']) ){
@@ -97,6 +100,8 @@ class   Booking extends Model implements PermissionSeederContract
                 BookingContainerDetails::create($input);
             }
         }
+        $this->has_gate_in = $has_gate_in;
+        $this->save();
     }
  }
 }
