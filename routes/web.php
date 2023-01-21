@@ -87,6 +87,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
     Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
+    Route::post('importContainers', 'ImportExportController@importContainers')->name('importContainers');
+    Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
+
 
     /*
     |-------------------------------------------
@@ -109,6 +112,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('booking','BookingController');
         Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
         Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
+        Route::get('showGateIn/{booking}',[BookingController::class,'showGateIn'])->name('booking.showGateIn');
+        Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
     });
     /*
     |-------------------------------------------

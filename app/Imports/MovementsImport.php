@@ -84,22 +84,22 @@ class MovementsImport implements ToModel,WithHeadingRow
         
         // Check same move type
         if(  $row['container_type_id'] != $moveType){
-        return session()->flash('message',"This Container Type: {$containertype} must be same as Movements container type ");
+        return session()->flash('message',"This Container Type: {$containertype} Must be Same as Movements Container Type ");
         }
 
         // Check same move type
         if(  $row['vessel_id'] == null){
-            return session()->flash('message',"you must enter a ve");
+            return session()->flash('message',"You Must Enter a Vessel No");
         }
 
         $movementdublicate  = Movements::where('container_id',$row['container_id'])->where('movement_id',$row['movement_id'])->where('movement_date',$row['movement_date'])->first();
         
         if($containerId == null){
-            return Session::flash('stauts', 'cannot container number be null please check excel sheet');
+            return Session::flash('stauts', 'Cannot Container Number be Null please check Excel Sheet');
         }
 
         if($movementdublicate != null){
-            return Session::flash('message', 'this container number: '.$containerId.' with this movement code: '.$movementCode.' already exists!');
+            return Session::flash('message', 'This Container Number: '.$containerId.' With This Movement Code: '.$movementCode.' Already Exists!');
         }
         $user = Auth::user();
         if(in_array($movementCode,$nextMoves)){

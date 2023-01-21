@@ -2,7 +2,7 @@
 @section('content')
 <div class="layout-px-spacing" style="background-color: #fff;">
     <div class="row layout-top-spacing">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+        <div>
             <div class="widget widget-one">
                 <div class="widget-heading hide">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
@@ -22,10 +22,10 @@
                         
                             <tbody>
                             <tr>
-                                <td style="height: 54px;"></td>
+                                <td style="height: 45px;"></td>
                             </tr>
                                 <tr>
-                                    <th class="text-center thstyle underline">إذن شحن - Order Shipping</th>
+                                    <th class="text-center thstyle underline">  Shipping Order - إذن شحن</th>
                                 </tr>
                             </tbody>
                         </table>
@@ -37,7 +37,7 @@
                 $containerCount = 0;
                 $firstContainerDetail = $booking->bookingContainerDetails->first();
                 $containerType = optional($firstContainerDetail->containerType)->name;
-                $haz = optional($firstContainerDetail->haz)->name;
+                $haz = $firstContainerDetail->haz;
                 foreach($booking->bookingContainerDetails as $detail){
                     $containerCount = $containerCount + $detail->qty;
                     $containerType = optional($detail->containerType)->name;
@@ -48,53 +48,53 @@
                         <tr>
                             <td class="col-md-4 tableStyle underline" >IMO No.</td>
                             <td class="col-md-4 tableStyle text-right underline" >560-161-094</td>
-                            <td class="col-md-4 tableStyle text-right underline" > الرقم الضريبي</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" > الرقم الضريبي</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Booking Ref.</td>
                             <td class="col-md-4 tableStyle text-center" >{{ $booking->ref_no }}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >رقم الحجز</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >رقم الحجز</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Alexandria on</td>
-                            <td class="col-md-4 tableStyle text-center" >{{ $mytime->toDateTimeString() }}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >الأسكندرية في</td>
+                            <td class="col-md-4 tableStyle text-center" >{{ $mytime->format("D, F, j") }}</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الأسكندرية في</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Please receive on M/V</td>
                             <td class="col-md-4 tableStyle text-center" >{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >الرجاء الإستلام على الباخرة / رحلة</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الرجاء الإستلام على الباخرة / رحلة</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >ETA</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($firstVoyagePort)->eta}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >المتوقع وصولها في</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >المتوقع وصولها في</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Shipper</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($booking->customer)->name}} <br>
                             {{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >الشاحن</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الشاحن</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >POL</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($booking->loadPort)->name}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >ميناء الشحن</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >ميناء الشحن</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >FPOD</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($booking->dischargePort)->name}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >ميناء الوصول</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">ميناء الوصول</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Numbers of</td>
                             <td class="col-md-4 tableStyle text-center" >{{$containerCount}} X {{$containerType}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >عدد الحاويات</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">عدد الحاويات</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Cargo</td>
                             <td class="col-md-4 tableStyle text-center" >{{$booking->commodity_description}}</td>
-                            <td class="col-md-4 tableStyle text-right underline" >وصف البضاعة / وزن</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">وصف البضاعة / وزن</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" ></td>
@@ -106,11 +106,34 @@
                 <table class="col-md-12 tableStyle" >
                     <tbody>
                         <tr>
-                            <td class="col-md-6 tableStyle underline" style="border: 1px solid #000 !important;"></td>
-                            <td class="col-md-6 tableStyle text-right" style="border: 1px solid #000 !important;"></td>
+                            <td class="col-md-6 tableStyle" style="border: 1px solid #000 !important; font-size: 12px;">
+                                1-Shippers of the herein mentioned goods are wanted that any remarks appearing on the mate’s receipt concerning of the cargo will invariably be reproduced on the respective bill of lading and no guarantee in place hereof will be accepted.
+                                2-The shippers are responsible for the stowing, lashing, weight and cargo distribution inside the container (s), provided that the weight of 20” container doesn’t exceed 18 tons and the 40” container doesn’t exceed 25 tons and incase cargo to be stuffed inside terminal, shipper has to advice the shipping agency 72 hours before getting cargo.
+                                3-The shippers are obliged to pay double freight in case of increase of weight and/or volume as previously mentioned, the agent has the right not to deliver the B/L unless the double freight is collected. The carrier/shipping agency has the right to claim the settlement of the said increase in freight.
+                                4-This shipping order is valid for 6 days for the allotment of containers from date mentioned above.
+                                5-Container is a shipping agency’s equipment, demurrage of delay should be collected according to the following:
+                                a) 7 calendar days free time from date of withdrawal of the empty container. 
+                                b) from 8 to 15 days: USD 20 for 20’ container & USD 40 for 40’ container.      
+                                c) more than 15 days: USD 20 for 20’ container & USD 40 for 40’ container.
+                                6-the shipper has to specify quantity and weight stuffed in each container before issuing the bill of lading and order to comply with the customs regulations the following information must be supplied by the shippers within 24 hours after stuffing.
+                                A. Customs certificate No.: ــــــــــــــــــ 
+                                B. Customs Declaration No.: ــــــــــــــــــ 
+                            </td>
+                            <td class="col-md-6 tableStyle text-right" style="border: 1px solid #000 !important; font-size: 14px;  direction: rtl; letter-spacing: inherit;">
+                                1-يوافق شاحنو البضائع المبينه في اذن الشحن ان يدرج في البوليصه الاصليه الملاحظات الوارده على ايصال كبير ضباط الباخره عن حالة الشحنه بدون اي تغيير ولا يقبل اي ضامن عوضا عن ذلك
+                                2-العميل مسئول عن الوزن التستيف وتوزيع الاحمال وتربيط البضاعه بداخل الحاويه/ الحاويات بحيث لا يتعدى الوزن 18 طن للحاويه 20 قدم , 25 طن للحاويه 40 قدم وفي حالة التستيف داخل الميناء يشترط اخطار التوكيل قبل احضار البضاعه بـ72 ساعه.
+                                3-يلتزم الشاحن بسداد نولونا مضاعفا في حالة وجود زياده في الوزن و/ أو الحجم عن تلك المبينه عاليه ويجوز للوكيل عدم تسليم سندات الشحن الا بعد سداد النولون المضاعف ويجوز للناقل / التوكيل ان يطالب المرسل اليه بسداد .تلك الزياده 
+                                4-هذا الاذن يعتبر لاغيا اذا لم يتم تخصيص الحاويه خلال ستة ايام من التاريخ المدون اعلاه 
+                                5-الحاوية تعتبر معده من معدات التوكيل الملاحي تحصل عليها غرامات في حالة التأخير طبقا للاتي: أ-لا تحصل غرامه على الحاويه في الخمس ايام الاولى من تاريخ سحبها. ب-بدءا من اليوم الثامن حتى الثاني عشر يحصل 20 دولار /20" قدم – و 40 دولار /40" قدم ج-فيما بعد اليوم الثالث عشر يحصل 40 دولار 20" قدم – و 80 دولار/ 40" قدم 
+                                6- يتحتم على الشاحنين تحديد العدد والوزن للبضاعه المستفه داخل كل حاويه على حدى. 
+                                7-قبل اصدار بوليصة الشحن والعمل باللوائح الجمركيه يجب على الشاحنين تقديم البيانات التاليه خلال 24 ساعه بعد التستيف. 
+                                أ-قسيمة الجمرك رقم : ــــــــــــــ 
+                                ب – الشهاده الجمركيه رقم : ــــــــــــــــ 
+                                8-الخط الملاحي /الوكيل غير مسئول عن تحميل اي مصاريف تخزين ناجمه عن تأخر وصول/ سفر الباخره 9- يشترط وصول الباخره بسلام وبعد موافقة الربان كبير الضباط
+                            </td>
                         </tr>
                         <tr>
-                            <td class="col-md-6 tableStyle text-center" style="border: 1px solid #000 !important;" colspan="2"></td>
+                            <td class="col-md-6 tableStyle text-center" style="border: 1px solid #000 !important; font-size: 16px; height: 1px;" colspan="2"> للتوكيل الحق في عدم شحن الحاويه في حالة عدم تسليم إذن الشحن قبل وصول الباخره بـ 24 ساعه</td>
                         </tr>
                         <tr>
                             <td class="col-md-6 tableStyle"></td>
@@ -121,15 +144,15 @@
                             <td class="col-md-6 tableStyle text-right underline">ملحوظة</td>
                         </tr>
                         <tr>
-                            <td class="col-md-6 tableStyle" style="border-bottom-style: 1px solid #000 !important;">The shipping agency has the right not to ship the container in case
+                            <td class="col-md-6 tableStyle" style="border-bottom-style: 1px solid #000 !important; font-size: 14px;">The shipping agency has the right not to ship the container in case
 of non delivery of the shipping order before 24 hours from vessel
 arrival.</td>
-                            <td class="col-md-6 tableStyle text-right">للتوكيل الحق في عدم شحن الحاويه في حالة عدم تسليم إذن الشحن قبل وصول الباخره بـ 24
+                            <td class="col-md-6 tableStyle text-right" style="font-size: 14px;">للتوكيل الحق في عدم شحن الحاويه في حالة عدم تسليم إذن الشحن قبل وصول الباخره بـ 24
                             ساعه</td>
                         </tr>
                         <tr>
                             <td class="col-md-6 tableStyle"></td>
-                            <td class="col-md-6 tableStyle text-right underline"></td>
+                            <td class="col-md-6 tableStyle text-right"></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-bottom: solid;"></td>
@@ -159,24 +182,23 @@ arrival.</td>
         }
     }
     .tableStyle {
-        font-size: 20px !important;
-        font-weight: bolder !important;
+        font-size: 22px;
+        font-weight: 500 !important;
         border: none;
         margin-bottom: 1rem;
         height: 40px;
         color: black;
-        text-transform: uppercase;
         padding: 0 .75rem;
     }
     .underline{
         text-decoration: underline;
     }
     .thstyle {
-        background-color: #80808061 !important;
-        color: #000 !important;
-        height: 50px;
+        background-color: gray !important;
+        color: #fff !important;
+        height: 35px;
         border: 1px solid #000 !important;
-        font-size: 16px !important;
+        font-size: 25px !important;
         font-weight: bolder !important;
     }
 </style>

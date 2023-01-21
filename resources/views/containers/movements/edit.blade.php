@@ -95,10 +95,10 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="vessel_idInput">Vessel Name</label>
-                                <select class="selectpicker form-control" id="vessel_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                                <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" data-code="{{$item->name}}"  {{$item->name == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -110,10 +110,15 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="voyage_idInput">Voyage No</label>
-                                <input type="text" class="form-control" id="voyage_idInput" name="voyage_id" value="{{old('voyage_id',$movement->voyage_id)}}"
-                                    placeholder="Voyage No" autocomplete="off">
+                        <div class="form-group col-md-4">
+                            <label for="">Voyage No</label>
+                                <select class="form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select</option>
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>    
+                                    @endforeach
+                                </select>
                                 @error('voyage_id')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -247,5 +252,22 @@
             function newDoc() {
                 setTimeout(function(){window.history.go(-1)});
             }
+</script>
+<script>
+         $(function(){
+                    let vessel = $('#vessel_id');
+                    $('#vessel_id').on('change',function(e){
+                        let value = e.target.value;
+                        let response =    $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data){
+                            let voyages = data.voyages || '';
+                            let list2 = [];
+                            for(let i = 0 ; i < voyages.length; i++){
+                                list2.push(`<option value='${voyages[i].voyage_no}'>${voyages[i].voyage_no} </option>`);
+                            }
+                    let voyageno = $('#voyage');
+                    voyageno.html(list2.join(''));
+                        });
+                    });
+                });
 </script>
 @endpush

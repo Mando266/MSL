@@ -19,10 +19,11 @@ class ContinersController extends Controller
         $this->authorize(__FUNCTION__,Containers::class);
         
             $container = Containers::filter(new ContainersIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30);
+            $exportContainers = Containers::filter(new ContainersIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $containers = Containers::where('company_id',Auth::user()->company_id)->get();
             $container_types = ContainersTypes::orderBy('id')->get();
             $container_ownership = ContinerOwnership::orderBy('id')->get();
-
+            session()->flash('containers',$exportContainers);
         return view('master.containers.index',[
             'items'=>$container,
             'containers'=>$containers,
@@ -53,7 +54,13 @@ class ContinersController extends Controller
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
-            ]);
+            ],[
+            'code.regex'=>'Invalid Container Number Format', 
+            'code.min'=>'Invalid Container Number Format', 
+            'code.max'=>'Invalid Container Number Format', 
+            'code.required'=>'Container Number Field is Required', 
+
+        ]);
         $user = Auth::user();
             
         $CodeDublicate  = Containers::where('company_id',$user->company_id)->where('code',$request->code)->first();
@@ -100,6 +107,11 @@ class ContinersController extends Controller
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
+        ],[
+            'code.regex'=>'Invalid Container Number Format', 
+            'code.min'=>'Invalid Container Number Format', 
+            'code.max'=>'Invalid Container Number Format',
+            'code.required'=>'Container Number Field is Required',  
         ]);
         $user = Auth::user();
             

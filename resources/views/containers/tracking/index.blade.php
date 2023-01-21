@@ -13,6 +13,7 @@
                             </ol>
                         </nav>
                     </br>
+                    
                     <!-- <div class="form-row">
                         <div class="form-group col-md-2">
                             <label style="color: #1b55e2"> BL NO</label><input style='border:none; background-color: #ffffff !important;' class="form-control" value="{{ request()->input('bl_no')}}" disabled>
@@ -22,8 +23,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="ContainerInput">Container Number </label>
-                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
+                                 title="{{trans('forms.select')}}" multiple="multiple">
                                     @foreach ($containers as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('container_id', request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
@@ -215,7 +216,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                    </div>
                 </div>
             </div>
         </div>

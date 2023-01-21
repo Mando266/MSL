@@ -12,14 +12,34 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                        @permission('Containers-Create')
+                        </br>
+
+                        @if(Session::has('message'))
+                        <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
+                        @endif
                         <div class="row">
-                            <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('containers.create')}}" class="btn btn-primary">Add New Container</a>
+                            <div class="col-md-12 text-right mb-6">
+                                @permission('Containers-List')
+                                    <a class="btn btn-warning" href="{{ route('export.container') }}">Export</a>
+                                @endpermission
+                                @permission('Containers-Create')
+                                    <a href="{{route('containers.create')}}" class="btn btn-primary">Add New Container</a>
+                                @endpermission
                             </div>
-                        </div>
-                        @endpermission
-                    </div>
+                                </br>
+                                </br>
+                            <div class="col-md-12 text-right mb-6">
+                                @permission('Containers-List')
+                                <form action="{{ route('importContainers') }}" method="POST" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                                        <input type="file" name="file" onchange="unlock();">
+                                    <button  id="buttonSubmit" class="btn btn-success  mt-3" disabled>Import</button>
+                                </form>
+                                @endpermission
+                            </div>
+                        </div>  
+                            </br>
+                            </br>                      
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
@@ -171,5 +191,15 @@
           });
       });
   
+</script>
+<script>
+function unlock(){
+    document.getElementById('buttonSubmit').removeAttribute("disabled");
+}
+</script>
+<script>
+function unlockupdate(){
+    document.getElementById('updatebuttonSubmit').removeAttribute("disabled");
+}
 </script>
 @endpush

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BookingExport;
+use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
+use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
 use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
@@ -42,6 +44,15 @@ class ImportExportController extends Controller
     public function exportQuotation() 
     {
         return Excel::download(new QuotationExport, 'Quotations.xlsx');
+    }
+    public function exportContainers() 
+    {
+        return Excel::download(new ContainersExport, 'Containers.xlsx');
+    }
+    public function importContainers() 
+    {
+        Excel::import(new ContainersImport,request()->file('file'));
+        return back();
     }
     public function exportCustomers() 
     {
