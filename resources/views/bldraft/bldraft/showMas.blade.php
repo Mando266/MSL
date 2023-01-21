@@ -256,7 +256,7 @@ original Bills of Lading stated below right, all of this tenor and date.</td>
                             <td class="col-md-2 tdstyle">{{ optional($bldetails->container)->code }}</td>
                             <td class="col-md-2 tdstyle">{{ optional($blDraft->equipmentsType)->name }}</td>
                             <td class="col-md-2 tdstyle">{{ $bldetails->seal_no }}</td>
-                            <td class="col-md-2 tdstyle">{{ $bldetails->packs }}</td>
+                            <td class="col-md-2 tdstyle">{{ $bldetails->packs }} - {{ $bldetails->pack_type }}</td>
                             <td class="col-md-2 tdstyle">{{ $bldetails->measurement }}</td>
                             <td class="col-md-2 tdstyle">{{ $bldetails->gross_weight }}</td>
                         </tr>

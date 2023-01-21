@@ -77,7 +77,7 @@ class BookingController extends Controller
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id',Auth::user()->company_id)->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->get();
         return view('booking.booking.create',[
             'ffw'=>$ffw,
             'containers'=>$containers,
@@ -266,7 +266,7 @@ class BookingController extends Controller
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id',Auth::user()->company_id)->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->get();
 
         return view('booking.booking.edit',[
             'booking_details'=>$booking_details,

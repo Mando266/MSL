@@ -22,18 +22,20 @@
                         @permission('Movements-List')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
-                            @if(!$items->isEmpty())
-                                        <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                        'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
-                            @endif
-                        @endpermission
-                        @permission('Movements-List')
-                                <a class="btn btn-warning" href="{{ route('export.all') }}">Export All Data</a>
-                        @endpermission
-                        @permission('Movements-Create')
+                            <a href="{{route('containerRefresh')}}" class="btn btn-success">Refresh Container Status</a>
 
-                                <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
-                        @endpermission
+                                @if(!$items->isEmpty())
+                                    <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
+                                @endif
+                                @endpermission
+                                @permission('Movements-List')
+                                        <a class="btn btn-warning" href="{{ route('export.all') }}">Export All Data</a>
+                                @endpermission
+                                @permission('Movements-Create')
+
+                                        <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
+                                @endpermission
 
                             </div>
                         </div>

@@ -131,16 +131,53 @@ Route::group(['middleware' => 'auth'], function () {
     | Manual Updates
     |--------------------------------------------
     */
-    // Route::get('/update/manual',function (){
-    //     // $movements = Movements::where('container_status',2)->orderbyDesc('created_at')->groupBy('container_id')->get()->pluck('container_id');
-    //     $movements = Movements::where('container_status',1)->orderbyDesc('created_at')->first();
-    //     // foreach($movements as $id){
-    //     //     $container = Containers::where('id',$id)->first();
-    //     //     $container->update(['status'=>2]);
-    //     // }
-    //     $containers = Containers::where('status',1)->get();
-    //     dd($movements);
-    // });
+    Route::get('/update/manual',function (){
+        $movements = Movements::orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                        
+            $new = $movements;
+            $new = $new->groupBy('movement_date');
+            
+            foreach($new as $key => $move){
+                $move = $move->sortByDesc('movementcode.sequence');
+                $new[$key] = $move;
+            }
+            $new = $new->collapse();
+            
+            $movements = $new;
+            $filteredData = $movements->unique('container_id');
+            foreach($filteredData as $key => $move){
+                // Get All movements and sort it and get the last movement before this movement 
+                $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                            
+                $new = $tempMovements;
+                $new = $new->groupBy('movement_date');
+                
+                foreach($new as $k => $move){
+                    $move = $move->sortByDesc('movementcode.sequence');
+                    $new[$k] = $move;
+                }
+                $new = $new->collapse();
+                
+                $tempMovements = $new;
+                $lastMove = $tempMovements->first();
+                // End Get All movements and sort it and get the last movement before this movement 
+                if($lastMove->container_status == 1){
+                    $container = Containers::where('id',$lastMove->container_id)->first();
+                    $container->update(['status'=>$lastMove->container_status]);
+                }elseif($lastMove->container_status == 2 && $lastMove->movementcode->containerstock->code == "NOT AVAILABLE"){
+                    $container = Containers::where('id',$lastMove->container_id)->first();
+                    $container->update(['status'=>1]);
+                }else{
+                    $container = Containers::where('id',$lastMove->container_id)->first();
+                    $container->update(['status'=>$lastMove->container_status]);
+                }
+                
+                // dd($lastMove);
+            }
+        // $movements = Movements::where('container_status',2)->orderbyDesc('created_at')->groupBy('container_id')->get()->pluck('container_id');
+        // $movements = Movements::where('container_status',1)->orderbyDesc('created_at')->first();
+        return redirect()->route('movements.index')->with('success',"CONTAINERS UPDATED SUCCESSFULLY");
+    })->name('containerRefresh');
 });
 Auth::routes(['register' => false]);
 

@@ -65,7 +65,7 @@ class BlDraftController extends Controller
         //dd($booking);
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
@@ -201,7 +201,7 @@ class BlDraftController extends Controller
         $booking = Booking::findOrFail(request('booking_id'));
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
