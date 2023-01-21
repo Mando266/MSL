@@ -100,12 +100,21 @@
                             </div>
                         </div>
                         <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label for="vessel_port_idInput">Vessel Name</label>
+                                <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($vessels as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id',request()->input('vessel_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="form-group col-md-3">
                             <label for="">Voyage No</label>
                                 <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} - {{{optional($item->vessel)->name}}}</option>
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -132,16 +141,6 @@
                                         @endif
                                     @endforeach
                                 </select> 
-                            </div>
-                            
-                            <div class="form-group col-md-3">
-                                <label for="BookingInput">Container Status </label>
-                                <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
-                                title="{{trans('forms.select')}}">
-                                    @foreach ($containerstatus as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_status',request()->input('container_status')) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div> 
 
@@ -176,7 +175,7 @@
                                         <th>movement code</th>
                                         <th>Ownership</th>
                                         <th>movement date</th>
-                                        <th>stock status</th>
+                                        <th>movement status</th>
                                         <th>bl no</th>
                                         <th>VSL/VOY</th>
                                         <th>ACTIVITY LOCATION</th>

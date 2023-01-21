@@ -252,13 +252,14 @@ class MovementController extends Controller
             $move->free_time_origin = $lastMove->free_time_origin;
         }
         
-        // End of Export Movements
+        // End of Export Movements 
 
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
+        $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
         session()->flash('items',$exportMovements);
         if(count($temp) != 1){
@@ -272,6 +273,8 @@ class MovementController extends Controller
                 'ports'=>$ports,
                 'voyages'=>$voyages,
                 'containersMovements'=>$containersMovements,
+                'vessels'=>$vessels,
+
             ]);
         }else{
             
