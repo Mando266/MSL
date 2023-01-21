@@ -4,6 +4,8 @@ use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
+use App\Models\Containers\Movements;
+use App\Models\Master\Containers;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -124,6 +126,21 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('bldraft','BlDraftController');
         Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
     });
+    /*
+    |-------------------------------------------
+    | Manual Updates
+    |--------------------------------------------
+    */
+    // Route::get('/update/manual',function (){
+    //     // $movements = Movements::where('container_status',2)->orderbyDesc('created_at')->groupBy('container_id')->get()->pluck('container_id');
+    //     $movements = Movements::where('container_status',1)->orderbyDesc('created_at')->first();
+    //     // foreach($movements as $id){
+    //     //     $container = Containers::where('id',$id)->first();
+    //     //     $container->update(['status'=>2]);
+    //     // }
+    //     $containers = Containers::where('status',1)->get();
+    //     dd($movements);
+    // });
 });
 Auth::routes(['register' => false]);
 

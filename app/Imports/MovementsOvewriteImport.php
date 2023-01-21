@@ -82,7 +82,8 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
-         
+        $row['container_status'] = ContainersMovement::where('id',$row['movement_id'])->pluck('container_status_id')->first();
+
         if($containerId == null){
             return Session::flash('stauts', 'Cannot Container Number be Null Please Check Excel Sheet');
         }

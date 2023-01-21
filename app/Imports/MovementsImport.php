@@ -77,14 +77,19 @@ class MovementsImport implements ToModel,WithHeadingRow
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
         $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
-        $moveType = $movements->first()->container_type_id;
+        
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
+        $row['container_status'] = ContainersMovement::where('id',$row['movement_id'])->pluck('container_status_id')->first();
         
-        // Check same move type
-        if(  $row['container_type_id'] != $moveType){
-        return session()->flash('message',"This Container Type: {$containertype} Must be Same as Movements Container Type ");
+        
+        if($movements->first() != null){
+            $moveType = $movements->first()->container_type_id;
+            // Check same move type
+            if(  $row['container_type_id'] != $moveType){
+            return session()->flash('message',"This Container Type: {$containertype} Must be Same as Movements Container Type ");
+            }
         }
 
         // Check same move type
