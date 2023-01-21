@@ -256,7 +256,7 @@
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
                                 title="{{trans('forms.select')}}">
                                     @foreach ($containerstatus as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('container_status') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('container_status') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('container_status')
