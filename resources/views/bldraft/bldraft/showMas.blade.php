@@ -45,7 +45,7 @@
                                     {{ old('shipper',$blDraft->customer_shipper_details) }}
                                     </textarea>
                                 </th>
-                                <th class="col-md-6 tableStyle " colspan="2" > <h3 style="font-weight: 900;">SEA WAYBILL</h3><br>
+                                <th class="col-md-6 tableStyle " colspan="2" > <h3 style="font-weight: 900;"></h3><br>
                                 <div class="col-md-12 text-center">
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 204px;" alt="logo">
                                 </div>
@@ -127,7 +127,7 @@
                                 </td>
                                 <td class="col-md-4 tableStyle" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">
                                 @foreach($blDraft->blDetails as  $bldetails)
-                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} <br>
+                                &nbsp &nbsp &nbsp{{ $bldetails->packs }} - {{ $bldetails->pack_type }}<br>
                                 @endforeach
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="font-size: 16px; height: 90px; border-top-style: hidden; padding-top: unset; padding-bottom: unset; border-bottom-style: hidden;">

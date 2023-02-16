@@ -28,7 +28,7 @@ class QuotationsController extends Controller
         $this->authorize(__FUNCTION__,Quotation::class);
 
             $quotations = Quotation::filter(new QuotationIndexFilter(request()))->where('discharge_agent_id',Auth::user()->agent_id)->where('company_id',Auth::user()->company_id)->orderBy('id','desc')->paginate(30);
-            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','status')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
+            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','status','principal_name')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
             $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();

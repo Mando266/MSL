@@ -25,7 +25,7 @@
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="Refrance">Refrance Number </label>
+                                <label for="Refrance">BOOKING REF NO</label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($bookingNo as $item)
@@ -44,6 +44,15 @@
                                     </select>
                             </div>
                             <div class="form-group col-md-3">
+                                    <label for="ffw_id">Fright Forwarder</label>
+                                    <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                        @foreach ($ffw as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',request()->input('ffw_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="place_of_acceptence_id">Place Of Acceptence</label>
                                 <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -52,7 +61,9 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
+                        </div>
+                        <div class="form-row">
+                        <div class="form-group col-md-3">
                                 <label for="place_of_delivery_id">Place Of Delivery</label>
                                 <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -66,10 +77,24 @@
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Principal">Principal Name  </span></label>
+                                <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($line as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('principal_name',request()->input('principal_name')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('principal_name')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
@@ -89,15 +114,14 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Quotation no</th>
+                                        <!-- <th>Quotation no</th> -->
                                         <th>Booking ref no</th>
                                         <th>Shipper</th>
                                         <th>Forwarder</th>
-                                        <!-- <th>eta</th>
-                                        <th>etd</th> -->
                                         <th>vessel</th>
                                         <th>voyage</th>
-                                        <!-- <th>place of delivery</th> -->
+                                        <th>Main Line</th>
+                                        <th>Vessel Operator</th>
                                         <th>load port</th>
                                         <th>discharge port</th>
                                         <th>Equipment Type</th>
@@ -115,20 +139,22 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td>{{optional($item->quotation)->ref_no}}</td>
+                                            <!-- <td>{{optional($item->quotation)->ref_no}}</td> -->
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->voyage)->vessel->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
-                                            <!-- <td>{{optional($item->placeOfDelivery)->name}}</td> -->
+                                            <td>{{ optional($item->quotation->principal)->name }}</td>
+                                            <td>{{ optional($item->quotation->operator)->name }}</td>
                                             <td>{{optional($item->loadPort)->name}}</td>
                                             <td>{{optional($item->dischargePort)->name}}</td>
                                             <td>
                                                 
                                                 <table style="border: hidden;">
-                                                
+                                                @if($item->bookingContainerDetails->count() > 0)
                                                     <td>{{ optional($item->bookingContainerDetails[0]->containerType)->name }}</td>
+                                                    @endif
                                                 </table>
                                             </td>
                                             <?php $qty = 0;?>

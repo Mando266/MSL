@@ -55,7 +55,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >شركة الاسكندرية لتداول الحاويات - الدخيلة</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfReturn)->name}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>

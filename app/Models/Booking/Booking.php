@@ -62,6 +62,9 @@ class   Booking extends Model implements PermissionSeederContract
     public function placeOfReturn(){
         return $this->belongsTo(Ports::class,'place_return_id','id');
     }
+    public function pickUpLocation(){
+        return $this->belongsTo(Ports::class,'pick_up_location','id');
+    }
     public function loadPort(){
         return $this->belongsTo(Ports::class,'load_port_id','id');
     }
@@ -87,9 +90,11 @@ class   Booking extends Model implements PermissionSeederContract
         $has_gate_in = 0;
         if (is_array($inputs) || is_object($inputs)){
         foreach($inputs as $input){
+            
             if($input['container_id'] != null && $input['container_id'] != 000){
                 $has_gate_in = 1;
             }
+            
             $input['booking_id'] = $this->id;
 
             if( isset($input['id']) ){
@@ -100,6 +105,7 @@ class   Booking extends Model implements PermissionSeederContract
                 BookingContainerDetails::create($input);
             }
         }
+
         $this->has_gate_in = $has_gate_in;
         $this->save();
     }

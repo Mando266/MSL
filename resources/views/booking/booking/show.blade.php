@@ -26,7 +26,7 @@
                         @if($booking->booking_confirm == 1)
                             <th class="text-center thstyle">Booking Confirmation</th>
                         @else
-                            <th class="text-center thstyle">Draft Booking</th>
+                            <th class="text-center thstyle">Booking Aknoledgment</th>
                         @endif
                         </tr>
                     </thead>
@@ -35,7 +35,7 @@
                     <tbody>
                         <tr>
                             <td class="tableStyle" style="width: 50%;" style="width: 50%;">Booking Ref N : {{$booking->ref_no}}</td>
-                            <td class="tableStyle" style="width: 50%;">Issue Date : {{$booking->created_at}}</td>
+                            <td class="tableStyle" style="width: 50%;">Issue Date : {{Carbon\Carbon::parse($booking->created_at)->format('Y-m-d')}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -98,7 +98,7 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle" style="width: 50%;">Discharge Port ETD : {{$booking->discharge_etd}}</td>
+                            <td class="tableStyle" style="width: 50%;">Discharge Port ETA : {{$booking->discharge_etd}}</td>
                             <td class="tableStyle" style="width: 50%;">Load Port Cutoff : {{$booking->load_port_cutoff}}</td>
                         </tr>
                     </tbody>
@@ -123,6 +123,8 @@
                     <tbody>
                         <tr>
                             <td class="tableStyle" style="width: 50%;">Commodity Description : {{$booking->commodity_description}}</td>
+                            <td class="tableStyle" style="width: 50%;">Notes  : {{$booking->notes}}</td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -189,3 +191,4 @@
         font-weight: bolder !important;
     }
 </style>
+@endpush

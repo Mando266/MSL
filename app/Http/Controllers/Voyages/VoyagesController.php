@@ -252,9 +252,11 @@ class VoyagesController extends Controller
         ]);
     }
 
-    public function edit(VoyagePorts $voyage)
+    public function edit(Voyages $voyage)
     {
         $this->authorize(__FUNCTION__,VoyagePorts::class);
+        $voyage_ports = VoyagePorts::where('voyage_id',$voyage->id)->get();
+        //dd($voyage_ports);
         $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
         $lines = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
@@ -262,27 +264,32 @@ class VoyagesController extends Controller
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
         return view('voyages.voyages.edit',[
+            'voyage_ports'=>$voyage_ports,
             'voyage'=>$voyage,
             'vessels'=>$vessels,
             'legs'=>$legs,
             'lines'=>$lines,
             'terminals'=>$terminals,
             'ports'=>$ports,
-
         ]);
     }
 
-    public function update(Request $request, VoyagePorts $voyage)
+    public function update(Request $request, Voyages $voyage)
     {
-        $request->validate([
-            'eta' => 'required',
-            'etd' => ['required','after_or_equal:eta'],
-        ],[
-            'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
-        ]);
+        // $request->validate([
+        //     'eta' => 'required',
+        //     'etd' => ['required','after_or_equal:eta'],
+        // ],[
+        //     'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
+        // ]);
 
         $this->authorize(__FUNCTION__,VoyagePorts::class);
-        $voyage->update($request->except('_token'));
+        $inputs = request()->all();
+        unset($inputs['voyageport'],$inputs['_token'],$inputs['removed']);
+        $voyage->update($inputs);
+        VoyagePorts::destroy(explode(',',$request->removed));
+        $voyage->createOrUpdatevoyageport($request->voyageport);
+
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));
     }
 

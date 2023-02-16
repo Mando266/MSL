@@ -318,7 +318,7 @@
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
                                           <option value="">Select</option>
-                                          @foreach ($containers as $item)
+                                          @foreach ($oldbookingcontainers as $item)
                                               <option value="{{$item->id}}" {{$item->id == old('container_id',$bookingContainer->container->id) ? 'selected':'disabled'}}>{{$item->code}}</option>
                                           @endforeach
                                   </select>

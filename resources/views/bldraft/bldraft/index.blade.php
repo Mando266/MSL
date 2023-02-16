@@ -16,6 +16,7 @@
                     @permission('BlDraft-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
+                            <a href="{{route('bookingContainersRefresh')}}" class="btn btn-success">Refresh Booking Containers</a>
                             <a href="{{route('bldraft.selectbooking')}}" class="btn btn-primary">New Bl Draft</a>
                             </div>
                         </div>
@@ -103,6 +104,8 @@
                                         <th>voyage vessel</th>
                                         <th>Bl Draft Creation</th>
                                         <th>BL Status</th>
+                                        <th>BL Manafest</th>
+                                        <th>UPDATE BOOKING</th>
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -126,7 +129,7 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-                                            <td>{{optional($item->voyage)->voyage_no}} - {{optional($item->voyage)->vessel->name}}</td>
+                                            <td>{{optional($item->voyage)->voyage_no}} </td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
@@ -134,6 +137,26 @@
                                                 @else
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('BlDraft-Edit')
+                                                    <ul class="table-controls">
+                                                    @if($item->bl_status == 1)
+                                                        <li>
+                                                            <a href="{{route('bldraft.manifest',['bldraft'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('Booking-Edit')
+                                                    <a href="{{ route('bookingContainersRefresh',['id'=>$item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <i class="far fa-edit text-success">Sync</i>
+                                                    </a>
+                                                @endpermission
                                             </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">

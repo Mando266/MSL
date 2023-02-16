@@ -119,7 +119,7 @@
                                         <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> 
                             <!-- <div class="form-group col-md-3">
                             <label for="Movement">Movement Date</label>
                                 <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
@@ -128,8 +128,9 @@
                                 <label for="containersMovementsInput">Movement </label>
                                 <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
                                  title="{{trans('forms.select')}}">
+                                    <option value="">Select...</option>
                                     @foreach ($containersMovements as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -201,13 +202,13 @@
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
                                             <td>{{$item->bl_no}}</td>
-                                            <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{$item->voyage_id}}</td>
                                             <td>{{$item->port_location_id}}</td>
                                             <td>{{$item->pol_id}}</td>
                                             <td>{{$item->pod_id}}</td>
                                             <td>{{$item->free_time}}</td>
-                                            <td>{{$item->import_agent}}</td>
-                                            <td>{{$item->booking_agent_id}}</td>
+                                            <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
                                             <td>{{$item->remarkes}}</td>
                                             
                                             <td class="text-center">

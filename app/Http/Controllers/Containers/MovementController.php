@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Containers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Containers;
@@ -289,6 +289,7 @@ class MovementController extends Controller
                         'ports'=>$ports,
                         'voyages'=>$voyages,
                         'containersMovements'=>$containersMovements,
+                        'vessels'=>$vessels,
                     ]);
                 }
                 // dd($movements);

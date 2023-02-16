@@ -69,6 +69,7 @@ class BlDraftController extends Controller
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
+        $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
         // dd($booking_containers);
         return view('bldraft.bldraft.create',[
             'booking_containers'=>$booking_containers,
@@ -81,6 +82,7 @@ class BlDraftController extends Controller
             'containers'=>$containers,
             'voyages'=>$voyages,
             'booking_qyt'=>$booking_qyt,
+            'oldbookingcontainers'=>$oldbookingcontainers,
         ]);
     }
 
@@ -205,6 +207,8 @@ class BlDraftController extends Controller
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
+        $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
+
     // dd($booking_containers);
         return view('bldraft.bldraft.edit',[
             'booking_containers'=>$booking_containers,
@@ -217,6 +221,7 @@ class BlDraftController extends Controller
             'containers'=>$containers,
             'voyages'=>$voyages,
             'booking_qyt'=>$booking_qyt,
+            'oldbookingcontainers'=>$oldbookingcontainers,
         ]);
     }
 
@@ -238,7 +243,7 @@ class BlDraftController extends Controller
         }
         $this->authorize(__FUNCTION__,BlDraft::class);
         $bldraft = $bldraft ->load('blDetails');
-        $inputs = request()->all();
+        $inputs = request()->all(); 
         unset($inputs['blDraftdetails'],$inputs['_token'],$inputs['removed']);
         $bldraft->update($inputs);
         $bldraft->UpdateBlDetails($request->blDraftdetails);
@@ -246,6 +251,14 @@ class BlDraftController extends Controller
         return redirect()->route('bldraft.index')->with('success',trans('BL Draft.Updated.Success'));
     }
 
+    public function manifest($id)
+    {
+        $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+   
+        return view('bldraft.bldraft.manifest',[
+            'blDraft'=>$blDraft
+            ]);
+    }
     public function destroy($id)
     {
         $bldraft = BlDraft::find($id);

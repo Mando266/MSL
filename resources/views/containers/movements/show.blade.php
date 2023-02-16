@@ -238,12 +238,12 @@ if(request()->input('container_id') != null){
                                             <td>{{$items->port_location_id}}</td>
                                             <td>{{$items->pol_id}}</td>
                                             <td>{{$items->pod_id}}</td>
-                                            <td>{{$items->vessel_id}} {{$items->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{$items->voyage_id}}</td>
                                             <td>{{$items->booking_no}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
-                                            <td>{{$items->import_agent}}</td>
-                                            <td>{{$items->booking_agent_id}}</td>
+                                            <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
                                             <td>{{$items->remarkes}}</td>
                                             <td></td>
                                             
@@ -281,12 +281,12 @@ if(request()->input('container_id') != null){
                                             <td>{{$item->port_location_id}}</td>
                                             <td>{{$item->pol_id}}</td>
                                             <td>{{$item->pod_id}}</td>
-                                            <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{$item->voyage_id}}</td>
                                             <td>{{$item->booking_no}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->free_time}}</td>
-                                            <td>{{$item->import_agent}}</td>
-                                            <td>{{$item->booking_agent_id}}</td>
+                                            <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
                                             <td>{{$item->remarkes}}</td>
 
                                             @if( ($item->bl_no !=null || $item->booking_no !=null)&& optional($item->movementcode)->code == 'RCVC')

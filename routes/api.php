@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AgentCountry;
 use App\Http\Controllers\API\CompanyDataController;
+use App\Http\Controllers\Api\CountriesController;
 use App\Http\Controllers\API\PriceController;
 use App\Models\Master\Company;
 use Illuminate\Http\Request;
@@ -40,3 +41,4 @@ Route::get('master/terminals/{id}', [CompanyDataController::class, 'terminalsPor
 Route::get('agent/loadPrice/{id}/{equipment_id?}/{company_id}', [PriceController::class, 'getLoadAgentPrice']);
 Route::get('agent/dischargePrice/{id}/{equipment_id?}/{company_id}', [PriceController::class, 'getDischargeAgentPrice']);
 Route::get('agent/agentCountry/{id}/{company_id}', [AgentCountry::class, 'getAgentCountry']);
+Route::get('booking/activityContainers/{id}/{company_id}', [CountriesController::class, 'getActivityContainers']);

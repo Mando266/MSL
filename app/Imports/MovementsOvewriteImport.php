@@ -4,12 +4,16 @@ namespace App\Imports;
 
 use Illuminate\Support\Facades\Session;
 use App\Models\Containers\Movements;
+use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
+use App\Models\Master\ContainerStatus;
 use App\Models\Master\ContainersTypes;
+use App\Models\Master\Vessels;
 use App\MovementImportErrors;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -71,7 +75,7 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $new = $new->collapse();
         
         $movements = $new;
-        $lastMove = $movements->where('movement_date','<',$row['movement_date'])->where('id','!=',$row['id'])->pluck('movement_id')->first();
+        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->where('id','!=',$row['id'])->pluck('movement_id')->first();
         // End Get All movements and sort it and get the last movement before this movement
             
         
@@ -82,7 +86,10 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
-        $row['container_status'] = ContainersMovement::where('id',$row['movement_id'])->pluck('container_status_id')->first();
+        $row['container_status'] = ContainerStatus::where('name',$row['container_status'])->pluck('id')->first();
+        $row['vessel_id'] = Vessels::where('name',$row['vessel_id'])->where('company_id',Auth::user()->company_id)->pluck('id')->first();
+        $row['booking_agent_id'] = Agents::where('name',$row['booking_agent_id'])->pluck('id')->first();
+        $row['import_agent'] = Agents::where('name',$row['import_agent'])->pluck('id')->first();
 
         if($containerId == null){
             return Session::flash('stauts', 'Cannot Container Number be Null Please Check Excel Sheet');

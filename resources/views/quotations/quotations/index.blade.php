@@ -94,7 +94,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>ref no</th>
-                                        <th>Agent</th>
+                                        <!-- <th>Agent</th> -->
+                                        <th>Main Line</th>
                                         <th>Customer</th>
                                         <th>validity from</th>
                                         <th>validity to</th>
@@ -115,7 +116,8 @@
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->ref_no}}</td>
-                                            <td>{{optional($item->disAgent)->name}}</td>
+                                            <td>{{ optional($item->principal)->name }}</td>
+                                            <!-- <td>{{optional($item->disAgent)->name}}</td> -->
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>

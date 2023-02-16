@@ -38,7 +38,10 @@ class Containers extends Model implements PermissionSeederContract
     {
         return $this->hasMany(Movements::class ,'movement_id','id');
     }
-
+    public function activityLocation (){
+        return $this->belongsto(Ports::class,'activity_location_id','id');
+    }
+    
     public function scopeUserContainers($query){
         if(is_null(Auth::user()->company_id))
         {
