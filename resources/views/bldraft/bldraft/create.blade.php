@@ -353,6 +353,11 @@
                             </tr>
                             @endforeach
                             @endif
+                            @php
+                            if(!isset($key)){
+                                $key = 0;
+                            }
+                            @endphp
                             @for($i=0 ; $i < $booking_qyt ; $i++)
                             <?php $key = $key + 1; ?>
                             <tr>

@@ -29,7 +29,7 @@ class BookingController extends Controller
         $this->authorize(__FUNCTION__,Booking::class);
         $booking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')
             ->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails')->paginate(30);
-        $exportbooking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails')->get();
+        $exportbooking = Booking::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('bookingContainerDetails','voyage.vessel')->get();
         //dd($booking);
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $bookingNo = Booking::where('company_id',Auth::user()->company_id)->get();
@@ -60,6 +60,19 @@ class BookingController extends Controller
         return view('booking.booking.selectQuotation',[
             'quotation'=>$quotation,
         ]);
+    }
+    public function referManifest()
+    {
+        $bookings = session('bookings');
+        $booking = $bookings->first();
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $qty = 0;
+        foreach($bookings as $item){
+            foreach($item->bookingContainerDetails as $detail){
+                $qty += $detail->qty;
+            }
+        }
+        return view('booking.booking.referManifest',compact('bookings','booking','firstVoyagePort','qty'));
     }
     public function create()
     {
@@ -180,6 +193,9 @@ class BookingController extends Controller
                 'ffw_id'=>$request->input('ffw_id'),
                 'booking_confirm'=>$request->input('booking_confirm'), 
                 'notes'=>$request->input('notes'), 
+                'principal_name'=>$request->input('principal_name'), 
+                'vessel_name'=>$request->input('vessel_name'), 
+                'customer_consignee_id'=>$request->input('customer_consignee_id'), 
             ]);
             $has_gate_in = 0;
         foreach($request->input('containerDetails',[]) as $details){
@@ -194,6 +210,8 @@ class BookingController extends Controller
                 'container_type'=>$booking->equipment_type_id,
                 'haz'=>$details['haz'],
                 'activity_location_id'=>$details['activity_location_id'],
+                'weight'=>$details['weight'],
+                'vgm'=>$details['vgm'],
             ]);
         }
 
@@ -272,7 +290,7 @@ class BookingController extends Controller
             'secondVoyagePort'=>$secondVoyagePort
         ]);
     }
-
+    
     public function edit(Booking $booking)
     {
         $this->authorize(__FUNCTION__,Booking::class);

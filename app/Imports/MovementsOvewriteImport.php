@@ -75,12 +75,12 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $new = $new->collapse();
         
         $movements = $new;
-        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->where('id','!=',$row['id'])->pluck('movement_id')->first();
+        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->where('id','!=',$row['id'])->first();
         // End Get All movements and sort it and get the last movement before this movement
             
         
-        $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
-        $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
+        $lastMoveCode = ContainersMovement::where('id',$lastMove->movement_id)->pluck('code')->first();
+        $nextMoves = ContainersMovement::where('id',$lastMove->movement_id)->pluck('next_move')->first();
         $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
         // dd($lastMoveCode);
@@ -94,8 +94,8 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         if($containerId == null){
             return Session::flash('stauts', 'Cannot Container Number be Null Please Check Excel Sheet');
         }
-
-        if(in_array($movementCode,$nextMoves)){
+        
+        if(in_array($movementCode,$nextMoves) || $movementCode == optional($lastMove->movementcode)->code){
             $moveUpdate->update([
                 'container_id' => $row['container_id'],
                 'container_type_id' => $row['container_type_id'],

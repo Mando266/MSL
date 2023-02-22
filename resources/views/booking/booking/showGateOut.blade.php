@@ -55,7 +55,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->pickUpLocation)->name}}</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->pickUpLocation)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>
@@ -141,7 +141,7 @@
                 {{$detail->seal_no}}
             </td>
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                
+            {{$detail->weight}}
             </td>
         </tr>
         @endforeach

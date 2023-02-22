@@ -1,14 +1,14 @@
-@extends('layouts.bldraft')
+@extends('layouts.app')
 @section('content')
 <div class="layout-px-spacing transform" style="padding: 20px 20px 0px 20px !important">
-        <div class="row layout-top-spacing">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+        <div class="row layout-top-spacing ">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing ">
                 <div class="widget widget-one">
                     <div class="widget-heading hide">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> EXPORT CARGO MANIFEST</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">EXPORT SERVICE MANIFEST</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol> 
                     </nav>
@@ -20,13 +20,7 @@
                     </br>
                     </br>
 
-                    <!-- <table class="col-md-12 tableStyle">
-                        <thead>
-                            <tr>
-                                <th class="text-center thstyle">Booking Confirmation</th>
-                            </tr>
-                        </thead>
-                    </table> -->
+ 
                     @php
                             $net_weight = 0;
                             $gross_weight = 0;
@@ -36,30 +30,28 @@
                             @foreach($blDraft->blDetails as $blkey => $bldetails)
                                 @php
                                     $packages = $packages + (float)$bldetails->packs;
-                                    $net_weight = $net_weight + (float)$bldetails->net_weight; 
-                                    $gross_weight =$gross_weight + (float)$bldetails->gross_weight;
+                                    $net_weight = $net_weight + (float)$bldetails->net_weight;
+                                    $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
                                     $measurement = $measurement + (float)$bldetails->measurement;
                                 @endphp
                             @endforeach
                             <div class="row">
                                 <div class="col-md-2">
-                                <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                 </div>
-                                
                                 <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                     <tbody>
                                         <tr>
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="5">EXPORT CARGO MANIFEST</br></br>
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
                                             <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                             
                                             </td>
-                                        </tr>
-                                        </tbody>
+                                            </tbody>
                                 </table>
                             </div>
                             <table class="col-md-12 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                     <tbody>
-                                        <tr>
+
                                             <td class="tableStyle" style="border-style: hidden;">Port of Loading </br>
                                             {{ optional($blDraft->loadPort)->name }}
                                             </td>
@@ -79,7 +71,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                    
+
                     <table class="col-md-12 tableStyle" style="border-top-style: hidden; border-right-style: hidden; margin-bottom: 1rem;">
                    
                         <tbody>
@@ -97,24 +89,12 @@
                             {{ $blDraft->ref_no }}
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden;">
-                                {{ optional($blDraft->customer)->name }}
-                                <br> 
-                                {{ old('shipper',$blDraft->customer_shipper_details) }}
-                                <br> <br>  <br> <br> <br> 
-
-                                {{ optional($blDraft->customerConsignee)->name }}
-                                <br> 
-                                {!! $blDraft->customer_consignee_details !!}
-                                <br> <br>  <br> <br> <br> 
-                                {{ optional($blDraft->customerNotify)->name }}
-                                 <br>
-                                 {!! $blDraft->customer_notifiy_details !!}
+                            <textarea class="tableStyle" style="border: none; height:290px; resize: none; background-color: white;"></textarea>
 
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden; width: 200px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br> 
                                 <!-- <textarea class="tableStyle" name="descripions"  style="border-style: hidden; height: 400px; width: -webkit-fill-available; resize: none; background-color: white;" cols="30" rows="10" readonly> -->
                                     {{ old('descripions',$blDraft->descripions) }}
-
                                 <!-- </textarea> -->
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
@@ -130,12 +110,11 @@
                                 <td class=" tableStyle" style="border-left-style: hidden;">Size</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Iso</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Seal</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">Packages</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">Type</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">Packages/Type</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">G. Weight</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Measurement</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Net Weight</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">UNNO</td>
+                                <td class=" tableStyle" style="border-left-style: hidden; width: 139px !important;">HAZ / Reefer/ OOG Details</td>
                             </tr>
                         @foreach($blDraft->blDetails as  $bldetails)
                         <tr class="col-md-12 tableStyle" >
@@ -143,12 +122,11 @@
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($blDraft->equipmentsType)->name }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->iso}}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->seal_no }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->pack_type }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }} &nbsp {{ $bldetails->pack_type }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->gross_weight }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->measurement }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->net_weight }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">&nbsp</td>
+                            <td class="tableStyle" style="border-right-style: hidden; width: 139px !important;">{{ $bldetails->description }}</td>
                         </tr>
                         @endforeach
                         <tr style="border-top-style: 1px solid !important; margin-bottom: 1rem;">
@@ -157,10 +135,9 @@
                                 <td class=" tableStyle" style="border-left-style: hidden;"></td>
                                 <td class=" tableStyle text-right" style="border-left-style: hidden;">Total</td>
                                 <td class=" tableStyle " style="border-left-style: hidden;">{{ $packages }}</td>
-                                <td class=" tableStyle " style="border-left-style: hidden;"></td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $measurement }}</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $net_weight }}</td>
+                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $gross_weight }}</td>
+                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $measurement }}</td>
+                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $net_weight }}</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;"></td>
                             </tr>
                         </tbody>

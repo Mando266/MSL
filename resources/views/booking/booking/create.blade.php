@@ -63,7 +63,7 @@
                                 <label for="status">Booking Status<span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}" required>
                                     <option value="1">Confirm</option>
-                                    <option value="0">Draft</option>
+                                    <option value="3">Draft</option>
                                 </select>
                                 @error('booking_confirm')
                                 <div style="color:red;">
@@ -133,9 +133,9 @@
                                             @else
                                             <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                             @endif
-                                        @else
-                                        <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                        @endif
+                                            @else
+                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            @endif
                                     @endforeach
                                 </select>
                                 @error('ffw_id')
@@ -494,6 +494,8 @@
                                         <th class="text-center">Activity Location</th>
                                         <th class="text-center">Container No</th>
                                         <th class="text-center">HAZ / Reefer/ OOG Details / Haz Approval Ref</th>
+                                        <th class="text-center">weight</th>
+                                        <th class="text-center">vgm</th>
                                         <th class="text-center">
                                             <a id="add"> Add Container <i class="fas fa-plus"></i></a>
                                         </th>
@@ -559,6 +561,12 @@
                                     placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off">
                                 @endif
                                 </td>
+                                <td><input type="text" class="form-control" id="weight" name="containerDetails[0][weight]" value="{{old('weight')}}"
+                                    placeholder="Weight" autocomplete="off">
+                                </td>
+                                <td><input type="text" class="form-control" id="vgm" name="containerDetails[0][vgm]" value="{{old('vgm')}}"
+                                    placeholder="VGM" autocomplete="off">
+                                </td>
                                 <td></td>
                             </tr>
                             </tbody>
@@ -595,6 +603,8 @@
                 '<td class="ports"><select class="selectpicker form-control" id="activity_location_id" data-live-search="true" name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
                 '<td class="containerDetailsID"><select id="selectpicker" class="selectpicker form-control" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
                 '<td><input type="text" value="{{$quotation->oog_dimensions}}" name="containerDetails['+counter+'][haz]" class="form-control" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off"></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][weight]" class="form-control" autocomplete="off" placeholder="Weight"></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][vgm]" class="form-control" autocomplete="off" placeholder="VGM"></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
             '</tr>';
            $('#containerDetails').append(tr);

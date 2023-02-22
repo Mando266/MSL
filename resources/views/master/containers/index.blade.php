@@ -98,7 +98,7 @@
                                         <th>#</th>
                                         <th>Number</th>
                                         <th>Type</th>
-                                        <!-- <th>Code</th> -->
+                                        <th>ISO</th>
                                         <th>Ownership</th>
                                         <th>tar weight</th>
                                         <th>max payload</th>
@@ -114,7 +114,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->code}}</td>
                                             <td>{{{optional($item->containersTypes)->name}}}</td>
-                                            <!-- <td>{{{optional($item->containersTypes)->code}}}</td> -->
+                                            <td>{{$item->iso}}</td>
                                             <td>{{{optional($item->containersOwner)->name}}}</td>
                                             <td>{{$item->tar_weight}}</td>
                                             <td>{{$item->max_payload}}</td>

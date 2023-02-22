@@ -40,6 +40,7 @@ class ContainersImport implements ToModel,WithHeadingRow
 
             $ImportContainers = Containers::create([
                 'code' => $row['code'],
+                'iso' => $row['iso'],
                 'container_type_id' => $row['container_type_id'],
                 'description' => $row['description'],
                 'tar_weight' => $row['tar_weight'],

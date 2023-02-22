@@ -105,6 +105,7 @@
                                         <th>Bl Draft Creation</th>
                                         <th>BL Status</th>
                                         <th>BL Manafest</th>
+                                        <th>BL Service Manafest</th>
                                         <th>UPDATE BOOKING</th>
 
                                         <th class='text-center' style='width:100px;'></th>
@@ -129,7 +130,7 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-                                            <td>{{optional($item->voyage)->voyage_no}} </td>
+                                            <td>{{optional($item->voyage)->vessel->name}}  {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
@@ -139,15 +140,24 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                @permission('BlDraft-Edit')
+                                                @permission('BlDraft-List')
                                                     <ul class="table-controls">
-                                                    @if($item->bl_status == 1)
                                                         <li>
                                                             <a href="{{route('bldraft.manifest',['bldraft'=>$item->id])}}" target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
                                                             </a>
                                                         </li>
-                                                    @endif
+                                                    </ul>
+                                                @endpermission
+                                            </td>
+                                            <td class="text-center">
+                                                @permission('BlDraft-List')
+                                                    <ul class="table-controls">
+                                                        <li>
+                                                            <a href="{{route('bldraft.serviceManifest',['bldraft'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                        </li>
                                                     </ul>
                                                 @endpermission
                                             </td>

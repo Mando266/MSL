@@ -306,8 +306,7 @@ class MovementController extends Controller
             // Check if we have movement code or port_location_id to get latest movement or not
             if(request('movement_id') == null && request('port_location_id') == null){
                 // prepare Data for export
-                $exportmovements = $movements->orderBy('movement_date','desc')->orderBy('id','desc')->with('movementcode.containerstock')->get();
-                
+                $exportmovements = $movements->orderBy('movement_date','desc')->orderBy('id','desc')->with('movementcode.containerstock','container')->get();
                 $exportmovements = $exportmovements->groupBy('movement_date');
                 
                 foreach($exportmovements as $key => $move){

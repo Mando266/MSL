@@ -3,9 +3,10 @@ namespace App\Filters\Quotation;
 
 use App\Filters\AbstractBasicFilter;
 
-class PODFilter extends AbstractBasicFilter{
+class BookingConfirmFilter extends AbstractBasicFilter{
     public function filter($value)
     {
-        return $this->builder->Where('discharge_port_id',$value);
+
+        return $this->builder->Where('booking_confirm',$value);
     }
 }

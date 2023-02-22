@@ -11,6 +11,7 @@ class ContainersExport implements FromCollection,WithHeadings
     {
         return [
             "NUMBER",
+            "ISO",
             "TYPE",
             "OWNERSHIP",
             "TAR WEIGHT" ,
@@ -26,9 +27,10 @@ class ContainersExport implements FromCollection,WithHeadings
        
         $containers = session('containers');
         $exportContainers = collect();
-        foreach($containers as $container){
+        foreach($containers  ?? [] as $container){
                 $tempCollection = collect([
                     'code' => $container->code,
+                    'iso' => $container->iso,
                     'type' => optional($container->containersTypes)->name,
                     'ownership'=> optional($container->containersOwner)->name,
                     'tar_weight'=> $container->tar_weight,

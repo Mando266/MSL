@@ -47,11 +47,16 @@
                             </div>
                         </div>
                         <div class="form-row">
-                        <div class="form-group col-md-6">
+                            <div class="form-group col-md-6">
                                 <label for="cityInput">Terminal</label>
                                 <input type="text" class="form-control" id="cityInput" value="{{optional($port->Terminal)->name}}" disabled>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label for="cityInput">Pickup / Return Location</label>
+                                <input type="text" class="form-control" id="cityInput" value="{{$port->pick_up_location}}" disabled>
+                            </div>
                         </div>
+                        
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 @permission('Ports-Edit')

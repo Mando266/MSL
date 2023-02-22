@@ -105,16 +105,16 @@
                                 </div>
                                 @enderror
                             </div>
-                            <!-- <div class="form-group col-md-4">
-                                <label for="last_movementInput">Last Movement</label>
-                                <input type="text" class="form-control" id="last_movementInput" name="last_movement" value="{{old('last_movement')}}"
-                                    placeholder="Last Movement" autocomplete="off">
-                                @error('last_movement')
+                            <div class="form-group col-md-4">
+                                <label for="isoInput">Iso</label>
+                                <input type="text" class="form-control" id="isoInput" name="iso" value="{{old('iso')}}"
+                                    placeholder="Iso" autocomplete="off">
+                                @error('iso')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> -->
+                            </div>
                             <div class="form-group col-md-4">
                                 <div class="custom-file-container" data-upload-id="certificat">
                                     <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>

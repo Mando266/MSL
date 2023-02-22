@@ -176,7 +176,7 @@
                                         <th>Container No</th>
                                         <th>Container Type</th>
                                         <th>movement code</th>
-                                        <th>Ownership</th>
+                                        <th>Lessor/Seller Refrence</th>
                                         <th>movement date</th>
                                         <th>movement status</th>
                                         <th>bl no</th>

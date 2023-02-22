@@ -1,6 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.bldraft')
 @section('content')
-<div class="widget-heading hide">
+<div class="layout-px-spacing" style="background-color: #fff;">
+    <div class="row layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+            <div class="widget-heading hide">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
@@ -30,10 +33,10 @@
                         @endphp
                             @foreach($blDraft->blDetails as $blkey => $bldetails)
                                 @php
-                                    $packages = $packages + $bldetails->packs;
-                                    $net_weight = $net_weight + $bldetails->net_weight;
-                                    $gross_weight = $gross_weight + $bldetails->gross_weight;
-                                    $measurement = $measurement + $bldetails->measurement;
+                                    $packages = $packages + (float)$bldetails->packs;
+                                    $net_weight = $net_weight + (float)$bldetails->net_weight;
+                                    $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
+                                    $measurement = $measurement + (float)$bldetails->measurement;
                                 @endphp
                             @endforeach
                     <table class="col-md-12 tableStyle" style="margin-bottom: 0rem;">
@@ -41,7 +44,7 @@
                             <tr>
                                 <th class="col-md-6 tableStyle" style="height: 150px;">Shipper (full style and address) </br></br>
                                 <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customer)->name }}</span>
-                                <textarea class="tableStyle" name="shipper"  style="border-style: hidden; overflow: hidden; height: 140px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                <textarea class="tableStyle" name="shipper"  style="border-style: hidden; overflow: hidden; height: 120px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
                                     {{ old('shipper',$blDraft->customer_shipper_details) }}
                                     </textarea>
                                 </th>
@@ -57,7 +60,7 @@
                                 <tr>
                                     <th rowspan="2" class="col-md-6 tableStyle" style=" height: 52px;">Consignee (full style and address) or Order </br></br>
                                         <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customerConsignee)->name }}</span>
-                                        <textarea class="tableStyle" name="consignee"  style="border-style: hidden; overflow: hidden; height: 53px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                        <textarea class="tableStyle" name="consignee"  style="border-style: hidden; overflow: hidden; height:110px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
                                          {!! $blDraft->customer_consignee_details !!}
                                         </textarea>
                                     </th>
@@ -78,7 +81,7 @@
                                 <tr>
                                     <th rowspan="2" class="col-md-6 tableStyle" style=" height: 52px;">Notify Party (full style and address) </br></br>
                                     <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customerNotify)->name }}</span>
-                                    <textarea class="tableStyle" name="notify"  style="border-style: hidden; overflow: hidden; height: 53px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                    <textarea class="tableStyle" name="notify"  style="border-style: hidden; overflow: hidden; height: 110px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
                                     {!! $blDraft->customer_notifiy_details !!}
                                     </textarea>
                                     </th>
@@ -109,7 +112,11 @@
                                 <td class="col-md-4 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;">
                                 <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; overflow: hidden; height: 355px; width: 455px; padding-bottom: unset; resize: none; background-color: white;" cols="30" rows="18" readonly>
                                     {!!  $blDraft->descripions  !!}
-                                    </textarea></td>
+
+                                
+                                    </textarea> 
+                                    </br>                                    {{optional($blDraft->booking->principal)->name}}
+</td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                             </tr>
@@ -157,24 +164,24 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-6 tableStyle" style="text-transform: initial; font-size: 14px;" rowspan="3">SHIPPED on board in apparent good order and condition (unless otherwise stated
-herein) the total number of Containers/Packages or Units indicated in the Box
-opposite entitled “Total number of Containers/Packages or Units received by the
-Carrier” and the cargo as specified above, weight, measure, marks, numbers,
-quality, contents and value unknown, for carriage to the Port of discharge or so
-near thereunto as the vessel may safely get and lie always afloat, to be delivered
-in the like good order and condition at the Port of discharge unto the lawful holder
-of the Bill of Lading, on payment of freight as indicated to the right plus other
-charges incurred in accordance with the provisions contained in this Bill of Lading.
-In accepting this Bill of Lading the Merchant* expressly accepts and agrees to all
-its stipulations on both Page 1 and Page 2, whether written, printed, stamped or
-otherwise incorporated, as fully as if they were all signed by the Merchant.
-One original Bill of Lading must be surrendered duly endorsed in exchange for the
-cargo or delivery order, whereupon all other Bills of Lading to be void.
-IN WITNESS whereof the Carrier, Master or their Agent has signed the number of
-original Bills of Lading stated below right, all of this tenor and date.</td>
-                            <td class="col-md-6 tableStyle" colspan="2">Total number of Containers/Packages or Units received by the Carrier <br>
-                            &nbsp{{$blDraft->blDetails->count()}} X {{ optional($blDraft->equipmentsType)->name }}
-                            </td>
+                                        herein) the total number of Containers/Packages or Units indicated in the Box
+                                        opposite entitled “Total number of Containers/Packages or Units received by the
+                                        Carrier” and the cargo as specified above, weight, measure, marks, numbers,
+                                        quality, contents and value unknown, for carriage to the Port of discharge or so
+                                        near thereunto as the vessel may safely get and lie always afloat, to be delivered
+                                        in the like good order and condition at the Port of discharge unto the lawful holder
+                                        of the Bill of Lading, on payment of freight as indicated to the right plus other
+                                        charges incurred in accordance with the provisions contained in this Bill of Lading.
+                                        In accepting this Bill of Lading the Merchant* expressly accepts and agrees to all
+                                        its stipulations on both Page 1 and Page 2, whether written, printed, stamped or
+                                        otherwise incorporated, as fully as if they were all signed by the Merchant.
+                                        One original Bill of Lading must be surrendered duly endorsed in exchange for the
+                                        cargo or delivery order, whereupon all other Bills of Lading to be void.
+                                        IN WITNESS whereof the Carrier, Master or their Agent has signed the number of
+                                        original Bills of Lading stated below right, all of this tenor and date.</td>
+                                <td class="col-md-6 tableStyle" colspan="2">Total number of Containers/Packages or Units received by the Carrier <br>
+                                        &nbsp{{$blDraft->blDetails->count()}} X {{ optional($blDraft->equipmentsType)->name }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="col-md-3 tableStyle" >Shipper’s declared value <br>

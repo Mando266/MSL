@@ -41,13 +41,15 @@ class MovementsExportAll implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
+            "Lessor/Seller Refrence",
+            "Containers Ownership"
         ];
     }
     
 
     public function collection()
     {
-        $movements = Movements::where('company_id',Auth::user()->company_id)->get();
+        $movements = Movements::where('company_id',Auth::user()->company_id)->with('container')->get();
 
         foreach($movements as $movement){
             $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
@@ -57,6 +59,8 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first();
             $movement->booking_agent_id = Agents::where('id',$movement->booking_agent_id)->pluck('name')->first();
             $movement->import_agent = Agents::where('id',$movement->import_agent)->pluck('name')->first();
+            $movement->description = optional($movement->container)->description;
+            $movement->containersOwner = optional($movement->container->containersOwner)->name;
         }
         
         return $movements;

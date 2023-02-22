@@ -68,6 +68,7 @@ class BlDraftController extends Controller
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
+        //dd($booking_qyt);
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
         // dd($booking_containers);
@@ -259,6 +260,18 @@ class BlDraftController extends Controller
             'blDraft'=>$blDraft
             ]);
     }
+    public function serviceManifest($id)
+    {
+        $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+   
+        return view('bldraft.bldraft.serviceManifest',[
+            'blDraft'=>$blDraft
+            ]);
+    }
+
+
+    
+
     public function destroy($id)
     {
         $bldraft = BlDraft::find($id);

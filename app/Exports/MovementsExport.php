@@ -21,7 +21,6 @@ class MovementsExport implements FromCollection,WithHeadings
     public function headings(): array
     {
         return [
-            "id",
             "company_id",
             "container_id",
             "container_type_id",
@@ -44,6 +43,8 @@ class MovementsExport implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
+            "Lessor/Seller Refrence",
+            "Containers Ownership"
         ];
     }
     
@@ -55,6 +56,7 @@ class MovementsExport implements FromCollection,WithHeadings
         $movements = session('items');
         // dd($movements);
                 foreach($movements as $movement){
+                    unset($movement['id']);
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                     $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
                     $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
@@ -62,6 +64,9 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first();
                     $movement->booking_agent_id = Agents::where('id',$movement->booking_agent_id)->pluck('name')->first();
                     $movement->import_agent = Agents::where('id',$movement->import_agent)->pluck('name')->first();
+                    $movement->description = optional($movement->container)->description;
+                    $movement->containersOwner = optional($movement->container->containersOwner)->name;
+                    //dd($movement->container->containersOwner->name);
                 }
             
         

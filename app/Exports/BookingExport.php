@@ -15,6 +15,7 @@ class BookingExport implements FromCollection,WithHeadings
             "BOOKING REF NO",
             "SHIPPER",
             "FORWARDER",
+            "CONSIGNEE",
             "Vessel",
             "VOYAGE",
             "Main Line",
@@ -41,23 +42,29 @@ class BookingExport implements FromCollection,WithHeadings
        
         $bookings = session('bookings');
         $exportBookings = collect();
-        
-        foreach($bookings as $booking){
+        foreach($bookings ?? [] as $booking){
             $qty = 0;
             foreach($booking->bookingContainerDetails as $bookingDetail){
                 $qty += $bookingDetail->qty;
             }
             if($booking->bookingContainerDetails->count() > 0){
-
+                if($booking->booking_confirm == 1){
+                    $booking->booking_confirm = "Confirm";
+                }elseif($booking->booking_confirm == 2){
+                    $booking->booking_confirm = "Cancelled";
+                }else{
+                    $booking->booking_confirm = "Draft";
+                }
                 $tempCollection = collect([
                     'quotation_ref_no' => optional($booking->quotation)->ref_no,
                     'ref_no' => $booking->ref_no,
                     'customer_name' => optional($booking->customer)->name,
                     'forwarder_name' => optional($booking->forwarder)->name,
+                    'consignee_name' => optional($booking->consignee)->name,
                     'vessel' => optional($booking->voyage)->vessel->name,
                     'voyage_id' => optional($booking->voyage)->voyage_no,
-                    'main_line' => optional($booking->quotation->principal)->name,
-                    'operator' => optional($booking->quotation->operator)->name,
+                    'main_line' => optional($booking->principal)->name,
+                    'operator' => optional($booking->operator)->name,
                     'placeOfAcceptence' => optional($booking->placeOfAcceptence)->name,
                     'placeOfDelivery' => optional($booking->placeOfDelivery)->name,
                     'loadPort' => optional($booking->loadPort)->name,
@@ -70,7 +77,7 @@ class BookingExport implements FromCollection,WithHeadings
                     'imo' =>  $booking->imo == 1 ? "IMO":"",
                     'oog' =>  $booking->oog == 1 ? "OOG":"",
                     'created_at' => $booking->created_at,
-                    'booking_confirm' => $booking->booking_confirm == 1 ? "Confirm":"Draft",
+                    'booking_confirm' => $booking->booking_confirm,
                 ]);
                 $exportBookings->add($tempCollection);
         }
