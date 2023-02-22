@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BookingExport;
 use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
+use App\Exports\LoadListExport;
 use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
 use Illuminate\Http\Request;
@@ -65,6 +66,10 @@ class ImportExportController extends Controller
     public function exportBooking() 
     {
         return Excel::download(new BookingExport, 'Bookings.xlsx');
+    }
+    public function loadlistBooking() 
+    {
+        return Excel::download(new LoadListExport, 'Loadlist.xlsx');
     }
     public function exportVoyages() 
     {

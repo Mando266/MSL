@@ -62,20 +62,20 @@
                                     </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="place_of_acceptence_id">Place Of Acceptence</label>
-                                <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
+                                <label for="POL">POL</label>
+                                <select class="selectpicker form-control" id="POL" data-live-search="true" name="load_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',request()->input('place_of_acceptence_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',request()->input('load_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="place_of_delivery_id">Place Of Delivery</label>
-                                <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
+                                <label for="place_of_delivery_id">POD</label>
+                                <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',request()->input('place_of_delivery_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @foreach ($ports as $item) 
+                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -94,7 +94,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>ref no</th>
-                                        <th>Agent</th>
+                                        <!-- <th>Agent</th> -->
+                                        <th>Main Line</th>
                                         <th>Customer</th>
                                         <th>validity from</th>
                                         <th>validity to</th>
@@ -115,16 +116,17 @@
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->ref_no}}</td>
-                                            <td>{{optional($item->disAgent)->name}}</td>
+                                            <td>{{ optional($item->principal)->name }}</td>
+                                            <!-- <td>{{optional($item->disAgent)->name}}</td> -->
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td>
                                             <td>{{$item->ofr}}</td>
-                                            <td>{{optional($item->placeOfAcceptence)->name}}</td>
-                                            <td>{{optional($item->placeOfDelivery)->name}}</td>
-                                            <td>{{optional($item->loadPort)->name}}</td>
-                                            <td>{{{optional($item->dischargePort)->name}}}</td>
+                                            <td>{{optional($item->placeOfAcceptence)->code}}</td>
+                                            <td>{{optional($item->placeOfDelivery)->code}}</td>
+                                            <td>{{optional($item->loadPort)->code}}</td>
+                                            <td>{{{optional($item->dischargePort)->code}}}</td>
 
                                             <td class="text-center">
                                                 @if($item->status == "pending")

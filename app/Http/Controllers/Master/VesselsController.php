@@ -66,7 +66,7 @@ class VesselsController extends Controller
             }
 
         $ImoNumberDublicate  = Vessels::where('company_id',$user->company_id)->where('imo_number',$request->imo_number)->first();
-            if($ImoNumberDublicate != null && $CallSignDublicate->imo_number != null ){
+            if($ImoNumberDublicate != null && $ImoNumberDublicate->imo_number != null ){
                 return back()->with('alert','This Vessel Imo Number Already Exists');
             }
 

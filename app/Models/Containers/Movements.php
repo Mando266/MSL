@@ -2,6 +2,7 @@
 
 namespace App\Models\Containers;
 
+use App\Models\Master\Agents;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -9,6 +10,7 @@ use App\Traits\HasFilter;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Containers;
+use App\Models\Master\Vessels;
 
 class Movements extends Model implements PermissionSeederContract
 {
@@ -57,5 +59,13 @@ class Movements extends Model implements PermissionSeederContract
     public function containersType(){
         return $this->belongsTo(ContainersTypes::class,'container_type_id','id');
     }
-
+    public function vessels(){
+        return $this->belongsTo(Vessels::class,'vessel_id','id');
+    }
+    public function bookingAgent(){
+        return $this->belongsTo(Agents::class,'booking_agent_id','id');
+    }
+    public function importAgent(){
+        return $this->belongsTo(Agents::class,'import_agent','id');
+    }
 }

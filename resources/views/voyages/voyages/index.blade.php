@@ -126,22 +126,17 @@
                                                 @endforeach
                                             </td>
 
-                                            <td>
-                                                @foreach($item->voyagePorts as $voyagePort)
-                                                <table style="border: hidden;">
+                                            <td class="text-center">
+                                                <ul class="table-controls"> 
                                                 @permission('Voyages-Edit')
-                                                <td>
-                                                    <a href="{{route('voyages.edit',['voyage'=>$voyagePort->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                    <li>
+                                                    <a href="{{route('voyages.edit',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                         <i class="far fa-edit text-success"></i>
                                                     </a>
-                                                    </td>
+                                                    </li>
                                                 @endpermission
-
-                                                </table>
-
-                                                @endforeach
-
                                             </td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                 @permission('Voyages-Create')

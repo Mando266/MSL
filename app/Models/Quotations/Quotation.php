@@ -11,6 +11,7 @@ use App\Traits\HasFilter;
 use App\User as AppUser;
 use App\User;
 use App\Models\Master\Agents;
+use App\Models\Master\Lines;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -56,6 +57,12 @@ class Quotation extends Model implements PermissionSeederContract
     }
     public function agent(){
         return $this->belongsTo(Agents::class,'agent_id','id');
+    }
+    public function principal(){
+        return $this->belongsTo(Lines::class,'principal_name','id');
+    }
+    public function operator(){
+        return $this->belongsTo(Lines::class,'vessel_name','id');
     }
     public function disAgent(){
         return $this->belongsTo(Agents::class,'discharge_agent_id','id');

@@ -114,6 +114,16 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-4">
+                                <label for="pick_up_locationInput">Pickup / Return Location</label>
+                                <input type="text" class="form-control" id="pick_up_locationInput" name="pick_up_location" value="{{old('pick_up_location',$port->pick_up_location)}}"
+                                    placeholder="Pickup / Return Location" autocomplete="off">
+                                @error('pick_up_location')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
                        <div class="row">
                             <div class="col-md-12 text-center">

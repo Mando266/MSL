@@ -259,7 +259,6 @@ var removed = [];
 function removeItem( item )
 {
     removed.push(item);
-    console.log(removed);
     document.getElementById("removed").value = removed;
 }
 $(document).ready(function(){

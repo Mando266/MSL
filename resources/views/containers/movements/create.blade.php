@@ -125,7 +125,7 @@
                                 <select class="selectpicker form-control" id="vessel_id" name="vessel_id" data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->id}}" data-code="{{$item->name}}" {{$item->name == old('vessel_id') || $item->name == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id') || $item->id == $movement->vessel_id ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -137,10 +137,10 @@
                             @else
                             <div class="form-group col-md-4">
                                 <label for="vessel_id">Vessel Name</label>
-                                <select class="selectpicker form-control" id="vessel_id"  data-live-search="true"  data-size="10"
+                                <select class="selectpicker form-control" id="vessel_id" name="vessel_id"  data-live-search="true"  data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -149,7 +149,6 @@
                                 </div>
                                 @enderror
                             </div>
-                            <input type="hidden" class="form-control" id="vessel" name="vessel_id"> 
                             @endif
                         </div>
                         
@@ -221,9 +220,9 @@
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
                                         @if(isset($movement))
-                                        <option value="{{$item->name}}" {{$item->name == old('booking_agent_id') || $item->name == $movement->booking_agent_id ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_agent_id') || $item->id == $movement->booking_agent_id ? 'selected':''}}>{{$item->name}}</option>
                                         @else
-                                        <option value="{{$item->name}}" {{$item->name == old('booking_agent_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_agent_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -239,9 +238,9 @@
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
                                         @if(isset($movement))
-                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') || $item->name == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('import_agent') || $item->id == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
                                         @else
-                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -358,7 +357,7 @@
         });
     });
 </script>
-<script>
+<!-- <script>
     $(function(){
         $('#vessel_id').on('change',function(){
             var option = $(this).find(":selected");
@@ -366,7 +365,7 @@
             $('#vessel').val(code);
         });
     });
-</script>
+</script> -->
 
 <script>
          $(function(){

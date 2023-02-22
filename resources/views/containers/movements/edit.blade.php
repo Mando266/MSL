@@ -98,7 +98,7 @@
                                 <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
-                                        <option value="{{$item->id}}" data-code="{{$item->name}}"  {{$item->name == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id',$movement->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('vessel_id')
@@ -116,7 +116,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>    
+                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',$movement->voyage_id) ? 'selected':''}}>{{$item->voyage_no}}</option>    
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -166,7 +166,7 @@
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="booking_agent_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
-                                        <option value="{{$item->name}}" {{$item->name == old('booking_agent_id',$movement->booking_agent_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_agent_id',$movement->booking_agent_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('booking_agent_id')
@@ -181,9 +181,9 @@
                                 title="{{trans('forms.select')}}">
                                     @foreach ($agents as $item)
                                         @if(isset($movement))
-                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') || $item->name == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('import_agent') || $item->id == $movement->import_agent ? 'selected':''}}>{{$item->name}}</option>
                                         @else
-                                        <option value="{{$item->name}}" {{$item->name == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('import_agent') ? 'selected':''}}>{{$item->name}}</option>
                                         @endif
                                     @endforeach
                                 </select>

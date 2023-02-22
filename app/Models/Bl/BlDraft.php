@@ -10,6 +10,7 @@ use App\Models\Voyages\Voyages;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
+use App\Models\Master\Lines;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -57,6 +58,9 @@ class BlDraft extends Model implements PermissionSeederContract
     } 
     public function dischargePort(){
         return $this->belongsTo(Ports::class,'discharge_port_id','id');
+    }
+    public function principal(){
+        return $this->belongsTo(Lines::class,'principal_name','id');
     }
     public function blDetails()
     {

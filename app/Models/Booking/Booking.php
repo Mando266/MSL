@@ -14,6 +14,7 @@ use App\Models\Master\Terminals;
 use App\Models\Voyages\Voyages;
 use App\User;
 use App\Traits\HasFilter;
+use App\Models\Master\Lines;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -44,6 +45,9 @@ class   Booking extends Model implements PermissionSeederContract
     public function forwarder(){
         return $this->belongsTo(Customers::class,'ffw_id','id');
     }
+    public function consignee(){
+        return $this->belongsTo(Customers::class,'customer_consignee_id','id');
+    }
     public function voyage(){
         return $this->belongsTo(Voyages::class,'voyage_id','id');
     }
@@ -62,11 +66,14 @@ class   Booking extends Model implements PermissionSeederContract
     public function placeOfReturn(){
         return $this->belongsTo(Ports::class,'place_return_id','id');
     }
+    public function pickUpLocation(){
+        return $this->belongsTo(Ports::class,'pick_up_location','id');
+    }
     public function loadPort(){
         return $this->belongsTo(Ports::class,'load_port_id','id');
     }
     public function dischargePort(){
-        return $this->belongsTo(Ports::class,'discharge_port_id','id');
+        return $this->belongsTo(Ports::class,'discharge_port_id','id'); 
     }
     public function bookedby(){
         return $this->belongsTo(User::class,'booked_by','id');
@@ -81,15 +88,22 @@ class   Booking extends Model implements PermissionSeederContract
     {
         return $this->hasMany(BookingContainerDetails::class ,'booking_id','id');
     }
-
+    public function principal(){
+        return $this->belongsTo(Lines::class,'principal_name','id');
+    }
+    public function operator(){
+        return $this->belongsTo(Lines::class,'vessel_name','id');
+    }
     public function createOrUpdateContainerDetails($inputs)
     {
         $has_gate_in = 0;
         if (is_array($inputs) || is_object($inputs)){
         foreach($inputs as $input){
+            
             if($input['container_id'] != null && $input['container_id'] != 000){
                 $has_gate_in = 1;
             }
+            
             $input['booking_id'] = $this->id;
 
             if( isset($input['id']) ){
@@ -100,6 +114,7 @@ class   Booking extends Model implements PermissionSeederContract
                 BookingContainerDetails::create($input);
             }
         }
+
         $this->has_gate_in = $has_gate_in;
         $this->save();
     }

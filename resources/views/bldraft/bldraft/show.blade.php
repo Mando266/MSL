@@ -57,10 +57,8 @@
                             <tr>
                                 <td class="col-md-6 tableStyle" style="border-left-style: hidden;">4- Vessel and Voyage No. </br>
                                 &nbsp &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</td>
-                                <td class="col-md-6 tableStyle" style="border-right-style: hidden;
-                                
-                                
-                                " >7- Place of Receipt </br>
+                                <td class="col-md-6 tableStyle" style="border-right-style: hidden;">
+                                7- Place of Receipt </br>
                                 &nbsp &nbsp &nbsp{{ optional($blDraft->placeOfAcceptence)->name }}</td>
                             </tr>
                             <tr>

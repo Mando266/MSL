@@ -19,67 +19,141 @@
                         @csrf
                         @method('put')
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="ports"> PORT </label>
-                                <select class="selectpicker form-control" id="ports" data-live-search="true" name="port_from_name" data-size="10"
+                            <div class="form-group col-md-6">
+                                <label for="vessel_idInput">Name *</label>
+                                <select class="selectpicker form-control" id="vessel_idInput" data-live-search="true" name="vessel_id" data-size="10"
                                     title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('port_from_name',$voyage->port_from_name) ? 'selected':''}}>{{$item->name}}</option>
+                                    @foreach ($vessels as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('vessel_id',$voyage->vessel_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('port_from_name')
+                                @error('vessel_id')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="terminals"> Terminal </label>
-                                <select class="selectpicker form-control" id="terminals" data-live-search="true" name="terminal_name" data-size="10"
-                                    title="{{trans('forms.select')}}">
-                                    @foreach ($terminals as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('terminal_name',$voyage->terminal_name) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('terminal_name')
+                            <div class="form-group col-md-6">
+                                <label for="voyage_noInput">Voyage No *</label>
+                                <input type="text" class="form-control" id="voyage_noInput" name="voyage_no" value="{{old('voyage_no',$voyage->voyage_no)}}"
+                                 placeholder="Voyage No" autocomplete="off" autofocus>
+                                @error('voyage_no')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
-                                    <label for="ROAD NO	">ROAD NO</label>
-                                <input type="text" class="form-control" id="road_no" name="road_no" value="{{old('road_no',$voyage->road_no)}}"
-                                    placeholder="ROAD NO" autocomplete="off">
-                                    @error('road_no')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
-                                </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                    <label for="ETA">ETA</label>
-                                <input type="date" class="form-control" id="ETA" name="eta" value="{{old('eta',$voyage->eta)}}"
-                                    placeholder="Voyage No" autocomplete="off">
-                                    @error('eta')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
+                                <label for="leg_idInput">Leg</label>
+                                <select class="selectpicker form-control" id="leg_idInput" data-live-search="true" name="leg_id" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($legs as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('leg_id',$voyage->leg_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('leg_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="ETA">ETD</label>
-                                <input type="date" class="form-control" id="ETA" name="etd" value="{{old('etd',$voyage->etd)}}"
-                                    placeholder="ETD" autocomplete="off">
-                                    @error('etd')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label for="Principal">Principal Name </label>
+                              <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
+                              title="{{trans('forms.select')}}">
+                                  @foreach ($lines as $item)
+                                      <option value="{{$item->id}}" {{$item->id == old('principal_name',$voyage->principal_name) ? 'selected':''}}>{{$item->name}}</option>
+                                  @endforeach
+                              </select>
+                              @error('principal_name')
+                              <div style="color: red;">
+                                  {{$message}}
+                              </div>
+                              @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="line_idInput">Vessel Operator</label>
+                                <select class="selectpicker form-control" id="line_idInput" data-live-search="true" name="line_id" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($lines as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('line_id',$voyage->line_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('line_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
                                 </div>
+                                @enderror
+                            </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="notes">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes"
+                                 placeholder="Notes" autocomplete="off">{{ old('notes',$voyage->notes) }}</textarea>
+                                @error('notes')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                        <h4>Voyages Port</h4>
+                        <table id="voyageport" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Port</th>
+                                    <th>Terminal</th>
+                                    <th>Road No</th>
+                                    <th>ETA</th>
+                                    <th>ETD</th>
+                                    <th>
+                                        <a id="add"> Add Port <i class="fas fa-plus"></i></a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($voyage_ports as $key => $item)
+                            <tr>
+                                <input type="hidden" value ="{{ $item->id }}" name="voyageport[{{ $key }}][id]">
+                                <td class="ports">
+                                    <select class="selectpicker form-control" id="port" data-live-search="true" name="voyageport[{{ $key }}][port_from_name]" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                        @foreach ($ports as $port)
+                                        <option value="{{$port->id}}" {{$port->id == old('port_from_name',$item->port_from_name) ? 'selected':''}}>{{$port->name}}</option>
+
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="terminal">
+                                    <select class="selectpicker form-control" id="terminal" data-live-search="true" name="voyageport[{{ $key }}][terminal_name]" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                        @foreach ($terminals as $terminal)
+                                        <option value="{{$terminal->id}}" {{$terminal->id == old('terminal_name',$item->terminal_name) ? 'selected':''}}>{{$terminal->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" id="road_no" name="voyageport[{{ $key }}][road_no]" class="form-control input" autocomplete="off" value="{{old('road_no',$item->road_no)}}">
+                                </td>
+                                <td>
+                                    <input type="date" id="eta" name="voyageport[{{ $key }}][eta]" class="form-control input" autocomplete="off" value="{{old('eta',$item->eta)}}">
+                                </td>
+                                <td>
+                                    <input type="date" id="etd" name="voyageport[{{ $key }}][etd]" class="form-control input" autocomplete="off" value="{{old('etd',$item->etd)}}">
+                                </td>
+                                <td style="width:85px;">
+                                        <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
+                                    </td>                           
+                                 </tr>
+                                 @endforeach
+                            </tbody>
+                        </table>
+                        <input name="removed" id="removed" type="hidden"  value="">
                        <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
@@ -94,3 +168,58 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    var removed = [];
+    function removeItem( item )
+    {
+        removed.push(item);
+        document.getElementById("removed").value = removed;
+    }
+      $(document).ready(function(){
+        $("#voyageport").on("click", ".remove", function () {
+        $(this).closest("tr").remove();
+        });
+        var counter  = <?= isset($key)? ++$key : 0 ?>;
+        $("#add").click(function(){
+                var tr = '<tr>'+
+            '<td class="ports"><select class="form-control" id="port" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->id}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
+            '<td class="terminal"><select class="form-control" id="terminal" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->id}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>@endforeach</select></td>'+
+            '<td><input type="text" name="voyageport['+counter+'][road_no]" class="form-control" autocomplete="off"></td>'+
+            '<td><input type="date" name="voyageport['+counter+'][eta]" class="form-control"></td>'+
+            '<td><input type="date" name="voyageport['+counter+'][etd]" class="form-control"></td>'+
+            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+            '</tr>';
+            counter++;
+            $('#voyageport').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#selectpicker').selectpicker();
+        });
+    });
+</script>
+
+<script>
+  $(document).ready(function (){
+    
+        $(function(){
+                $('#voyageport').on('change','td.ports select' , function(e){
+                  let self = $(this);
+                  let parent = self.closest('tr');
+                    let value = e.target.value;
+                    let terminal = $('td.terminal select' , parent);
+                    let response =    $.get(`/api/master/terminals/${value}`).then(function(data){
+                        let terminals = data.terminals || '';
+                      //  console.log(terminals);
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < terminals.length; i++){
+                            list2.push(`<option value='${terminals[i].id}'>${terminals[i].name} ${terminals[i].code}</option>`);
+                        }
+               // let terminal = $('.terminal',parent);
+                terminal.html(list2.join(''));
+                $(terminal).selectpicker('refresh');
+                });
+            });
+        });
+  });  
+</script>
+@endpush

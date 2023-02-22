@@ -4,6 +4,7 @@ use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
+use App\Http\Controllers\Update\RefreshController;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
     Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
+    Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('importExportView', 'ImportExportController@importExportView');
@@ -114,6 +116,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
         Route::get('showGateIn/{booking}',[BookingController::class,'showGateIn'])->name('booking.showGateIn');
         Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
+        Route::get('referManifest',[BookingController::class,'referManifest'])->name('booking.referManifest');
     });
     /*
     |-------------------------------------------
@@ -123,7 +126,25 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('bldraft')->namespace('BlDraft')->group(function () {
         Route::resource('bldraft','BlDraftController');
         Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
+        Route::get('manifest/{bldraft}',[BlDraftController::class,'manifest'])->name('bldraft.manifest');
+        Route::get('serviceManifest/{bldraft}',[BlDraftController::class,'serviceManifest'])->name('bldraft.serviceManifest');
+
     });
+    /*
+    |-------------------------------------------
+    | Trucker
+    |--------------------------------------------
+    */
+    Route::prefix('trucker')->namespace('Trucker')->group(function () {
+        Route::resource('trucker','TruckerController');
+    });
+    /*
+    |-------------------------------------------
+    | Manual Updates
+    |--------------------------------------------
+    */
+    Route::get('/update/manual',[RefreshController::class,'updateContainers'])->name('containerRefresh');
+    Route::get('/update/booking/containers/{id?}',[RefreshController::class,'updateBookingContainers'])->name('bookingContainersRefresh');
 });
 Auth::routes(['register' => false]);
 
