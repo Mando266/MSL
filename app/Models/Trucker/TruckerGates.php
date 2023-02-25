@@ -5,11 +5,12 @@ use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasFilter;
+use App\Models\Booking\Booking;
 
-class TruckerGats extends Model implements PermissionSeederContract
+class TruckerGates extends Model implements PermissionSeederContract
 {
     use HasFilter;
-    protected $table = 'truckers';
+    protected $table = 'truckers_gate';
     protected $guarded = [];
 
     use PermissionSeederTrait;
@@ -25,7 +26,7 @@ class TruckerGats extends Model implements PermissionSeederContract
     {
         return $this->belongsTo(Trucker::class,'trucker_id','id');
     }
-    
+
     public function booking(){
         return $this->belongsTo(Booking::class,'booking_id','id');
     }

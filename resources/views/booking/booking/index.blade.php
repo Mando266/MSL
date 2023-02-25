@@ -301,7 +301,7 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->links() }}
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

@@ -15,12 +15,15 @@ class CreateTruckersGateTable extends Migration
     {
         Schema::create('truckers_gate', function (Blueprint $table) {
             $table->id();
+            $table->BigInteger('company_id')->nullable();
             $table->unsignedInteger('trucker_id');
             $table->unsignedInteger('booking_id');
             $table->string('certificate_type','255')->nullable();                     
             $table->string('beneficiry_name','255')->nullable();                     
             $table->date('valid_to')->nullable();
             $table->date('issue_date')->nullable();
+            $table->date('inception_date')->nullable();
+            $table->date('payment_date')->nullable();
             $table->string('branch_name','255')->nullable();                     
             $table->BigInteger('gross_premium')->nullable();
             $table->BigInteger('net_contribution')->nullable();

@@ -171,7 +171,6 @@ class MovementsImport implements ToModel,WithHeadingRow
             ]);
             return Session::flash('message', 'Error in Allowed Next Movement');
         }
-        
 
         return $movement;
     }

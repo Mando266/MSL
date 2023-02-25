@@ -255,7 +255,7 @@ class VoyagesController extends Controller
     public function edit(Voyages $voyage)
     {
         $this->authorize(__FUNCTION__,VoyagePorts::class);
-        $voyage_ports = VoyagePorts::where('voyage_id',$voyage->id)->get();
+        $voyage_ports = VoyagePorts::where('voyage_id',$voyage->id)->with('voyage')->get();
         //dd($voyage_ports);
         $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
@@ -282,14 +282,13 @@ class VoyagesController extends Controller
         // ],[
         //     'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
         // ]);
-
+        //dd($request->input());
         $this->authorize(__FUNCTION__,VoyagePorts::class);
         $inputs = request()->all();
         unset($inputs['voyageport'],$inputs['_token'],$inputs['removed']);
         $voyage->update($inputs);
         VoyagePorts::destroy(explode(',',$request->removed));
         $voyage->createOrUpdatevoyageport($request->voyageport);
-
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));
     }
 

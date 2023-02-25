@@ -28,7 +28,7 @@ class QuotationsController extends Controller
         $this->authorize(__FUNCTION__,Quotation::class);
 
             $quotations = Quotation::filter(new QuotationIndexFilter(request()))->where('discharge_agent_id',Auth::user()->agent_id)->where('company_id',Auth::user()->company_id)->orderBy('id','desc')->paginate(30);
-            $exportQuotations = Quotation::select('ref_no','agent_id','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','status','principal_name')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
+            $exportQuotations = Quotation::select('ref_no','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','principal_name','ofr','status')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
             $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
@@ -49,6 +49,9 @@ class QuotationsController extends Controller
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->with('CustomerRoles.role')->get();
+        $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', 6);
+        })->with('CustomerRoles.role')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
@@ -70,6 +73,7 @@ class QuotationsController extends Controller
             'container_types'=>$container_types,
             'currency'=>$currency,
             'customers'=>$customers,
+            'ffw'=>$ffw,
             'country'=>$country,
             'line'=>$line,
             'equipment_types'=>$equipment_types,
@@ -98,15 +102,16 @@ class QuotationsController extends Controller
         ]);
 
         $user = Auth::user();
-        $validityFrom = Carbon::parse($request->validity_from)->format('m-Y');
-        $validityFrom = str_replace('-', '', $validityFrom);
+        $validityFrom = Carbon::parse($request->validity_from)->format('d-m-Y');
+        // $validityFrom = str_replace('-', '', $validityFrom);
         $placeOfAcceptance = Ports::where('id',$request->place_of_acceptence_id)->pluck('code')->first();
         $placeOfAcceptance = substr($placeOfAcceptance, -3);
         $placeOfDelivery = Ports::where('id',$request->place_of_delivery_id)->pluck('code')->first();
         $placeOfDelivery = substr($placeOfDelivery, -3);
         $customerName = Customers::where('id', $request->customer_id)->pluck('name')->first();
-        $customerName = substr($customerName, 0, 5);
-        $refNo = $placeOfAcceptance.$placeOfDelivery.'-'.$customerName.$validityFrom.'-';
+        $customerName = substr($customerName, 0, 8);
+        $refNo = $placeOfAcceptance.$placeOfDelivery.'-'.$customerName.'-'.$validityFrom.'/';
+        //dd($refNo);
         // $rate_sh = false;
         // $rate_cn = false;
         // $rate_nt = false;
@@ -165,6 +170,7 @@ class QuotationsController extends Controller
                 'oog'=>$request->oog ? $request->oog : 0,
                 'rf'=>$request->rf ? $request->rf : 0,
                 'customer_id'=> $request->input('customer_id'),
+                'ffw_id' => $request->input('ffw_id'),
                 'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
                 'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
                 'load_port_id'=> $request->input('load_port_id'),
@@ -181,6 +187,7 @@ class QuotationsController extends Controller
                 'pick_up_location'=>$request->input('pick_up_location'),
                 'ofr'=>$request->input('ofr'),
                 'show_import'=>$request->input('show_import'),
+                'power_charges'=>$request->input('power_charges'),
                 'status'=> "pending",
             ]);
             $refNo .=$quotations->id;
@@ -202,6 +209,7 @@ class QuotationsController extends Controller
                 'oog'=>$request->oog ? $request->oog : 0,
                 'rf'=>$request->rf ? $request->rf : 0,
                 'customer_id'=> $request->input('customer_id'),
+                'ffw_id' => $request->input('ffw_id'),
                 'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
                 'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
                 'load_port_id'=> $request->input('load_port_id'),
@@ -218,6 +226,7 @@ class QuotationsController extends Controller
                 'pick_up_location'=>$request->input('pick_up_location'),
                 'ofr'=>$request->input('ofr'),
                 'show_import'=>$request->input('show_import'),
+                'power_charges'=>$request->input('power_charges'),
                 'status'=> "pending",
             ]);
             $refNo .=$quotations->id;
@@ -268,6 +277,9 @@ class QuotationsController extends Controller
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
+        $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', 6);
+        })->with('CustomerRoles.role')->get();
 
         $isSuperAdmin = false;
         if(Auth::user()->is_super_admin){
@@ -287,6 +299,7 @@ class QuotationsController extends Controller
             'container_types'=>$container_types,
             'currency'=>$currency,
             'customers'=>$customers,
+            'ffw'=>$ffw,
             'line'=>$line,
             'equipment_types'=>$equipment_types,
             'country'=>$country,
@@ -324,6 +337,7 @@ class QuotationsController extends Controller
             'validity_from' => $request->validity_from,
             'validity_to' => $request->validity_to,
             'customer_id' => $request->customer_id,
+            'ffw_id' => $request->ffw_id,
             'countryload'=> $request->countryload,
             'countrydis'=> $request->countrydis,
             'place_of_acceptence_id' => $request->place_of_acceptence_id,
@@ -347,6 +361,7 @@ class QuotationsController extends Controller
             'show_import'=>$request->show_import,
             'agent_id'=>$request->agent_id,
             'oog_dimensions'=>$request->oog_dimensions,
+            'power_charges'=>$request->power_charges,
         ];
         if($user->is_super_admin){
             if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){

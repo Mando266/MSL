@@ -43,18 +43,15 @@ class Voyages extends Model implements PermissionSeederContract
     public function createOrUpdatevoyageport($inputs)
     {
 
-    if (is_array($inputs) || is_object($inputs)){
-
-        foreach($inputs as $input){
-                    
-            $input['voyage_id'] = $this->id;
-
-            if( isset($input['id']) ){
-                VoyagePorts::find($input['id'])
-                ->update($input);
-            } 
-            else{
-                VoyagePorts::create($input);
+        if (is_array($inputs) || is_object($inputs)){
+            foreach($inputs as $input){
+                $input['voyage_id'] = $this->id;
+                if( isset($input['id']) ){
+                    VoyagePorts::find($input['id'])
+                    ->update($input);
+                }
+                else{
+                    VoyagePorts::create($input);
                 }
             }
         }

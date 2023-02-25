@@ -111,7 +111,7 @@
                         @endif
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer <span class="text-warning"> * (Required.) </span></label>
+                                <label for="customer_id">Agreement Party <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" require>
                                     @foreach ($customers as $item)
@@ -124,6 +124,20 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="ffw_id">Forwarder Customer</label>
+                                <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ffw as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->ffw_id) ? 'selected':''}}>{{$item->name}} </option>
+                                    @endforeach
+                                </select>
+                                @error('ffw_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div> 
                             @if($isSuperAdmin)
                             <div class="form-group col-md-2">
                                 <label for="rate">Show Import Triff</label><br>
@@ -270,7 +284,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="equipment_type_id">Equipment Type <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
@@ -284,7 +298,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="export_detention">Export Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="export_detention" name="export_detention" value="{{old('export_detention',$quotation->export_detention)}}"
                                     placeholder="Export Detention" autocomplete="off" required>
@@ -294,7 +308,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="import_detention">Import Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="import_detention" name="import_detention" value="{{old('import_detention',$quotation->import_detention)}}"
                                     placeholder="Import Free Time" autocomplete="off" required>
@@ -304,16 +318,16 @@
                                 </div>
                                 @enderror
                             </div>
-                            <!-- <div class="form-group col-md-3">
-                                <label for="import_storage">Import Storage</label>
-                                <input type="text" class="form-control" id="import_storage" name="import_storage" value="{{old('import_storage',$quotation->import_storage)}}"
-                                    placeholder="Import Storage" autocomplete="off">
-                                @error('import_storage')
+                            <div class="form-group col-md-3">
+                                <label for="power_charges ">Power Charges Free Dayes</label>
+                                <input type="text" class="form-control" id="power_charges" name="power_charges" value="{{old('power_charges',$quotation->power_charges)}}"
+                                    placeholder="Power Charges Free Dayes" autocomplete="off">
+                                @error('power_charges ')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> -->
+                            </div>
                         </div>
                         <div class="form-row">
                             <!-- <div class="form-group col-md-3">

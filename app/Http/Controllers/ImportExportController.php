@@ -13,6 +13,7 @@ use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
 use App\Exports\MovementsExportSearch;
 use App\Exports\QuotationExport;
+use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
@@ -55,10 +56,11 @@ class ImportExportController extends Controller
         Excel::import(new ContainersImport,request()->file('file'));
         return back();
     }
-    public function exportCustomers() 
+    public function exportTruckerGate() 
     {
-        return Excel::download(new CustomerExport, 'Customers.xlsx');
+        return Excel::download(new TruckerGateExport, 'TruckerGate.xlsx');
     }
+
     public function LocalPortTriffShow() 
     {
         return Excel::download(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx');
