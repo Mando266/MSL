@@ -96,7 +96,7 @@
                                         <th>ref no</th>
                                         <!-- <th>Agent</th> -->
                                         <th>Main Line</th>
-                                        <th>Customer</th>
+                                        <th>Agreement Party</th>
                                         <th>validity from</th>
                                         <th>validity to</th>
                                         <th>Equipment Type</th>
@@ -202,7 +202,7 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->links() }}
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>

@@ -83,6 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
     Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
+    Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate');
     Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
     Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
@@ -128,7 +129,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
         Route::get('manifest/{bldraft}',[BlDraftController::class,'manifest'])->name('bldraft.manifest');
         Route::get('serviceManifest/{bldraft}',[BlDraftController::class,'serviceManifest'])->name('bldraft.serviceManifest');
-
     });
     /*
     |-------------------------------------------
@@ -137,6 +137,8 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('trucker')->namespace('Trucker')->group(function () {
         Route::resource('trucker','TruckerController');
+        Route::resource('truckergate','TruckerGateController');
+        Route::get('sendbasicemail/{trucker}',[TruckerGateController::class,'basic_email'])->name('truckergate.sendbasicemail');
     });
     /*
     |-------------------------------------------

@@ -14,9 +14,9 @@ class TruckerController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Trucker::class);
-            $truckers = Trucker::with('delegatedPersons')->paginate(10);
+            $truckers = Trucker::with('delegatedPersons')->paginate(30);
         // dd($truckers);
-            return view('trucker.index',[
+            return view('trucker.trucker.index',[
                 'items'=>$truckers,
             ]);  
     }
@@ -25,7 +25,7 @@ class TruckerController extends Controller
     {
         $this->authorize(__FUNCTION__,Trucker::class);
 
-        return view('trucker.create');  
+        return view('trucker.trucker.create');  
     }
 
     public function store(Request $request)
@@ -70,7 +70,7 @@ class TruckerController extends Controller
         $this->authorize(__FUNCTION__,Trucker::class);
         $trucker_person = DelegatedPerson::where('trucker_id',$trucker->id)->with('delegated')->get();
 
-        return view('trucker.edit',[
+        return view('trucker.trucker.edit',[
             'trucker'=>$trucker,
             'trucker_person'=>$trucker_person,
         ]);  
