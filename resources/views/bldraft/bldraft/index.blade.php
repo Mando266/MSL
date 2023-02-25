@@ -35,7 +35,7 @@
                             </div>
  
                             <div class="form-group col-md-3">
-                                    <label for="customer_id">Shipping Customer</label>
+                                    <label for="customer_id">Agreement Party</label>
                                     <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                         title="{{trans('forms.select')}}">
                                         @foreach ($customers as $item)
@@ -44,20 +44,20 @@
                                     </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="place_of_acceptence_id">Place Of Acceptence</label>
-                                <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
+                                <label for="POL">POL</label>
+                                <select class="selectpicker form-control" id="POL" data-live-search="true" name="load_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',request()->input('place_of_acceptence_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',request()->input('load_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="place_of_delivery_id">Place Of Delivery</label>
-                                <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
+                                <label for="place_of_delivery_id">POD</label>
+                                <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',request()->input('place_of_delivery_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                    @foreach ($ports as $item) 
+                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -94,9 +94,9 @@
                                         <th>#</th>
                                         <th>Booking no</th>
                                         <th>Bl Draft ref no</th>
-                                        <th>Customer</th>
-                                        <th>place of acceptence</th>
-                                        <th>place of delivery</th>
+                                        <th>Agreement Party</th>
+                                        <th>forwarder</th>
+                                        <th>consignee</th>
                                         <th>load port</th>
                                         <th>discharge port</th>
                                         <th>Equipment Type</th>
@@ -118,10 +118,10 @@
                                             <td>{{optional($item->booking)->ref_no}}</td>
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
-                                            <td>{{optional($item->placeOfAcceptence)->name}}</td>
-                                            <td>{{optional($item->placeOfDelivery)->name}}</td>
-                                            <td>{{optional($item->loadPort)->name}}</td>
-                                            <td>{{optional($item->dischargePort)->name}}</td>
+                                            <td>{{optional($item->booking->forwarder)->name}}</td>
+                                            <td>{{optional($item->booking->consignee)->name}}</td>
+                                            <td>{{optional($item->loadPort)->code}}</td>
+                                            <td>{{optional($item->dischargePort)->code}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td> 
                                             <td>
                                                 @foreach($item->blDetails as $blDetail)

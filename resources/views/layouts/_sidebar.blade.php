@@ -410,7 +410,11 @@
                                     <a href="{{route('trucker.index')}}">Truckers List</a>
                                 </li>
                                 @endpermission
-
+                                @permission('TruckerGates-List')
+                                <li>
+                                    <a href="{{route('truckergate.index')}}">Trucker Gates</a>
+                                </li>
+                                @endpermission
                         </ul>
             </li>
             @endpermission

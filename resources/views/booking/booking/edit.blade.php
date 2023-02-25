@@ -63,7 +63,6 @@
                                     <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" data-live-search="true">
                                         <option value="1" {{ old('booking_confirm',$booking->booking_confirm) == "1" ? 'selected':'' }}>Confirm</option>
                                         <option value="3" {{ old('booking_confirm',$booking->booking_confirm) == "3" ? 'selected':'' }}>Draft</option>
-                                        <!-- <option value="2" {{$booking->booking_confirm == old('booking_confirm',$booking->booking_confirm) ? 'selected':''}}>Cancelled</option> -->
                                         <option value="2" {{ old('booking_confirm',$booking->booking_confirm) == "2" ? 'selected':'' }}>Cancelled</option>
 
                                     </select>

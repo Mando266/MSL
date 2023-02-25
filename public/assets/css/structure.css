@@ -835,7 +835,7 @@ code {
     fill: rgba(37, 213, 228, 0.239216);
     color: #25d5e4; }
   #sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"] span {
-    color: #ebedf2; }
+    color: #fff; }
   #sidebar ul.menu-categories li.menu:not(.active) > .dropdown-toggle[aria-expanded="true"] {
     background: rgba(0, 150, 136, 0.121569);
     background: rgba(96, 125, 139, 0.109804); }
