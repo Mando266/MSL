@@ -20,11 +20,10 @@ class CreateInvoiceChargeDescriptionTable extends Migration
             $table->string('size_small','255')->nullable();
             $table->string('size_large','255')->nullable();
             $table->string('total_amount','255')->nullable();
-            $table->string('type')->nullable();   
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

@@ -418,6 +418,31 @@
                         </ul>
             </li>
             @endpermission
+            @permission('Invoice-List')
+            <li class="menu">
+                        <a href="#component10" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                            <div class="">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                             <span>Invoices</span>
+                            </div>
+                            <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('invoice.index')}}">Invoice List</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-Create')
+                                <li>
+                                    <a href="{{route('invoice.selectBL')}}">Create Debit Invoice</a>
+                                </li>
+                                @endpermission
+                        </ul>
+            </li>
+            @endpermission
     </nav>
 </div>
 <style>

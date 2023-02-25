@@ -37,8 +37,8 @@
                                 @enderror
                             </div> 
                             <div class="form-group col-md-8" id="summernote">
-                            <label for="customer_id">Shipping Customer Details</label>
-                            @if($booking->customer_id != null)
+                                <label for="customer_id">Shipping Customer Details</label>
+                                @if($booking->customer_id != null)
                                     <textarea class="form-control"  name="customer_shipper_details"
                                     placeholder="Customer Shipper Details" autocomplete="off">Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}</textarea>
                                 @endif
