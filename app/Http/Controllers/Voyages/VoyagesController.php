@@ -178,7 +178,12 @@ class VoyagesController extends Controller
             'voyage_no' => 'required',
             'vessel_id' => 'required',
         ]);
-        
+                 
+        $VoyagesDublicate  = Voyages::where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->first();
+            if($VoyagesDublicate != null && $VoyagesDublicate->vessel_id != null && $VoyagesDublicate->voyage_no != null ){
+                return back()->with('error','This Voyage Already Exists');
+        }
+
         $voyages = Voyages::create([
             'vessel_id'=> $request->input('vessel_id'),
             'voyage_no'=> $request->input('voyage_no'),
@@ -262,7 +267,7 @@ class VoyagesController extends Controller
         $lines = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-
+ 
         return view('voyages.voyages.edit',[
             'voyage_ports'=>$voyage_ports,
             'voyage'=>$voyage,
@@ -283,6 +288,16 @@ class VoyagesController extends Controller
         //     'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
         // ]);
         //dd($request->input());
+        $user = Auth::user();
+        $VoyageDublicate  = Voyages::where('id','!=',$voyage->id)->where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->first();
+            
+        if($VoyageDublicate != null){
+            if($VoyageDublicate->count() > 0){
+                    if($VoyageDublicate->vessel_id != null && $VoyageDublicate->voyage_no != null){
+                        return back()->with('error','This Voyage Already Exists');
+                    }
+                }
+        }
         $this->authorize(__FUNCTION__,VoyagePorts::class);
         $inputs = request()->all();
         unset($inputs['voyageport'],$inputs['_token'],$inputs['removed']);
