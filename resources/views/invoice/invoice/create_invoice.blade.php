@@ -15,7 +15,7 @@
                 </div>
                 <div class="widget-content widget-content-area">
            
-                    <form id="createForm" action="{{route('invoice.store')}}" method="POST" enctype="multipart/form-data">
+                    <form id="createForm" action="{{route('invoice.store_invoice')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                         <div class="form-row">
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
@@ -120,22 +120,25 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">Charge Description</th>
-                                        <th class="text-center">Rate 20/40</th>
-                                        <th class="text-center">Amount 20/40</th>
+                                        <th class="text-center">Amount</th>
+                                        <th class="text-center">VAT</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($triffDetails->triffPriceDetailes as $key => $detail)
+                                    
                             <tr>
                                 <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="" >
+                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="{{ $detail->charge_type }}" >
                                 </td>
-                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
-                                    placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
+                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{ $detail->selling_price }}"
+                                    placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
                                 </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
-                                    placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{ $detail->selling_price + ($detail->selling_price * 0) }}"
+                                    placeholder="VAT" autocomplete="off" style="background-color: white;">
                                 </td>
                             </tr>
+                            @endforeach
                             </tbody>
                         </table>
                             <div class="row">
