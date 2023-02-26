@@ -17,6 +17,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Invoice</a>
+                            <a href="{{route('invoice.selectBLinvoice')}}" class="btn btn-info">New Invoice</a>
                             </div>
                         </div>
                     @endpermission
@@ -68,14 +69,14 @@
                                             <td>{{{$invoice->created_at}}}</td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
-                                                    @permission('Invoice-Edit')
+                                                    <!-- @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     
-                                                    @endpermission
+                                                    @endpermission -->
                                                     @permission('Invoice-Show')
                                                     <li>
                                                         <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
@@ -106,7 +107,8 @@
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $invoices->links() }}
+                            {{ $invoices->appends(request()->query())->links()}}
+
                         </div>
                     </div>
                 </div>
