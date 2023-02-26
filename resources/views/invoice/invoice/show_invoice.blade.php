@@ -69,7 +69,7 @@
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
-                            <th class="col-md-1 tableStyle">S</th>
+                            <th class="col-md-1 tableStyle text-center">S</th>
                             <th class="col-md-5 tableStyle text-center">Description Of Charges</th>
                             <th class="col-md-2 tableStyle text-center">Amount</th>
                             <th class="col-md-2 tableStyle text-center">VAT</th>
@@ -77,34 +77,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($invoice->chargeDesc as $chargeDesc)
+                        @foreach($invoice->chargeDesc as $key => $chargeDesc)
                         <tr>
-                            <td class="col-md-4 tableStyle">{{ $chargeDesc->charge_description }}</td>
-                            <td class="col-md-3 tableStyle text-center">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
-                            <td class="col-md-3 tableStyle text-center">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
+                            <td class="col-md-1 tableStyle text-center">{{ $key+1 }}</td>
+                            <td class="col-md-5 tableStyle">{{ $chargeDesc->charge_description }}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small }}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small * 0 }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->total_amount }}</td>
                         </tr>
                         @endforeach
                         <tr>
-                            <td class="col-md-10 tableStyle text-right" colspan="3">TOTAL USD</td>
+                            <td class="col-md-6 tableStyle text-center" colspan="2">GRAND TOTAL</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $amount }}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $vat }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $total }}</td>
                         </tr>
+                        <tr>
+                            <td class="col-md-2 tableStyle text-center" colspan="5">{{ $USD }} Dollar</td>
+                        </tr>
                     </tbody>
                 </table>
                 <br>
                 <br>
-                <table class="col-md-12 tableStyle">
-                    <thead>
-                        <tr>
-                            <th class="tableStyle">Total amount in words in US $</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="entry" style="padding: .75rem;">{{ $USD }} Dollars <br><br></td>
-                        </tr>
-                    </tbody>
-                </table>
 
                 </div>
                 <div class="row">
