@@ -106,7 +106,8 @@ class InvoiceController extends Controller
                 ]);
             }
         }
-        
+        return redirect()->route('invoice.index')->with('success',trans('voyage.created'));
+
 
     }
 
@@ -127,14 +128,21 @@ class InvoiceController extends Controller
         }
         $exp = explode('.', $total);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
-        $Test =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
-        dd($Test);
+        if(count($exp) >1){
+            $USD =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $USD =  ucfirst($f->format($exp[0]));
+
+        }
+        //dd($USD);
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
                 'qty'=>$qty,
                 'total'=>$total,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'USD'=>$USD,
             ]);
         }else{
             return view('invoice.invoice.show_invoice',[
@@ -142,6 +150,7 @@ class InvoiceController extends Controller
                 'qty'=>$qty,
                 'total'=>$total,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'USD'=>$USD,
             ]);
         }
         

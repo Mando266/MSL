@@ -51,7 +51,7 @@
                     </tbody>
                 </table>
                 <br>
-                <h4>Container Details :</h4>
+                <h4 style="font-size: 18px !important; font-weight: bolder !important;">Container Details :</h4>
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
@@ -112,12 +112,12 @@
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
-                            <th class="tableStyle">Total amount in words in US$</th>
+                            <th class="tableStyle">Total amount in words in US $</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="tableStyle">{{ $chargeDesc->charge_description }}</td>
+                            <td class="entry" style="padding: .75rem;">{{ $USD }} Dollars <br><br></td>
                         </tr>
                     </tbody>
                 </table>
@@ -142,7 +142,7 @@
         }
     }
     .entry{
-        font-size: 16px !important;
+        font-size: 14px !important;
     }
     .tableStyle {
         font-size: 18px !important;
