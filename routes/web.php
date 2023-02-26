@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\Booking\BookingController;
+use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Http\Controllers\Trucker\TruckerGateController;
@@ -140,6 +141,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('trucker','TruckerController');
         Route::resource('truckergate','TruckerGateController');
         Route::get('basic_email',[TruckerGateController::class,'basic_email'])->name('trucker.basic_email');
+    });
+    /*
+    |-------------------------------------------
+    | BL routes
+    |--------------------------------------------
+    */
+    Route::prefix('invoice')->namespace('Invoice')->group(function () {
+        Route::resource('invoice','InvoiceController');
+        Route::get('selectBL',[InvoiceController::class,'selectBL'])->name('invoice.selectBL');
+
     });
     /*
     |-------------------------------------------
