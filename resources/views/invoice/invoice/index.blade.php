@@ -74,6 +74,7 @@
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
+                                                    
                                                     @endpermission
                                                     @permission('Invoice-Show')
                                                     <li>
