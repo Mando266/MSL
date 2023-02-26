@@ -14,15 +14,15 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <div class="col-md-4">
+                <div class="col-md-12 text-center">
                     <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
                 </div>
-</br>
-</br>
+                </br>
+                </br>
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
-                            <th class="text-center thstyle underline">DEBIT NOTE</th>
+                            <th class="text-center thstyle underline" style="font-size: 18px;">DEBIT NOTE</th>
                         </tr>
                     </thead>
                 </table>
@@ -51,7 +51,7 @@
                     </tbody>
                 </table>
                 <br>
-                <h4 style="font-size: 18px !important; font-weight: bolder !important;">Container Details :</h4>
+                <h4 style="font-size: 24px !important; font-weight: bolder !important; color:black">Container Details </h4>
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
@@ -82,7 +82,7 @@
                     </tbody>
                 </table>
                 <br>
-                <h4>Charges</h4>
+                <h4 style="font-size: 24px !important; font-weight: bolder !important; color:black">Charges</h4>
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>
@@ -95,14 +95,14 @@
                     <tbody>
                         @foreach($invoice->chargeDesc as $chargeDesc)
                         <tr>
-                            <td class="col-md-4 tableStyle">{{ $chargeDesc->charge_description }}</td>
-                            <td class="col-md-3 tableStyle text-center">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
-                            <td class="col-md-3 tableStyle text-center">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
-                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->total_amount }}</td>
+                            <td class="col-md-4 tableStyle" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->charge_description }}</td>
+                            <td class="col-md-3 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
+                            <td class="col-md-3 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->size_small == 0? '0': $chargeDesc->size_small }}/{{ $chargeDesc->size_large == 0? '0': $chargeDesc->size_large }}</td>
+                            <td class="col-md-2 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->total_amount }}</td>
                         </tr>
                         @endforeach
                         <tr>
-                            <td class="col-md-10 tableStyle text-right" colspan="3">TOTAL USD</td>
+                            <td class="col-md-10 tableStyle text-right" colspan="3">Total US$</td>
                             <td class="col-md-2 tableStyle text-center">{{ $total }}</td>
                         </tr>
                     </tbody>
@@ -142,7 +142,9 @@
         }
     }
     .entry{
-        font-size: 14px !important;
+        font-size: 18px !important;
+        font-weight: 100 !important;
+
     }
     .tableStyle {
         font-size: 18px !important;
@@ -151,7 +153,7 @@
         margin-bottom: 1rem;
         height: 50px;
         color: black;
-        text-transform: uppercase;
+        /* text-transform: uppercase; */
         padding: .75rem;
     }
     .underline{
