@@ -13,17 +13,32 @@
                         </ol>
                     </nav>
                 </div>
+
                 <div class="widget-content widget-content-area">
-                <div class="col-md-12 text-center">
-                    <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
+
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <!-- <img src="{{asset('assets/img/Mas-2.png')}}" style="width: 350px;" alt="logo"> -->
+                    </div>
                 </div>
+
                 </br>
                 </br>
+
                 <table class="col-md-12 tableStyle">
                     <thead>
+
                         <tr>
+                        @if($invoice->invoice_status == "draft")
+                            <th class="text-center thstyle underline" style="font-size: 18px;"> DRAFT DEBIT NOTE</th>
+                            @else
                             <th class="text-center thstyle underline" style="font-size: 18px;">DEBIT NOTE</th>
+                        @endif
                         </tr>
+
                     </thead>
                 </table>
                 <table class="col-md-12 tableStyle">

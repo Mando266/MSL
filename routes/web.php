@@ -150,7 +150,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('invoice')->namespace('Invoice')->group(function () {
         Route::resource('invoice','InvoiceController');
         Route::get('selectBL',[InvoiceController::class,'selectBL'])->name('invoice.selectBL');
-
+        Route::get('selectBLinvoice',[InvoiceController::class,'selectBLinvoice'])->name('invoice.selectBLinvoice');
+        Route::get('create_invoice',[InvoiceController::class,'create_invoice'])->name('invoice.create_invoice');
     });
     /*
     |-------------------------------------------

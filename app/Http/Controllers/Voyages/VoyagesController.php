@@ -191,6 +191,7 @@ class VoyagesController extends Controller
             'line_id'=> $request->input('line_id'),
             'notes'=> $request->input('notes'),
             'principal_name'=> $request->input('principal_name'),
+            'exchange_rate'=> $request->input('exchange_rate'),
             'company_id'=>$user->company_id,
         ]);
 

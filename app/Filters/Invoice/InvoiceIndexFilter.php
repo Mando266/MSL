@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filters\Quotation;
+namespace App\Filters\Invoice;
 use App\Filters\AbstractFilter;
 use App\Filters\Invoice\TypeFilter;
 

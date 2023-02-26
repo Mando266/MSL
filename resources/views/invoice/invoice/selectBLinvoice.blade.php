@@ -8,13 +8,13 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">New Debit Invoice</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">New Invoice</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="createForm" action="{{route('invoice.create')}}" method="get">
+                    <form id="createForm" action="{{route('invoice.create_invoice')}}" method="get">
                             @csrf
                             <form>
                     <div class="form-row">
