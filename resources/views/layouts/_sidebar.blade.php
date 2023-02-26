@@ -439,6 +439,9 @@
                                 <li>
                                     <a href="{{route('invoice.selectBL')}}">New Debit Invoice</a>
                                 </li>
+                                <li>
+                                    <a href="{{route('invoice.selectBLinvoice')}}">New Invoice</a>
+                                </li>
                                 @endpermission
                         </ul>
             </li>

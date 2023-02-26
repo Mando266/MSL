@@ -138,6 +138,7 @@
                             <td class="tableStyle thstyle">Seal No</td>
                             <td class="tableStyle thstyle">QTY</td>
                             <td class="tableStyle thstyle">Container No</td>
+                            <td class="tableStyle thstyle">Weight</td>
                             <td class="tableStyle thstyle">Haz / Reefer / OOG Details / Haz Approval Ref.</td>
                         </tr>
                         @foreach($booking->bookingContainerDetails as $details)
@@ -147,6 +148,7 @@
                             <td class="tableStyle">{{ $details->seal_no }}</td>
                             <td class="tableStyle">{{ $details->qty }}</td>
                             <td class="tableStyle">{{ optional($details->container)->code }}</td>
+                            <td class="tableStyle">{{ $details->weight}}</td>
                             <td class="tableStyle">{{ $details->haz}}</td>
                         </tr>
                         @endforeach
