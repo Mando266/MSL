@@ -11,7 +11,7 @@ class CreateInvoiceTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up() 
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();

@@ -18,7 +18,6 @@
                             @permission('Voyages-Create')
                             <a href="{{route('voyages.create')}}" class="btn btn-primary">Add New Voyage</a>
                             @endpermission
-
                             </div>
                         </div>
                     </div>
