@@ -53,7 +53,7 @@
                                 <div class="form-group col-md-3" >
                                     <label>Load Port</label>
                                         @if(optional($bldraft)->load_port_id != null)
-                                        <input type="text" class="form-control" placeholder="Load Port" autocomplete="off" value="{{(optional($bldraft->placeOfAcceptence)->code)}}" style="background-color:#fff" disabled>
+                                        <input type="text" class="form-control" placeholder="Load Port" autocomplete="off" value="{{(optional($bldraft->loadPort)->code)}}" style="background-color:#fff" disabled>
                                         @endif
                                 </div> 
                             <div class="form-group col-md-3" >
