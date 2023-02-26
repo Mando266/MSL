@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Invoice;
 
+use App\Filters\Quotation\InvoiceIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceChargeDesc;
+use App\Models\Voyages\VoyagePorts;
 use App\Models\Voyages\Voyages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +21,8 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::all();
-        return view('invoice.index',[
+        $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('chargeDesc')->paginate(30);
+        return view('invoice.invoice.index',[
             'invoices'=>$invoices
         ]);
     }
@@ -116,7 +118,33 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        //
+        $invoice = Invoice::with('chargeDesc')->find($id);
+        $qty = $invoice->bldraft->blDetails->count();
+        $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)->where('port_from_name',optional($invoice->bldraft->booking->loadPort)->id)->first();
+        $total = 0;
+        foreach($invoice->chargeDesc as $chargeDesc){
+            $total += $chargeDesc->total_amount;
+        }
+        $exp = explode('.', $total);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        $Test =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+        dd($Test);
+        if($invoice->type == 'debit'){
+            return view('invoice.invoice.show_debit',[
+                'invoice'=>$invoice,
+                'qty'=>$qty,
+                'total'=>$total,
+                'firstVoyagePort'=>$firstVoyagePort,
+            ]);
+        }else{
+            return view('invoice.invoice.show_invoice',[
+                'invoice'=>$invoice,
+                'qty'=>$qty,
+                'total'=>$total,
+                'firstVoyagePort'=>$firstVoyagePort,
+            ]);
+        }
+        
     }
 
     /**
