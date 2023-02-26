@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceChargeDesc;
+use App\Models\Quotations\LocalPortTriff;
 use App\Models\Voyages\VoyagePorts;
 use App\Models\Voyages\Voyages;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,12 +57,18 @@ class InvoiceController extends Controller
         }else{
             $bldraft = null;
         }
+        
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-
-
+        $triffDetails = LocalPortTriff::where('port_id',$bldraft->load_port_id)->where('validity_to','>=',Carbon::now()->format("Y-m-d"))
+        ->with(["triffPriceDetailes" => function($q) use($bldraft){
+            $q->where("equipment_type_id", optional($bldraft->equipmentsType)->id);
+            $q->orwhere('equipment_type_id','100');
+        }])->first();
+        
         return view('invoice.invoice.create_invoice',[
             'bldrafts'=>$bldrafts,
             'bldraft'=>$bldraft,
+            'triffDetails'=>$triffDetails,
             'voyages'=>$voyages,
         ]);
     }
@@ -113,7 +121,7 @@ class InvoiceController extends Controller
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
         ]);
-        $invoice_no = 'DRAFT';
+        $invoice_no = 'DRAFTD';
         $invoice_no = $invoice_no . str_pad( $invoice->id, 4, "0", STR_PAD_LEFT );
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
@@ -142,6 +150,43 @@ class InvoiceController extends Controller
 
     }
 
+    public function storeInvoice(Request $request)
+    {
+        $this->authorize(__FUNCTION__,Invoice::class);
+        request()->validate([
+            'bldraft_id' => ['required'],
+            'customer' => ['required'],
+        ]);
+        $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
+        $blkind = str_split($request->bl_kind, 2);
+        $blkind = $blkind[0];
+        $invoice = Invoice::create([
+            'bldraft_id'=>$request->bldraft_id,
+            'customer'=>$request->customer,
+            'company_id'=>Auth::user()->company_id,
+            'invoice_no'=>'',
+            'date'=>$request->date,
+            'invoice_kind'=>$blkind,
+            'type'=>'invoice',
+            'invoice_status'=>$request->invoice_status,
+        ]);
+        $invoice_no = 'DRAFTV';
+        $invoice_no = $invoice_no . str_pad( $invoice->id, 4, "0", STR_PAD_LEFT );
+        $invoice->invoice_no = $invoice_no;
+        $invoice->save();
+        $qty = $bldraft->blDetails->count();
+        foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
+            InvoiceChargeDesc::create([
+                'invoice_id'=>$invoice->id,
+                'charge_description'=>$chargeDesc['charge_description'],
+                'size_small'=>$chargeDesc['size_small'],
+                'total_amount'=>$qty * $chargeDesc['size_small'],
+            ]);
+        }
+        return redirect()->route('invoice.index')->with('success',trans('voyage.created'));
+
+
+    }
     /**
      * Display the specified resource.
      *
@@ -175,14 +220,21 @@ class InvoiceController extends Controller
             ]);
         }else{
             $gross_weight = 0;
-            dd($invoice);
+            $amount = 0;
+            $vat = 0;
             foreach($invoice->bldraft->blDetails as $bldetail){
                 $gross_weight += $bldetail->gross_weight;
+            }
+            foreach($invoice->chargeDesc as $charge){
+                $amount += $charge->size_small;
+                $vat += $charge->size_small * 0;
             }
             return view('invoice.invoice.show_invoice',[
                 'invoice'=>$invoice,
                 'qty'=>$qty,
                 'total'=>$total,
+                'amount'=>$amount,
+                'vat'=>$vat,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
