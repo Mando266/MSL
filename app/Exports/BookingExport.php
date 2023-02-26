@@ -24,7 +24,7 @@ class BookingExport implements FromCollection,WithHeadings
             "PLACE OF DELIVERY",
             "LOAD PORT",
             "DISCHARGE PORT",
-            "Pick Up Location",
+            "Pick Up Location", 
             "Place Of Return",
             "EQUIPMENT TYPE",
             "QTY",
@@ -34,19 +34,39 @@ class BookingExport implements FromCollection,WithHeadings
             "OOG",
             "BOOKING CREATION",
             "BOOKING STATUS",
+            "Bldraft Status",
+            "Assigned",
+            "UnAssigned"
         ];
     }
     
 
     public function collection()
     {
-       
+        
         $bookings = session('bookings');
         $exportBookings = collect();
         foreach($bookings ?? [] as $booking){
             $qty = 0;
+            $assigned = 0;
+            $unassigned = 0;
+            $bldraftStatus = '';
+            if($booking->has_bl == 0){
+                $bldraftStatus = 'unissued';
+            }elseif(optional($booking->bldraft)->bl_status == 1){
+                $bldraftStatus = 'confirm';
+            }elseif(optional($booking->bldraft)->bl_status == 0){
+                $bldraftStatus = 'draft';
+            }
             foreach($booking->bookingContainerDetails as $bookingDetail){
                 $qty += $bookingDetail->qty;
+                if($bookingDetail->qty == 1 && $bookingDetail->container_id == "000"){
+                    $unassigned += 1;
+                }elseif($bookingDetail->qty == 1){
+                    $assigned += 1;
+                }else{
+                    $unassigned += $bookingDetail->qty;
+                }
             }
             if($booking->bookingContainerDetails->count() > 0){
                 if($booking->booking_confirm == 1){
@@ -80,6 +100,9 @@ class BookingExport implements FromCollection,WithHeadings
                     'oog' =>  $booking->oog == 1 ? "OOG":"",
                     'created_at' => $booking->created_at,
                     'booking_confirm' => $booking->booking_confirm,
+                    'bl_status'=>$bldraftStatus,
+                    'assigned' => $assigned,
+                    'unassigned' => $unassigned,
                 ]);
                 $exportBookings->add($tempCollection);
         }

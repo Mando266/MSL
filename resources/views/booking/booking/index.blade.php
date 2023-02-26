@@ -19,7 +19,7 @@
                             <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
                             <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a> 
-                            <a class="btn btn-info" href="{{ route('booking.referManifest') }}">Reefer Manifest</a> 
+                            <!-- <a class="btn btn-info" href="{{ route('booking.referManifest') }}">Reefer Manifest</a>  -->
                             </div>
                         </div>
                     @endpermission
@@ -199,7 +199,6 @@
                                                 <span class="badge badge-danger"> Cancelled </span>
                                                 @endif
                                             </td>
-
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                  @if($item->booking_confirm == "1")
@@ -210,8 +209,15 @@
                                                                     <i class="fas fa-plus text-primary"></i>
                                                                 </a>
                                                             </li>
+                                                            @else
+                                                                @if(optional($item->bldraft)->bl_status == 1)
+                                                                    <span class="badge badge-info"> Confirmed </span>
+                                                                @else
+                                                                    <span class="badge badge-warning"> Draft </span>
+                                                                @endif
                                                         @endif
                                                     @endpermission
+                                                
                                                 @endif
                                                 </ul>
                                             </td>

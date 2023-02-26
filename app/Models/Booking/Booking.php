@@ -2,6 +2,7 @@
 
 namespace App\Models\Booking;
 
+use App\Models\Bl\BlDraft;
 use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
@@ -32,6 +33,9 @@ class   Booking extends Model implements PermissionSeederContract
             'Edit',
             'Delete'
         ]);
+    }
+    public function bldraft(){
+        return $this->belongsTo(BlDraft::class,'id','booking_id');
     }
     public function quotation(){
         return $this->belongsTo(Quotation::class,'quotation_id','id');

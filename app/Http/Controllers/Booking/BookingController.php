@@ -104,7 +104,7 @@ class BookingController extends Controller
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
-            $query->where('country_id',  $quotation->countrydis);
+            $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);
         })->where('status',2)->get();
         $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
@@ -124,7 +124,6 @@ class BookingController extends Controller
             'voyages'=>$voyages,
             'activityLocations'=>$activityLocations,
             'line'=>$line,
-
         ]);
     }
 
@@ -319,9 +318,9 @@ class BookingController extends Controller
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get(); 
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
-            $query->where('country_id',  $quotation->countrydis);
+            $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);
         })->where('status',2)->get();
-        $oldcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
+        $oldcontainers = Containers::where('company_id',Auth::user()->company_id)->where('container_type_id',$quotation->equipment_type_id)->get();
         // $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $activityLocations = Ports::where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
