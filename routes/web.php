@@ -5,6 +5,7 @@ use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
+use App\Http\Controllers\Trucker\TruckerGateController;
 use App\Http\Controllers\Update\RefreshController;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
@@ -20,10 +21,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::resource('roles', 'RoleController');
         Route::resource('users', 'UserController');
+        Route::resource('settings', 'SettingController');
         Route::get('profile', 'UserController@showProfile')->name('profile');
         Route::get('reset-password', 'ResetPasswordController@edit')->name('user.reset-password');
         Route::put('reset-password', 'ResetPasswordController@update');
-
     });
      /*
     |-------------------------------------------
@@ -139,7 +140,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('trucker')->namespace('Trucker')->group(function () {
         Route::resource('trucker','TruckerController');
         Route::resource('truckergate','TruckerGateController');
-        Route::get('sendbasicemail/{trucker}',[TruckerGateController::class,'basic_email'])->name('truckergate.sendbasicemail');
+        Route::get('basic_email',[TruckerGateController::class,'basic_email'])->name('trucker.basic_email');
     });
     /*
     |-------------------------------------------

@@ -466,8 +466,27 @@
                                     </td>
 
                                     <td>
-                                        <input type="text" id="etaInput" name="containerDetails[{{ $key }}][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" value="{{old('qty',$item->qty)}}">
+                                        <input type="text" id="qyt" onchange="return check();" name="containerDetails[{{ $key }}][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" value="{{old('qty',$item->qty)}}" required>
                                     </td>
+                                    @if($item->container_id == 000)
+                                    <td class="ports">
+                                        <select class="selectpicker form-control" id="activity_location_id" data-live-search="true"  data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                            @foreach ($activityLocations as $activityLocation)
+                                                <option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id',$item->activity_location_id) ? 'selected':''}}>{{$activityLocation->code}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td class="containerDetailsID">
+                                        <select class="selectpicker form-control" id="containerDetailsID" name="containerDetails[{{ $key }}][container_id]" data-live-search="true"  data-size="10"
+                                                title="{{trans('forms.select')}}">
+                                                <option value="000" selected>Select</option>
+                                                @foreach ($oldcontainers as $container)
+                                                    <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
+                                                @endforeach
+                                        </select>
+                                    </td>
+                                    @else
                                     <td class="ports">
                                         <select class="selectpicker form-control" id="activity_location_id" data-live-search="true"  data-size="10"
                                         title="{{trans('forms.select')}}" disabled>
@@ -485,6 +504,7 @@
                                                 @endforeach
                                         </select>
                                     </td>
+                                    @endif
                                     <td>
                                         <input type="text" id="haz" name="containerDetails[{{ $key }}][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" value="{{old('haz',$item->haz)}}">      
                                     </td>
@@ -496,9 +516,12 @@
                                         <input type="text" class="form-control" id="vgm" name="containerDetails[{{ $key }}][vgm]" value="{{old('vgm',$item->vgm)}}"
                                         placeholder="VGM" autocomplete="off">
                                     </td>
+                                    @if($key > 0) 
                                     <td style="width:85px;">
                                         <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
                                     </td>
+                                    @endif
+
                                 </tr>
                                     @endforeach
                                 </tbody>
@@ -538,10 +561,10 @@ $(document).ready(function(){
             var tr = '<tr>'+
                 '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
                 '<td><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
-                '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" placeholder="QTY"></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" id="number"  onchange="return check_value();" placeholder="QTY" required></td>'+
                 '<td class="ports"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
                 '<td class="containerDetailsID"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
-                '<td><input type="text" value="{{$quotation->oog_dimensions}}" name="containerDetails['+counter+'][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF"></td>'+
+                '<td><input type="text" value="" name="containerDetails['+counter+'][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF"></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][weight]" class="form-control" autocomplete="off" placeholder="Weight"></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][vgm]" class="form-control" autocomplete="off" placeholder="VGM"></td>'+
                 '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
@@ -587,12 +610,13 @@ $(function(){
     
         $(function(){
             let company_id = "{{ optional(Auth::user())->company->id }}";
+            let equipment_id = "{{$quotation->equipment_type_id}}";
                 $('#containerDetails').on('change','td.ports select' , function(e){
                   let self = $(this);
                   let parent = self.closest('tr');
                     let value = e.target.value;
                     let container = $('td.containerDetailsID select' , parent);
-                    let response =    $.get(`/api/booking/activityContainers/${value}/${company_id}`).then(function(data){
+                    let response =    $.get(`/api/booking/activityContainers/${value}/${company_id}/${equipment_id}`).then(function(data){
                         let containers = data.containers || '';
                        console.log(containers);
                         let list2 = [`<option value=''>Select...</option>`];
@@ -607,7 +631,33 @@ $(function(){
         });
   });  
 </script>
+<script src="js/jquery.js"></script>
+    <script type="text/javascript">
+    function check(){  
+            //get the number
+            var number = $('#qyt').val();  
 
+                    if(number == 0){  
+                        //show that the number is not allowed  
+                        alert("Container Qyt value Not Allowed 0"); 
+                        $("#qyt").val('');
+                    }
+    }
+</script>
+
+<script src="js/jquery.js"></script>
+    <script type="text/javascript">
+    function check_value(){  
+            //get the number
+            var number = $('#number').val();  
+
+                    if(number == 0){  
+                        //show that the number is not allowed  
+                        alert("Container Qyt value Not Allowed 0"); 
+                        $("#number").val('');
+                    }
+    }
+</script>
 <script>
     $('#editForm').submit(function() {
         $('select').removeAttr('disabled');

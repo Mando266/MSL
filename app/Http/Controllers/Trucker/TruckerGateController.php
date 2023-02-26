@@ -9,8 +9,8 @@ use App\Models\Booking\Booking;
 use App\Models\Trucker\Trucker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Mail;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MailableName ;
 class TruckerGateController extends Controller
 {
 
@@ -95,9 +95,21 @@ class TruckerGateController extends Controller
 
     }
 
+        public function basic_email() {
+            $details = [
+                'title' => 'Mail from ItSolutionStuff.com',
+                'body' => 'This is for testing email using smtp this is Mohamed Fadl test 25-25-2022' ,
+             ];
+                $mailTest = Mail::to('moataz.elnabawi@meastline.com')->send(new MailableName($details));
+                //dd($mailTest);
+
+            echo "Basic Email Sent. Check your inbox.";
+    }
+
     public function destroy($id)
     {
         $truckergate = TruckerGates::find($id);
         $truckergate->delete();
-        return back()->with('Success',trans('Trucker Gate.Deleted'));    }
+        return back()->with('Success',trans('Trucker Gate.Deleted'));
+    }
 }

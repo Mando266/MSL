@@ -525,7 +525,7 @@
                                 </td>
                                 
                                 <td>
-                                    <input type="text" id="etaInput" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" required>
+                                    <input type="text" id="qyt" onchange="return check();" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" required>
                                     @error('qty')
                                     <div style="color: red;">
                                         {{$message}}
@@ -599,7 +599,7 @@
             var tr = '<tr>'+
                 '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
                 '<td><select id="selectpicker" class="selectpicker form-control" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
-                '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" placeholder="QTY"></td>'+
+                '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" id="number"  onchange="return check_value();" autocomplete="off" placeholder="QTY" required></td>'+
                 '<td class="ports"><select class="selectpicker form-control" id="activity_location_id" data-live-search="true" name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
                 '<td class="containerDetailsID"><select id="selectpicker" class="selectpicker form-control" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
                 '<td><input type="text" value="{{$quotation->oog_dimensions}}" name="containerDetails['+counter+'][haz]" class="form-control" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off"></td>'+
@@ -613,6 +613,33 @@
             counter++;
     });
 });
+</script>
+<script src="js/jquery.js"></script>
+    <script type="text/javascript">
+    function check(){  
+            //get the number
+            var number = $('#qyt').val();  
+
+                    if(number == 0){  
+                        //show that the number is not allowed  
+                        alert("Container Qyt value Not Allowed 0"); 
+                        $("#qyt").val('');
+                    }
+    }
+</script>
+
+<script src="js/jquery.js"></script>
+    <script type="text/javascript">
+    function check_value(){  
+            //get the number
+            var number = $('#number').val();  
+
+                    if(number == 0){  
+                        //show that the number is not allowed  
+                        alert("Container Qyt value Not Allowed 0"); 
+                        $("#number").val('');
+                    }
+    }
 </script>
 <script>
     $(function(){
@@ -652,12 +679,13 @@
     
         $(function(){
             let company_id = "{{ optional(Auth::user())->company->id }}";
+            let equipment_id = "{{$quotation->equipment_type_id}}";
                 $('#containerDetails').on('change','td.ports select' , function(e){
                   let self = $(this);
                   let parent = self.closest('tr');
                     let value = e.target.value;
                     let container = $('td.containerDetailsID select' , parent);
-                    let response =    $.get(`/api/booking/activityContainers/${value}/${company_id}`).then(function(data){
+                    let response =    $.get(`/api/booking/activityContainers/${value}/${company_id}/${equipment_id}`).then(function(data){
                         let containers = data.containers || '';
                        console.log(containers);
                         let list2 = [`<option value=''>Select...</option>`];
