@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Invoice;
 
-use App\Filters\Quotation\InvoiceIndexFilter;
+use App\Filters\Invoice\InvoiceIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
@@ -27,16 +27,47 @@ class InvoiceController extends Controller
         ]);
     }
 
+    public function selectBLinvoice()
+    {
+        $this->authorize(__FUNCTION__,Invoice::class);
+        $bldrafts = BlDraft::where('bl_status',1)->where('company_id',Auth::user()->company_id)->get();
+        return view('invoice.invoice.selectBLinvoice',[
+            'bldrafts'=>$bldrafts,
+        ]);
+    }
+    
     public function selectBL()
     {
+        $this->authorize(__FUNCTION__,Invoice::class);
         $bldrafts = BlDraft::where('bl_status',1)->where('company_id',Auth::user()->company_id)->get();
         return view('invoice.invoice.selectBL',[
             'bldrafts'=>$bldrafts,
         ]);
     }
+    public function create_invoice()
+    {
+        $this->authorize(__FUNCTION__,Invoice::class);
+        $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
+
+        $bl_id = request()->input('bldraft_id');
+        if($bl_id != null){
+            $bldraft = BlDraft::where('id',$bl_id)->with('blDetails')->first();
+        }else{
+            $bldraft = null;
+        }
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+
+
+        return view('invoice.invoice.create_invoice',[
+            'bldrafts'=>$bldrafts,
+            'bldraft'=>$bldraft,
+            'voyages'=>$voyages,
+        ]);
+    }
 
     public function create()
     {
+        $this->authorize(__FUNCTION__,Invoice::class);
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
@@ -64,7 +95,7 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize(__FUNCTION__,Booking::class);
+        $this->authorize(__FUNCTION__,Invoice::class);
         request()->validate([
             'bldraft_id' => ['required'],
             'customer' => ['required'],
@@ -171,26 +202,16 @@ class InvoiceController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $invoice = Invoice::find($id);
+        InvoiceChargeDesc::where('invoice_id',$id)->delete();
+        $invoice->delete(); 
+        return back()->with('success',trans('Invoice.Deleted.Success'));
     }
 }

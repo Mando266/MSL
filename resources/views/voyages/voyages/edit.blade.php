@@ -89,7 +89,17 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-4">
+                                <label for="exchange_rate">Exchange Rate</label>
+                                <input type="text" class="form-control" id="Exchange" name="exchange_rate" value="{{old('exchange_rate',$voyage->exchange_rate)}}"
+                                 placeholder="Exchange Rate" autocomplete="off" autofocus>
+                                @error('exchange_rate')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-8">
                                 <label for="notes">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes"
                                  placeholder="Notes" autocomplete="off">{{ old('notes',$voyage->notes) }}</textarea>
@@ -112,7 +122,7 @@
                                     <th>ETA</th>
                                     <th>ETD</th>
                                     <th>
-                                        <a id="add"> Add Port <i class="fas fa-plus"></i></a>
+                                        <a>Remove<i></i></a>
                                     </th>
                                 </tr>
                             </thead>
@@ -169,36 +179,6 @@
 </div>
 @endsection
 @push('scripts')
-<script>
-var removed = [];
-function removeItem( item )
-{
-    removed.push(item);
-    console.log(removed);
-    document.getElementById("removed").value = removed;
-}
-      $(document).ready(function(){
-        $("#voyageport").on("click", ".remove", function () {
-        $(this).closest("tr").remove();
-        });
-        var counter  = <?= isset($key)? ++$key : 0 ?>;
-        $("#add").click(function(){
-                var tr = '<tr>'+
-            '<td class="ports"><select class="form-control" id="port" data-live-search="true" name="voyageport['+counter+'][port_from_name]" data-size="10"><option value="">Select...</option>@foreach ($ports as $item)<option value="{{$item->id}}" {{$item->name == old('port_from_name') ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>'+
-            '<td class="terminal"><select class="form-control" id="terminal" data-live-search="true" name="voyageport['+counter+'][terminal_name]" data-size="10"><option value="">Select...</option>@foreach ($terminals as $item)<option value="{{$item->id}}" {{$item->name == old('terminal_name') ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>@endforeach</select></td>'+
-            '<td><input type="text" name="voyageport['+counter+'][road_no]" class="form-control" autocomplete="off"></td>'+
-            '<td><input type="date" name="voyageport['+counter+'][eta]" class="form-control"></td>'+
-            '<td><input type="date" name="voyageport['+counter+'][etd]" class="form-control"></td>'+
-            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-            '</tr>';
-            counter++;
-            $('#voyageport').append(tr);
-            $('.selectpicker').selectpicker("render");
-            $('#selectpicker').selectpicker();
-        });
-    });
-</script>
-
 <script>
   $(document).ready(function (){
     

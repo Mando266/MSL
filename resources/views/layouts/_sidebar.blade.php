@@ -397,7 +397,7 @@
             <li class="menu">
                         <a href="#component9" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
                              <span>Operations</span>
                             </div>
                             <div>
@@ -437,7 +437,7 @@
                                 @endpermission
                                 @permission('Invoice-Create')
                                 <li>
-                                    <a href="{{route('invoice.selectBL')}}">Create Debit Invoice</a>
+                                    <a href="{{route('invoice.selectBL')}}">New Debit Invoice</a>
                                 </li>
                                 @endpermission
                         </ul>

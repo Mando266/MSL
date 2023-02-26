@@ -127,7 +127,7 @@
                                 <tbody>
                             <tr>
                                 <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="" >
                                 </td>
                                 <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
                                     placeholder="Weight" autocomplete="off" disabled style="background-color: white;">

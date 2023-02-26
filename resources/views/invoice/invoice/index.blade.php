@@ -16,7 +16,7 @@
                     @permission('Invoice-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Invoice</a>
+                            <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Invoice</a>
                             </div>
                         </div>
                     @endpermission
@@ -47,7 +47,7 @@
                                         <th>#</th>
                                         <th>Invoice No</th>
                                         <th>Customer</th>
-                                        <th>BlDraft No</th>
+                                        <th>Bl No</th>
                                         <th>Date</th>
                                         <th>Invoice Status</th>
                                         <th>Invoice Type</th>
