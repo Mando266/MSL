@@ -133,9 +133,7 @@ class InvoiceController extends Controller
 
         }else{
             $USD =  ucfirst($f->format($exp[0]));
-
         }
-        //dd($USD);
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
@@ -145,10 +143,16 @@ class InvoiceController extends Controller
                 'USD'=>$USD,
             ]);
         }else{
+            $gross_weight = 0;
+            dd($invoice);
+            foreach($invoice->bldraft->blDetails as $bldetail){
+                $gross_weight += $bldetail->gross_weight;
+            }
             return view('invoice.invoice.show_invoice',[
                 'invoice'=>$invoice,
                 'qty'=>$qty,
                 'total'=>$total,
+                'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
             ]);
