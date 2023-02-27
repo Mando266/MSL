@@ -37,7 +37,7 @@
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >G. weight</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }} KGM</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
@@ -86,7 +86,7 @@
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small * 0 }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->total_amount }}</td>
-                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->total_egy}}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->egy_amount}}</td>
 
                         </tr>
                         @endforeach
