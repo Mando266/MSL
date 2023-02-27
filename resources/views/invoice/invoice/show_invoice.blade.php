@@ -27,16 +27,23 @@
                 <table class="col-md-12 tableStyle" style="border-style: hidden !important;">
                     <thead>
                         <tr>
+                            @if($invoice->invoice_status == "draft")
                             <th class="text-center  underline" style="font-size: 24px !important;">EXPORT THC PROFORMA INVOICE</th>
+                            @else
+                            <th class="text-center  underline" style="font-size: 24px !important;">EXPORT INVOICE</th>
+                            @endif
                         </tr>
                     </thead>
                 </table>
-
-                <h4 style="font-size: 18px !important; font-weight: bolder !important;">Customer: <span class="entry">{{ $invoice->customer }}</span></h4>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="col-md-2 tableStyle">Customer Name:</td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">Customer Name</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="user">{{ $invoice->customer }}</span></td>
+                            <td class="col-md-1 tableStyle text-center"><span class="entry">Tax No.</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="user">{{ optional($invoice->bldraft->customer)->tax_card_no }}</span></td>
+                            <td class="col-md-1 tableStyle text-center"><span class="entry">Address</span></td>
+                            <td class="col-md-4 tableStyle text-center"><span class="user">{{ optional($invoice->bldraft->customer)->address }}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -141,10 +148,13 @@
         }
     }
     .entry{
-        font-size: 14px !important;
+        font-size: 13px !important;
+    }
+    .user{
+        font-size: 12px !important;
     }
     .tableStyle {
-        font-size: 16px !important;
+        font-size: 13px !important;
         font-weight: bolder !important;
         border: 1px solid #000 !important;
         margin-bottom: 1rem;
