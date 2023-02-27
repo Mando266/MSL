@@ -88,11 +88,21 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="exchange_rate">Exchange Rate</label>
+                            <div class="form-group col-md-2">
+                                <label for="exchange_rate">Exchange Rate ETA</label>
                                 <input type="text" class="form-control" id="Exchange" name="exchange_rate" value="{{old('exchange_rate')}}"
                                  placeholder="Exchange Rate" autocomplete="off" autofocus>
                                 @error('exchange_rate')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="exchange_rate_etd">Exchange Rate ETD</label>
+                                <input type="text" class="form-control" id="Exchange" name="exchange_rate_etd" value="{{old('exchange_rate_etd')}}"
+                                 placeholder="Exchange Rate" autocomplete="off" autofocus>
+                                @error('exchange_rate_etd')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>
