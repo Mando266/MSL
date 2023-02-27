@@ -122,6 +122,8 @@
                                         <th class="text-center">Charge Description</th>
                                         <th class="text-center">Amount</th>
                                         <th class="text-center">VAT</th>
+                                        <th class="text-center">Egp Amount</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,6 +138,9 @@
                                 </td>
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{ $detail->selling_price + ($detail->selling_price * 0) }}"
                                     placeholder="VAT" autocomplete="off" style="background-color: white;">
+
+                                    <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value=""
+                                    placeholder="Egp Amount  " autocomplete="off" style="background-color: white;">
                                 </td>
                             </tr>
                             @endforeach
