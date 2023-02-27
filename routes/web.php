@@ -153,8 +153,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectBLinvoice',[InvoiceController::class,'selectBLinvoice'])->name('invoice.selectBLinvoice');
         Route::get('create_invoice',[InvoiceController::class,'create_invoice'])->name('invoice.create_invoice');
         Route::post('create_invoice',[InvoiceController::class,'storeInvoice'])->name('invoice.store_invoice');
-        Route::post('receipt',[InvoiceController::class,'receipt'])->name('invoice.receipt');
-
+        Route::get('receipt/{invoice}',[InvoiceController::class,'receipt'])->name('invoice.receipt');
     });
     /*
     |-------------------------------------------
