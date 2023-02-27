@@ -181,6 +181,8 @@ class InvoiceController extends Controller
                 'charge_description'=>$chargeDesc['charge_description'],
                 'size_small'=>$chargeDesc['size_small'],
                 'total_amount'=>$qty * $chargeDesc['size_small'],
+                'egy_amount'=>$chargeDesc['egy_amount'],
+                'total_egy'=>$qty * $chargeDesc['egy_amount']
             ]);
         }
         return redirect()->route('invoice.index')->with('success',trans('voyage.created'));
@@ -199,8 +201,11 @@ class InvoiceController extends Controller
         $qty = $invoice->bldraft->blDetails->count();
         $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)->where('port_from_name',optional($invoice->bldraft->booking->loadPort)->id)->first();
         $total = 0;
+        $total_eg = 0;
+
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
+            $total_eg += $chargeDesc->total_egy;
         }
         $exp = explode('.', $total);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
@@ -210,13 +215,26 @@ class InvoiceController extends Controller
         }else{
             $USD =  ucfirst($f->format($exp[0]));
         }
+
+        $exp = explode('.', $total_eg);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        if(count($exp) >1){
+            $EGP =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $EGP =  ucfirst($f->format($exp[0]));
+        }
+
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
                 'qty'=>$qty,
                 'total'=>$total,
+                'total_eg'=>$total_eg,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
+                'EGP'=>$EGP,
+
             ]);
         }else{
             $gross_weight = 0;
@@ -233,11 +251,13 @@ class InvoiceController extends Controller
                 'invoice'=>$invoice,
                 'qty'=>$qty,
                 'total'=>$total,
+                'total_eg'=>$total_eg,
                 'amount'=>$amount,
                 'vat'=>$vat,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
+                'EGP'=>$EGP,
             ]);
         }
         

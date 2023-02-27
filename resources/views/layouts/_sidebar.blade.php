@@ -331,11 +331,11 @@
                                 </li>
                                 @endpermission
 
-                                @permission('Quotation-Create')
+                                <!-- @permission('Quotation-Create')
                                     <li>
                                         <a href="{{route('quotations.create')}}">Create New Quotation</a>
                                     </li>
-                                @endpermission
+                                @endpermission -->
                         </ul>
             </li>
             @endpermission
@@ -364,11 +364,11 @@
                                 </li>
                                 @endpermission
 
-                                @permission('Booking-Create')
+                                <!-- @permission('Booking-Create')
                                     <li>
                                         <a href="{{route('booking.selectQuotation')}}">New Booking</a>
                                     </li>
-                                @endpermission
+                                @endpermission -->
                                 </ul>
                         </li>
                         @endpermission
@@ -382,11 +382,11 @@
                                         <a href="{{route('bldraft.index')}}"> Bl Gates </a>
                                     </li>
                                 @endpermission
-                                @permission('BlDraft-Create')
+                                <!-- @permission('BlDraft-Create')
                                     <li>
                                         <a href="{{route('bldraft.selectbooking')}}"> New BL Draft </a>
                                     </li>
-                                @endpermission
+                                @endpermission -->
                                 </ul>
                         </li>
                         @endpermission
@@ -432,15 +432,7 @@
                         <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
                                 @permission('Invoice-List')
                                 <li>
-                                    <a href="{{route('invoice.index')}}">Invoice List</a>
-                                </li>
-                                @endpermission
-                                @permission('Invoice-Create')
-                                <li>
-                                    <a href="{{route('invoice.selectBL')}}">New Debit Invoice</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('invoice.selectBLinvoice')}}">New Invoice</a>
+                                    <a href="{{route('invoice.index')}}">Invoice Gates</a>
                                 </li>
                                 @endpermission
                         </ul>

@@ -37,7 +37,7 @@
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >G. weight</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }} KGM</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
@@ -74,6 +74,8 @@
                             <th class="col-md-2 tableStyle text-center">Amount</th>
                             <th class="col-md-2 tableStyle text-center">VAT</th>
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
+                            <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -84,6 +86,8 @@
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->size_small * 0 }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->total_amount }}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $chargeDesc->egy_amount}}</td>
+
                         </tr>
                         @endforeach
                         <tr>
@@ -91,9 +95,13 @@
                             <td class="col-md-2 tableStyle text-center">{{ $amount }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $vat }}</td>
                             <td class="col-md-2 tableStyle text-center">{{ $total }}</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $total_eg }}</td>
                         </tr>
                         <tr>
-                            <td class="col-md-2 tableStyle text-center" colspan="5">{{ $USD }} Dollar</td>
+                            <td class="col-md-2 tableStyle text-center" colspan="6">{{ $USD }} Dollar</td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-2 tableStyle text-center" colspan="6">{{ $EGP }} EGP</td>
                         </tr>
                     </tbody>
                 </table>
