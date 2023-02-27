@@ -43,6 +43,8 @@ class BookingController extends Controller
         })->with('CustomerRoles.role')->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
         session()->flash('bookings',$exportbooking);
+        $containers = Containers::where('company_id',Auth::user()->company_id)->get();
+
         return view('booking.booking.index',[
             'items'=>$booking,
             'bookingNo'=>$bookingNo,
@@ -52,6 +54,7 @@ class BookingController extends Controller
             'customers'=>$customers,
             'ffw'=>$ffw,
             'line'=>$line,
+            'containers'=>$containers,
         ]); 
     }
     public function selectQuotation()

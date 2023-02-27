@@ -274,15 +274,13 @@ class InvoiceController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function receipt($id)
     {
-        //
+        $receipt = Invoice::with('chargeDesc')->find($id);
+        dd($receipt);
+        return view('invoice.invoice.receipt',[
+            'receipt'=>$receipt,
+        ]);
     }
 
     public function update(Request $request, $id)
