@@ -276,10 +276,10 @@ class InvoiceController extends Controller
 
     public function receipt($id)
     {
-        $receipt = Invoice::with('chargeDesc')->find($id);
-        dd($receipt);
+        $invoice = Invoice::with('chargeDesc')->find($id);
+        //dd($receipt);
         return view('invoice.invoice.receipt',[
-            'receipt'=>$receipt,
+            'invoice'=>$invoice,
         ]);
     }
 
