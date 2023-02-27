@@ -57,6 +57,7 @@ class InvoiceController extends Controller
         }else{
             $bldraft = null;
         }
+        $qty = $bldraft->blDetails->count();
         
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $triffDetails = LocalPortTriff::where('port_id',$bldraft->load_port_id)->where('validity_to','>=',Carbon::now()->format("Y-m-d"))
@@ -67,6 +68,7 @@ class InvoiceController extends Controller
         
         return view('invoice.invoice.create_invoice',[
             'bldrafts'=>$bldrafts,
+            'qty'=>$qty,
             'bldraft'=>$bldraft,
             'triffDetails'=>$triffDetails,
             'voyages'=>$voyages,
@@ -85,10 +87,11 @@ class InvoiceController extends Controller
             $bldraft = null;
         }
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-
+        $qty = $bldraft->blDetails->count();
 
         return view('invoice.invoice.create_debit',[
             'bldrafts'=>$bldrafts,
+            'qty'=>$qty,
             'bldraft'=>$bldraft,
             'voyages'=>$voyages,
 
@@ -156,6 +159,8 @@ class InvoiceController extends Controller
         request()->validate([
             'bldraft_id' => ['required'],
             'customer' => ['required'],
+            'exchange_rate' => ['required'],
+            'add_egp' => ['required'],
         ]);
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
@@ -166,6 +171,8 @@ class InvoiceController extends Controller
             'company_id'=>Auth::user()->company_id,
             'invoice_no'=>'',
             'date'=>$request->date,
+            'rate'=>$request->exchange_rate,
+            'add_egp'=>$request->add_egp,
             'invoice_kind'=>$blkind,
             'type'=>'invoice',
             'invoice_status'=>$request->invoice_status,
@@ -174,15 +181,19 @@ class InvoiceController extends Controller
         $invoice_no = $invoice_no . str_pad( $invoice->id, 4, "0", STR_PAD_LEFT );
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
-        $qty = $bldraft->blDetails->count();
+        $egyrate = 0;
+        if($request->exchange_rate == "eta"){
+            $egyrate = optional($bldraft->voyage)->exchange_rate;
+        }elseif($request->exchange_rate == "etd"){
+            $egyrate = optional($bldraft->voyage)->exchange_rate_etd;
+        }
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
                 'charge_description'=>$chargeDesc['charge_description'],
                 'size_small'=>$chargeDesc['size_small'],
-                'total_amount'=>$qty * $chargeDesc['size_small'],
-                'egy_amount'=>$chargeDesc['egy_amount'],
-                'total_egy'=>$qty * $chargeDesc['egy_amount']
+                'total_amount'=>$chargeDesc['total'],
+                'total_egy'=>$chargeDesc['total'] * $egyrate
             ]);
         }
         return redirect()->route('invoice.index')->with('success',trans('voyage.created'));

@@ -97,22 +97,52 @@
                                 </div> 
 
                                 <div class="form-group col-md-3">
-                                <label for="status">Invoice Status<span class="text-warning"> * </span></label>
-                                <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
-                                    <option value="draft">Draft</option>
-                                    <option value="confirm">Confirm</option>
-                                </select>
-                                @error('invoice_status')
-                                <div style="color:red;">
-                                    {{$message}}
+                                    <label for="status">Invoice Status<span class="text-warning"> * </span></label>
+                                    <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
+                                        <option value="draft">Draft</option>
+                                        <option value="confirm">Confirm</option>
+                                    </select>
+                                    @error('invoice_status')
+                                    <div style="color:red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
                                 </div>
-                                @enderror
                             </div>
-        
-
+                            <div class="form-row">
                                 <div class="form-group col-md-3" >
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
+                                </div>
+                                <div class="form-group col-md-3" >
+                                    <label>QTY</label>
+                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="col-md-3 form-group " >
+                                    <div style="padding: 30px;">
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta">
+                                        <label class="form-check-label" for="exchange_rate">
+                                        ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
+                                        <label class="form-check-label" for="exchange_rate">
+                                          ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3" >
+                                    <div style="padding: 30px;">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true">
+                                        <label class="form-check-label" for="add_egp">
+                                            EGP AND USD
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
+                                        <label class="form-check-label" for="add_egp">
+                                          USD
+                                        </label>
+                                    </div>
                                 </div>
                             </div> 
                         <h4>Charges<h4>
@@ -122,13 +152,14 @@
                                         <th class="text-center">Charge Description</th>
                                         <th class="text-center">Amount</th>
                                         <th class="text-center">VAT</th>
+                                        <th class="text-center">TOTAL</th>
                                         <th class="text-center">Egp Amount</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($triffDetails->triffPriceDetailes as $key => $detail)
-                                    
+                                  
                             <tr>
                                 <td>
                                     <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="{{ $detail->charge_type }}" >
@@ -136,12 +167,27 @@
                                 <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{ $detail->selling_price }}"
                                     placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
                                 </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{ $detail->selling_price + ($detail->selling_price * 0) }}"
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][vat]" value="{{ $detail->selling_price * 0 }}"
                                     placeholder="VAT" autocomplete="off" style="background-color: white;">
-
-                                    <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value=""
-                                    placeholder="Egp Amount  " autocomplete="off" style="background-color: white;">
                                 </td>
+                                @if($detail->unit == "Container")
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price * $qty}}"
+                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                </td>
+                                @elseif($detail->unit == "Document")
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price}}"
+                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                </td>
+                                @endif
+                                @if($detail->unit == "Container")
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * $qty * optional($bldraft->voyage)->exchange_rate }}"
+                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
+                                </td>
+                                @elseif($detail->unit == "Document")
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
+                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
+                                </td>
+                                @endif
                             </tr>
                             @endforeach
                             </tbody>
