@@ -112,6 +112,18 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="Container">Container  No</label>
+                                <select class="selectpicker form-control" id="Container" data-live-search="true" name="container_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($containers as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('booking.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
