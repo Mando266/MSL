@@ -30,13 +30,59 @@
                         </tr>
                     </thead>
                 </table>
-
-   
-   
-                <div class="row">
-                        <div class="col-md-12 text-center">
-                <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Invoice</button>
+                <div class="form-row">
+                    <div class="form-group col-md-6  text-right">
+                        <h3><span style="font-size:22px;">{{ $total }}</span> &nbsp;&nbsp;:المبلغ <h3>
+                    </div>
+                    <div class="form-group col-md-6  text-right">
+                        <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}} </span>&nbsp;&nbsp;:رقم<h3>
+                    </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{ $invoice->customer }} </span>&nbsp;&nbsp;:استلمت من<h3>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{ $now }} </span>:التاريخ<h3>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{ $EGP }} Egyptian Pound</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}}</span>&nbsp;&nbsp;:وذلك عن فواتير<h3>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6  text-right">
+                        <h3> <span style="font-size:22px;">{{ optional($invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
+                    </div>
+                    <div class="form-group col-md-6  text-right">
+                        <h3> <span style="font-size:22px;">{{ optional($invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ optional($invoice->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3  text-right">
+                    <h3> <span></span>يعتمد<h3>
+                    </div>
+                    <div class="form-group col-md-3  text-right">
+                    </div>
+                    <div class="form-group col-md-3  text-right">
+                    <h3> <span></span>التوقيع<h3>
+                    </div>
+                    <div class="form-group col-md-3  text-right">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Receipt</button>
+                    </div>
                 </div>
             </div>
         </div>

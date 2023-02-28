@@ -13,6 +13,7 @@ use App\Models\Voyages\Voyages;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Setting;
 
 class InvoiceController extends Controller
 {
@@ -23,7 +24,8 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('chargeDesc')->paginate(30);
+        $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
+        ->where('company_id',Auth::user()->company_id)->with('chargeDesc')->paginate(30);
         return view('invoice.invoice.index',[
             'invoices'=>$invoices
         ]);
@@ -32,7 +34,9 @@ class InvoiceController extends Controller
     public function selectBLinvoice()
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        $bldrafts = BlDraft::where('bl_status',1)->where('company_id',Auth::user()->company_id)->get();
+        $bldrafts = BlDraft::
+        //where('bl_status',1)->
+        where('company_id',Auth::user()->company_id)->get();
         return view('invoice.invoice.selectBLinvoice',[
             'bldrafts'=>$bldrafts,
         ]);
@@ -41,7 +45,9 @@ class InvoiceController extends Controller
     public function selectBL()
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        $bldrafts = BlDraft::where('bl_status',1)->where('company_id',Auth::user()->company_id)->get();
+        $bldrafts = BlDraft::
+        //where('bl_status',1)->
+        where('company_id',Auth::user()->company_id)->get();
         return view('invoice.invoice.selectBL',[
             'bldrafts'=>$bldrafts,
         ]);
@@ -98,12 +104,6 @@ class InvoiceController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
@@ -117,6 +117,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::create([
             'bldraft_id'=>$request->bldraft_id,
             'customer'=>$request->customer,
+            'customer_id'=>$request->customer_id,
             'company_id'=>Auth::user()->company_id,
             'invoice_no'=>'',
             'date'=>$request->date,
@@ -124,10 +125,18 @@ class InvoiceController extends Controller
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
         ]);
-        $invoice_no = 'DRAFTD';
-        $invoice_no = $invoice_no . str_pad( $invoice->id, 4, "0", STR_PAD_LEFT );
+        $setting = Setting::find(1);
+        if($invoice->invoice_status == "confirm"){
+            $invoice_no = $setting->debit_confirm;
+            $setting->debit_confirm += 1;
+        }else{
+            $invoice_no = 'DRAFTD';
+            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+            $setting->debit_draft += 1;
+        }
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
+        $setting->save();
         $qty = $bldraft->blDetails->count();
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
@@ -168,6 +177,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::create([
             'bldraft_id'=>$request->bldraft_id,
             'customer'=>$request->customer,
+            'customer_id'=>$request->customer_id,
             'company_id'=>Auth::user()->company_id,
             'invoice_no'=>'',
             'date'=>$request->date,
@@ -177,9 +187,17 @@ class InvoiceController extends Controller
             'type'=>'invoice',
             'invoice_status'=>$request->invoice_status,
         ]);
-        $invoice_no = 'DRAFTV';
-        $invoice_no = $invoice_no . str_pad( $invoice->id, 4, "0", STR_PAD_LEFT );
-        $invoice->invoice_no = $invoice_no;
+        $setting = Setting::find(1);
+        if($invoice->invoice_status == "confirm"){
+            $invoice_no = $setting->invoice_confirm;
+            $setting->invoice_confirm += 1;
+        }else{
+            $invoice_no = 'DRAFTV';
+            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+            $invoice->invoice_no = $invoice_no;
+            $setting->invoice_draft += 1;
+        }
+        $setting->save();
         $invoice->save();
         $egyrate = 0;
         if($request->exchange_rate == "eta"){
@@ -200,12 +218,7 @@ class InvoiceController extends Controller
 
 
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $invoice = Invoice::with('chargeDesc')->find($id);
@@ -277,15 +290,72 @@ class InvoiceController extends Controller
     public function receipt($id)
     {
         $invoice = Invoice::with('chargeDesc')->find($id);
+        $total = 0;
+        $total_eg = 0;
+        $now = Carbon::now();
+        foreach($invoice->chargeDesc as $chargeDesc){
+            $total += $chargeDesc->total_amount;
+            $total_eg += $chargeDesc->total_egy;
+        }
+
+        $exp = explode('.', $total);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        if(count($exp) >1){
+            $USD =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $USD =  ucfirst($f->format($exp[0]));
+        }
+
+        $exp = explode('.', $total_eg);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        if(count($exp) >1){
+            $EGP =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $EGP =  ucfirst($f->format($exp[0]));
+        }
         //dd($receipt);
         return view('invoice.invoice.receipt',[
             'invoice'=>$invoice,
+            'now'=>$now,
+            'total'=>$total,
+            'total_eg'=>$total_eg,
+            'USD'=>$USD,
+            'EGP'=>$EGP,
         ]);
     }
-
-    public function update(Request $request, $id)
+    public function edit(Request $request, Invoice $invoice)
     {
-        //
+        $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
+        $bl_id = request()->input('bldraft_id');
+        if($bl_id != null){
+            $bldraft = BlDraft::where('id',$bl_id)->with('blDetails')->first();
+        }else{
+            $bldraft = null;
+        }
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        $qty = $bldraft->blDetails->count();
+        $invoice_details = InvoiceChargeDesc::where('invoice_id',$invoice->id)->get();
+
+        return view('invoice.invoice.edit',[
+            'invoice'=>$invoice,
+            'bldraft'=>$bldraft,
+            'qty'=>$qty,
+            'bldraft'=>$bldraft,
+            'voyages'=>$voyages,
+            'invoice_details'=>$invoice_details,
+        ]);
+    }
+    public function update(Request $request, Invoice $invoice)
+    {
+        $this->authorize(__FUNCTION__,Invoice::class);
+        $inputs = request()->all();
+        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
+        $invoice->update($inputs);
+        InvoiceChargeDesc::destroy(explode(',',$request->removed));
+        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc);  
+        return redirect()->route('invoice.index')->with('success',trans('Invoice.Updated.Success'));
     }
 
     public function destroy($id)
