@@ -7,6 +7,8 @@ use App\Traits\HasFilter;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Master\Customers;
+
 
 class Invoice extends Model implements PermissionSeederContract
 {
@@ -20,7 +22,7 @@ class Invoice extends Model implements PermissionSeederContract
             'List',
             'Create',
             'Edit',
-            'Delete'
+            'Delete' 
         ]);
     }
     public function bldraft(){
@@ -31,4 +33,25 @@ class Invoice extends Model implements PermissionSeederContract
     {
         return $this->hasMany(InvoiceChargeDesc::class ,'invoice_id','id');
     }
+    public function customerShipperOrFfw(){
+        return $this->belongsTo(Customers::class,'customer_id','id');
+    }
+
+    public function createOrUpdateInvoiceChargeDesc($inputs)
+    {
+
+        if (is_array($inputs) || is_object($inputs)){
+            foreach($inputs as $input){
+                $input['invoice_id'] = $this->id;
+                if( isset($input['id']) ){
+                    InvoiceChargeDesc::find($input['id'])
+                    ->update($input);
+                }
+                else{
+                    InvoiceChargeDesc::create($input);
+                }
+            }
+        }
+    }
+
 }

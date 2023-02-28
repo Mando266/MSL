@@ -38,12 +38,22 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
+                            <td class="col-md-3 tableStyle text-center"><span class="entry">Invoice Number</span></td>
+                            <td class="col-md-3 tableStyle text-center"><span class="user">{{ $invoice->invoice_no }}</span></td>
+                            <td class="col-md-3 tableStyle text-center"><span class="entry">Date</span></td>
+                            <td class="col-md-3 tableStyle text-center"><span class="user">{{ $invoice->date }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">Customer Name</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="user">{{ $invoice->customer }}</span></td>
                             <td class="col-md-1 tableStyle text-center"><span class="entry">Tax No.</span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="user">{{ optional($invoice->bldraft->customer)->tax_card_no }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="user">{{ optional($invoice->customerShipperOrFfw)->tax_card_no }}</span></td>
                             <td class="col-md-1 tableStyle text-center"><span class="entry">Address</span></td>
-                            <td class="col-md-4 tableStyle text-center"><span class="user">{{ optional($invoice->bldraft->customer)->address }}</span></td>
+                            <td class="col-md-4 tableStyle text-center"><span class="user">{{ optional($invoice->customerShipperOrFfw)->address }}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -66,11 +76,11 @@
                             <td class="col-md-2 tableStyle text-center" ><input type="text" style="overflow: hidden; border-style: hidden;"></td>
                         </tr>
                         <tr>
-                            <td class="col-md-2 tableStyle text-center" style="font-size: 15px !important;">Arrival Date</td>
+                            <td class="col-md-2 tableStyle text-center">Arrival Date</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{$firstVoyagePort->eta}}</span></td>
                             <td class="col-md-2 tableStyle text-center" >POD</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->dischargePort)->code }}</span></td>
-                            <td class="col-md-2 tableStyle text-center" style="font-size: 15px !important;">Cntr. Type(s)</td>
+                            <td class="col-md-2 tableStyle text-center">Cntr. Type(s)</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{$invoice->blDraft->blDetails->count()}} X {{ optional($invoice->blDraft->equipmentsType)->name }}</span></td>
                         </tr>
                         <tr>
@@ -92,7 +102,9 @@
                             <th class="col-md-2 tableStyle text-center">Amount</th>
                             <th class="col-md-2 tableStyle text-center">VAT</th>
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
+                            @if($invoice->add_egp == 'true')
                             <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
+                            @endif
 
                         </tr>
                     </thead>
@@ -104,23 +116,28 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small * 0 }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount }}</span></td>
+                            @if($invoice->add_egp == 'true')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy}}</span></td>
-
+                            @endif
                         </tr>
                         @endforeach
                         <tr>
-                            <td class="col-md-6 tableStyle text-center" colspan="2"><span class="entry">GRAND TOTAL</span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $amount }}</span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $vat }}</span></td>
+                            <td class="col-md-6 tableStyle text-center" colspan="4"><span class="entry">GRAND TOTAL</span></td>
+                            <!-- <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td> -->
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total }}</span></td>
+                            @if($invoice->add_egp == 'true')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg }}</span></td>
+                            @endif
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle" colspan="6"><span class="entry">{{ $USD }} Dollar</span></td>
                         </tr>
+                        @if($invoice->add_egp == 'true')
                         <tr>
                             <td class="col-md-2 tableStyle " colspan="6"><span class="entry">{{ $EGP }} EGP</span></td>
                         </tr>
+                        @endif
                     </tbody>
                 </table>
                 <br>

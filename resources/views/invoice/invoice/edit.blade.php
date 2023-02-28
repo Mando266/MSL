@@ -15,9 +15,17 @@
                 </div>
                 <div class="widget-content widget-content-area">
            
-                    <form id="createForm" action="{{route('invoice.store_invoice')}}" method="POST" enctype="multipart/form-data">
+                <form id="editForm" action="{{route('invoice.update',['invoice'=>$invoice])}}" method="POST" >
                             @csrf
+                            @method('put')
                         <div class="form-row">
+
+                            <div class="form-group col-md-2">
+                                <label for="Invoice">Invoice No</label>
+                                    <input type="text" id="Invoice" class="form-control"  name="invoice_no"
+                                    placeholder="Invoice No" autocomplete="off" value="{{old('invoice_no',$invoice->invoice_no)}}" required>
+                            </div> 
+
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                                 <div class="form-group col-md-6">
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
@@ -25,9 +33,9 @@
                                  title="{{trans('forms.select')}}" required>
                                         @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
-                                        <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
+                                        <option value="{{optional($bldraft->booking)->ffw_id}}" {{optional($bldraft->booking)->ffw_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
                                         @endif
-                                        <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
+                                        <option value="{{optional($bldraft)->customer_id}}" {{optional($bldraft)->customer_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->customer)->name }} Shipper</option>
                                         @endif
                                 </select>
                                 @error('customer_id')
@@ -36,10 +44,10 @@
                                 </div>
                                 @enderror
                             </div> 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Name</label>
                                     <input type="text" id="notifiy" class="form-control"  name="customer"
-                                    placeholder="Customer Name" autocomplete="off" required>
+                                    placeholder="Customer Name" autocomplete="off" value="{{old('customer',$invoice->customer)}}" required>
                             </div> 
                         </div>
                         <div class="form-row">
@@ -92,15 +100,15 @@
                                 <div class="form-group col-md-3" >
                                     <label>Equipment Type</label>
                                         @if(optional($bldraft)->equipment_type_id != null)
-                                        <input type="text" class="form-control" placeholder="Equipment Type" name="bl_kind" autocomplete="off" value="{{(optional($bldraft->equipmentsType)->name)}}" style="background-color:#fff" disabled>
+                                        <input type="text" class="form-control" placeholder="Equipment Type"  autocomplete="off" value="{{(optional($bldraft->equipmentsType)->name)}}" style="background-color:#fff" disabled>
                                         @endif
                                 </div> 
 
                                 <div class="form-group col-md-3">
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
-                                        <option value="draft">Draft</option>
-                                        <option value="confirm">Confirm</option>
+                                        <option value="draft" {{ old('invoice_status',$invoice->invoice_status) == "draft" ? 'selected':'' }}>Draft</option>
+                                        <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                     </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
@@ -112,13 +120,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
                                     <label for="Date">Date</label>
-                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
+                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',$invoice->date)}}">
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>QTY</label>
-                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
+                                        <input type="text" class="form-control" placeholder="Qty"  autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
                                 </div>
-                                <div class="col-md-3 form-group " >
+                                <!-- <div class="col-md-3 form-group">
                                     <div style="padding: 30px;">
                                         <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
                                         <label class="form-check-label" for="exchange_rate">
@@ -130,15 +138,15 @@
                                           ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" {{ "true" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{ "false" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                           USD
                                         </label>
@@ -159,36 +167,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($triffDetails->triffPriceDetailes as $key => $detail)
-                                  
+                            @foreach($invoice_details as $key => $item)
+
+                                <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                             <tr>
                                 <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="{{ $detail->charge_type }}" >
+                                    <input type="text" id="charge_description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" 
+                                    autocomplete="off" placeholder="Charge Description" value="{{old('charge_description',$item->charge_description)}}" disabled style="background-color: white;"> 
                                 </td>
-                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{ $detail->selling_price }}"
-                                    placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
+                                <td>
+                                    <input type="text" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" class="form-control" 
+                                    autocomplete="off" placeholder="" value="{{old('size_small',$item->size_small)}}" disabled style="background-color: white;"> 
                                 </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][vat]" value="{{ $detail->selling_price * 0 }}"
-                                    placeholder="VAT" autocomplete="off" style="background-color: white;">
+                                <td>
+                                    <input type="text" id="vat"  class="form-control" 
+                                    autocomplete="off" placeholder="VAT" value="{{ $item->size_small * 0 }}" disabled style="background-color: white;"> 
                                 </td>
-                                @if($detail->unit == "Container")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price * $qty}}"
+                             
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{old('total_amount',$item->total_amount)}}"
                                     placeholder="Total" autocomplete="off" disabled style="background-color: white;">
                                 </td>
-                                @elseif($detail->unit == "Document")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price}}"
-                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                              
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_egy]" value="{{old('total_egy',$item->total_egy)}}"
+                                    placeholder="Egp Amount" autocomplete="off" disabled style="background-color: white;">
                                 </td>
-                                @endif
-                                @if($detail->unit == "Container")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * $qty * optional($bldraft->voyage)->exchange_rate }}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                @elseif($detail->unit == "Document")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                @endif
                                 @if($key > 0) 
                                     <td style="width:85px;">
                                         <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
@@ -200,7 +202,7 @@
                         </table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
+                                    <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>
@@ -219,7 +221,6 @@ var removed = [];
 function removeItem( item )
 {
     removed.push(item);
-    console.log(removed);
     document.getElementById("removed").value = removed;
 }
 $(document).ready(function(){
@@ -231,7 +232,7 @@ $(document).ready(function(){
 </script>
 
 <script>
-    $('#createForm').submit(function() {
+    $('#editForm').submit(function() {
         $('input').removeAttr('disabled');
     });
 </script>

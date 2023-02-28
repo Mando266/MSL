@@ -66,7 +66,11 @@
                                 <select class="selectpicker form-control" id="customerconsignee" data-live-search="true" name="customer_consignee_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($customersConsignee as $item)
+                                    @if($booking->customer_consignee_id != null)
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$booking->customer_consignee_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
                                         <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('customer_consignee_id')
@@ -77,8 +81,13 @@
                             </div> 
                             <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Consignee Details</label>
+                                @if($booking->customer_consignee_id != null)
+                                    <textarea id="consignee" class="form-control"  name="customer_consignee_details"
+                                    placeholder="Customer Consignee Details" autocomplete="off">Phone : {{optional($booking->consignee)->phone}} - Email : {{optional($booking->consignee)->email}} - Address : {{optional($booking->consignee)->address}}</textarea>
+                                @else
                                     <textarea id="consignee" class="form-control"  name="customer_consignee_details"
                                     placeholder="Customer Consignee Details" autocomplete="off"></textarea>
+                                @endif
                             </div> 
                     </div>
                     <div class="form-row">

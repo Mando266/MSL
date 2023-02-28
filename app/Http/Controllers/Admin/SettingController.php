@@ -42,7 +42,9 @@ class SettingController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
+        $setting = Setting::find(1);
+        $setting->update($request->input());
+        return redirect()->route('settings.edit',1)->with('success',trans('settings.updated'));
     }
 
     public function destroy($id)

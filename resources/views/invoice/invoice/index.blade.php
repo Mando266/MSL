@@ -53,6 +53,7 @@
                                         <th>Invoice Status</th>
                                         <th>Invoice Type</th>
                                         <th>Created At</th>
+                                        <th class='text-center' style='width:100px;'>Receipt</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -69,14 +70,26 @@
                                             <td>{{{$invoice->created_at}}}</td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
-                                                    <!-- @permission('Invoice-Edit')
+                                                @if($invoice->invoice_status == "confirm" && $invoice->type == "invoice")
                                                     <li>
-                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endif
+                                                 </ul>
+                                            </td>
+
+                                            <td class="text-center">
+                                                 <ul class="table-controls">
+                                                    @permission('Invoice-Edit')
+                                                    <li>
+                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
                                                     
-                                                    @endpermission -->
+                                                    @endpermission
                                                     @permission('Invoice-Show')
                                                     <li>
                                                         <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
