@@ -83,7 +83,7 @@
                                         <input type="checkbox" id="rf" name="rf" value="1"  onclick="return false;" readonly {{$quotation->rf == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> RF </a>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>  
                             <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
@@ -91,7 +91,7 @@
                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($line as $item)
                                     @if($quotation->principal_name != null)
-                                        <option value="{{$item->id}}" {{$item->id == old('principal_name',$quotation->principal_name) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('principal_name',$quotation->principal_name) ? 'selected':'disabled'}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
                                 </select>

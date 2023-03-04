@@ -37,7 +37,11 @@
                             @endforeach
                             <div class="row">
                                 <div class="col-md-2">
+                                @if(optional($blDraft->loadPort)->code == "EGEDK")
+                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                    @else
                                     <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    @endif
                                 </div>
                                 <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                     <tbody>

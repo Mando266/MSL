@@ -190,8 +190,20 @@
 @endsection
 @push('scripts')
 <script>
-  $(document).ready(function (){
-    
+    var removed = [];
+function removeItem( item )
+{
+    removed.push(item);
+    document.getElementById("removed").value = removed;
+}
+$(document).ready(function(){
+    $("#voyageport").on("click", ".remove", function () {
+    $(this).closest("tr").remove();
+    });
+});
+
+</script>
+<script>    
         $(function(){
                 $('#voyageport').on('change','td.ports select' , function(e){
                   let self = $(this);

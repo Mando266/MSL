@@ -11,7 +11,6 @@ use App\Models\Booking\BookingRefNo;
 use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersTypes;
-use App\Models\Master\CustomerRoles;
 use App\Models\Quotations\Quotation;
 use App\Models\Master\Customers;
 use App\Models\Master\Ports;
@@ -21,6 +20,7 @@ use App\Models\Voyages\VoyagePorts;
 use App\Models\Voyages\Voyages;
 use App\Models\Master\Lines;
 use Illuminate\Support\Facades\Auth;
+use App\Setting;
 
 class BookingController extends Controller
 {
@@ -111,7 +111,6 @@ class BookingController extends Controller
         })->where('status',2)->get();
         $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
-
         return view('booking.booking.create',[
             'ffw'=>$ffw,
             'consignee'=>$consignee,
@@ -142,8 +141,8 @@ class BookingController extends Controller
             // Validate Containers Unique
             $uniqueContainers = array();
             foreach($request->containerDetails as $container){
-                if(!in_array($container['container_id'],$uniqueContainers) ){
-                    if($container['container_id'] != "000"){
+                if(!in_array($container['container_id'],$uniqueContainers) || $container['container_id'] == null || $container['container_id'] == "000" ){
+                    if($container['container_id'] != "000" || $container['container_id'] != null){
                         array_push($uniqueContainers,$container['container_id']);
                     }
                 }else{
@@ -154,8 +153,9 @@ class BookingController extends Controller
             // Validate Expiration Date
             // $quotation = Quotation::find($request->quotation_id);
             // $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
+
             // if($quotation != null){
-            //     if($etaDate > $quotation->validity_to || $etaDate < $quotation->validity_from){
+            //     if($etaDate >= $quotation->validity_from && $etaDate <= $quotation->validity_to){
             //         return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
             //         ->withInput($request->input());
             //     }
@@ -173,6 +173,8 @@ class BookingController extends Controller
                 'bl_release'=> $request->input('bl_release'),
                 'place_of_acceptence_id'=> $request->input('place_of_acceptence_id'),
                 'load_port_id'=> $request->input('load_port_id'),
+                'pick_up_location'=> $request->input('pick_up_location'),
+                'place_return_id'=> $request->input('place_return_id'),
                 'shipper_ref_no'=> $request->input('shipper_ref_no'),
                 'place_of_delivery_id'=> $request->input('place_of_delivery_id'),
                 'discharge_port_id'=> $request->input('discharge_port_id'),
@@ -228,10 +230,10 @@ class BookingController extends Controller
                 'counter'=>0
             ]);
         }
-        $bookingCounter->counter++;
-        $bookingCounter->save();
-        $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) . sprintf('%05u', $bookingCounter->counter);
-        //dd($booking->ref_no);
+        $setting = Setting::find(1);
+        $setting->booking_ref_no += 1;
+        $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
+        $setting->save();
         $booking->save();
 
         if($request->hasFile('certificat')){
@@ -358,6 +360,27 @@ class BookingController extends Controller
             'bl_release' =>['required'],
             'customer_id' => ['required'], 
         ]);
+
+        // $quotation = Quotation::find($request->quotation_id);
+        // $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
+        // if($quotation != null){
+        //     if($etaDate >= $quotation->validity_from && $etaDate <= $quotation->validity_to){
+        //         return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
+        //         ->withInput($request->input());
+        //     }
+        // } 
+
+        $uniqueContainers = array();
+        foreach($request->containerDetails as $container){
+            if(!in_array($container['container_id'],$uniqueContainers) || $container['container_id'] == null || $container['container_id'] == "000"){
+                if($container['container_id'] != "000" || $container['container_id'] != null){
+                    array_push($uniqueContainers,$container['container_id']);
+                }
+            }else{
+                return redirect()->back()->with('error','Container Numbers Must be unique')->withInput($request->input());
+            }
+        }
+
         $user = Auth::user();
         $ReferanceNumber  = Booking::where('id','!=',$booking->id)->where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->count();
 

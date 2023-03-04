@@ -6,7 +6,7 @@ use App\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoiceChargeDesc extends Model
-{
+{ 
     use HasFilter;
     protected $table = 'invoice_charge_description';
     protected $guarded = [];

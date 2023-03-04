@@ -91,7 +91,10 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle" style="width: 50%;">Discharge Terminal : {{optional($booking->terminals)->name}}</td>
+                            <td class="tableStyle" >Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
+                            <td class="tableStyle" >Return Location : {{optional($booking->placeOfReturn)->code}}</td>
+                            <td class="tableStyle" >Container Operator : {{optional($booking->principal)->code}}</td>
+
                         </tr>
                     </tbody>
                 </table>

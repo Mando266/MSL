@@ -57,7 +57,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="col-md-12 tableStyle">
+                <table class="col-lg-12 tableStyle">
                     <tbody>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Vessel</td>
@@ -95,7 +95,7 @@
                 </table>
                 <br>
                 <table class="col-md-12 tableStyle">
-                    <thead>
+                    <tbody>
                         <tr>
                             <th class="col-md-1 tableStyle text-center">S</th>
                             <th class="col-md-5 tableStyle text-center">Description Of Charges</th>
@@ -105,16 +105,13 @@
                             @if($invoice->add_egp == 'true')
                             <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
                             @endif
-
                         </tr>
-                    </thead>
-                    <tbody>
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
                         <tr>
                             <td class="col-md-1 tableStyle text-center"><span class="entry">{{ $key+1 }}</span></td>
                             <td class="col-md-5 tableStyle"><span class="entry">{{ $chargeDesc->charge_description }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small * 0 }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ (int)$chargeDesc->size_small * 0 }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount }}</span></td>
                             @if($invoice->add_egp == 'true')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy}}</span></td>

@@ -24,11 +24,13 @@ class BlDraftController extends Controller
         $this->authorize(__FUNCTION__,BlDraft::class);
         $blDrafts = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->paginate(30);
         //dd($blDrafts);
+        $exportbls = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->get();
         $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-        //dd($voyages);
+        session()->flash('bldarft',$exportbls);
+
         return view('bldraft.bldraft.index',[
             'items'=>$blDrafts,
             'blDraftNo'=>$blDraftNo,
@@ -71,8 +73,9 @@ class BlDraftController extends Controller
         //dd($booking_qyt);
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
-        // dd($booking_containers);
-        return view('bldraft.bldraft.create',[
+        $booking_no = Booking::where('id',request('booking_id'))->first();
+
+            return view('bldraft.bldraft.create',[
             'booking_containers'=>$booking_containers,
             'customershipper'=>$customershipper,
             'customersConsignee'=>$customersConsignee,
@@ -84,6 +87,7 @@ class BlDraftController extends Controller
             'voyages'=>$voyages,
             'booking_qyt'=>$booking_qyt,
             'oldbookingcontainers'=>$oldbookingcontainers,
+            'booking_no'=>$booking_no,
         ]);
     }
 
@@ -210,7 +214,6 @@ class BlDraftController extends Controller
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
 
-    // dd($booking_containers);
         return view('bldraft.bldraft.edit',[
             'booking_containers'=>$booking_containers,
             'customershipper'=>$customershipper,

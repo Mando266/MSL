@@ -19,13 +19,11 @@
                             @csrf
                             @method('put')
                         <div class="form-row">
-
                             <div class="form-group col-md-2">
                                 <label for="Invoice">Invoice No</label>
                                     <input type="text" id="Invoice" class="form-control"  name="invoice_no"
                                     placeholder="Invoice No" autocomplete="off" value="{{old('invoice_no',$invoice->invoice_no)}}" required>
                             </div> 
-
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                                 <div class="form-group col-md-6">
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
@@ -162,40 +160,39 @@
                                         <th class="text-center">VAT</th>
                                         <th class="text-center">TOTAL</th>
                                         <th class="text-center">Egp Amount</th>
-                                        <th class="text-center"></th>
-
+                                       @if($invoice->type == "invoice")
+                                        <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
+                                        @else
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                             @foreach($invoice_details as $key => $item)
-
                                 <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                             <tr>
                                 <td>
                                     <input type="text" id="charge_description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" 
-                                    autocomplete="off" placeholder="Charge Description" value="{{old('charge_description',$item->charge_description)}}" disabled style="background-color: white;"> 
+                                    autocomplete="off" placeholder="Charge Description" value="{{old('charge_description',$item->charge_description)}}"  style="background-color: white;" requierd> 
                                 </td>
                                 <td>
                                     <input type="text" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" class="form-control" 
-                                    autocomplete="off" placeholder="" value="{{old('size_small',$item->size_small)}}" disabled style="background-color: white;"> 
+                                    autocomplete="off" placeholder="" value="{{old('size_small',$item->size_small)}}"  style="background-color: white;" requierd> 
                                 </td>
                                 <td>
                                     <input type="text" id="vat"  class="form-control" 
-                                    autocomplete="off" placeholder="VAT" value="{{ $item->size_small * 0 }}" disabled style="background-color: white;"> 
+                                    autocomplete="off" placeholder="VAT" value="{{ (int)$item->size_small * 0 }}" disabled style="background-color: white;"> 
                                 </td>
                              
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{old('total_amount',$item->total_amount)}}"
-                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                    placeholder="Total" autocomplete="off"  style="background-color: white;" requierd>
                                 </td>
                               
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_egy]" value="{{old('total_egy',$item->total_egy)}}"
-                                    placeholder="Egp Amount" autocomplete="off" disabled style="background-color: white;">
+                                    placeholder="Egp Amount" autocomplete="off" style="background-color: white;" requierd>
                                 </td>
-                                @if($key > 0) 
-                                    <td style="width:85px;">
-                                        <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                @endif
+                                    <!-- <td style="width:85px;">
+                                    <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
+                                    </td> -->
                             </tr>
                             @endforeach
                             </tbody>
@@ -206,6 +203,7 @@
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>
+                           <input name="removed" id="removed" type="hidden"  value="">
                     </form>
                 </div>
             </div>
@@ -215,19 +213,32 @@
 </div>
 @endsection
 @push('scripts')
-
 <script>
 var removed = [];
 function removeItem( item )
 {
     removed.push(item);
+    console.log(removed);
     document.getElementById("removed").value = removed;
 }
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
+    var counter  = <?= isset($key)? ++$key : 0 ?>;
 
+    $("#add").click(function(){
+       var tr = '<tr>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
+           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_egy]" class="form-control" autocomplete="off" placeholder="Egp Amount" requierd></td>'+
+           '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+       '</tr>';
+       counter++;
+      $('#charges').append(tr);
+    });
 });
 </script>
 

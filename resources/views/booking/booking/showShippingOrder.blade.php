@@ -101,6 +101,12 @@
                             <td class="col-md-4 tableStyle text-center" >{{$haz}}</td>
                             <td class="col-md-4 tableStyle text-right underline" ></td>
                         </tr>
+
+                        <tr>
+                            <td class="col-md-4 tableStyle" >Container Operator : {{optional($booking->principal)->code}}</td>
+                            <td class="col-md-4 tableStyle text-center">Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
+                            <td class="col-md-4 tableStyle text-right">Return Location : {{optional($booking->placeOfReturn)->code}}</td>
+                        </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle" >
