@@ -34,12 +34,19 @@
                                     
                             </div>
                             <div class="form-group col-md-3" >
-                                <label>Invoice Confirmed Serial</label>
+                                <label>Debit Confirmed Serial</label>
                                     
                                     <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{old('debit_confirm',$setting->debit_confirm)}}" style="background-color:#fff" name="debit_confirm">
                                     
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3" >
+                                <label>Booking REf NO</label>
+                                    <input type="text" class="form-control" placeholder="Booking REf NO" autocomplete="off" value="{{old('booking_ref_no',$setting->booking_ref_no )}}" style="background-color:#fff" name="booking_ref_no">
+                            </div>
+                        </div>
+
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
@@ -53,39 +60,3 @@
     </div>
 </div>
 @endsection
-@push('scripts')
-
-<script>
-var removed = [];
-function removeItem( item )
-{
-    removed.push(item);
-    document.getElementById("removed").value = removed;
-}
-$(document).ready(function(){
-    $("#charges").on("click", ".remove", function () {
-    $(this).closest("tr").remove();
-    });
-
-});
-</script>
-
-<script>
-    $('#editForm').submit(function() {
-        $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
-</script>
-@endpush

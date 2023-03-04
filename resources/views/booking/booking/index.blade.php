@@ -170,6 +170,8 @@
                                             $qty += $bookingContainerDetail->qty;
                                             if($bookingContainerDetail->qty == 1 && $bookingContainerDetail->container_id == "000"){
                                                 $unassigned += 1;
+                                            }elseif($bookingContainerDetail->qty == 1 && $bookingContainerDetail->container_id == null){
+                                                $unassigned += 1;
                                             }elseif($bookingContainerDetail->qty == 1){
                                                 $assigned += 1;
                                             }else{
@@ -296,6 +298,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission 
+
+                                                    @if($item->has_bl == 0)
                                                     @permission('Booking-Delete')
                                                     <li>
                                                         <form action="{{route('booking.destroy',['booking'=>$item->id])}}" method="post">
@@ -305,6 +309,7 @@
                                                         </form> 
                                                     </li>
                                                     @endpermission
+                                                    @endif
                                                 </ul> 
                                             </td>
                                         </tr>

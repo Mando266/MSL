@@ -14,20 +14,23 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Setting;
+use App\Models\Master\Customers;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function index()
     {
         $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc')->paginate(30);
+        $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
+        $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
+        $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         return view('invoice.invoice.index',[
-            'invoices'=>$invoices
+            'invoices'=>$invoices,
+            'invoiceRef'=>$invoiceRef,
+            'bldrafts'=>$bldrafts,
+            'customers'=>$customers,
         ]);
     }
 
@@ -111,6 +114,7 @@ class InvoiceController extends Controller
             'bldraft_id' => ['required'],
             'customer' => ['required'],
         ]);
+
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
         $blkind = $blkind[0];
@@ -138,6 +142,7 @@ class InvoiceController extends Controller
         $invoice->save();
         $setting->save();
         $qty = $bldraft->blDetails->count();
+        
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
                 InvoiceChargeDesc::create([
@@ -158,16 +163,16 @@ class InvoiceController extends Controller
             }
         }
         return redirect()->route('invoice.index')->with('success',trans('voyage.created'));
-
-
     }
 
     public function storeInvoice(Request $request)
     {
+        //dd($request->input());
         $this->authorize(__FUNCTION__,Invoice::class);
         request()->validate([
             'bldraft_id' => ['required'],
             'customer' => ['required'],
+            'customer_id' => ['required'],
             'exchange_rate' => ['required'],
             'add_egp' => ['required'],
         ]);
@@ -190,6 +195,7 @@ class InvoiceController extends Controller
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
             $invoice_no = $setting->invoice_confirm;
+            $invoice->invoice_no = $invoice_no;
             $setting->invoice_confirm += 1;
         }else{
             $invoice_no = 'DRAFTV';
@@ -205,6 +211,7 @@ class InvoiceController extends Controller
         }elseif($request->exchange_rate == "etd"){
             $egyrate = optional($bldraft->voyage)->exchange_rate_etd;
         }
+
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
@@ -215,8 +222,6 @@ class InvoiceController extends Controller
             ]);
         }
         return redirect()->route('invoice.index')->with('success',trans('voyage.created'));
-
-
     }
 
     public function show($id)
@@ -268,9 +273,15 @@ class InvoiceController extends Controller
                 $gross_weight += $bldetail->gross_weight;
             }
             foreach($invoice->chargeDesc as $charge){
-                $amount += $charge->size_small;
-                $vat += $charge->size_small * 0;
+                $amount = $amount + ( (float)$charge->size_small);
+                $vat = $vat +  (((float)$charge->size_small) * 0);
             }
+            $triffDetails = LocalPortTriff::where('port_id',optional($invoice->bldraft)->load_port_id)->where('validity_to','>=',Carbon::now()->format("Y-m-d"))
+            ->with(["triffPriceDetailes" => function($q) use($invoice){
+                $q->where("equipment_type_id", optional($invoice->bldraft->equipmentsType)->id);
+                $q->orwhere('equipment_type_id','100');
+            }])->first();
+
             return view('invoice.invoice.show_invoice',[
                 'invoice'=>$invoice,
                 'qty'=>$qty,
@@ -282,6 +293,8 @@ class InvoiceController extends Controller
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
+                'triffDetails'=>$triffDetails,
+
             ]);
         }
         
@@ -336,7 +349,7 @@ class InvoiceController extends Controller
         }
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $qty = $bldraft->blDetails->count();
-        $invoice_details = InvoiceChargeDesc::where('invoice_id',$invoice->id)->get();
+        $invoice_details = InvoiceChargeDesc::where('invoice_id',$invoice->id)->with('invoice')->get();
 
         return view('invoice.invoice.edit',[
             'invoice'=>$invoice,
@@ -354,7 +367,7 @@ class InvoiceController extends Controller
         unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
         $invoice->update($inputs);
         InvoiceChargeDesc::destroy(explode(',',$request->removed));
-        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc);  
+        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc); 
         return redirect()->route('invoice.index')->with('success',trans('Invoice.Updated.Success'));
     }
 

@@ -116,7 +116,7 @@ class   Booking extends Model implements PermissionSeederContract
             }
             else{
                 BookingContainerDetails::create($input);
-            }
+            } 
         }
 
         $this->has_gate_in = $has_gate_in;

@@ -12,10 +12,11 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                    </div>
+                    </div> 
                     @permission('BlDraft-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
+                            <a class="btn btn-info" href="{{ route('export.BLloadList') }}">BL Loadlist</a> 
                             <a href="{{route('bookingContainersRefresh')}}" class="btn btn-success">Refresh Booking Containers</a>
                             <a href="{{route('bldraft.selectbooking')}}" class="btn btn-primary">New Bl Draft</a>
                             </div>
@@ -123,7 +124,7 @@
                                             <td>{{optional($item->loadPort)->code}}</td>
                                             <td>{{optional($item->dischargePort)->code}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td> 
-                                            <td>
+                                            <td> 
                                                 @foreach($item->blDetails as $blDetail)
                                                 <table style="border: hidden;">
                                                     <td>{{ optional($blDetail->container)->code }}</td>

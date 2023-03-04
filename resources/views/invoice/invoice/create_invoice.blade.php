@@ -154,8 +154,7 @@
                                         <th class="text-center">VAT</th>
                                         <th class="text-center">TOTAL</th>
                                         <th class="text-center">Egp Amount</th>
-                                        <th class="text-center"></th>
-
+                                        <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -189,11 +188,9 @@
                                     placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
                                 </td>
                                 @endif
-                                @if($key > 0) 
                                     <td style="width:85px;">
-                                        <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-danger remove" ><i class="fa fa-trash"></i></button>
                                     </td>
-                                @endif
                             </tr>
                             @endforeach
                             </tbody>
@@ -215,18 +212,24 @@
 @push('scripts')
 
 <script>
-var removed = [];
-function removeItem( item )
-{
-    removed.push(item);
-    console.log(removed);
-    document.getElementById("removed").value = removed;
-}
+
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
-    $(this).closest("tr").remove();
+        $(this).closest("tr").remove();
     });
-
+    var counter  = <?= isset($key)? ++$key : 0 ?>;
+    $("#add").click(function(){
+       var tr = '<tr>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount"></td>'+
+           '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+       '</tr>';
+       counter++;
+      $('#charges').append(tr);
+    });
 });
 </script>
 

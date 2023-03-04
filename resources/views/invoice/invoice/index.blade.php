@@ -25,11 +25,38 @@
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="Type">Type</label>
+                                <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
                                         <option value="debit">Debit</option>
                                         <option value="invoice">Invoice</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="invoice">Invoice No</label>
+                                <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($invoiceRef as $item)     
+                                        <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Bldraft">Bl Number</label>
+                                <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($bldrafts as $item)    
+                                        <option value="{{$item->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Bldraft">Customer</label>
+                                <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($customers as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',request()->input('customer_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -40,6 +67,10 @@
                             </div>
                         </div>
                     </form>
+                    @php
+                    $totalusd = 0;
+                    $totalegp = 0;
+                    @endphp
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -48,31 +79,49 @@
                                         <th>#</th>
                                         <th>Invoice No</th>
                                         <th>Customer</th>
+                                        <th>Tax NO</th>
                                         <th>Bl No</th>
                                         <th>Date</th>
                                         <th>Invoice Status</th>
                                         <th>Invoice Type</th>
-                                        <th>Created At</th>
+                                        <th>Total USD</th>
+                                        <th>Total EGP</th>
                                         <th class='text-center' style='width:100px;'>Receipt</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($invoices as $invoice)
+                                    @php
+                                        $totalusd = 0;
+                                        $totalegp = 0;
+                                    @endphp
+                                    @php
+                                        foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
+                                            $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
+                                            $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
+                                        }
+                                    @endphp
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($invoices,$loop)}}</td>
                                             <td>{{optional($invoice)->invoice_no}}</td>
                                             <td>{{$invoice->customer}}</td>
+                                            <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{optional($invoice->bldraft)->ref_no}}</td>
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->invoice_status}}</td>
                                             <td>{{optional($invoice)->type}}</td>
-                                            <td>{{{$invoice->created_at}}}</td>
+                                            <td>{{$totalusd}}</td>
+                                            @if($invoice->type == "invoice" || $invoice->add_egp == "true")
+                                            <td>{{$totalegp}}</td>
+                                            @else
+                                            <td></td>
+                                            @endif
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                 @if($invoice->invoice_status == "confirm" && $invoice->type == "invoice")
                                                     <li>
-                                                        <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
@@ -92,7 +141,7 @@
                                                     @endpermission
                                                     @permission('Invoice-Show')
                                                     <li>
-                                                        <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                        <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>

@@ -18,7 +18,7 @@
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 350px; height: 97.6px;" alt="logo">
                         </div>
                         <div class="col-md-6 text-right">
-                            <img src="{{asset('assets/img/mas logo.png')}}" style="width: 400px; height: 143.6px;" alt="logo">
+                            <img src="{{asset('assets/img/mas logo.png')}}" style="width: 300px; height: 143.6px;" alt="logo">
                         </div>
                     </div>
                 <br>
@@ -32,7 +32,7 @@
                 </table>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        <h3><span style="font-size:22px;">{{ $total }}</span> &nbsp;&nbsp;:المبلغ <h3>
+                        <h3><span style="font-size:22px;">{{ $total_eg }}</span> &nbsp;&nbsp;:المبلغ <h3>
                     </div>
                     <div class="form-group col-md-6  text-right">
                         <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}} </span>&nbsp;&nbsp;:رقم<h3>

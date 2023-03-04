@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BLLoadListExport;
 use App\Exports\BookingExport;
 use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
@@ -73,6 +74,7 @@ class ImportExportController extends Controller
     {
         return Excel::download(new LoadListExport, 'Loadlist.xlsx');
     }
+    
     public function exportVoyages() 
     {
         return Excel::download(new VoyageExport, 'Voyages.xlsx');
@@ -80,5 +82,10 @@ class ImportExportController extends Controller
     public function exportSearch() 
     {
         return Excel::download(new MovementsExportSearch, 'Movements.xlsx');
+    }
+    
+    public function loadlistBl() 
+    {
+        return Excel::download(new BLLoadListExport, 'BLLoadlist.xlsx');
     }
 }
