@@ -73,6 +73,9 @@ class InvoiceController extends Controller
             $shippers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 1);
             })->with('CustomerRoles.role')->get();
+            $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 7);
+            })->with('CustomerRoles.role')->get();
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -80,6 +83,7 @@ class InvoiceController extends Controller
 
             return view('invoice.invoice.create_customize_invoice',[
                 'shippers'=>$shippers,
+                'suppliers'=>$suppliers,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
                 'ports'=>$ports,
