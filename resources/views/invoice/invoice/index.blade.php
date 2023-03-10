@@ -16,7 +16,7 @@
                     @permission('Invoice-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Invoice</a>
+                            <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Note</a>
                             <a href="{{route('invoice.selectBLinvoice')}}" class="btn btn-info">New Invoice</a>
                             <a class="btn btn-warning" href="{{ route('export.invoice') }}">Export</a>
 
