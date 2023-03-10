@@ -41,7 +41,6 @@ class TrackingController extends Controller
 
     public function create()
     {
-        $this->authorize(__FUNCTION__,Movements::class);
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
