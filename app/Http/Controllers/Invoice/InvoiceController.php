@@ -315,8 +315,12 @@ class InvoiceController extends Controller
         $invoice = Invoice::with('chargeDesc')->find($id);
         if($invoice->bldraft_id == 0){
             $qty = $invoice->qty;
-            $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id)
-            ->where('port_from_name',optional($invoice->booking->loadPort)->id)->first();
+            if($invoice->booking != null){
+                $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id)
+                ->where('port_from_name',optional($invoice->booking->loadPort)->id)->first();
+            }else{
+                $firstVoyagePort = null;
+            }
         }else{
             $qty = $invoice->bldraft->blDetails->count();
             $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
