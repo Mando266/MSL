@@ -271,9 +271,12 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled>
+                                    @if(optional($booking->quotation)->ofr != 0)
                                     <option value="Prepaid">Prepaid </option>
+                                    @else
                                     <option value="Collect">Collect</option>
+                                    @endif
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
@@ -293,6 +296,7 @@
                                 </div>
                                 @enderror
                         </div>
+
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="bl_status" title="{{trans('forms.select')}}">
@@ -321,7 +325,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($booking_containers->count() != 0)
+                        @if($booking_containers->count() != 0)
                             @foreach($booking_containers as $key => $bookingContainer)
                             <tr>
                                 <td>
@@ -350,7 +354,7 @@
                                 </td>
 
                                 <td>
-                                    <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
+                                    <input type="text" id="gross_weight" value="{{$bookingContainer->weight}}" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight"  required>
                                 </td>
 
                                 <td>
@@ -395,7 +399,7 @@
                                 </td>
 
                                 <td>
-                                    <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight" required>
+                                    <input type="text" id="gross_weight" name="blDraftdetails[{{ $key }}][gross_weight]" class="form-control input"  autocomplete="off" placeholder="Gross Weight"  required>
                                 </td>
                                 <td>
                                     <input type="text" id="net_weight" name="blDraftdetails[{{ $key }}][net_weight]" class="form-control input"  autocomplete="off" placeholder="Net Weight" required>

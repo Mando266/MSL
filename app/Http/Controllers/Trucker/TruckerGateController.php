@@ -19,6 +19,7 @@ class TruckerGateController extends Controller
         $this->authorize(__FUNCTION__,TruckerGates::class);
             $truckerGates = TruckerGates::with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->paginate(30);
             $exportTruckerGate = TruckerGates::with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->get();
+            $certificate = TruckerGates::get();
            // dd($truckerGates);
             $booking = Booking::where('booking_confirm',1)->get();
             $truckers = Trucker::get();
@@ -27,6 +28,7 @@ class TruckerGateController extends Controller
             return view('trucker.truckergate.index',[
                 'items'=>$truckerGates,
                 'booking'=>$booking,
+                'certificate'=>$certificate,
                 'truckers'=>$truckers,
                 'exportTruckerGate'=>$exportTruckerGate,
             ]);  

@@ -19,21 +19,24 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Notify",
         "Load Port",
         "Final Dest",
+        "Line",
         "Vessel",
         "Voyage",
         "Container Type",
         "Container No",
+        "OFR",
         "Seal No",
         "PACKS",
         "PACKS TYPE",
         "GROSS WEIGHT KGS",
         "NET WEIGHT KGS	",
         "MEASURE CBM",
+        "Payment TYPE",
         ];
     }
     
 
-    public function collection()
+    public function collection() 
     {
         $bldarfts = session('bldarft');
         $exportbls = collect();
@@ -55,16 +58,20 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'Notify' => optional($bldarft->customerNotify)->name,
                         'Load Port' => optional($bldarft->loadPort)->code,
                         'Final Dest' => optional($bldarft->dischargePort)->code,
+                        'line'=>optional($bldarft->booking->principal)->name,
                         'Vessel' => optional($bldarft->voyage)->vessel->name,
                         'Voyage' => optional($bldarft->voyage)->voyage_no,
                         'Container Type' => optional($bldarft->equipmentsType)->name,
                         'Container No' => optional($blDetail->container)->code,
+                        'OFR' => optional($bldarft->booking->quotation)->ofr,
                         'Seal No' => $blDetail->seal_no,
                         'PACKS' => $blDetail->packs,
                         'PACKS TYPE' => $blDetail->pack_type,
                         'CARGO WEIGHT' => $blDetail->gross_weight,
                         'NET WEIGHT' => $blDetail->net_weight,
                         'MEASURE' => $blDetail->measurement,
+                        'Payment' => $bldarft->payment_kind,
+
                     ]);
             $exportbls->add($tempCollection);
 

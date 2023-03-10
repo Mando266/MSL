@@ -34,6 +34,16 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Certificate Type</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="certificate_type" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($certificate as $item)
+                                        <option value="{{$item->certificate_type}}" {{$item->certificate_type == old('certificate_type',request()->input('certificate_type')) ? 'selected':''}}>{{$item->certificate_type}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-12 text-center">
@@ -50,6 +60,7 @@
                                         <th>#</th>
                                         <th>Booking No</th>
                                         <th>Principal Line</th>
+                                        <th>vessel / Voyage</th>
                                         <th>Certificate Type</th>
                                         <th>Shipper Name</th>
                                         <th>Trucker Name</th>
@@ -76,6 +87,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{optional($item->booking)->ref_no}}</td>
                                             <td>{{optional($item->booking->principal)->name}}</td>
+                                            <td>{{optional($item->booking->voyage->vessel)->name}} / {{optional($item->booking->voyage)->voyage_no}} </td>
                                             <td>{{$item->certificate_type}}</td>
                                             <td>{{optional($item->booking->customer)->name}}</td>
                                             <td>{{optional($item->trucker)->company_name}}</td>

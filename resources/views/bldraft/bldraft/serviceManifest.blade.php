@@ -40,7 +40,7 @@
                                 @if(optional($blDraft->loadPort)->code == "EGEDK")
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                     @else
-                                    <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
                                     @endif
                                 </div>
                                 <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
@@ -96,10 +96,8 @@
                             <textarea class="tableStyle" style="border: none; height:290px; resize: none; background-color: white;"></textarea>
 
                             </td>
-                            <td class="tableStyle" style="border-left-style: hidden; width: 200px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br> 
-                                <!-- <textarea class="tableStyle" name="descripions"  style="border-style: hidden; height: 400px; width: -webkit-fill-available; resize: none; background-color: white;" cols="30" rows="10" readonly> -->
-                                    {{ old('descripions',$blDraft->descripions) }}
-                                <!-- </textarea> -->
+                            <td class="tableStyle" style="border-left-style: hidden; width: 300px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br> 
+                                <textarea style="width: 100%; height:400px; border: none; font-size: 12px; font-weight: bolder !important; resize: none; background-color: white; color: #000;" disabled>{!! $blDraft->descripions  !!}</textarea>
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $bldetails->measurement }}</td>
@@ -182,7 +180,7 @@
         }
     }
     .tableStyle {
-        font-size: 14px ;
+        font-size: 12px ;
         font-weight: bolder !important;
         border: 1px solid #000;
         margin-bottom: 1rem;

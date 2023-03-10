@@ -48,9 +48,19 @@
                                     {{ old('shipper',$blDraft->customer_shipper_details) }}
                                     </textarea>
                                 </th>
-                                <th class="col-md-6 tableStyle " colspan="2" > <h3 style="font-weight: 900;"></h3><br>
+                                @if(optional($blDraft)->number_of_original == "0" )
+                                <th class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
+                                @elseif($blDraft->bl_status == 0 && optional($blDraft)->number_of_original != "0")
+                                <th class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @else
+                                <th class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @endif
                                 <div class="col-md-12 text-center">
-                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 204px;" alt="logo">
+                                    @if(optional($blDraft->loadPort)->code == "EGEDK")
+                                        <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                        @else
+                                        <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
+                                    @endif
                                 </div>
                                 </th>
                             </tr>
@@ -110,13 +120,16 @@
                             <tr>
                                 <td class="col-md-4 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;" colspan="2"></td>
                                 <td class="col-md-4 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;">
-                                <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; overflow: hidden; height: 355px; width: 455px; padding-bottom: unset; resize: none; background-color: white;" cols="30" rows="18" readonly>
-                                    {!!  $blDraft->descripions  !!}
-
-                                
+                                    <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; overflow: hidden; height: 355px; width: 455px; padding-bottom: unset; resize: none; background-color: white;" cols="30" rows="18" readonly>
+                                        {!!  $blDraft->descripions  !!}
                                     </textarea> 
-                                    </br>                                    {{optional($blDraft->booking->principal)->name}}
-</td>
+                                    </br>
+                                    @if(optional($blDraft->booking->principal)->code == 'PLS')
+                                    {{optional($blDraft->booking->principal)->name}} Soc
+                                    @else
+                                    {{optional($blDraft->booking->principal)->name}} Coc
+                                    @endif
+                                </td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>
                             </tr>

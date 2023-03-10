@@ -234,7 +234,6 @@ class BlDraftController extends Controller
         if ($request->input('bl_status') == 1){
             $request->validate([
                 'date_of_issue' =>['required'],
-                'payment_kind' =>['required'],
                 'bl_kind' =>['required'],
                 'date_of_issue' =>['required'],
             ]);

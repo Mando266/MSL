@@ -33,9 +33,9 @@
 
                         <tr>
                         @if($invoice->invoice_status == "draft")
-                            <th class="text-center thstyle underline" style="font-size: 18px;"> DRAFT DEBIT NOTE</th>
+                            <th class="text-center thstyle underline" style="font-size: 22px;"> DRAFT DEBIT NOTE</th>
                             @else
-                            <th class="text-center thstyle underline" style="font-size: 18px;">DEBIT NOTE</th>
+                            <th class="text-center thstyle underline" style="font-size: 22px;">DEBIT NOTE</th>
                         @endif
                         </tr>
 
@@ -44,7 +44,7 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="col-md-3 tableStyle" >DEBIT NOTE NO. <span class="entry">{{ $invoice->type }}</span></td>
+                            <td class="col-md-3 tableStyle" >DEBIT NOTE NO. <span class="entry">{{ $invoice->invoice_no }}</span></td>
                             <td class="col-md-6 tableStyle" colspan="2">B/L No. <span class="entry">{{ optional($invoice->bldraft)->ref_no }}</span></td>
                             <td class="col-md-3 tableStyle" >Date: <span class="entry">{{Carbon\Carbon::parse($invoice->date)->format('Y-m-d')}}</span></td>
                         </tr>
@@ -136,7 +136,9 @@
                         </tr>
                     </tbody>
                 </table>
-
+                <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
+                <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
+    
                 </div>
                 <div class="row">
                         <div class="col-md-12 text-center">
@@ -157,12 +159,12 @@
         }
     }
     .entry{
-        font-size: 18px !important;
+        font-size: 20px !important;
         font-weight: 100 !important;
 
     }
     .tableStyle {
-        font-size: 18px !important;
+        font-size: 20px !important;
         font-weight: bolder !important;
         border: 1px solid #000 !important;
         margin-bottom: 1rem;

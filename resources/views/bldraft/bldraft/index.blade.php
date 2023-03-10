@@ -186,6 +186,7 @@
                                                     </li>
                                                     @endpermission 
                                                     @permission('BlDraft-Delete')
+                                                    @if($item->has_bl == 0)
                                                     <li>
                                                         <form action="{{route('bldraft.destroy',['bldraft'=>$item->id])}}" method="post">
                                                             @method('DELETE')
@@ -193,6 +194,7 @@
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
+                                                    @endif
                                                     @endpermission
                                                 </ul>
                                             </td>

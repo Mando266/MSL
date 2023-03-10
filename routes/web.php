@@ -95,6 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
     Route::post('importContainers', 'ImportExportController@importContainers')->name('importContainers');
     Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
+    Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
 
 
     /*
