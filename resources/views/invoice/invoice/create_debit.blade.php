@@ -116,10 +116,6 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
-                                <div class="form-group col-md-3" >
-                                    <label>QTY</label>
-                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
-                                </div>
                             </div> 
                         <h4>Charges<h4>
                         <table id="containerDetails" class="table table-bordered">

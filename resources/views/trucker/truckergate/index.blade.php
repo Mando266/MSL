@@ -17,8 +17,11 @@
                             <div class="col-md-12 text-right mb-12">
                                 @permission('TruckerGates-Create')
                                     <a href="{{route('truckergate.create')}}" class="btn btn-primary">New Insurance Certificate</a>
+                                @endpermission
+                                @permission('TruckerGates-List')
                                     <a class="btn btn-warning" href="{{ route('export.TruckerGate') }}">Export</a>
                                 @endpermission
+
                             </div>
                         </div>
                     </div>
