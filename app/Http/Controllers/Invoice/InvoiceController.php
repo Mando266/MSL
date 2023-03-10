@@ -219,7 +219,12 @@ class InvoiceController extends Controller
             $totalAmount += $desc['total'];
         }
         if($totalAmount == 0){
-            return redirect()->back()->with('error','Invoice Total Amount Can nott be Equal Zero')->withInput($request->input());
+            return redirect()->back()->with('error','Invoice Total Amount Can not be Equal Zero')->withInput($request->input());
+        }
+        if($request->invoice_status == "confirm"){
+            if($request->add_egp == "true"){
+                return redirect()->back()->with('error','You Must Choose EGP or USD in Confirmed Invoice')->withInput($request->input());
+            }
         }
         if($request->bldraft_id == 'customize'){
             $invoice = Invoice::create([
@@ -502,6 +507,11 @@ class InvoiceController extends Controller
         }
         if($totalAmount == 0){
             return redirect()->back()->with('error','Invoice Total Amount Can not be equal zero')->withInput($request->input());
+        }
+        if($request->invoice_status == "confirm"){
+            if($request->add_egp == "true"){
+                return redirect()->back()->with('error','You Must Choose EGP or USD in Confirmed Invoice')->withInput($request->input());
+            }
         }
         $inputs = request()->all();
         unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
