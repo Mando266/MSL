@@ -18,7 +18,7 @@
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 350px; height: 97.6px;" alt="logo">
                         </div>
                         <div class="col-md-6 text-right">
-                            <img src="{{asset('assets/img/mas logo.png')}}" style="width: 300px; height: 143.6px;" alt="logo">
+                            {{-- <img src="{{asset('assets/img/mas logo.png')}}" style="width: 300px; height: 143.6px;" alt="logo"> --}}
                         </div>
                     </div>
                 <br>
@@ -32,10 +32,14 @@
                 </table>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        <h3><span style="font-size:22px;">{{ $total_eg }}</span> &nbsp;&nbsp;:المبلغ <h3>
+                        @if($invoice->add_egp == 'onlyegp')
+                            <h3><span style="font-size:22px;">{{ $total_eg }} EGP</span> &nbsp;&nbsp;:المبلغ <h3>
+                        @else
+                            <h3><span style="font-size:22px;">{{ $total }} USD</span> &nbsp;&nbsp;:المبلغ <h3>
+                        @endif
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}} </span>&nbsp;&nbsp;:رقم<h3>
+                        <h3> <textarea style="border:none; height: 32px; text-align: right;font-size: 22px; resize: none;"></textarea>&nbsp;&nbsp; &nbsp;&nbsp;:رقم<h3>
                     </div>
                 </div>
                 <div class="form-row">
@@ -48,11 +52,19 @@
                         <h3> <span style="font-size:22px;">{{ $now }} </span>:التاريخ<h3>
                     </div>
                 </div>
+                @if($invoice->add_egp == 'onlyegp')
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">{{ $EGP }} Egyptian Pound</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
                     </div>
                 </div>
+                @else
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{ $USD }} Dollar</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
+                    </div>
+                </div>
+                @endif
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}}</span>&nbsp;&nbsp;:وذلك عن فواتير<h3>
@@ -60,10 +72,10 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ optional($invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
+                        <h3> <span style="font-size:22px;">{{ $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ optional($invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ optional($invoice->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
+                        <h3> <span style="font-size:22px;">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
                     </div>
                 </div>
                 <div class="form-row">

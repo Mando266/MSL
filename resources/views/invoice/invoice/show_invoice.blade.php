@@ -19,7 +19,7 @@
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 350px; height: 97.6px;" alt="logo">
                         </div>
                         <div class="col-md-6 text-right">
-                            <img src="{{asset('assets/img/mas logo.png')}}" style="width: 400px; height: 143.6px;" alt="logo">
+                            {{-- <img src="{{asset('assets/img/mas logo.png')}}" style="width: 400px; height: 143.6px;" alt="logo"> --}}
                         </div>
                     </div>
                 <br>
@@ -28,7 +28,7 @@
                     <thead>
                         <tr>
                             @if($invoice->invoice_status == "draft")
-                            <th class="text-center  underline" style="font-size: 24px !important;">EXPORT THC PROFORMA INVOICE</th>
+                            <th class="text-center  underline" style="font-size: 24px !important;">PROFORMA INVOICE</th>
                             @else
                             <th class="text-center  underline" style="font-size: 24px !important;">EXPORT INVOICE</th>
                             @endif
@@ -57,21 +57,22 @@
                         </tr>
                     </tbody>
                 </table>
+                
                 <table class="col-lg-12 tableStyle">
                     <tbody>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Vessel</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->loadPort)->code }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >G. weight</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }} KGM</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->booking)->ref_no }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >POL</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->loadPort)->code }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >IMO Class</td>
                             <td class="col-md-2 tableStyle text-center" ><input type="text" style="overflow: hidden; border-style: hidden;"></td>
                         </tr>
@@ -79,15 +80,15 @@
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{$firstVoyagePort->eta}}</span></td>
                             <td class="col-md-2 tableStyle text-center" >POD</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->dischargePort)->code }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional($invoice->bldraft->dischargePort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Cntr. Type(s)</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{$invoice->blDraft->blDetails->count()}} X {{ optional($invoice->blDraft->equipmentsType)->name }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{$invoice->bldraft_id == 0 ? $invoice->qty : $invoice->blDraft->blDetails->count()}} X {{ $invoice->bldraft_id == 0 ? optional($invoice->equipmentsType)->name : optional($invoice->blDraft->equipmentsType)->name }}</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >B/L No.</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft)->ref_no }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >Final Dest</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ optional($invoice->bldraft->placeOfDelivery)->code }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code : optional($invoice->bldraft->placeOfDelivery)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" ></td>
                             <td class="col-md-2 tableStyle text-center" ></td>
                         </tr>
@@ -101,8 +102,10 @@
                             <th class="col-md-5 tableStyle text-center">Description Of Charges</th>
                             <th class="col-md-2 tableStyle text-center">Amount</th>
                             <th class="col-md-2 tableStyle text-center">VAT</th>
+                            @if( $invoice->add_egp != 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
-                            @if($invoice->add_egp == 'true')
+                            @endif
+                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
                             @endif
                         </tr>
@@ -112,8 +115,10 @@
                             <td class="col-md-5 tableStyle"><span class="entry">{{ $chargeDesc->charge_description }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ (int)$chargeDesc->size_small * 0 }}</span></td>
+                            @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount }}</span></td>
-                            @if($invoice->add_egp == 'true')
+                            @endif
+                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy}}</span></td>
                             @endif
                         </tr>
@@ -122,15 +127,19 @@
                             <td class="col-md-6 tableStyle text-center" colspan="4"><span class="entry">GRAND TOTAL</span></td>
                             <!-- <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td> -->
+                            @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total }}</span></td>
-                            @if($invoice->add_egp == 'true')
+                            @endif
+                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg }}</span></td>
                             @endif
                         </tr>
+                        @if( $invoice->add_egp != 'onlyegp')
                         <tr>
                             <td class="col-md-2 tableStyle" colspan="6"><span class="entry">{{ $USD }} Dollar</span></td>
                         </tr>
-                        @if($invoice->add_egp == 'true')
+                        @endif
+                        @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                         <tr>
                             <td class="col-md-2 tableStyle " colspan="6"><span class="entry">{{ $EGP }} EGP</span></td>
                         </tr>
@@ -140,8 +149,8 @@
                 <br>
                 <br>
                 <br>
-                <h4 style="font-size: 14px;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
-                <h4 style="font-size: 14px;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
+                <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
+                <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
                 </div>
                 <div class="row">
                         <div class="col-md-12 text-center">
@@ -162,13 +171,13 @@
         }
     }
     .entry{
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
     .user{
-        font-size: 12px !important;
+        font-size: 14px !important;
     }
     .tableStyle {
-        font-size: 13px !important;
+        font-size: 16px !important;
         font-weight: bolder !important;
         border: 1px solid #000 !important;
         margin-bottom: 1rem;

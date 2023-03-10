@@ -47,7 +47,7 @@
                     <tbody>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >IMO No.</td>
-                            <td class="col-md-4 tableStyle text-right underline" >560-161-094</td>
+                            <td class="col-md-4 tableStyle text-right underline" >560-161-093</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" > الرقم الضريبي</td>
                         </tr>
                         <tr>
@@ -103,7 +103,13 @@
                         </tr>
 
                         <tr>
-                            <td class="col-md-4 tableStyle" >Container Operator : {{optional($booking->principal)->code}}</td>
+                            @if(optional($booking->principal)->code == 'PLS')
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}} SOC</td>
+                            @elseif(optional($booking->principal)->code == 'MAS')
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}} COC</td>
+                            @else
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}}</td>
+                            @endif
                             <td class="col-md-4 tableStyle text-center">Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
                             <td class="col-md-4 tableStyle text-right">Return Location : {{optional($booking->placeOfReturn)->code}}</td>
                         </tr>

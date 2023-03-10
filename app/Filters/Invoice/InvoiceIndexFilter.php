@@ -10,5 +10,6 @@ class InvoiceIndexFilter extends AbstractFilter{
         'bldraft_id'=>BlDraftFilter::class,
         'customer_id'=>CustomerFilter::class,
         'invoice_no'=>InvoiceNoFilter::class,
+        'payment_kind'=>PaymentFilter::class,
     ];
 }

@@ -63,8 +63,14 @@
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" ></td>
-                            <td class="col-md-3 tableStyle text-right underline" ></td>
+                            <td class="col-md-9 tableStyle text-right underline"></td>
+                            @if(optional($booking->principal)->code == 'PLS')
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} SOC</td>
+                            @elseif(optional($booking->principal)->code == 'MAS')
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
+                            @else
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
+                            @endif
                         </tr>
                         <tr>
                             <td class=" tableStyle text-right underline" colspan="2">برجاء من سيادتكم بالموافقة على تحميل وخروج عدد الحاويات التالية فارغ</td>

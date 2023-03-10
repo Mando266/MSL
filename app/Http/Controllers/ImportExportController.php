@@ -9,13 +9,13 @@ use App\Exports\CustomerExport;
 use App\Exports\LoadListExport;
 use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
-use Illuminate\Http\Request;
 use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
 use App\Exports\MovementsExportSearch;
 use App\Exports\QuotationExport;
 use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
+use App\Exports\InvoiceListExport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -87,5 +87,10 @@ class ImportExportController extends Controller
     public function loadlistBl() 
     {
         return Excel::download(new BLLoadListExport, 'BLLoadlist.xlsx');
+    }
+        
+    public function invoiceList() 
+    {
+        return Excel::download(new InvoiceListExport, 'InvoiceList.xlsx');
     }
 }

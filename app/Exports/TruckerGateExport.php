@@ -13,6 +13,8 @@ class TruckerGateExport implements FromCollection,WithHeadings
             "BOOKING REF NO",
             "Certificate Type",
             "Shipper Name",
+            "Vessel",
+            "voyage",
             "Truker Name",
             "Beneficiary Name",
             "Valid To",
@@ -27,13 +29,14 @@ class TruckerGateExport implements FromCollection,WithHeadings
             "Shippment Typ",
             "Operator",
             "Release Location",
+            "BOOKING STATUS",
         ];
     }
     
 
     public function collection()
     {
-       
+        
         $truckergates = session('truckergates');
         $exportTruckergates = collect();
         foreach($truckergates ?? [] as $truckergate){
@@ -48,10 +51,21 @@ class TruckerGateExport implements FromCollection,WithHeadings
             }else{
                 $truckergate->shipment = "Empty Move";
             }
+
+            if($truckergate->booking->booking_confirm == 1){
+                $truckergate->booking->booking_confirm = "Confirm";
+            }elseif($truckergate->booking->booking_confirm == 2){
+                $truckergate->booking->booking_confirm = "Cancelled";
+            }else{
+                $truckergate->booking->booking_confirm = "Draft";
+            }
+
                 $tempCollection = collect([
                     'ref_no' => optional($truckergate->booking)->ref_no,
                     'certificate_type' =>$truckergate->certificate_type,
                     'Shipper_name' => optional($truckergate->booking->customer)->name,
+                    'vessel' => optional($truckergate->booking->voyage->vessel)->name,
+                    'voyage' => optional($truckergate->booking->voyage)->voyage_no,
                     'Truker_Name'=>optional($truckergate->trucker)->company_name,
                     'Beneficiary Name'=>$truckergate->beneficiry_name,
                     'valid_to'=>$truckergate->valid_to,
@@ -66,6 +80,7 @@ class TruckerGateExport implements FromCollection,WithHeadings
                     'Shippment'=>$truckergate->shipment,
                     'Operator'=>$truckergate->operator,
                     'Release Location'=>optional($truckergate->booking->pickUpLocation)->name,
+                    'booking Stauts' => $truckergate->booking->booking_confirm,
                 ]);
                 $exportTruckergates->add($tempCollection);
         }

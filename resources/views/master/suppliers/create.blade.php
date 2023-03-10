@@ -61,6 +61,8 @@
                                 </br>
                                 <input type="checkbox" id="is_container_haulageInput" name="is_container_haulage" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Container Haulage</a>
                                 </br>
+                                <input type="checkbox" id="is_container_terminalInput" name="is_container_terminal" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px;"> Container Terminal</a>
+                                </br>
                             </div>
                         </div>
 

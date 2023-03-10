@@ -12,12 +12,14 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                    </div>
+                    </div> 
                     @permission('Invoice-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Invoice</a>
                             <a href="{{route('invoice.selectBLinvoice')}}" class="btn btn-info">New Invoice</a>
+                            <a class="btn btn-warning" href="{{ route('export.invoice') }}">Export</a>
+
                             </div>
                         </div>
                     @endpermission
@@ -61,6 +63,22 @@
                             </div>
                         </div>
                         <div class="form-row">
+
+                            <div class="form-group col-md-3">
+                                <label for="status">Bl Payment</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                    <option value="Prepaid">Prepaid </option>
+                                    <option value="Collect">Collect</option>
+                                </select>
+                                @error('payment_kind')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                    </div>
+
+                        <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
@@ -82,10 +100,11 @@
                                         <th>Tax NO</th>
                                         <th>Bl No</th>
                                         <th>Date</th>
-                                        <th>Invoice Status</th>
                                         <th>Invoice Type</th>
+                                        <th>payment kind</th>
                                         <th>Total USD</th>
                                         <th>Total EGP</th>
+                                        <th>Invoice Status</th>
                                         <th class='text-center' style='width:100px;'>Receipt</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -109,8 +128,9 @@
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{optional($invoice->bldraft)->ref_no}}</td>
                                             <td>{{optional($invoice)->date}}</td>
-                                            <td>{{optional($invoice)->invoice_status}}</td>
                                             <td>{{optional($invoice)->type}}</td>
+                                            <td>{{optional($invoice->bldraft)->payment_kind}}</td>
+
                                             <td>{{$totalusd}}</td>
                                             @if($invoice->type == "invoice" || $invoice->add_egp == "true")
                                             <td>{{$totalegp}}</td>
@@ -118,8 +138,15 @@
                                             <td></td>
                                             @endif
                                             <td class="text-center">
+                                                @if($invoice->invoice_status == "confirm")
+                                                    <span class="badge badge-info"> Confirm </span>
+                                                @else
+                                                    <span class="badge badge-danger"> Draft </span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
                                                  <ul class="table-controls">
-                                                @if($invoice->invoice_status == "confirm" && $invoice->type == "invoice")
+                                                @if($invoice->invoice_status == "confirm")
                                                     <li>
                                                         <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
@@ -137,7 +164,6 @@
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
-                                                    
                                                     @endpermission
                                                     @permission('Invoice-Show')
                                                     <li>
