@@ -99,6 +99,8 @@
                                         <th>Customer</th>
                                         <th>Tax NO</th>
                                         <th>Bl No</th>
+                                        <th>Voyage</th>
+                                        <th>Vessel</th>
                                         <th>Date</th>
                                         <th>Invoice Type</th>
                                         <th>payment kind</th>
@@ -127,6 +129,8 @@
                                             <td>{{$invoice->customer}}</td>
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{optional($invoice->bldraft)->ref_no}}</td>
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</td>
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
