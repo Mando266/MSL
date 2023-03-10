@@ -53,6 +53,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'total egp' => $totalegp,
                     'STATUS' => $invoice->invoice_status,
                 ]);
+                
                 $exportinvoices->add($tempCollection);
         }
         
