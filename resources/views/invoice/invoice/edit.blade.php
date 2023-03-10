@@ -101,7 +101,7 @@
                                         <input type="text" class="form-control" placeholder="Equipment Type"  autocomplete="off" value="{{(optional($bldraft->equipmentsType)->name)}}" style="background-color:#fff" disabled>
                                         @endif
                                 </div> 
-
+                                @if($invoice->invoice_status != "confirm")
                                 <div class="form-group col-md-3">
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
@@ -114,6 +114,7 @@
                                     </div>
                                     @enderror
                                 </div>
+                                @endif
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
@@ -143,11 +144,13 @@
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
+                                        @if($invoice->invoice_status != "confirm")
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" {{ "true" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
+                                        @endif
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{ "false" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                           USD
