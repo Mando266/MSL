@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="bank_deposit">
+                                    <input type="number" class="form-control" name="bank_deposit">
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="bank_transfer">
+                                    <input type="number" class="form-control" name="bank_transfer">
                             </div>
                         </div> 
                         <div class="form-row">
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="bank_check">
+                                    <input type="number" class="form-control" name="bank_check">
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="bank_cash">
+                                    <input type="number" class="form-control" name="bank_cash">
                             </div>
                         </div> 
                         <div class="form-row">
@@ -83,13 +83,13 @@
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="matching">
+                                    <input type="number" class="form-control" name="matching">
                             </div>
                         </div> 
                         <div class="form-row">
                             <div class="col-md-4 form-group">
-                                <label> Total </label>
-                                    <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total." USD" : $total_eg." EGP"}}" readonly>
+                                <label> Total {{$invoice->add_egp == "false"? "USD" : "EGP"}}</label>
+                                    <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total : $total_eg}}" readonly>
                                 </div>
                                 <div class="col-md-2 form-group">
                                     <label> Customer Credit USD </label>

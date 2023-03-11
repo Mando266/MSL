@@ -2,6 +2,7 @@
 
 namespace App\Models\Receipt;
 
+use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
