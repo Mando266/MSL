@@ -37,6 +37,7 @@ class VoyagesController extends Controller
             ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
             ->orderBy('eta', 'DESC')
             ->groupBy('id')
+            ->with('bldrafts')
             ->paginate(30);
             // dd($voyages);
         $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
@@ -60,6 +61,7 @@ class VoyagesController extends Controller
                     ->orderBy('eta', 'DESC')
                     ->where('port_from_name','>=', $FromPort)
                     ->groupBy('id')
+                    ->with('bldrafts')
                     ->paginate(30);
                 $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no','voyage_port.eta')
@@ -99,6 +101,7 @@ class VoyagesController extends Controller
                         ->orWhere('port_from_name','<=', $ToPort);
                     })
                     ->groupBy('id')
+                    ->with('bldrafts')
                     ->paginate(30);
                 $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no','voyage_port.eta')
