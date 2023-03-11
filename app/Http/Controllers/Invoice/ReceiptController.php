@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Invoice\Invoice;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ReceiptController extends Controller
 {
@@ -28,7 +29,22 @@ class ReceiptController extends Controller
    
     public function create()
     {
-        return view('invoice.receipt.create');
+        $invoice = Invoice::where('id',request('invoice_id'))->with('chargeDesc')->first();
+        // dd($invoice);
+        $total = 0;
+        $total_eg = 0;
+        $now = Carbon::now();
+        foreach($invoice->chargeDesc as $chargeDesc){
+            $total += $chargeDesc->total_amount;
+            $total_eg += $chargeDesc->total_egy;
+        }
+        $total = $total - (($total * $invoice->tax_discount)/100);
+        $total_eg = $total_eg - (($total_eg * $invoice->tax_discount)/100);
+        return view('invoice.receipt.create',[
+            'invoice'=>$invoice,
+            'total'=>$total,
+            'total_eg'=>$total_eg,
+        ]);
     }
 
     public function store(Request $request)
