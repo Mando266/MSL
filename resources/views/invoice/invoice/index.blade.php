@@ -13,16 +13,17 @@
                             </ol>
                         </nav>
                     </div> 
-                    @permission('Invoice-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
+                            @permission('Invoice-Create')
                             <a href="{{route('invoice.selectBL')}}" class="btn btn-primary">New Debit Note</a>
                             <a href="{{route('invoice.selectBLinvoice')}}" class="btn btn-info">New Invoice</a>
+                            @endpermission
+                            @permission('Invoice-List')
                             <a class="btn btn-warning" href="{{ route('export.invoice') }}">Export</a>
-
+                            @endpermission
                             </div>
                         </div>
-                    @endpermission
                     </br>
                     <form>
                         <div class="form-row">

@@ -138,6 +138,8 @@
                                         </label>
                                     </div>
                                 </div> -->
+                                @if($invoice->type == "invoice")
+
                                 <div class="form-group col-md-3" >
                                     <label>TAX</label>
                                         <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
@@ -162,7 +164,7 @@
                                         </label>
                                     </div>
                                 </div>
-
+                                @endif
                             </div> 
               
                         <h4>Charges<h4>

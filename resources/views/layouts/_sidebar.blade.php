@@ -245,10 +245,13 @@
                                         <a href="{{route('container-types.index')}}"> Container Types </a>
                                     </li>
                                 @endpermission
+                                
+                                @permission('Movements-List')
                                     <li>
                                         <a href="{{route('tracking.create')}}"> Containers Tracking</a>
                                     </li>
- 
+                                @endpermission
+
                                 @permission('Movements-List')
                                     <li>
                                         <a href="{{route('movements.index')}}"> Movements</a>
