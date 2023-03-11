@@ -48,7 +48,7 @@
                                             <td>{{$receipt->receipt_no}}</td>
                                             <td>{{optional($receipt->invoice)->invoice_no}}</td>
                                             <td>{{optional($receipt->bldraft)->ref_no}}</td>
-                                            <td>{{optional($receipt->invoice->customer)->name}}</td>
+                                            <td>{{optional($receipt->invoice->customerShipperOrFfw)->name}}</td>
                                             <td>
                                                 @if($receipt->bank_transfer != null)
                                                     Bank Transfer <br>
@@ -69,15 +69,20 @@
                                             <td>{{$receipt->total}}</td>
                                             <td>{{$receipt->paid}}</td>
                                             <td>{{optional($receipt->user)->name}}</td>
-                                            <td></td>
+                                            
+                                            <td class="text-center">
+                                                <ul class="table-controls">                                                
+                                                @permission('Invoice-Show')
+                                                <li>
+                                                    <a href="{{route('receipt.show',['receipt'=>$receipt->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                        <i class="far fa-eye text-primary"></i>
+                                                    </a>
+                                                </li>
+                                                @endpermission
+                                                </ul>
+                                            </td>
 
-                                            @permission('Invoice-Show')
-                                            <li>
-                                                <a href="#" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
-                                                    <i class="far fa-eye text-primary"></i>
-                                                </a>
-                                            </li>
-                                            @endpermission
+                                            
                                        
                                         </tr>
                                     @empty
