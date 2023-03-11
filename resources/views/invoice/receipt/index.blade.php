@@ -31,8 +31,8 @@
                                         <th>#</th>
                                         <th>Receipt No</th>
                                         <th>Invoice No</th>
-                                        <th>Customer Name</th>
                                         <th>Bl No</th>
+                                        <th>Customer Name</th>
                                         <th>Payment Methods</th>
                                         <th>Total</th>
                                         <th>Paid</th>
@@ -45,14 +45,30 @@
                                     
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($receipts,$loop)}}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{$receipt->receipt_no}}</td>
+                                            <td>{{optional($receipt->invoice)->invoice_no}}</td>
+                                            <td>{{optional($receipt->bldraft)->ref_no}}</td>
+                                            <td>{{optional($receipt->invoice->customer)->name}}</td>
+                                            <td>
+                                                @if($receipt->bank_transfer != null)
+                                                    Bank Transfer <br>
+                                                @endif
+                                                @if($receipt->bank_deposit != null)
+                                                    Bank Deposit <br>
+                                                @endif
+                                                @if($receipt->bank_check != null)
+                                                    Bank Check <br>
+                                                @endif
+                                                @if($receipt->bank_cash != null)
+                                                    Cash <br>
+                                                @endif
+                                                @if($receipt->matching != null)
+                                                    Matching <br>
+                                                @endif
+                                            </td>
+                                            <td>{{$receipt->total}}</td>
+                                            <td>{{$receipt->paid}}</td>
+                                            <td>{{optional($receipt->user)->name}}</td>
                                             <td></td>
 
                                             @permission('Invoice-Show')
