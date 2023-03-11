@@ -108,7 +108,6 @@
                                         <th>Total USD</th>
                                         <th>Total EGP</th>
                                         <th>Invoice Status</th>
-                                        <th class='text-center' style='width:100px;'>Receipt</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -170,13 +169,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('Invoice-Show')
-                                                    <li>
-                                                        <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
-                                                    </li>
-                                                    @endpermission 
+                             
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id])}}" method="post">
