@@ -5,13 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Finance\AccountPeriod;
 use App\Models\Finance\OperationRate;
-use App\Models\Master\Company;
+use App\Models\Invoice\Invoice;
 use App\Models\Master\Customers;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
-use Illuminate\Http\Request;
 use App\Models\Master\Terminals;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 
 class CompanyDataController extends Controller
@@ -49,6 +47,15 @@ class CompanyDataController extends Controller
         
         return Response::json([
             'customer' => $customer,
+        ],200);
+    }
+
+    public function blinvoice($id)
+    {
+        $invoices = Invoice::where('bldraft_id',$id)->select('invoice_no','id')->get();
+        
+        return Response::json([
+            'invoices' => $invoices,
         ],200);
     }
 }

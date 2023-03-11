@@ -13,15 +13,17 @@
                             </ol>
                         </nav>
                     </div> 
-                    @permission('BlDraft-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
+                            @permission('BlDraft-List')
                             <a class="btn btn-info" href="{{ route('export.BLloadList') }}">BL Loadlist</a> 
+                            @endpermission
+                            @permission('BlDraft-Create')
                             <a href="{{route('bookingContainersRefresh')}}" class="btn btn-success">Refresh Booking Containers</a>
                             <a href="{{route('bldraft.selectbooking')}}" class="btn btn-primary">New Bl Draft</a>
+                            @endpermission
                             </div>
                         </div>
-                    @endpermission
                     </br>
                     <form>
                         <div class="form-row">

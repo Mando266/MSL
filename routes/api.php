@@ -42,3 +42,4 @@ Route::get('agent/loadPrice/{id}/{equipment_id?}/{company_id}', [PriceController
 Route::get('agent/dischargePrice/{id}/{equipment_id?}/{company_id}', [PriceController::class, 'getDischargeAgentPrice']);
 Route::get('agent/agentCountry/{id}/{company_id}', [AgentCountry::class, 'getAgentCountry']);
 Route::get('booking/activityContainers/{id}/{company_id}/{equipment_id}', [CountriesController::class, 'getActivityContainers']);
+Route::get('master/invoices/{id}', [CompanyDataController::class, 'blinvoice']);
