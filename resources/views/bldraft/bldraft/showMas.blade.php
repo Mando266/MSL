@@ -223,10 +223,10 @@
                                 &nbsp <br>
                                 </td>
                                 <td class="col-md-3 tableStyle" >Date shipped on board <br>
-                                &nbsp {{$blDraft->date_of_issue}}
+                                &nbsp {{ optional($etdvoayege)->eta }}
                                 </td>
                                 <td class="col-md-3 tableStyle" >Place and date of issue <br>
-                                &nbsp {{optional($blDraft->booking->agent)->city}} &nbsp {{optional($blDraft->booking->agent->country)->name}} &nbsp {{$blDraft->date_of_issue}}
+                                &nbsp {{optional($blDraft->booking->agent)->city}} &nbsp {{optional($blDraft->booking->agent->country)->name}} &nbsp {{ optional($etdvoayege)->eta }}
                                 </td>
                             </tr>
                             <tr>
