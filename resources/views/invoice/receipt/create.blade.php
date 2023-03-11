@@ -19,10 +19,10 @@
                             @csrf
                         <div class="form-row">
                             <div class="col-md-6 form-group">
-                            <h5>Invoice No : <h5> 
+                            <h5>Invoice No : {{$invoice->invoice_no}}<h5> 
                             </div>
                             <div class="col-md-6 form-group">
-                                <h5>BLdraft No : <h5> 
+                                <h5>BLdraft No : {{$bldraft->ref_no}}<h5> 
                             </div>
                         </div>
 
@@ -33,62 +33,57 @@
 
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="bank_deposit">
                                     <label class="form-check-label">
                                     Bank Deposit
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="amount">
+                                    <input type="text" class="form-control" name="bank_deposit">
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="bank_transfer">
                                     <label class="form-check-label">
                                     Bank Transfer
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="amount">
+                                    <input type="text" class="form-control" name="bank_transfer">
                             </div>
                         </div> 
                         <div class="form-row">
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="bank_check">
                                     <label class="form-check-label">
                                     Cheak 
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="amount">
+                                    <input type="text" class="form-control" name="bank_check">
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="bank_cash">
                                     <label class="form-check-label">
                                         Cash
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="amount">
+                                    <input type="text" class="form-control" name="bank_cash">
                             </div>
                         </div> 
                         <div class="form-row">
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="matching">
                                     <label class="form-check-label">
                                         Matching
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-2 form-group">
-                                    <input type="text" class="form-control" name="amount">
+                                    <input type="text" class="form-control" name="matching">
                             </div>
                         </div> 
                         <div class="form-row">
@@ -96,14 +91,22 @@
                                 <label> Total </label>
                                     <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total." USD" : $total_eg." EGP"}}" readonly>
                                 </div>
-                                <div class="col-md-4 form-group">
-                                    <label> Customer Credit </label>
+                                <div class="col-md-2 form-group">
+                                    <label> Customer Credit USD </label>
                                         <input  class="form-control"  type="text" name="customer_credit" value="{{optional($invoice->customerShipperOrFfw)->credit}}" readonly>
                                 </div>
-                                    <div class="col-md-4 form-group">
-                                        <label> Customer Debit </label>
-                                            <input  class="form-control"  type="text" name="customer_debit" value="{{optional($invoice->customerShipperOrFfw)->debit}}" readonly>
-                                    </div>     
+                                <div class="col-md-2 form-group">
+                                    <label> Customer Credit EGP </label>
+                                        <input  class="form-control"  type="text" name="customer_credit" value="{{optional($invoice->customerShipperOrFfw)->credit_egp}}" readonly>
+                                </div>
+                                <div class="col-md-2 form-group">
+                                    <label> Customer Debit USD </label>
+                                        <input  class="form-control"  type="text" name="customer_debit" value="{{optional($invoice->customerShipperOrFfw)->debit}}" readonly>
+                                </div>    
+                                <div class="col-md-2 form-group">
+                                    <label> Customer Debit EGP </label>
+                                        <input  class="form-control"  type="text" name="customer_debit" value="{{optional($invoice->customerShipperOrFfw)->debit_egp}}" readonly>
+                                </div>  
                         </div> 
                         <div class="form-row">
                             <div class="col-md-12 form-group">
@@ -111,8 +114,8 @@
                                 <textarea class="form-control" name=""></textarea>
                             </div> 
                         </div> 
-
-                        <h4>Bl Engaged<h4>
+                        @if($oldReceipts->count() != 0)  
+                            <h4>Receipts<h4>
                             <table id="charges" class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -125,7 +128,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      
+                                    
                                 <tr>
                                     <td> </td>
                                     <td> </td>
@@ -136,7 +139,8 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="row">
+                        @endif
+                                <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
                                     <a href="{{route('receipt.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
