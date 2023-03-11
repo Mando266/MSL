@@ -76,6 +76,7 @@
                                         <th>ETD</th>
                                         <th>terminal name</th>
                                         <th>road no</th>
+                                        <th>Bl Engaged</th>
                                         <th class='text-center'></th>
                                         <th class='text-center'>Add Port</th>
                                         <th class='text-center'></th>
@@ -124,7 +125,9 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-
+                                            <td>
+                                                {{ $item->bldrafts->count() }}
+                                            </td>
                                             <td class="text-center">
                                                 <ul class="table-controls"> 
                                                 @permission('Voyages-Edit')

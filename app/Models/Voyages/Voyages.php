@@ -2,6 +2,8 @@
 
 namespace App\Models\Voyages;
 
+use App\Models\Bl\BlDraft;
+use App\Models\Containers\Movements;
 use App\Models\Master\Vessels;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
@@ -39,7 +41,10 @@ class Voyages extends Model implements PermissionSeederContract
     {
         return $this->hasMany(VoyagePorts::class ,'voyage_id','id');
     }
-
+    public function bldrafts()
+    {
+        return $this->hasMany(BlDraft::class ,'voyage_id','id');
+    }
     public function createOrUpdatevoyageport($inputs)
     {
 
