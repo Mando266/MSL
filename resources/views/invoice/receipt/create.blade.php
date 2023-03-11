@@ -23,7 +23,7 @@
 
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="">
+                                    <input class="form-check-input" type="checkbox" name="bank_deposit">
                                     <label class="form-check-label">
                                     Bank Deposit
                                     </label>
@@ -34,7 +34,7 @@
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="">
+                                    <input class="form-check-input" type="checkbox" name="bank_transfer">
                                     <label class="form-check-label">
                                     Bank Transfer
                                     </label>
@@ -47,7 +47,7 @@
                         <div class="form-row">
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="">
+                                    <input class="form-check-input" type="checkbox" name="bank_check">
                                     <label class="form-check-label">
                                     Cheak 
                                     </label>
@@ -58,7 +58,7 @@
                             </div>
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="">
+                                    <input class="form-check-input" type="checkbox" name="bank_cash">
                                     <label class="form-check-label">
                                         Cash
                                     </label>
@@ -71,7 +71,7 @@
                         <div class="form-row">
                             <div class="col-md-2 form-group">
                                 <div style="padding: 23px;">
-                                    <input class="form-check-input" type="checkbox" name="">
+                                    <input class="form-check-input" type="checkbox" name="matching">
                                     <label class="form-check-label">
                                         Matching
                                     </label>
@@ -84,15 +84,15 @@
                         <div class="form-row">
                             <div class="col-md-4 form-group">
                                 <label> Total </label>
-                                    <input  class="form-control"  type="text" name="">
+                                    <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total." USD" : $total_eg." EGP"}}" readonly>
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label> Customer Credit </label>
-                                        <input  class="form-control"  type="text" name="">
+                                        <input  class="form-control"  type="text" name="customer_credit" value="{{optional($invoice->customerShipperOrFfw)->credit}}" readonly>
                                 </div>
                                     <div class="col-md-4 form-group">
                                         <label> Customer Debit </label>
-                                            <input  class="form-control"  type="text" name="">
+                                            <input  class="form-control"  type="text" name="customer_debit" value="{{optional($invoice->customerShipperOrFfw)->debit}}" readonly>
                                     </div>     
                         </div> 
                             <div class="row">
