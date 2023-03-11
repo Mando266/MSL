@@ -171,7 +171,26 @@ class ReceiptController extends Controller
    
     public function show($id)
     {
-        //
+        $receipt = Receipt::find($id);
+        $now = Carbon::now();
+
+        $exp = explode('.', $receipt->paid);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        if(count($exp) >1){
+            $total =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $total =  ucfirst($f->format($exp[0]));
+        }
+
+  
+
+        return view('invoice.invoice.show_debit',[
+            'receipt'=>$receipt,
+            'now'=>$now,
+            'total'=>$total,
+
+        ]);
     }
 
     public function edit($id)
