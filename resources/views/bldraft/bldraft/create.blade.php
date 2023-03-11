@@ -327,6 +327,7 @@
                                 <tbody>
                         @if($booking_containers->count() != 0)
                             @foreach($booking_containers as $key => $bookingContainer)
+                           {{-- @dd ($bookingContainer->weight); --}}
                             <tr>
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"

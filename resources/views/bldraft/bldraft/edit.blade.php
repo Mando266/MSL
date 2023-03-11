@@ -169,7 +169,7 @@
                         <div class="form-group col-md-3">
                             <label for="voyage_id">Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
-                                title="{{trans('forms.select')}}" disabled>
+                                title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
                                 @endforeach

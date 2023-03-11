@@ -3,12 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Bitwise\PermissionSeeder\PermissionSeederContract;
+use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 
-class Setting extends Model
+class Setting extends Model implements PermissionSeederContract
 {
     protected $table = 'settings';
     protected $guarded = [];
+    use PermissionSeederTrait;
 
+    public function getPermissionActions(){
+        return config('permission_seeder.actions',[
+            'List',
+            'Edit',
+        ]);
+    }
     public static function getByKey($key){
         $item = Setting::where('name',$key)->first();
         if(!is_null($item)){

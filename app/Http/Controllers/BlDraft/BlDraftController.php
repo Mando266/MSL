@@ -14,6 +14,7 @@ use App\Models\Master\Customers;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use Illuminate\Http\Request;
+use App\Models\Voyages\VoyagePorts;
 use Illuminate\Support\Facades\Auth;
 
 class BlDraftController extends Controller
@@ -182,9 +183,11 @@ class BlDraftController extends Controller
     public function show($id)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+        $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
         if(Auth::user()->company_id == 2){
             return view('bldraft.bldraft.showMas',[
-                'blDraft'=>$blDraft
+                'blDraft'=>$blDraft,
+                'etdvoayege'=>$etdvoayege,
                 ]);
         }
         return view('bldraft.bldraft.show',[
@@ -257,17 +260,22 @@ class BlDraftController extends Controller
     public function manifest($id)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
-   
+        $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
         return view('bldraft.bldraft.manifest',[
-            'blDraft'=>$blDraft
+            'blDraft'=>$blDraft,
+            'etdvoayege'=>$etdvoayege
+
             ]);
     }
     public function serviceManifest($id)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
-   
+        $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
+
         return view('bldraft.bldraft.serviceManifest',[
-            'blDraft'=>$blDraft
+            'blDraft'=>$blDraft,
+            'etdvoayege'=>$etdvoayege
+
             ]);
     }
 

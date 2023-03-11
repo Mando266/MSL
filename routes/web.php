@@ -3,6 +3,7 @@
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Invoice\InvoiceController;
+use App\Http\Controllers\Invoice\ReceiptController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Http\Controllers\Trucker\TruckerGateController;
@@ -156,6 +157,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('create_invoice',[InvoiceController::class,'create_invoice'])->name('invoice.create_invoice');
         Route::post('create_invoice',[InvoiceController::class,'storeInvoice'])->name('invoice.store_invoice');
         Route::get('receipt/{invoice}',[InvoiceController::class,'receipt'])->name('invoice.receipt');
+        Route::resource('receipt','ReceiptController');
+        Route::get('selectinvoice',[ReceiptController::class,'selectinvoice'])->name('receipt.selectinvoice');
     });
     /*
     |-------------------------------------------
