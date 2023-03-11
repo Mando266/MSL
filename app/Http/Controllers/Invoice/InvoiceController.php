@@ -43,7 +43,6 @@ class InvoiceController extends Controller
 
     public function selectBLinvoice()
     {
-        $this->authorize(__FUNCTION__,Invoice::class);
         $bldrafts = BlDraft::
         //where('bl_status',1)->
         where('company_id',Auth::user()->company_id)->get();
@@ -54,7 +53,6 @@ class InvoiceController extends Controller
     
     public function selectBL()
     {
-        $this->authorize(__FUNCTION__,Invoice::class);
         $bldrafts = BlDraft::
         //where('bl_status',1)->
         where('company_id',Auth::user()->company_id)->get();
@@ -64,7 +62,7 @@ class InvoiceController extends Controller
     }
     public function create_invoice()
     {
-        $this->authorize(__FUNCTION__,Invoice::class);
+
         // dd(request('bldraft_id'));
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {

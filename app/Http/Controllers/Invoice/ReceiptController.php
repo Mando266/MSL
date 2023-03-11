@@ -17,7 +17,6 @@ class ReceiptController extends Controller
 
     public function selectinvoice()
     {
-        $this->authorize(__FUNCTION__,Receipt::class);
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
         return view('invoice.receipt.selectinvoice',[
@@ -30,7 +29,7 @@ class ReceiptController extends Controller
     public function create()
     {
         return view('invoice.receipt.create');
-        }
+    }
 
     public function store(Request $request)
     {
