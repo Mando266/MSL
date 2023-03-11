@@ -148,17 +148,7 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
-                                                 <ul class="table-controls">
-                                                @if($invoice->invoice_status == "confirm")
-                                                    <li>
-                                                        <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
-                                                    </li>
-                                                    @endif
-                                                 </ul>
-                                            </td>
+           
 
                                             <td class="text-center">
                                                  <ul class="table-controls">
@@ -169,7 +159,13 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                             
+                                                    @permission('Invoice-Show')
+                                                    <li>
+                                                        <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endpermission 
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id])}}" method="post">
