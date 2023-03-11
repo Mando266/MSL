@@ -134,14 +134,16 @@ class ReceiptController extends Controller
                 $customer->credit = $customer->credit + ($paid - $request->total_payment);
                 CustomerHistory::create([
                     'credit'=>($paid - $request->total_payment),
-                    'receipt_id'=>$receipt->id
+                    'receipt_id'=>$receipt->id,
+                    'user_id'=>$customer->id
                 ]);
             }elseif($invoice->add_egp == "onlyegp"){
                 // currency EGP
                 $customer->credit_egp = $customer->credit_egp + ($paid - $request->total_payment);
                 CustomerHistory::create([
                     'credit_egp'=>($paid - $request->total_payment),
-                    'receipt_id'=>$receipt->id
+                    'receipt_id'=>$receipt->id,
+                    'user_id'=>$customer->id
                 ]);
             }
         }elseif($paid < $request->total_payment){
@@ -150,14 +152,16 @@ class ReceiptController extends Controller
                 $customer->debit = $customer->debit + ($paid - $request->total_payment);
                 CustomerHistory::create([
                     'debit'=>($paid - $request->total_payment),
-                    'receipt_id'=>$receipt->id
+                    'receipt_id'=>$receipt->id,
+                    'user_id'=>$customer->id
                 ]);
             }elseif($invoice->add_egp == "onlyegp"){
                 // currency EGP
                 $customer->debit_egp = $customer->debit_egp + ($paid - $request->total_payment);
                 CustomerHistory::create([
                     'debit_egp'=>($paid - $request->total_payment),
-                    'receipt_id'=>$receipt->id
+                    'receipt_id'=>$receipt->id,
+                    'user_id'=>$customer->id
                 ]);
             }
         }
