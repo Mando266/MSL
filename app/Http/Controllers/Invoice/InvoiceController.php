@@ -120,6 +120,31 @@ class InvoiceController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Invoice::class);
+        if(request('bldraft_id') == "customize"){
+            $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 6);
+            })->with('CustomerRoles.role')->get();
+            $shippers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 1);
+            })->with('CustomerRoles.role')->get();
+            $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 7);
+            })->with('CustomerRoles.role')->get();
+            $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+            $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            $equipmentTypes = ContainersTypes::orderBy('id')->get();
+            $bookings  = Booking::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
+
+            return view('invoice.invoice.create_customize_debit',[
+                'shippers'=>$shippers,
+                'suppliers'=>$suppliers,
+                'ffws'=>$ffws,
+                'voyages'=>$voyages,
+                'ports'=>$ports,
+                'equipmentTypes'=>$equipmentTypes,
+                'bookings'=>$bookings,
+            ]);
+        }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
@@ -143,11 +168,18 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        request()->validate([
-            'bldraft_id' => ['required'],
-            'customer' => ['required'],
-        ]);
-
+        
+        if($request->bldraft_id == 'customize'){
+            request()->validate([
+                'customer' => ['required'],
+            ]);
+        }else{
+            request()->validate([
+                'bldraft_id' => ['required'],
+                'customer' => ['required'],
+            ]);
+        }
+        
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
         $blkind = $blkind[0];
