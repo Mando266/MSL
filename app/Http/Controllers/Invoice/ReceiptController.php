@@ -15,8 +15,13 @@ class ReceiptController extends Controller
 {
    
     public function index()
-    {
-        //
+    { 
+        $receipts = Receipt::orderBy('id','desc')->paginate(30);
+//dd($receipts);
+        return view('invoice.receipt.index',[
+            'receipts'=>$receipts,
+        ]);
+    
     }
 
     public function selectinvoice()

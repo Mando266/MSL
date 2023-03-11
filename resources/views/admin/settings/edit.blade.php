@@ -45,6 +45,10 @@
                                 <label>Booking REf NO</label>
                                     <input type="text" class="form-control" placeholder="Booking REf NO" autocomplete="off" value="{{old('booking_ref_no',$setting->booking_ref_no )}}" style="background-color:#fff" name="booking_ref_no">
                             </div>
+                            <div class="form-group col-md-3" >
+                                <label>Receipt No</label>
+                                    <input type="text" class="form-control" placeholder="Receipt No" autocomplete="off" value="{{old('receipt_no',$setting->receipt_no )}}" style="background-color:#fff" name="receipt_no">
+                            </div>
                         </div>
 
                             <div class="row">

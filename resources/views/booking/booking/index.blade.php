@@ -148,6 +148,7 @@
                                         <th>discharge port</th>
                                         <th>Equipment Type</th>
                                         <th>qty</th>
+                                        <th>Selleing date</th>
                                         <th>Containers Status</th>
                                         <th>Booking Creation</th>
                                         <th>Booking Status</th>
