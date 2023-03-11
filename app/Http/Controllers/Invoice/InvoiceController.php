@@ -177,7 +177,7 @@ class InvoiceController extends Controller
                 'customer' => ['required'],
             ]);
         }
-        
+
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
         $blkind = $blkind[0];
@@ -502,6 +502,9 @@ class InvoiceController extends Controller
             $shippers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 1);
             })->with('CustomerRoles.role')->get();
+            $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 7);
+            })->with('CustomerRoles.role')->get();
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -510,6 +513,7 @@ class InvoiceController extends Controller
 
             return view('invoice.invoice.edit_customized_invoice',[
                 'shippers'=>$shippers,
+                'suppliers'=>$suppliers,
                 'ffws'=>$ffws,
                 'ports'=>$ports,
                 'equipmentTypes'=>$equipmentTypes,
