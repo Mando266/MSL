@@ -39,7 +39,7 @@
                         @endif
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{$receipt->receipt->no }} </span> &nbsp; &nbsp;&nbsp;:رقم<h3>
+                        <h3> <span style="font-size:22px;">{{$receipt->receipt_no }} </span> &nbsp; &nbsp;&nbsp;:رقم<h3>
                     </div>
                 </div>
                 <div class="form-row">
@@ -52,7 +52,7 @@
                         <h3> <span style="font-size:22px;">{{ $now }} </span>:التاريخ<h3>
                     </div>
                 </div>
-                @if(optional($receipt->$invoice)->add_egp == 'onlyegp')
+                @if(optional($receipt->invoice)->add_egp == 'onlyegp')
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">{{ $total }} Egyptian Pound</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
@@ -75,7 +75,7 @@
                         <h3> <span style="font-size:22px;">{{ optional($receipt->invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ optional($receipt->invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ optional($invoice->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
+                        <h3> <span style="font-size:22px;">{{ optional($receipt->invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ optional($receipt->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
                     </div>
                 </div>
                 <div class="form-row">
