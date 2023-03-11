@@ -117,6 +117,7 @@ class ReceiptController extends Controller
             }
         }
         $receipt = Receipt::create([
+            'company_id'=>Auth::user()->company_id,
             'invoice_id'=>$request->invoice_id,
             'bldraft_id'=>$request->bldraft_id,
             'bank_transfer'=>$request->bank_transfer,
