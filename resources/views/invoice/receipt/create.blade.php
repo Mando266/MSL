@@ -18,6 +18,16 @@
                     <form id="createForm" action="{{route('receipt.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                         <div class="form-row">
+                            <div class="col-md-6 form-group">
+                            <h5>Invoice No : <h5> 
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <h5>BLdraft No : <h5> 
+                            </div>
+                        </div>
+
+
+                        <div class="form-row">
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                             <input type="hidden" name="invoice_id" value="{{request()->input('invoice_id')}}">
 
@@ -95,6 +105,37 @@
                                             <input  class="form-control"  type="text" name="customer_debit" value="{{optional($invoice->customerShipperOrFfw)->debit}}" readonly>
                                     </div>     
                         </div> 
+                        <div class="form-row">
+                            <div class="col-md-12 form-group">
+                                <label> Notes </label>
+                                <textarea class="form-control" name=""></textarea>
+                            </div> 
+                        </div> 
+
+                        <h4>Bl Engaged<h4>
+                            <table id="charges" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Receipt No</th>
+                                            <th class="text-center">Customer</th>
+                                            <th class="text-center">Invoice</th>
+                                            <th class="text-center">BL Draft</th>
+                                            <th class="text-center">Payment Method</th>
+                                            <th class="text-center">Amount Paid</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                </tr>
+                                </tbody>
+                            </table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
@@ -109,46 +150,3 @@
     </div>
 </div>
 @endsection
-@push('scripts')
-
-<script>
-
-$(document).ready(function(){
-    $("#charges").on("click", ".remove", function () {
-        $(this).closest("tr").remove();
-    });
-    var counter  = <?= isset($key)? ++$key : 0 ?>;
-    $("#add").click(function(){
-       var tr = '<tr>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount"></td>'+
-           '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-       '</tr>';
-       counter++;
-      $('#charges').append(tr);
-    });
-});
-</script>
-
-<script>
-    $('#createForm').submit(function() {
-        $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
-</script>
-@endpush

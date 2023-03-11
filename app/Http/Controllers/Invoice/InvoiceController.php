@@ -233,7 +233,6 @@ class InvoiceController extends Controller
 
     public function storeInvoice(Request $request)
     {
-        $this->authorize(__FUNCTION__,Invoice::class);
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
