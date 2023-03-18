@@ -43,9 +43,9 @@
                             <label for="invoice">Invoice No</label>
                             <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_id" data-size="10"
                              title="{{trans('forms.select')}}" required>
-                             <option value="">Select...</option>
-                                @foreach ($invoiceRef as $item)     
-                        <option value="{{$item->id}}" {{$item->id == old('invoice_id',request()->input('invoice_id')) ? 'selected':''}}>
+                            <option value="">Select...</option>
+                            @foreach ($invoiceRef as $item)     
+                            <option value="{{$item->id}}" {{$item->id == old('invoice_id',request()->input('invoice_id')) ? 'selected':''}}>
                             InvoiceNo: {{$item->invoice_no}} 
                             &nbsp;&nbsp; Customer: {{$item->customer}}
                             @if($item->qty != 0) &nbsp;&nbsp; No Of Containers: {{$item->qty}} @endif
@@ -58,7 +58,7 @@
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary mt-3">Next</button>
-                                <a href="{{route('receipt.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('receipt.selectinvoice')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
                     </form>
@@ -80,7 +80,7 @@
                         let invoices = data.invoices || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < invoices.length; i++){
-                            list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} </option>`);
+                            list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} - ${invoices[i].customer}</option>`); 
                         }
                 let invoice = $('#invoice');
                 invoice.html(list2.join(''));
@@ -97,7 +97,7 @@
                         let invoices = data.invoices || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < invoices.length; i++){
-                            list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} </option>`);
+                            list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} - ${invoices[i].customer}</option>`);
                         }
                 let invoice = $('#invoice');
                 invoice.html(list2.join(''));
