@@ -268,7 +268,7 @@ class VoyagesController extends Controller
 
     public function edit(Voyages $voyage)
     {
-        $this->authorize(__FUNCTION__,VoyagePorts::class);
+        $this->authorize(__FUNCTION__,Voyages::class);
         $voyage_ports = VoyagePorts::where('voyage_id',$voyage->id)->with('voyage')->get();
         //dd($voyage_ports);
         $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();

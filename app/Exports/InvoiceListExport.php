@@ -21,6 +21,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
             "PAYMENT KIND",
             "TOTAL USD",
             "TOTAL EGP",
+            "Curency",
             "INVOICE STATUS",
         ];
     }
@@ -33,6 +34,14 @@ class InvoiceListExport implements FromCollection,WithHeadings
         $exportinvoices = collect();
 
         foreach($invoices  ?? [] as $invoice){
+            $Curency = '';
+
+            if($invoice->add_egp == 'false'){
+                $Curency = 'USD';
+            }elseif($invoice->add_egp == 'onlyegp'){
+                $Curency = 'EGP';
+            }
+
             $totalusd = 0;
             $totalegp = 0;
             foreach($invoice->chargeDesc as $invoiceDesc ){
@@ -51,6 +60,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
                     'total usd' => $totalusd,
                     'total egp' => $totalegp,
+                    'Curency' =>$Curency,
                     'STATUS' => $invoice->invoice_status,
                 ]);
                 

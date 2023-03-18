@@ -17,14 +17,43 @@
            
                     <form id="createForm" action="{{route('receipt.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                        <div class="form-row">
-                            <div class="col-md-6 form-group">
-                            <h5>Invoice No : {{$invoice->invoice_no}}<h5> 
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <h5>BLdraft No : {{$bldraft->ref_no}}<h5> 
-                            </div>
-                        </div>
+                        <h4>Invoice Details<h4>
+                            <table id="charges" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Invoice No</th>
+                                            <th class="text-center">BLdraft No</th>
+                                            <th class="text-center">Customer</th>
+                                            <th class="text-center">Date</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Currency</th>
+                                            <th class="text-center">Voyage No</th>
+                                            <th class="text-center">Vessel</th>
+                                            <th class="text-center">POL</th>
+                                            <th class="text-center">POD</th>
+                                            <th class="text-center">Final Dest</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">{{ $invoice->invoice_no }}</td>
+                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? "Customized" : optional($invoice->bldraft)->ref_no }}</td>
+                                            <td class="text-center">{{ optional($invoice->customerShipperOrFfw)->name }}</td>
+                                            <td class="text-center">{{ $invoice->date }}</td>
+                                            <td class="text-center">{{ $invoice->invoice_status }}</td>
+                                            <td class="text-center">{{ $invoice->add_egp == "onlyegp"? "EGP" : "USD" }}</td>
+                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
+                                            <td class="text-center">
+                                                {{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}
+                                            </td>
+                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional($invoice->bldraft->dischargePort)->code }}</td>
+                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code : optional($invoice->bldraft->placeOfDelivery)->code }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
 
 
                         <div class="form-row">
@@ -120,23 +149,44 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">Receipt No</th>
+                                            <th class="text-center">Date</th>
                                             <th class="text-center">Customer</th>
-                                            <th class="text-center">Invoice</th>
+                                            <th class="text-center">Invoice No</th>
                                             <th class="text-center">BL Draft</th>
                                             <th class="text-center">Payment Method</th>
-                                            <th class="text-center">Amount Paid</th>
+                                            <th class="text-center">Total {{$invoice->add_egp == "false"? "USD" : "EGP"}}</th>
+                                            <th class="text-center">Amount Paid {{$invoice->add_egp == "false"? "USD" : "EGP"}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
-                                <tr>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                </tr>
+                                    @foreach($oldReceipts as $oldReceipt)
+                                        <tr>
+                                            <td class="text-center">{{ $oldReceipt->receipt_no }}</td>
+                                            <td class="text-center">{{ $oldReceipt->created_at->format("Y-m-d") }}</td>
+                                            <td class="text-center">{{ optional($oldReceipt->invoice->customerShipperOrFfw)->name }}</td>
+                                            <td class="text-center">{{ optional($oldReceipt->invoice)->invoice_no }}</td>
+                                            <td class="text-center">{{ optional($oldReceipt->bldraft)->ref_no }}</td>
+                                            <td class="text-center">
+                                                @if($oldReceipt->bank_transfer != null)
+                                                    Bank Transfer <br>
+                                                @endif
+                                                @if($oldReceipt->bank_deposit != null)
+                                                    Bank Deposit <br>
+                                                @endif
+                                                @if($oldReceipt->bank_check != null)
+                                                    Bank Check <br>
+                                                @endif
+                                                @if($oldReceipt->bank_cash != null)
+                                                    Cash <br>
+                                                @endif
+                                                @if($oldReceipt->matching != null)
+                                                    Matching <br>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">{{$oldReceipt->total}}</td>
+                                            <td class="text-center">{{$oldReceipt->paid}}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         @endif

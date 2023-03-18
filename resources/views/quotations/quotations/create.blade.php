@@ -76,7 +76,6 @@
                             </div>
                         </div>
                         @endif
-                        @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
@@ -107,7 +106,6 @@
                                 @enderror
                             </div>
                         </div>
-                        @endif
 
                         <div class="form-row"> 
                             <div class="form-group col-md-4">

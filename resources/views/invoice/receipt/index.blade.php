@@ -22,7 +22,59 @@
                         </div>
                     </br>
 
-             
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="Receipt_no">RECEIPT NO</label>
+                                <select class="selectpicker form-control" id="Receipt_no" data-live-search="true" name="receipt_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 @foreach($receipts as $receipt)
+                                        <option value="{{$receipt->id}}">{{$receipt->receipt_no}}</option>
+                                @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Customer">Customer</label>
+                                <select class="selectpicker form-control" id="Customer" data-live-search="true" name="customer" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 @foreach($customers as $customer)
+                                        <option value="{{$customer->id}}">{{$customer->name}}</option>
+                                @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="Invoice">Invoice</label>
+                                <select class="selectpicker form-control" id="Invoice" data-live-search="true" name="invoice" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 @foreach($invoices as $invoice)
+                                        <option value="{{$invoice->id}}">{{$invoice->invoice_no}}</option>
+                                @endforeach
+                                 
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="Bldraft">BL NO</label>
+                                <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 @foreach($bldrafts as $bldraft)
+                                        <option value="{{$bldraft->id}}">{{$bldraft->ref_no}}</option>
+                                @endforeach
+                                 
+                                </select>
+                            </div>
+                            
+                        </div>
+                        
+
+                            <div class="form-row">
+                                <div class="col-md-12 text-center">
+                                    <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                    <a href="{{route('receipt.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                </div>
+                            </div>
+                    </form>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -81,9 +133,6 @@
                                                 @endpermission
                                                 </ul>
                                             </td>
-
-                                            
-                                       
                                         </tr>
                                     @empty
                                         <tr class="text-center">
@@ -127,5 +176,41 @@
           });
       });
   
+</script>
+<script>
+    $(function(){
+            let customer = $('#Customer');
+            $('#Customer').on('change',function(e){
+                let value = e.target.value;
+                let response =    $.get(`/api/master/invoicesCustomers/${customer.val()}`).then(function(data){
+                    let invoices = data.invoices || '';
+                    let list2 = [`<option value=''>Select...</option>`];
+                    for(let i = 0 ; i < invoices.length; i++){
+                        list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} </option>`);
+                    }
+            let invoice = $('#Invoice');
+            invoice.html(list2.join(''));
+            $(invoice).selectpicker('refresh');
+
+            });
+        });
+    });
+    $(function(){
+            let bldraft = $('#Bldraft');
+            $('#Bldraft').on('change',function(e){
+                let value = e.target.value;
+                let response =    $.get(`/api/master/invoices/${bldraft.val()}`).then(function(data){
+                    let invoices = data.invoices || '';
+                    let list2 = [`<option value=''>Select...</option>`];
+                    for(let i = 0 ; i < invoices.length; i++){
+                        list2.push(`<option value='${invoices[i].id}'>${invoices[i].invoice_no} </option>`);
+                    }
+            let invoice = $('#Invoice');
+            invoice.html(list2.join(''));
+            $(invoice).selectpicker('refresh');
+
+            });
+        });
+    });
 </script>
 @endpush

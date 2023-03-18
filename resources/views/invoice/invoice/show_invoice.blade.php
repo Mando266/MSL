@@ -101,7 +101,7 @@
                         <tr>
                             <th class="col-md-1 tableStyle text-center">S</th>
                             <th class="col-md-5 tableStyle text-center">Description Of Charges</th>
-                            <th class="col-md-2 tableStyle text-center">Amount</th>
+                            <th class="col-md-2 tableStyle text-center">Amount (USD)</th>
                             <th class="col-md-2 tableStyle text-center">VAT</th>
                             @if( $invoice->add_egp != 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>

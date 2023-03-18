@@ -32,12 +32,14 @@ class InvoiceController extends Controller
         session()->flash('invoice',$exportinvoices);
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
+        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         return view('invoice.invoice.index',[
             'invoices'=>$invoices,
             'invoiceRef'=>$invoiceRef,
             'bldrafts'=>$bldrafts,
             'customers'=>$customers,
+            'voyages'=>$voyages,
         ]);
     }
 
@@ -444,7 +446,6 @@ class InvoiceController extends Controller
                 'USD'=>$USD,
                 'EGP'=>$EGP,
                 'triffDetails'=>$triffDetails,
-
             ]);
         }
         

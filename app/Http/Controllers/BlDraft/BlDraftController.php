@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\BlDraft;
 
-use App\Filters\Quotation\QuotationIndexFilter;
+use App\Filters\BlDraft\BlDraftIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Bl\BlDraftDetails;
@@ -23,13 +23,15 @@ class BlDraftController extends Controller
     public function index() 
     {
         $this->authorize(__FUNCTION__,BlDraft::class);
-        $blDrafts = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->paginate(30);
+        $blDrafts = BlDraft::filter(new BlDraftIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails','invoices','customer')->paginate(30);
         //dd($blDrafts);
-        $exportbls = BlDraft::filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->get();
+        $exportbls = BlDraft::filter(new BlDraftIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->get();
         $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', 6);})->get();
         session()->flash('bldarft',$exportbls);
 
         return view('bldraft.bldraft.index',[
@@ -38,6 +40,7 @@ class BlDraftController extends Controller
             'ports'=>$ports,
             'customers'=>$customers,
             'voyages'=>$voyages,
+            'ffw'=>$ffw,
         ]); 
     }
 
@@ -69,7 +72,9 @@ class BlDraftController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
-        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
+        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
+            $query->where('port_from_name',$booking->load_port_id);
+        })->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         //dd($booking_qyt);
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
@@ -212,7 +217,9 @@ class BlDraftController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
-        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
+        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
+            $query->where('port_from_name',$booking->load_port_id);
+        })->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
@@ -229,6 +236,7 @@ class BlDraftController extends Controller
             'voyages'=>$voyages,
             'booking_qyt'=>$booking_qyt,
             'oldbookingcontainers'=>$oldbookingcontainers,
+            'booking'=>$booking
         ]);
     }
 

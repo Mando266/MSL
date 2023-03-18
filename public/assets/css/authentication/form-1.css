@@ -186,7 +186,8 @@ body {
 
   .form-image .l-image img {
     
-    height: 60%;
+    /* height: 60%; */
+    width: 100%;
   }
 
 @media (max-width: 991px) {

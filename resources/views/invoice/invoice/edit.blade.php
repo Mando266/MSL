@@ -70,7 +70,7 @@
                             </div> 
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" data-size="10"
+                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id"  data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
                                     @if(optional($bldraft)->voyage_id != null)
@@ -106,7 +106,9 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft" {{ old('invoice_status',$invoice->invoice_status) == "draft" ? 'selected':'' }}>Draft</option>
+                                        @if($bldraft->bl_status == 1)
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
+                                        @endif
                                     </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
@@ -232,6 +234,29 @@
 @endsection
 @push('scripts')
 <script>
+    $('#editForm').submit(function() {
+        $('input').removeAttr('disabled');
+    });
+</script>
+<script>
+    $('#editForm').submit(function() {
+        $('select').removeAttr('disabled');
+    });
+</script>
+<script>
+        $(function(){
+                let customer = $('#customer');
+                $('#customer').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
+                        let notIfiy = data.customer[0] ;
+                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
+                    notifiy.html(list2.join(''));
+                });
+            });
+        });
+</script>
+<script>
 var removed = [];
 function removeItem( item )
 {
@@ -258,24 +283,5 @@ $(document).ready(function(){
       $('#charges').append(tr);
     });
 });
-</script>
-
-<script>
-    $('#editForm').submit(function() {
-        $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
 </script>
 @endpush

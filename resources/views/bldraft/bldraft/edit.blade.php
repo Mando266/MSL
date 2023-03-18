@@ -26,6 +26,15 @@
                                     <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$bldraft->ref_no)}}"
                                         placeholder="BL Ref No" autocomplete="off">
                             </div>
+                            <div class="form-group col-md-4">
+                                <label>Quotation No</label>
+                                    <input type="text" class="form-control" value="{{optional($bldraft->booking->quotation)->ref_no}}"
+                                        placeholder="Quotation No" autocomplete="off" disabled>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="notes">OFR</label>
+                            <input type="text"  class="form-control" style="background-color :#fff" value="{{optional($bldraft->booking->quotation)->ofr}}" disabled>
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
@@ -33,7 +42,7 @@
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($customershipper as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$bldraft->customer_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('customer_id')
@@ -96,7 +105,7 @@
                                     <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$bldraft->place_of_acceptence_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$booking->place_of_acceptence_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('place_of_acceptence_id')
@@ -110,7 +119,7 @@
                                 <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$bldraft->load_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$booking->load_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('load_port_id')
@@ -126,7 +135,7 @@
                             <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($ports as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$bldraft->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$booking->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                             @error('place_of_delivery_id')
@@ -140,7 +149,7 @@
                             <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($ports as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$bldraft->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$booking->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                             @error('discharge_port_id')
@@ -157,7 +166,7 @@
                                 <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($equipmentTypes as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$bldraft->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                             @error('equipment_type_id')
@@ -171,7 +180,7 @@
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
                                 @endforeach
                             </select>
                             @error('voyage_id')
@@ -232,7 +241,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                                 <label for="status">Bl Payment</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled>
                                 @if(optional($bldraft->booking->quotation)->ofr != 0)
@@ -247,7 +256,7 @@
                                 </div>
                                 @enderror
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                                 <label for="status">Bl Kind</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
                                     <option value="Original" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Original"? 'selected':''}}>Original</option>
@@ -259,7 +268,8 @@
                                 </div>
                                 @enderror
                         </div>
-                        <div class="form-group col-md-2">
+   
+                        <div class="form-group col-md-4">
                             <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" data-live-search="true" name="bl_status" data-live-search="true">
                                 <option value="1" {{$bldraft->id == old('bl_status') ||  $bldraft->bl_status == "1"? 'selected':''}}>Confirm</option>

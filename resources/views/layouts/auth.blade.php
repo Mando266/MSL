@@ -30,7 +30,7 @@
         </div>
         <div class="form-image">
             <div class="l-image">
-                <img src="{{asset('assets/img/logo.png')}}" alt="MSL Logo">
+                <img src="{{asset('assets/img/msl.png')}}" alt="MSL Logo">
             </div>
         </div>
     </div>

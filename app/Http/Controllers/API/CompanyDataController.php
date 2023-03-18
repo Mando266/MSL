@@ -52,7 +52,16 @@ class CompanyDataController extends Controller
 
     public function blinvoice($id)
     {
-        $invoices = Invoice::where('bldraft_id',$id)->select('invoice_no','id')->get();
+        $invoices = Invoice::where('invoice_status','confirm')->where('bldraft_id',$id)->get();
+        
+        return Response::json([
+            'invoices' => $invoices,
+        ],200);
+    }
+
+    public function customerInvoice($id)
+    {
+        $invoices = Invoice::where('invoice_status','confirm')->where('customer_id',$id)->get();
         
         return Response::json([
             'invoices' => $invoices,
