@@ -7,9 +7,11 @@ use App\Models\Bl\BlDraft;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Invoice\Invoice;
+use App\Models\Master\Bank;
 use App\Models\Master\CustomerHistory;
 use App\Models\Master\Customers;
 use App\Models\Receipt\Receipt;
+use App\Setting;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -79,8 +81,10 @@ class ReceiptController extends Controller
                 $total_eg -= $oldPayment;
             }
         }
+        $banks = Bank::where('company_id',Auth::user()->company_id)->get();
         return view('invoice.receipt.create',[
             'invoice'=>$invoice,
+            'banks'=>$banks,
             'bldraft'=>$bldraft,
             'oldReceipts'=>$oldReceipts,
             'total'=>$total,
@@ -154,6 +158,8 @@ class ReceiptController extends Controller
         $receipt = Receipt::create([
             'company_id'=>Auth::user()->company_id,
             'invoice_id'=>$request->invoice_id,
+            'cheak_no'=>$request->cheak_no,
+            'bank_id'=>$request->bank_id,
             'bldraft_id'=>$request->bldraft_id,
             'bank_transfer'=>$request->bank_transfer,
             'bank_deposit'=>$request->bank_deposit,
@@ -164,6 +170,12 @@ class ReceiptController extends Controller
             'paid'=>$paid,
             'user_id'=>Auth::user()->id,
         ]);
+        $setting = Setting::find(1);
+        $setting->receipt_no += 1;
+        $receipt->receipt_no = 'RCPT'.sprintf('%06u', $setting->receipt_no);
+        $setting->save();
+        $receipt->save();
+
         if($oldReceipts->count() == 0){
             // ADD to Credit
             if($paid > (int)$request->total_payment){
