@@ -104,7 +104,10 @@ class BookingController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
-        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($quotation ){
+            $query->where('port_from_name',$quotation->load_port_id);
+        })->get();
+       // dd($voyages);
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
             $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);
@@ -298,6 +301,7 @@ class BookingController extends Controller
     public function edit(Booking $booking)
     {
         $this->authorize(__FUNCTION__,Booking::class);
+        $quotationRate  = Quotation::where('company_id',Auth::user()->company_id)->where('status','approved')->with('customer','equipmentsType')->get();
         $booking_details = BookingContainerDetails::where('booking_id',$booking->id)->get();
         $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);
@@ -320,7 +324,9 @@ class BookingController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
-        $voyages    = Voyages::where('company_id',Auth::user()->company_id)->with('vessel')->get();
+        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($quotation ){
+            $query->where('port_from_name',$quotation->load_port_id);
+        })->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get(); 
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
             $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);
@@ -331,6 +337,7 @@ class BookingController extends Controller
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
 
         return view('booking.booking.edit',[
+            'quotationRate'=>$quotationRate,
             'booking_details'=>$booking_details,
             'booking'=>$booking,
             'ffw'=>$ffw,

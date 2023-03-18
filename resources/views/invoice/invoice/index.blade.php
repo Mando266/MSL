@@ -26,8 +26,8 @@
                         </div>
                     </br>
                     <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
+                        <div class="form-row"> 
+                            <div class="form-group col-md-4">
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -35,7 +35,15 @@
                                         <option value="invoice">Invoice</option>
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
+                            
+                            <div class="form-group col-md-4">
+                                <label for="status">Invoice Status</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
+                                    <option value="draft">Draft</option>
+                                    <option value="confirm">Confirm</option>
+                               </select>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="invoice">Invoice No</label>
                                 <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -44,6 +52,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-row">
+
                             <div class="form-group col-md-3">
                                 <label for="Bldraft">Bl Number</label>
                                 <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
@@ -62,8 +73,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
 
                             <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
@@ -77,14 +86,23 @@
                                 </div>
                                 @enderror
                         </div>
-                    </div>
-
-                        <div class="form-row">
-                            <div class="col-md-12 text-center">
-                                <button  type="submit" class="btn btn-success mt-3">Search</button>
-                                <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
-                            </div>
+                        <div class="form-group col-md-3">
+                            <label for="voyage_id">Voyages </label>
+                            <select class="selectpicker form-control" id="voyage_id" name="voyage_id" data-live-search="true" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} {{optional($item->vessel)->name }}</option>
+                                @endforeach
+                            </select> 
                         </div>
+                        </div>
+
+                            <div class="form-row">
+                                <div class="col-md-12 text-center">
+                                    <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                    <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                </div>
+                            </div>
                     </form>
                     @php
                     $totalusd = 0;
@@ -108,7 +126,9 @@
                                         <th>Total USD</th>
                                         <th>Total EGP</th>
                                         <th>Invoice Status</th>
+                                        <th class='text-center' style='width:100px;'>Receipt</th>
                                         <th class='text-center' style='width:100px;'></th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,6 +161,7 @@
                                             @else
                                             <td></td>
                                             @endif
+
                                             <td class="text-center">
                                                 @if($invoice->invoice_status == "confirm")
                                                     <span class="badge badge-info"> Confirm </span>
@@ -148,17 +169,18 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
+           
                                             <td class="text-center">
-                                                 <ul class="table-controls">
-                                                @if($invoice->invoice_status == "confirm")
-                                                    <li>
-                                                        <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
-                                                    </li>
-                                                    @endif
-                                                 </ul>
-                                            </td>
+                                                <ul class="table-controls">
+                                               @if($invoice->invoice_status == "confirm")
+                                                   <li>
+                                                       <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                           <i class="far fa-eye text-primary"></i>
+                                                       </a>
+                                                   </li>
+                                                   @endif
+                                                </ul>
+                                           </td>
 
                                             <td class="text-center">
                                                  <ul class="table-controls">
@@ -169,10 +191,17 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                             
+                                                    @permission('Invoice-Show')
+                                                    <li>
+                                                        <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
+                                                    @endpermission 
+                                                    
                                                     @permission('Invoice-Delete')
                                                     <li>
-                                                        <form action="{{route('invoice.destroy',['invoice'=>$invoice->id])}}" method="post">
+                                                        <form action="{{route('invoice.destroy',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>

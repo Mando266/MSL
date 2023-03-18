@@ -27,7 +27,7 @@
                     </br>
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="Refrance">Bl Number </label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -37,7 +37,7 @@
                                 </select>
                             </div>
  
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                     <label for="customer_id">Agreement Party</label>
                                     <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                         title="{{trans('forms.select')}}">
@@ -46,27 +46,41 @@
                                         @endforeach
                                     </select>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="POL">POL</label>
-                                <select class="selectpicker form-control" id="POL" data-live-search="true" name="load_port_id" data-size="10"
+                            <div class="form-group col-md-4">
+                                <label for="ffw_id">Forwarder Customer</label>
+                                <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',request()->input('load_port_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                    @foreach ($ffw as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',request()->input('ffw_id')) ? 'selected':''}}>{{$item->name}} </option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="place_of_delivery_id">POD</label>
-                                <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item) 
-                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
-                                    @endforeach
-                                </select>
+                                @error('ffw_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
+                            <label for="POL">POL</label>
+                            <select class="selectpicker form-control" id="POL" data-live-search="true" name="load_port_id" data-size="10"
+                             title="{{trans('forms.select')}}">
+                                @foreach ($ports as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('load_port_id',request()->input('load_port_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="place_of_delivery_id">POD</label>
+                            <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
+                             title="{{trans('forms.select')}}">
+                                @foreach ($ports as $item) 
+                                    <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
                             <label for="voyage_id">Vessel / Voyage </label>
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}">
@@ -88,7 +102,7 @@
                                 <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
-                    </form>
+                    </form> 
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -106,6 +120,7 @@
                                         <th>containers</th>
                                         <th>voyage vessel</th>
                                         <th>Bl Draft Creation</th>
+                                        <th>Invoices</th>
                                         <th>BL Status</th>
                                         <th>BL Manafest</th>
                                         <th>BL Service Manafest</th>
@@ -135,6 +150,21 @@
                                             </td>
                                             <td>{{optional($item->voyage)->vessel->name}}  {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{{$item->created_at}}}</td>
+                                            <td>
+                                                @php
+                                                    $draft_invoice=0;
+                                                    $confirm_invoice=0;
+                                                    foreach ($item->invoices as $invoice) {
+                                                        if($invoice->invoice_status == "draft"){
+                                                            $draft_invoice ++;
+                                                        }elseif($invoice->invoice_status == "confirm"){
+                                                            $confirm_invoice ++;
+                                                        }
+                                                    }
+                                                @endphp
+                                                {{$draft_invoice}} Draft <br>
+                                                {{$confirm_invoice}} Confirm 
+                                            </td>
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
                                                     <span class="badge badge-info"> Confirm </span>

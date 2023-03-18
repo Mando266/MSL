@@ -93,4 +93,10 @@ class ImportExportController extends Controller
     {
         return Excel::download(new InvoiceListExport, 'InvoiceList.xlsx');
     }
+
+            
+    public function exportCustomers() 
+    {
+        return Excel::download(new CustomerExport, 'Customers.xlsx');
+    }
 }

@@ -67,6 +67,8 @@
                                         <th>address</th>
                                         <th>sales person</th>
                                         <th>Role</th>
+                                        <th style="width: 100px;">EGP</th>
+                                        <th style="width: 100px;">USD</th>
                                         <th>Status</th>
 
                                         <th class='text-center' style='width:100px;'></th>
@@ -92,6 +94,12 @@
                                                     <li>{{optional($customerRole->role)->name}} </li>
                                                     @endforeach
                                                 </ul>
+                                            </td>
+                                            <td>Credit: {{$item->credit_egp}} <br>
+                                                Debit:  &nbsp;{{$item->debit_egp}} 
+                                            </td>
+                                            <td>Credit: {{$item->credit}} <br>
+                                                Debit:  &nbsp;{{$item->debit}} 
                                             </td>
                                             <td class="text-center">
                                                 @if($item->customer_kind == 0)

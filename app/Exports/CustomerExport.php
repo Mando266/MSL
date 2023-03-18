@@ -14,6 +14,7 @@ class CustomerExport implements FromCollection,WithHeadings
             "Name",
             "Contact Person",
             "phone",
+            "Tax ID",
             "Landline" ,
             "Country",
             "Address Line 1",

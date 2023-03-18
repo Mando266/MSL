@@ -16,7 +16,7 @@
                 <div class="widget-content widget-content-area">
                     <form id="createForm" action="{{route('bldraft.store')}}" method="POST">
                             @csrf
-                            <h5>Booking No :{{$booking_no->ref_no}}<h5>
+                        <h5>Booking No :{{$booking_no->ref_no}}<h5>
                         <div class="form-row">
                             <input type="hidden" value="{{$booking->ref_no}}" name="ref_no">
                             <input type="hidden" value="{{$booking->id}}" name="booking_id">
@@ -271,7 +271,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
-                                <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled>
+                                <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled style="background-color :#fff" > 
                                     @if(optional($booking->quotation)->ofr != 0)
                                     <option value="Prepaid">Prepaid </option>
                                     @else
@@ -296,7 +296,10 @@
                                 </div>
                                 @enderror
                         </div>
-
+                        <div class="form-group col-md-3">
+                            <label for="notes">OFR</label>
+                        <input type="text"  class="form-control" style="background-color :#fff" value="{{optional($booking->quotation)->ofr}}" disabled>
+                        </div>
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="bl_status" title="{{trans('forms.select')}}">

@@ -75,13 +75,9 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $new = $new->collapse();
         
         $movements = $new;
-        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->where('id','!=',$row['id'])->first();
+        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->where('company_id',Auth::user()->company_id)->where('id','!=',$row['id'])->first();
         // End Get All movements and sort it and get the last movement before this movement
-            
         
-        $lastMoveCode = ContainersMovement::where('id',$lastMove->movement_id)->pluck('code')->first();
-        $nextMoves = ContainersMovement::where('id',$lastMove->movement_id)->pluck('next_move')->first();
-        $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
@@ -90,6 +86,37 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $row['vessel_id'] = Vessels::where('name',$row['vessel_id'])->where('company_id',Auth::user()->company_id)->pluck('id')->first();
         $row['booking_agent_id'] = Agents::where('name',$row['booking_agent_id'])->pluck('id')->first();
         $row['import_agent'] = Agents::where('name',$row['import_agent'])->pluck('id')->first();
+
+        if($lastMove == null){
+            $moveUpdate->update([
+                'container_id' => $row['container_id'],
+                'container_type_id' => $row['container_type_id'],
+                'movement_id' => $row['movement_id'],
+                'movement_date' => $row['movement_date'],
+                'port_location_id' => $row['port_location_id'],
+                'pol_id' => $row['pol_id'],
+                'pod_id' => $row['pod_id'],
+                'vessel_id' => $row['vessel_id'],
+                'voyage_id' => $row['voyage_id'],
+                'terminal_id' => $row['terminal_id'],
+                'booking_no' => $row['booking_no'],
+                'bl_no' => $row['bl_no'],
+                'remarkes' => $row['remarkes'],
+                'transshipment_port_id' => $row['transshipment_port_id'],
+                'booking_agent_id' => $row['booking_agent_id'],
+                'free_time' => $row['free_time'],
+                'container_status' => $row['container_status'],
+                'import_agent' => $row['import_agent'],
+                'free_time_origin' => $row['free_time_origin']
+            ]);
+            return $moveUpdate;
+        }
+        
+        $lastMoveCode = ContainersMovement::where('id',$lastMove->movement_id)->pluck('code')->first();
+        $nextMoves = ContainersMovement::where('id',$lastMove->movement_id)->pluck('next_move')->first();
+        $nextMoves = explode(', ',$nextMoves);
+        
+        
 
         if($containerId == null){
             return Session::flash('stauts', 'Cannot Container Number be Null Please Check Excel Sheet');

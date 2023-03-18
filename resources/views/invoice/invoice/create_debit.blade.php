@@ -64,7 +64,7 @@
                             </div> 
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" data-size="10"
+                                <select class="selectpicker form-control" id="voyage_id" name="voyage_id"  data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
                                     @if(optional($bldraft)->voyage_id != null)
@@ -100,8 +100,10 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft">Draft</option>
+                                        @if($bldraft->bl_status == 1)
                                         <option value="confirm">Confirm</option>
-                                    </select>
+                                        @endif 
+                                   </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
                                         {{$message}}
@@ -158,6 +160,11 @@
 <script>
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
+    });
+</script>
+<script>
+    $('#createForm').submit(function() {
+        $('select').removeAttr('disabled');
     });
 </script>
 <script>

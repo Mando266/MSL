@@ -14,14 +14,38 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
+                    <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-10">
+                            <label for="ref_no">Change Quotation Rate </label>
+                            <select class="selectpicker form-control" id="quotation_id" name="quotation_id" data-live-search="true" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                @foreach ($quotationRate as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('quotation_id',$quotation->id) ? 'selected':''}}>{{$item->ref_no}} - {{optional($item->equipmentsType)->name}} - {{optional($item->customer)->name}} - {{$item->validity_from}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label style="color:#fff" >.</label>
+                        </br>
+                            <button type="submit" class="btn btn-primary mt show_confirm">Apply</button>
+                        </div>
+                    </div>
+                </form>
                     <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
+                    <input type="hidden" name="quotation_id" value="{{old('quotation_id',$quotation->id)}}">
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Booking Ref No</label>
                                         <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$booking->ref_no)}}"
                                             placeholder="Booking Ref No" autocomplete="off"> 
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>OFR</label>
+                                        <input type="text" class="form-control" value="{{$booking->quotation->ofr}}"
+                                            placeholder="OFR" autocomplete="off"> 
                                 </div>
                             </div>
                             <div class="form-row">
@@ -49,7 +73,7 @@
                                     <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                         @foreach ($equipmentTypes as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                         @error('equipment_type_id')
@@ -149,12 +173,12 @@
                                         @foreach ($consignee as $item)
                                             @if($quotation->customer_id != null)
                                                 @if(optional($quotation->customer)->CustomerRoles->count() == 1 && optional($quotation->customer)->CustomerRoles->first()->role_id != 2)
-                                                <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$booking->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$quotation->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @else
-                                                <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$booking->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$quotation->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @endif
                                             @else
-                                            <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$booking->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$quotation->customer_consignee_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -173,7 +197,7 @@
                                  title="{{trans('forms.select')}}" disabled>
 
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$booking->place_of_acceptence_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$quotation->place_of_acceptence_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('place_of_acceptence_id')
@@ -187,7 +211,7 @@
                                  <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$booking->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('load_port_id')
@@ -198,7 +222,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="shipper_ref_no">Shipper Ref No</label>
-                                <input type="text" class="form-control" id="shipper_ref_no" name="shipper_ref_no" value="{{old('shipper_ref_no',$booking->shipper_ref_no)}}"
+                                <input type="text" class="form-control" id="shipper_ref_no" name="shipper_ref_no" value="{{old('shipper_ref_no',$quotation->shipper_ref_no)}}"
                                     placeholder="Shipper Ref No" autocomplete="off">
                                 @error('shipper_ref_no')
                                 <div style="color: red;">
@@ -213,7 +237,7 @@
                                 <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$booking->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('place_of_delivery_id')
@@ -227,7 +251,7 @@
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$booking->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('discharge_port_id')
@@ -238,7 +262,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="forwarder_ref_no">Forwarder Ref No</label>
-                                <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no',$booking->forwarder_ref_no)}}"
+                                <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no',$quotation->forwarder_ref_no)}}"
                                     placeholder="Forwarder Ref No" autocomplete="off">
                                 @error('forwarder_ref_no')
                                 <div style="color: red;">
@@ -254,7 +278,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select...</option>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$quotation->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('pick_up_location')
@@ -269,7 +293,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select...</option>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('place_return_id',$quotation->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('place_return_id')
@@ -343,7 +367,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="discharge_etd">Discharge ETA</label>
-                                <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$booking->discharge_etd)}}"
+                                <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$quotation->discharge_etd)}}"
                                     placeholder="Discharge ETA" autocomplete="off">
                                 @error('discharge_etd')
                                 <div style="color: red;">
@@ -353,7 +377,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_cutoff">Load Port Cutoff</label>
-                                <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$booking->load_port_cutoff)}}"
+                                <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$quotation->load_port_cutoff)}}"
                                     placeholder="Load Port Cutoff" autocomplete="off">
                                 @error('load_port_cutoff')
                                 <div style="color: red;">
@@ -363,7 +387,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_dayes">Load Port Days</label>
-                                <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$booking->load_port_dayes)}}"
+                                <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$quotation->load_port_dayes)}}"
                                     placeholder="Load Port Days" autocomplete="off">
                                 @error('load_port_dayes')
                                 <div style="color: red;">
@@ -375,7 +399,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="tariff_service">Tariff Service</label>
-                                <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$booking->tariff_service)}}"
+                                <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$quotation->ref_no)}}"
                                     placeholder="Tariff Service" autocomplete="off" disabled>
                                 @error('tariff_service')
                                 <div style="color: red;">
@@ -408,7 +432,7 @@
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes" 
-                                 placeholder="Notes" autocomplete="off" autofocus>{{ old('notes',$booking->notes) }}</textarea>
+                                 placeholder="Notes" autocomplete="off">{{ old('notes',$booking->notes) }}</textarea>
                                 @error('notes')
                                 <div class="invalid-feedback">
                                     {{$message}}
@@ -543,6 +567,26 @@
 </div>
 @endsection
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+
+     $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `Are you sure you want to Change The Booking Rate?`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+</script>
 <script>
 var removed = [];
 function removeItem( item )
