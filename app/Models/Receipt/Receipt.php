@@ -6,11 +6,11 @@ use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
+use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
 use App\User;
-use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 
-class Receipt extends Model
+class Receipt extends Model implements PermissionSeederContract
 {
     use HasFilter;
     protected $table = 'receipts';

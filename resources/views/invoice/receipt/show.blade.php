@@ -75,10 +75,10 @@
                     <div class="form-group col-md-6  text-right">
                         <h3> <span style="font-size:22px;">{{ optional($receipt->invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
                     </div>
-                    <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $receipt->invoice->bldraft_id == 0 ? optional($receipt->invoice->voyage->vessel)->name : optional($receipt->invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ $receipt->invoice->bldraft_id == 0 ? optional($receipt->voyage)->voyage_no : optional($receipt->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
-                    </div>
-                </div>
+                    <div class="form-group col-md-6  text-right"> 
+                        <h3> <span style="font-size:22px;">{{ $receipt->invoice->bldraft_id == 0 ? optional(optional(optional($receipt->invoice)->voyage)->vessel)->name : optional(optional(optional($receipt->bldraft)->voyage)->vessel)->name }} &nbsp; {{ $receipt->invoice->bldraft_id == 0 ? optional($receipt->voyage)->voyage_no : optional(optional($receipt->bldraft)->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
+                    </div>       
+                </div>    
                 <div class="form-row">
                     <div class="form-group col-md-3  text-right">
                     <h3> <span></span>يعتمد<h3>
