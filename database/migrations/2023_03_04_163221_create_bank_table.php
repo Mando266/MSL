@@ -16,6 +16,7 @@ class CreateBankTable extends Migration
         Schema::create('bank', function (Blueprint $table) {
             $table->id();
             $table->string('name','255')->nullable();                     
+            $table->BigInteger('company_id')->nullable();
             $table->BigInteger('account_no')->nullable();
             $table->string('iban','255')->nullable();                     
             $table->string('currancy','255')->nullable();                     

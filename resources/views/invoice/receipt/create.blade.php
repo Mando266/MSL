@@ -55,7 +55,22 @@
                                 </tbody>
                             </table>
 
+                            <div class="form-row">
 
+                                <div class="form-group col-md-8" >
+                                    <label for="bank_id">Bank Account <span class="text-warning"></span></label>
+                                    <select class="selectpicker form-control" id="bank_id" data-live-search="true" name="bank_id" data-size="10"
+                                     title="{{trans('forms.select')}}">
+                                        @foreach ($banks as $bank)
+                                            <option value="{{$bank->id}}" {{$bank->id == old('bank_id',request()->input('bank_id')) ? 'selected':''}}>Name: {{$bank->name}} &nbsp; Account No: {{$bank->account_no}}&nbsp; Iban: {{$bank->iban}} &nbsp; Currency: {{$bank->currancy}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4" >
+                                    <label>Cheak NO</label>
+                                    <input type="text" class="form-control" placeholder="Cheak NO" name="cheak_no" autocomplete="off"  style="background-color:#fff">
+                                </div>
+                            </div>
                         <div class="form-row">
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                             <input type="hidden" name="invoice_id" value="{{request()->input('invoice_id')}}">
