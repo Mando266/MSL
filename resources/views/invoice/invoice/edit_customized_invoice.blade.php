@@ -291,6 +291,7 @@
                                     <th class="text-center">Charge Description</th>
                                     <th class="text-center">Rate</th>
                                     <th class="text-center">Total Amount</th>
+                                    <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -307,6 +308,9 @@
                          
                             <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
                                 placeholder="Amount 20/40" autocomplete="off" style="background-color: white;">
+                            </td>
+                            <td style="width:85px;">
+                                <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
                         @endforeach
@@ -331,6 +335,30 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    $(document).on('input', 'input[name="qty"]', function() {
+        var qty = $(this).val();
+        $('#containerDepit tbody tr').each(function() {
+            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
+            var totalAmount = sizeSmall * qty;
+            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
+        });
+    });
+    $('body').on('input', 'input[name$="[size_small]"]', function() {
+    // Get the current row
+    var row = $(this).closest('tr');
+
+    // Get the qty value from the QTY input field
+    var qty = $('input[name="qty"]').val();
+
+    // Get the size_small value from the current row
+    var sizeSmall = $(this).val();
+
+    // Calculate the total amount and update the total_amount input field of the current row
+    var totalAmount = qty * sizeSmall;
+    row.find('input[name$="[total_amount]"]').val(totalAmount);
+});
+</script>
 <script>
     $('#editForm').submit(function() {
         $('input').removeAttr('disabled');
@@ -376,5 +404,31 @@ $(document).ready(function(){
       $('#charges').append(tr);
     });
 });
+var removed = [];
+function removeItem( item )
+{
+    removed.push(item);
+    console.log(removed);
+    document.getElementById("removed").value = removed;
+}
+$(document).ready(function(){
+    $("#containerDepit").on("click", ".remove", function () {
+    $(this).closest("tr").remove();
+    });
+    var counter  = <?= isset($key)? $key++ : 0 ?>;
+
+    $("#add").click(function(){
+       var tr = '<tr>'+
+            '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description"></td>'+
+            '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;"></td>'+
+            '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc['+counter+'][total_amount]"  placeholder="Ofr" autocomplete="off" style="background-color: white;"></td>'+
+            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+        '</tr>';
+       counter++;
+      $('#containerDepit').append(tr);
+    });
+});
 </script>
+
+
 @endpush
