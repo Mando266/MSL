@@ -14,7 +14,8 @@ class TruckerController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Trucker::class);
-            $truckers = Trucker::with('delegatedPersons')->paginate(30);
+            $truckers = Trucker::where('company_id',Auth::user()
+            ->company_id)->with('delegatedPersons')->paginate(30);
         // dd($truckers);
             return view('trucker.trucker.index',[
                 'items'=>$truckers,

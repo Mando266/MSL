@@ -51,6 +51,8 @@ class BookingExport implements FromCollection,WithHeadings
             $assigned = 0;
             $unassigned = 0;
             $bldraftStatus = '';
+            $bookingStatus = '';
+
             if($booking->has_bl == 0){
                 $bldraftStatus = 'unissued';
             }elseif(optional($booking->bldraft)->bl_status == 1){
@@ -70,11 +72,11 @@ class BookingExport implements FromCollection,WithHeadings
             }
             if($booking->bookingContainerDetails->count() > 0){
                 if($booking->booking_confirm == 1){
-                    $booking->booking_confirm = "Confirm";
+                    $bookingStatus = "Confirm";
                 }elseif($booking->booking_confirm == 2){
-                    $booking->booking_confirm = "Cancelled";
+                    $bookingStatus = "Cancelled";
                 }else{
-                    $booking->booking_confirm = "Draft";
+                    $bookingStatus = "Draft";
                 }
                 $tempCollection = collect([
                     'quotation_ref_no' => optional($booking->quotation)->ref_no,
@@ -99,7 +101,7 @@ class BookingExport implements FromCollection,WithHeadings
                     'imo' =>  $booking->imo == 1 ? "IMO":"",
                     'oog' =>  $booking->oog == 1 ? "OOG":"",
                     'created_at' => $booking->created_at,
-                    'booking_confirm' => $booking->booking_confirm,
+                    'booking_confirm' => $bookingStatus,
                     'bl_status'=>$bldraftStatus,
                     'assigned' => $assigned,
                     'unassigned' => $unassigned,

@@ -24,6 +24,8 @@ class ReceiptController extends Controller
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $invoices  = Invoice::where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('has_bl',1)->where('bl_status','=',1)->where('company_id',Auth::user()->company_id)->get();
+        $receiptexport = Receipt::filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->get();
+        session()->flash('receipts',$receiptexport);
 
         return view('invoice.receipt.index',[
             'receipts'=>$receipts,
@@ -38,7 +40,7 @@ class ReceiptController extends Controller
     {
         $bldrafts = BlDraft::where('has_bl',1)->where('bl_status','=',1)->where('company_id',Auth::user()->company_id)->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
-        $invoiceRef = Invoice::where('invoice_status','confirm')->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
+        $invoiceRef = Invoice::where('invoice_status','confirm')->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->where('paymentstauts',0)->get();
 
         return view('invoice.receipt.selectinvoice',[
             'bldrafts'=>$bldrafts,
@@ -70,6 +72,7 @@ class ReceiptController extends Controller
         $total_eg = $total_eg - (($total_eg * $invoice->tax_discount)/100);
         if($invoice->add_egp == "false"){
             if($total <= $oldPayment){
+
                 return redirect()->back()->with('error','Sorry You Cant Create Receipt for this invoice its already Paid')->withInput(request()->input());
             }else{
                 $total -= $oldPayment;
@@ -94,6 +97,22 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
+
+        if ($request->input('bank_transfer') != Null || $request->input('bank_deposit') != Null){
+            $request->validate([
+                'bank_id' => ['required'],
+            ],[
+                'bank_id.required'=>'Please Choose Bank Account',
+            ]);
+        }
+        if($request->input('bank_check') != Null){
+
+            $request->validate([
+                'cheak_no' => ['required'],
+            ],[
+                'cheak_no.required'=>'Please Enter Cheak No',
+            ]);
+        }
         $invoice = Invoice::where('id',request('invoice_id'))->with('chargeDesc')->first();
         $oldReceipts = Receipt::where('invoice_id',request('invoice_id'))->get();
         $customer = Customers::where('id',$invoice->customer_id)->first();
@@ -133,6 +152,9 @@ class ReceiptController extends Controller
                 }
             }
         }
+        if($paid == 0){
+            return redirect()->back()->with('error','Total payment on receipt cannot be equal zero')->withInput($request->input());
+        }
         // to Decrease Customer Debit
         if($invoice->add_egp == "false"){
             if($customer->debit != 0){
@@ -155,34 +177,36 @@ class ReceiptController extends Controller
                 }
             }
         }
+        
         $receipt = Receipt::create([
             'company_id'=>Auth::user()->company_id,
             'invoice_id'=>$request->invoice_id,
             'cheak_no'=>$request->cheak_no,
             'bank_id'=>$request->bank_id,
-            'bldraft_id'=>$request->bldraft_id,
+            'bldraft_id'=>$request->bldraft_id ?? $invoice->bldraft_id,
             'bank_transfer'=>$request->bank_transfer,
             'bank_deposit'=>$request->bank_deposit,
             'bank_cash'=>$request->bank_cash,
             'bank_check'=>$request->bank_check,
             'matching'=>$request->matching,
             'total'=>$request->total_payment,
+            'notes'=>$request->notes,
             'paid'=>$paid,
             'user_id'=>Auth::user()->id,
         ]);
         $setting = Setting::find(1);
         $setting->receipt_no += 1;
-        $receipt->receipt_no = 'RCPT'.sprintf('%06u', $setting->receipt_no);
+        $receipt->receipt_no = 'ALY/ '.$setting->receipt_no.' / 23';
         $setting->save();
         $receipt->save();
 
         if($oldReceipts->count() == 0){
             // ADD to Credit
             if($paid > (int)$request->total_payment){
+                
                 if($invoice->add_egp == "false"){
                     // currency USD
                     $customer->credit = $customer->credit + ($paid - (int)$request->total_payment);
-                    $customer->save();
                     CustomerHistory::create([
                         'credit'=>($paid - (int)$request->total_payment),
                         'receipt_id'=>$receipt->id,
@@ -191,7 +215,6 @@ class ReceiptController extends Controller
                 }elseif($invoice->add_egp == "onlyegp"){
                     // currency EGP
                     $customer->credit_egp = $customer->credit_egp + ($paid - (int)$request->total_payment);
-                    $customer->save();
                     CustomerHistory::create([
                         'credit_egp'=>($paid - (int)$request->total_payment),
                         'receipt_id'=>$receipt->id,
@@ -203,7 +226,6 @@ class ReceiptController extends Controller
                 if($invoice->add_egp == "false"){
                     // currency USD
                     $customer->debit = $customer->debit + ((int)$request->total_payment - $paid);
-                    $customer->save();
                     CustomerHistory::create([
                         'debit'=>((int)$request->total_payment - $paid),
                         'receipt_id'=>$receipt->id,
@@ -212,7 +234,6 @@ class ReceiptController extends Controller
                 }elseif($invoice->add_egp == "onlyegp"){
                     // currency EGP
                     $customer->debit_egp = $customer->debit_egp + ((int)$request->total_payment - $paid);
-                    $customer->save();
                     CustomerHistory::create([
                         'debit_egp'=>((int)$request->total_payment - $paid),
                         'receipt_id'=>$receipt->id,
@@ -220,8 +241,34 @@ class ReceiptController extends Controller
                     ]);
                 }
             }
+        }else{
+            if($paid > (int)$request->total_payment){
+                
+                if($invoice->add_egp == "false"){
+                    // currency USD
+                    $customer->credit = $customer->credit + ($paid - (int)$request->total_payment);
+                    CustomerHistory::create([
+                        'credit'=>($paid - (int)$request->total_payment),
+                        'receipt_id'=>$receipt->id,
+                        'user_id'=>$customer->id
+                    ]);
+                }elseif($invoice->add_egp == "onlyegp"){
+                    // currency EGP
+                    $customer->credit_egp = $customer->credit_egp + ($paid - (int)$request->total_payment);
+                    CustomerHistory::create([
+                        'credit_egp'=>($paid - (int)$request->total_payment),
+                        'receipt_id'=>$receipt->id,
+                        'user_id'=>$customer->id
+                    ]);
+                }
+                
+            }
+        }
+        if($paid >= (int)$request->total_payment){
+            $invoice->paymentstauts = 1;
         }
         $customer->save();
+        $invoice->save();
         return redirect()->route('receipt.index')->with('success',trans('Receipt.created'));
     }
 

@@ -3,6 +3,7 @@
 namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Models\Voyages\VoyagePorts;
 
 class InvoiceListExport implements FromCollection,WithHeadings
 {
@@ -16,13 +17,16 @@ class InvoiceListExport implements FromCollection,WithHeadings
             "BL NO",
             "Voyage",
             "Vessel",
-            "DATE",
+            "ETA",
+            "ETD",
+            "Date Creation",
             "INVOICE TYPE",
             "PAYMENT KIND",
             "TOTAL USD",
             "TOTAL EGP",
-            "Curency",
+            "Invoice Curency",
             "INVOICE STATUS",
+            "Payment STATUS",
         ];
     }
     
@@ -35,13 +39,34 @@ class InvoiceListExport implements FromCollection,WithHeadings
 
         foreach($invoices  ?? [] as $invoice){
             $Curency = '';
+            $Payment = '';
 
+            if($invoice->bldraft_id == 0){
+                $qty = $invoice->qty;
+                if($invoice->booking != null){
+                    $VoyagePort = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id)
+                    ->where('port_from_name',optional($invoice->booking->loadPort)->id)->first();
+                }else{
+                    $VoyagePort = null;
+                }
+            }else{
+                $VoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
+                ->where('port_from_name',optional($invoice->bldraft->booking->loadPort)->id)->first();
+            }
+
+        if($invoice->invoice_status == 'confirm'){
             if($invoice->add_egp == 'false'){
                 $Curency = 'USD';
             }elseif($invoice->add_egp == 'onlyegp'){
                 $Curency = 'EGP';
             }
-
+        }
+        if($invoice->paymentstauts == '0'){
+            $Payment = 'UnPaid';
+        }elseif($invoice->paymentstauts == '1'){
+            $Payment = 'Paid';
+        }
+        
             $totalusd = 0;
             $totalegp = 0;
             foreach($invoice->chargeDesc as $invoiceDesc ){
@@ -55,6 +80,8 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'bl no' => optional($invoice->bldraft)->ref_no,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
+                    'eta' => optional($VoyagePort)->eta,
+                    'etd' => optional($VoyagePort)->etd,
                     'date' => $invoice->date,
                     'type' => $invoice->type,
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
@@ -62,6 +89,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'total egp' => $totalegp,
                     'Curency' =>$Curency,
                     'STATUS' => $invoice->invoice_status,
+                    'PaymentSTATUS' => $Payment,
                 ]);
                 
                 $exportinvoices->add($tempCollection);

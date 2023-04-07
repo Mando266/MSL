@@ -15,6 +15,9 @@
                     </div> 
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
+                            @permission('Invoice-List')
+                            <a href="{{route('export.receipt')}}" class="btn btn-warning">Export</a>
+                            @endpermission
                             @permission('Invoice-Create')
                             <a href="{{route('receipt.selectinvoice')}}" class="btn btn-primary">New Receipt</a>
                             @endpermission

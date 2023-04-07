@@ -104,9 +104,13 @@ class BookingController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
+        if(request('quotation_id') == 'draft'){
+            $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->get();
+        }else{
         $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($quotation ){
             $query->where('port_from_name',$quotation->load_port_id);
         })->get();
+        }
        // dd($voyages);
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
@@ -324,9 +328,14 @@ class BookingController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
+
+        if(request('quotation_id') == 'draft'){
+            $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->get();
+        }else{
         $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($quotation ){
             $query->where('port_from_name',$quotation->load_port_id);
         })->get();
+        }
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get(); 
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
             $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);

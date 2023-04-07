@@ -7,8 +7,13 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
+                            @if($invoice->type == "invoice")
                             <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Custmized Invoice</a></li>
+                            @else
+                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Custmized Depit</a></li>
+                            @endif
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -85,6 +90,7 @@
                                 <label for="Date">Booking Ref</label>
                                 <select class="selectpicker form-control" id="booking_ref" data-live-search="true" name="booking_ref" data-size="10"
                                     title="{{trans('forms.select')}}">
+                                    <option value="">Select...</option>
                                     @foreach($bookings as $booking)
                                         <option value="{{$booking->id}}" {{$booking->id == old('booking_ref',$invoice->booking_ref) ? 'selected':''}}>{{$booking->ref_no}}</option>
                                     @endforeach
@@ -177,8 +183,8 @@
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',$invoice->date)}}">
                                 </div>
                                 <div class="form-group col-md-3" >
-                                    <label>QTY</label>
-                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{old('qty',$invoice->qty)}}" style="background-color:#fff">
+                                    <label>QTY<span class="text-warning"> * (Required.) </span></label>
+                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{old('qty',$invoice->qty)}}" style="background-color:#fff" required>
                                 </div>
                                 <!-- <div class="col-md-3 form-group">
                                     <div style="padding: 30px;">
@@ -193,19 +199,21 @@
                                         </label>
                                     </div>
                                 </div> -->
+                                @if($invoice->type == "invoice")
+
                                 <div class="form-group col-md-3" >
                                     <label>TAX Hold</label>
                                         <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
-                                        @if($invoice->invoice_status != "confirm")
+                                        {{-- @if($invoice->invoice_status != "confirm")
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" {{ "true" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
-                                        @endif
+                                        @endif --}}
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{ "false" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                           USD
@@ -217,8 +225,18 @@
                                         </label>
                                     </div>
                                 </div>
+                                @endif
+                            </div> 
+
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes">{{old('notes',$invoice->notes)}}</textarea>
+                                </div> 
                             </div> 
                         <h4>Charges<h4>
+                    @if($invoice->type == "invoice")
+
                         <table id="charges" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -266,9 +284,40 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @else
+                        <table id="containerDepit" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Charge Description</th>
+                                    <th class="text-center">Rate</th>
+                                    <th class="text-center">Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                     @foreach($invoice_details as $key => $item)
+                     <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
+
+                        <tr>
+                            <td>
+                                <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                            </td>
+                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(old('size_small',$item->size_small))}}"
+                                placeholder="Rate" autocomplete="off" style="background-color: white;">
+                            </td>
+                         
+                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
+                                placeholder="Amount 20/40" autocomplete="off" style="background-color: white;">
+                            </td>
+                        </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                    @endif
+
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
+                                    <button type="submit" class="btn btn-primary mt-3">Confirm</button>
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>
@@ -283,9 +332,27 @@
 @endsection
 @push('scripts')
 <script>
+    $('#editForm').submit(function() {
+        $('input').removeAttr('disabled');
+    });
+</script>
+<script>
+    $(function(){
+            let customer = $('#customer');
+            $('#customer').on('change',function(e){
+                let value = e.target.value;
+                let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
+                    let notIfiy = data.customer[0] ;
+                    let notifiy = $('#notifiy').val(' ' + notIfiy.name);
+                notifiy.html(list2.join(''));
+            });
+        });
+    });
+</script>
+
+<script>
 var removed = [];
-function removeItem( item )
-{
+function removeItem(item){
     removed.push(item);
     console.log(removed);
     document.getElementById("removed").value = removed;
@@ -309,24 +376,5 @@ $(document).ready(function(){
       $('#charges').append(tr);
     });
 });
-</script>
-
-<script>
-    $('#editForm').submit(function() {
-        $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
 </script>
 @endpush

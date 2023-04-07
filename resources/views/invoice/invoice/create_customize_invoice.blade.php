@@ -176,27 +176,25 @@
                                     <label>TAX Hold</label>
                                     <input type="text" class="form-control" placeholder="TAX %" name="tax_discount" autocomplete="off"  style="background-color:#fff" value="0">
                                 </div>
-                                <div class="col-md-2 form-group">
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
-                                        <label class="form-check-label" for="exchange_rate">
-                                        ETA Rate 
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
-                                        <label class="form-check-label" for="exchange_rate">
-                                          ETD Rate 
-                                        </label>
-                                    </div>
-                                </div>
-
+                                <!--<div class="col-md-2 form-group">-->
+                                <!--    <div style="padding: 30px;">-->
+                                <!--        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>-->
+                                <!--        <label class="form-check-label" for="exchange_rate">-->
+                                <!--        ETA Rate -->
+                                <!--        </label>-->
+                                <!--        <br>-->
+                                <!--        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">-->
+                                <!--        <label class="form-check-label" for="exchange_rate">-->
+                                <!--          ETD Rate -->
+                                <!--        </label>-->
+                                <!--    </div>-->
                                 <div class="form-group col-md-2">
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
-                                        <label class="form-check-label" for="add_egp">
-                                            EGP AND USD
-                                        </label>
-                                        <br>
+                                        <!--<input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>-->
+                                        <!--<label class="form-check-label" for="add_egp">-->
+                                        <!--    EGP AND USD-->
+                                        <!--</label>-->
+                                        <!--<br>-->
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
                                         <label class="form-check-label" for="add_egp">
                                           USD
@@ -208,8 +206,15 @@
                                         </label> 
                                     </div>
                                 </div>
+                                </div>
+
+                                
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes"></textarea>
+                                </div> 
                             </div> 
-                    
                         <h4>Charges<h4>
                         <table id="charges" class="table table-bordered">
                             <thead>
@@ -241,9 +246,25 @@
 </div>
 @endsection
 @push('scripts')
-
 <script>
-
+    $(function(){
+            let customer = $('#customer');
+            $('#customer').on('change',function(e){
+                let value = e.target.value;
+                let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
+                    let notIfiy = data.customer[0] ;
+                    let notifiy = $('#notifiy').val(' ' + notIfiy.name);
+                notifiy.html(list2.join(''));
+            });
+        });
+    });
+</script>
+<script>
+    $('#createForm').submit(function() {
+        $('input').removeAttr('disabled');
+    });
+</script>
+<script>
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
         $(this).closest("tr").remove();
@@ -262,24 +283,5 @@ $(document).ready(function(){
       $('#charges').append(tr);
     });
 });
-</script>
-
-<script>
-    $('#createForm').submit(function() {
-        $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
 </script>
 @endpush

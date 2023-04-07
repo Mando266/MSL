@@ -41,6 +41,8 @@ class TruckerGateExport implements FromCollection,WithHeadings
         $exportTruckergates = collect();
         foreach($truckergates ?? [] as $truckergate){
             $qty = 0;
+            $bookingStatus = '';
+
             foreach($truckergate->booking->bookingContainerDetails as $bookingDetail){
                 $qty += $bookingDetail->qty;
             }
@@ -53,11 +55,11 @@ class TruckerGateExport implements FromCollection,WithHeadings
             }
 
             if($truckergate->booking->booking_confirm == 1){
-                $truckergate->booking->booking_confirm = "Confirm";
+                $bookingStatus = "Confirm";
             }elseif($truckergate->booking->booking_confirm == 2){
-                $truckergate->booking->booking_confirm = "Cancelled";
+                $bookingStatus = "Cancelled";
             }else{
-                $truckergate->booking->booking_confirm = "Draft";
+                $bookingStatus = "Draft";
             }
 
                 $tempCollection = collect([
@@ -80,7 +82,7 @@ class TruckerGateExport implements FromCollection,WithHeadings
                     'Shippment'=>$truckergate->shipment,
                     'Operator'=>$truckergate->operator,
                     'Release Location'=>optional($truckergate->booking->pickUpLocation)->name,
-                    'booking Stauts' => $truckergate->booking->booking_confirm,
+                    'booking Stauts' => $bookingStatus,
                 ]);
                 $exportTruckergates->add($tempCollection);
         }

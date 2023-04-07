@@ -119,6 +119,12 @@
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
                             </div> 
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes"></textarea>
+                                </div> 
+                            </div>
                         <h4>Charges<h4>
                         <table id="containerDetails" class="table table-bordered">
                                 <thead>

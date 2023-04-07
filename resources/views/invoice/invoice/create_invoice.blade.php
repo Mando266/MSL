@@ -155,7 +155,12 @@
                                     </div>
                                 </div>
                             </div>
-                            
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes"></textarea>
+                                </div> 
+                            </div>
                         <h4>Charges<h4>
                         <table id="charges" class="table table-bordered">
                                 <thead>

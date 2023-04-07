@@ -17,121 +17,122 @@
            
                     <form id="createForm" action="{{route('receipt.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                        <h4>Invoice Details<h4>
-                            <table id="charges" class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Invoice No</th>
-                                            <th class="text-center">BLdraft No</th>
-                                            <th class="text-center">Customer</th>
-                                            <th class="text-center">Date</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Currency</th>
-                                            <th class="text-center">Voyage No</th>
-                                            <th class="text-center">Vessel</th>
-                                            <th class="text-center">POL</th>
-                                            <th class="text-center">POD</th>
-                                            <th class="text-center">Final Dest</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center">{{ $invoice->invoice_no }}</td>
-                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? "Customized" : optional($invoice->bldraft)->ref_no }}</td>
-                                            <td class="text-center">{{ optional($invoice->customerShipperOrFfw)->name }}</td>
-                                            <td class="text-center">{{ $invoice->date }}</td>
-                                            <td class="text-center">{{ $invoice->invoice_status }}</td>
-                                            <td class="text-center">{{ $invoice->add_egp == "onlyegp"? "EGP" : "USD" }}</td>
-                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
-                                            <td class="text-center">
-                                                {{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}
-                                            </td>
-                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional($invoice->bldraft->dischargePort)->code }}</td>
-                                            <td class="text-center">{{ $invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code : optional($invoice->bldraft->placeOfDelivery)->code }}</td>
-                                        </tr>
-                                </tbody>
-                            </table>
+                        <h4 style="color:#1b55e2">Invoice Details<h4>
 
                             <div class="form-row">
-
-                                <div class="form-group col-md-8" >
-                                    <label for="bank_id">Bank Account <span class="text-warning"></span></label>
-                                    <select class="selectpicker form-control" id="bank_id" data-live-search="true" name="bank_id" data-size="10"
-                                     title="{{trans('forms.select')}}">
-                                        @foreach ($banks as $bank)
-                                            <option value="{{$bank->id}}" {{$bank->id == old('bank_id',request()->input('bank_id')) ? 'selected':''}}>Name: {{$bank->name}} &nbsp; Account No: {{$bank->account_no}}&nbsp; Iban: {{$bank->iban}} &nbsp; Currency: {{$bank->currancy}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="form-group col-md-3">
+                                    <label>Invoice No</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->invoice_no }}" style="background-color:#fff" disabled>
                                 </div>
-                                <div class="form-group col-md-4" >
+                                <div class="form-group col-md-3">
+                                    <label>BLdraft No</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? "Customized" : optional($invoice->bldraft)->ref_no }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Customer</label>
+                                    <input type="text" class="form-control"  value="{{ optional($invoice->customerShipperOrFfw)->name }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Date</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->date }}" style="background-color:#fff" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>Status</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->invoice_status }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Currency</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->add_egp == "onlyegp"? "EGP" : "USD" }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Voyage No</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional($invoice->bldraft)->voyage)->voyage_no }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Vessel</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft)->voyage)->vessel)->name }}" style="background-color:#fff" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>POL</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional(optional($invoice->bldraft)->loadPort)->code }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>POD</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional(optional($invoice->bldraft)->dischargePort)->code }}" style="background-color:#fff" disabled>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Final Dest</label>
+                                    <input type="text" class="form-control"  value="{{ $invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code : optional(optional($invoice->bldraft)->placeOfDelivery)->code }}" style="background-color:#fff" disabled>
+                                </div>
+                            </div>
+
+                        <h4 style="color:#1b55e2">Payment Methods<h4>
+
+                            <div class="form-row">
+                                <div class="col-md-3 form-group">
+                                    <label>Cash</label>
+                                        <input type="number" class="form-control" name="bank_cash" value="{{old('bank_cash',request()->input('bank_cash'))}}">
+                                </div>
+                             
+                                <div class="col-md-3 form-group">
+                                    <label>Matching</label>
+                                        <input type="number" class="form-control" name="matching" value="{{old('matching',request()->input('matching'))}}">
+                                </div>
+                           
+                                <div class="col-md-3 form-group">
+                                    <label>Cheak Amount</label>
+                                    <input type="number" class="form-control" name="bank_check" value="{{old('bank_check',request()->input('bank_check'))}}">
+                                </div>
+
+                                <div class="form-group col-md-3" >
                                     <label>Cheak NO</label>
                                     <input type="text" class="form-control" placeholder="Cheak NO" name="cheak_no" autocomplete="off"  style="background-color:#fff">
+                                    @error('cheak_no')
+                                    <div style="color: red; font-size:14px;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
                                 </div>
                             </div>
                         <div class="form-row">
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                             <input type="hidden" name="invoice_id" value="{{request()->input('invoice_id')}}">
+                          
+                            <div class="col-md-2 form-group">
+                                <label> Bank Deposit </label>
+                                <input type="number" class="form-control" name="bank_deposit" value="{{old('bank_deposit',request()->input('bank_deposit'))}}">
+                            </div>
+                        
+                            <div class="col-md-2 form-group">
+                                <label> Bank Transfer </label>
+                                    <input type="number" class="form-control" name="bank_transfer" value="{{old('bank_transfer',request()->input('bank_transfer'))}}">
+                            </div>
 
-                            <div class="col-md-2 form-group">
-                                <div style="padding: 23px;">
-                                    <label class="form-check-label">
-                                    Bank Deposit
-                                    </label>
+                            <div class="form-group col-md-8">
+                                <label for="bank_id">Bank Account <span class="text-warning"></span></label>
+                                <select class="selectpicker form-control" id="bank_id" data-live-search="true" name="bank_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($banks as $bank)
+                                        <option value="{{$bank->id}}" {{$bank->id == old('bank_id',request()->input('bank_id')) ? 'selected':''}}>Name: {{$bank->name}} &nbsp; Account No: {{$bank->account_no}}&nbsp; Iban: {{$bank->iban}} &nbsp; Currency: {{$bank->currancy}}</option>
+                                    @endforeach
+                                </select>
+                                @error('bank_id')
+                                <div style="color: red; font-size:14px;">
+                                    {{$message}}
                                 </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                    <input type="number" class="form-control" name="bank_deposit">
-                            </div>
-                            <div class="col-md-2 form-group">
-                                <div style="padding: 23px;">
-                                    <label class="form-check-label">
-                                    Bank Transfer
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                    <input type="number" class="form-control" name="bank_transfer">
+                                @enderror
                             </div>
                         </div> 
-                        <div class="form-row">
-                            <div class="col-md-2 form-group">
-                                <div style="padding: 23px;">
-                                    <label class="form-check-label">
-                                    Cheak 
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                    <input type="number" class="form-control" name="bank_check">
-                            </div>
-                            <div class="col-md-2 form-group">
-                                <div style="padding: 23px;">
-                                    <label class="form-check-label">
-                                        Cash
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                    <input type="number" class="form-control" name="bank_cash">
-                            </div>
-                        </div> 
-                        <div class="form-row">
-                            <div class="col-md-2 form-group">
-                                <div style="padding: 23px;">
-                                    <label class="form-check-label">
-                                        Matching
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2 form-group">
-                                    <input type="number" class="form-control" name="matching">
-                            </div>
-                        </div> 
+
                         <div class="form-row">
                             <div class="col-md-4 form-group">
+                             {{-- @dd($invoice); --}}
                                 <label> Total {{$invoice->add_egp == "false"? "USD" : "EGP"}}</label>
                                     <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total : $total_eg}}" readonly>
                                 </div>
@@ -155,11 +156,11 @@
                         <div class="form-row">
                             <div class="col-md-12 form-group">
                                 <label> Notes </label>
-                                <textarea class="form-control" name=""></textarea>
+                                <textarea class="form-control" name="notes"></textarea>
                             </div> 
                         </div> 
                         @if($oldReceipts->count() != 0)  
-                            <h4>Receipts<h4>
+                            <h4 style="color:#1b55e2">Receipts<h4>
                             <table id="charges" class="table table-bordered">
                                     <thead>
                                         <tr>

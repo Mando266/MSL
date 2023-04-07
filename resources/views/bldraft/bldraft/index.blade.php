@@ -15,13 +15,15 @@
                     </div> 
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            @permission('BlDraft-List')
-                            <a class="btn btn-info" href="{{ route('export.BLloadList') }}">BL Loadlist</a> 
-                            @endpermission
                             @permission('BlDraft-Create')
-                            <a href="{{route('bookingContainersRefresh')}}" class="btn btn-success">Refresh Booking Containers</a>
-                            <a href="{{route('bldraft.selectbooking')}}" class="btn btn-primary">New Bl Draft</a>
+                                <a href="{{route('bldraft.selectbooking')}}" class="btn btn-primary">New Bl Draft</a>
+                                <a href="{{route('bookingContainersRefresh')}}" class="btn btn-warning">Refresh Booking Containers</a>
                             @endpermission
+                            @permission('BlDraft-List')
+                                <a class="btn btn-info" href="{{ route('export.BLExport') }}">BL Export</a> 
+                                <a class="btn btn-success" href="{{ route('export.BLloadList') }}">BL Loadlist</a> 
+                            @endpermission
+
                             </div>
                         </div>
                     </br>
@@ -122,9 +124,11 @@
                                         <th>Bl Draft Creation</th>
                                         <th>Invoices</th>
                                         <th>BL Status</th>
+                                        <th>BL Type</th>
                                         <th>BL Manafest</th>
                                         <th>BL Service Manafest</th>
-                                        <th>UPDATE BOOKING</th>
+                                        <th>ADD BL</th>
+                                        {{-- <th>UPDATE BOOKING</th> --}}
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -137,7 +141,7 @@
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->booking->forwarder)->name}}</td>
-                                            <td>{{optional($item->booking->consignee)->name}}</td>
+                                            <td>{{optional($item->customerConsignee)->name}}</td>
                                             <td>{{optional($item->loadPort)->code}}</td>
                                             <td>{{optional($item->dischargePort)->code}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td> 
@@ -165,6 +169,7 @@
                                                 {{$draft_invoice}} Draft <br>
                                                 {{$confirm_invoice}} Confirm 
                                             </td>
+
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
                                                     <span class="badge badge-info"> Confirm </span>
@@ -172,6 +177,7 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
+                                            <td>{{$item->bl_kind}}</td>
                                             <td class="text-center">
                                                 @permission('BlDraft-List')
                                                     <ul class="table-controls">
@@ -195,12 +201,21 @@
                                                 @endpermission
                                             </td>
                                             <td class="text-center">
+                                                @permission('BlDraft-Create')
+                                                @if($item->has_child)
+                                                    <a href="{{route('bldraft.create',['bldraft'=>$item->id,'booking_id'=>$item->booking_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <i class="fas fa-plus text-primary"></i>
+                                                    </a>
+                                                @endif
+                                                @endpermission
+                                            </td>
+                                            {{-- <td class="text-center">
                                                 @permission('Booking-Edit')
                                                     <a href="{{ route('bookingContainersRefresh',['id'=>$item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                         <i class="far fa-edit text-success">Sync</i>
                                                     </a>
                                                 @endpermission
-                                            </td>
+                                            </td> --}}
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                     @permission('Booking-Edit')

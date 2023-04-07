@@ -21,7 +21,6 @@
                         <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
                     </div>
                     <div class="col-md-6 text-right">
-                        <!-- <img src="{{asset('assets/img/Mas-2.png')}}" style="width: 350px;" alt="logo"> -->
                     </div>
                 </div>
 
@@ -55,7 +54,7 @@
                             <td class="col-md-3 tableStyle" >Booking Ref:  <span class="entry">{{ optional(optional($invoice->bldraft)->booking)->ref_no }}</span></td>
                             <td class="col-md-3 tableStyle" >Vessel: <span class="entry">{{optional(optional(optional($invoice->bldraft)->voyage)->vessel)->name }}</span></td>
                             <td class="col-md-3 tableStyle" >Voyage: <span class="entry">{{ optional(optional($invoice->bldraft)->voyage)->voyage_no }}</span></td>
-                            <td class="col-md-3 tableStyle" >ATD: <span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
+                            <td class="col-md-3 tableStyle" >ATD: <span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-3 tableStyle" >Place of Receipt:  <br> <br> <span class="entry" style="text-align: center;">{{ optional(optional($invoice->bldraft)->placeOfAcceptence)->code }}</span></td>
@@ -134,6 +133,18 @@
                         <tr>
                             <td class="entry" style="padding: .75rem;">{{ $USD }} Dollars <br><br></td>
                         </tr>
+                    </tbody>
+                </table>
+                <table  class="col-md-12 tableStyle">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-3 tableStyle text-center">Notes</td>
+                            <td class="col-md-9  tableStyle text-center" colspan="6">
+                                <textarea style="width: 100%; border: none; height: 130px; font-size: 12px; font-weight: bolder !important; background-color: white; color: #000;" disabled>{!! $invoice->notes  !!}</textarea>
+        
+                            </td>
+                        </tr>
+                        
                     </tbody>
                 </table>
                 <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>

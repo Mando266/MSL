@@ -26,8 +26,10 @@
                             <a href="{{route('containerRefresh')}}" class="btn btn-success">Refresh Container Status</a>
                             @endpermission
                             @if(!$items->isEmpty())
+                                    <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a>
                                     <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
                                     'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
+
                                 @endif
                                 @endpermission
                                 @permission('Movements-List')
@@ -177,6 +179,7 @@
                                         <th>Container No</th>
                                         <th>Container Type</th>
                                         <th>movement code</th>
+                                        <th>Ownership</th>
                                         <th>Lessor/Seller Refrence</th>
                                         <th>movement date</th>
                                         <th>movement status</th>
@@ -186,8 +189,8 @@
                                         <th>Pol</th>
                                         <th>Pod</th>   
                                         <th>free time destination</th>
-                                        <th>import agent</th>   
-                                        <th>booking agent</th>   
+                                        {{-- <th>import agent</th>   
+                                        <th>booking agent</th>    --}}
                                         <th>remarkes</th>
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
@@ -200,6 +203,7 @@
                                             <td>{{{optional($item->containersType)->name}}}</td>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{{optional($item->container->containersOwner)->name}}}</td>
+                                            <td>{{{optional($item->container)->description}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
                                             <td>{{$item->bl_no}}</td>
@@ -208,8 +212,8 @@
                                             <td>{{$item->pol_id}}</td>
                                             <td>{{$item->pod_id}}</td>
                                             <td>{{$item->free_time}}</td>
-                                            <td>{{{optional($item->importAgent)->name}}}</td>
-                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
+                                            {{-- <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
                                             <td>{{$item->remarkes}}</td>
                                             
                                             <td class="text-center">

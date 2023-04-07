@@ -18,6 +18,9 @@
                             @csrf
                         <h5>Booking No :{{$booking_no->ref_no}}<h5>
                         <div class="form-row">
+                            @isset($blDraft)
+                            <input type="hidden" value="{{$blDraft->id}}" name="blDraft_id">
+                            @endisset
                             <input type="hidden" value="{{$booking->ref_no}}" name="ref_no">
                             <input type="hidden" value="{{$booking->id}}" name="booking_id">
                             <div class="form-group col-md-4">
@@ -41,7 +44,7 @@
                                 <label for="customer_id">Shipping Customer Details</label>
                                 @if($booking->customer_id != null)
                                     <textarea class="form-control"  name="customer_shipper_details"
-                                    placeholder="Customer Shipper Details" autocomplete="off">Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}</textarea>
+                                    placeholder="Customer Shipper Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_shipper_details}} @else Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}  @endisset</textarea>
                                 @endif
                             </div>
     
@@ -70,7 +73,7 @@
                                     @if($booking->customer_consignee_id != null)
                                         <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',$booking->customer_consignee_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @else
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_consignee_id',isset($blDraft) ? $blDraft->customer_consignee_id:'') ? 'selected':''}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
                                 </select>
@@ -87,7 +90,7 @@
                                     placeholder="Customer Consignee Details" autocomplete="off">Phone : {{optional($booking->consignee)->phone}} - Email : {{optional($booking->consignee)->email}} - Address : {{optional($booking->consignee)->address}}</textarea>
                                 @else
                                     <textarea id="consignee" class="form-control"  name="customer_consignee_details"
-                                    placeholder="Customer Consignee Details" autocomplete="off"></textarea>
+                                    placeholder="Customer Consignee Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_consignee_details}} @endisset</textarea>
                                 @endif
                             </div> 
                     </div>
@@ -97,7 +100,7 @@
                                 <select class="selectpicker form-control" id="customernotifiy" data-live-search="true" name="customer_notifiy_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($customersNotifiy as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_notifiy_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_notifiy_id',isset($blDraft) ? $blDraft->customer_notifiy_id:'') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('customer_notifiy_id')
@@ -109,10 +112,10 @@
                             <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Notifiy Details</label>
                                     <textarea id="notifiy" class="form-control"  name="customer_notifiy_details"
-                                    placeholder="Customer Notifiy Details" autocomplete="off"></textarea>
+                                    placeholder="Customer Notifiy Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_notifiy_details}} @endisset</textarea>
                             </div> 
                     </div>
-                    
+                    {{-- @dd($blDraft) --}}
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
@@ -219,7 +222,7 @@
                         </div>
                         <div class="form-group col-md-6" id="summernote">
                             <label for="notes">DESCRIPTION</label>
-                            <textarea name="descripions" class="form-control" placeholder="Descripion" autocomplete="off"></textarea>
+                            <textarea name="descripions" class="form-control" placeholder="Descripion" autocomplete="off">@isset($blDraft){{$blDraft->descripions}} @endisset</textarea>
                             @error('notes')
                             <div style="color: red;">
                                 {{$message}}
@@ -230,7 +233,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="notes">Date Of Issue</label>
-                            <input type="date" name="date_of_issue" class="form-control" placeholder="Date Of Issue" autocomplete="off">
+                            <input type="date" name="date_of_issue" class="form-control" @isset($blDraft) value="{{$blDraft->date_of_issue}}" @endisset placeholder="Date Of Issue" autocomplete="off">
                             @error('date_of_issue')
                             <div style="color: red;">
                                 {{$message}}
@@ -240,7 +243,7 @@
 
                         <div class="form-group col-md-3">
                             <label for="notes">Declered Value</label>
-                            <input type="text" name="declerd_value" class="form-control" placeholder="Declered Value" autocomplete="off">
+                            <input type="text" name="declerd_value"  @isset($blDraft) value="{{$blDraft->declerd_value}}" @endisset class="form-control" placeholder="Declered Value" autocomplete="off">
                             @error('declerd_value')
                             <div style="color: red;">
                                 {{$message}}
@@ -260,7 +263,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="notes">Number Of Original Bills</label>
-                            <input type="text" name="number_of_original" class="form-control" placeholder="Number Of Original Bills" autocomplete="off">
+                            <input type="text" name="number_of_original" @isset($blDraft) value="{{$blDraft->number_of_original}}" @endisset class="form-control" placeholder="Number Of Original Bills" autocomplete="off">
                             @error('number_of_original')
                             <div style="color: red;">
                                 {{$message}}
@@ -273,9 +276,9 @@
                                 <label for="status">Bl Payment</label>
                                 <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled style="background-color :#fff" > 
                                     @if(optional($booking->quotation)->ofr != 0)
-                                    <option value="Prepaid">Prepaid </option>
+                                    <option value="Prepaid" @isset($blDraft){{"Prepaid" == $blDraft->payment_kind?? "selected"}} @endisset>Prepaid </option>
                                     @else
-                                    <option value="Collect">Collect</option>
+                                    <option value="Collect" @isset($blDraft){{"Collect" == $blDraft->payment_kind?? "selected"}} @endisset>Collect</option>
                                     @endif
                                 </select>
                                 @error('bl_kind')
@@ -284,11 +287,12 @@
                                 </div>
                                 @enderror
                         </div>
+                        {{-- @dd("Original" == $blDraft->bl_kind ?? "selected") --}}
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Kind</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
-                                    <option value="Original">Original</option>
-                                    <option value="Seaway BL">Seaway BL</option>
+                                <select class="form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
+                                    <option value="Original" @isset($blDraft){{"Original" == $blDraft->bl_kind?? "selected"}} @endisset>Original</option>
+                                    <option value="Seaway BL" @isset($blDraft){{"Seaway BL" == $blDraft->bl_kind?? "selected"}} @endisset>Seaway BL</option>
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
@@ -298,13 +302,13 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="notes">OFR</label>
-                        <input type="text"  class="form-control" style="background-color :#fff" value="{{optional($booking->quotation)->ofr}}" disabled>
+                        <input type="text"  class="form-control" style="background-color :#fff" @isset($blDraft) value="{{$blDraft->number_of_original}}" @else value="{{optional($booking->quotation)->ofr}}" @endisset disabled>
                         </div>
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="bl_status" title="{{trans('forms.select')}}">
-                                    <option value="1">Confirm</option>
-                                    <option value="0">Draft</option>
+                                <select class="form-control" data-live-search="true" name="bl_status" title="{{trans('forms.select')}}">
+                                    <option value="1" @isset($blDraft){{"1" == $blDraft->bl_status?? "selected"}} @endisset>Confirm</option>
+                                    <option value="0" @isset($blDraft){{"0" == $blDraft->bl_status?? "selected"}} @endisset>Draft</option>
                                 </select>
                                 @error('bl_status')
                                 <div style="color:red;">
@@ -325,6 +329,7 @@
                                         <th class="text-center">Gross Weight Kgs</th>
                                         <th class="text-center">Net Weight Kgs</th>
                                         <th class="text-center">Measure cbm</th>
+                                        <th class="text-center"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -368,6 +373,7 @@
                                 <td>
                                     <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement">
                                 </td>
+                                <td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>
                             </tr>
                             @endforeach
                             @endif
@@ -411,6 +417,7 @@
                                 <td>
                                     <input type="text" id="measurement" name="blDraftdetails[{{ $key }}][measurement]" class="form-control input"  autocomplete="off" placeholder="Measurement">
                                 </td>
+                                <td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>
                             </tr>
                             @endfor
 
@@ -428,6 +435,15 @@
 </div>                 
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function(){
+        $("#blDraft").on("click", ".remove", function () {
+            console.log(1);
+            $(this).closest("tr").remove();
+    });
+    
+});
+</script>
 <script>
     $('#createForm').submit(function() {
         $('select').removeAttr('disabled');

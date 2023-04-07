@@ -68,12 +68,11 @@
                         <tr>
                             <td class="col-md-4 tableStyle underline" >ETA</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($firstVoyagePort)->eta}}</td>
-                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >المتوقع وصولها في</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">المتوقع وصولها في</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Shipper</td>
-                            <td class="col-md-4 tableStyle text-center" >{{optional($booking->customer)->name}} <br>
-                            {{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{{optional($booking->customer)->name}} </td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الشاحن</td>
                         </tr>
                         <tr>

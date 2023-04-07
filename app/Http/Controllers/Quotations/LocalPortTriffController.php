@@ -105,6 +105,7 @@ class LocalPortTriffController extends Controller
                 'currency'=> $triffPriceDetailes['currency'],
                 'equipment_type_id'=> $triffPriceDetailes['equipment_type_id'],
                 'is_import_or_export'=> $triffPriceDetailes['is_import_or_export'],
+                'standard_or_customise'=>$triffPriceDetailes['standard_or_customise'],
             ]);
             $triff_no .=$localporttriff->id;
             $localporttriff->triff_no = $triff_no;

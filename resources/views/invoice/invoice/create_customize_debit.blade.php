@@ -169,63 +169,40 @@
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',date('Y-m-d'))}}">
                                 </div>
                                 <div class="form-group col-md-3" >
-                                    <label>QTY</label>
-                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" style="background-color:#fff">
-                                </div>
-                                <div class="form-group col-md-2" >
-                                    <label>TAX Hold</label>
-                                    <input type="text" class="form-control" placeholder="TAX %" name="tax_discount" autocomplete="off"  style="background-color:#fff" value="0">
-                                </div>
-                                <div class="col-md-2 form-group">
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
-                                        <label class="form-check-label" for="exchange_rate">
-                                        ETA Rate 
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
-                                        <label class="form-check-label" for="exchange_rate">
-                                          ETD Rate 
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-2">
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
-                                        <label class="form-check-label" for="add_egp">
-                                            EGP AND USD
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
-                                        <label class="form-check-label" for="add_egp">
-                                          USD
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp">
-                                        <label class="form-check-label" for="add_egp">
-                                          EGP
-                                        </label> 
-                                    </div>
+                                    <label>QTY<span class="text-warning"> * (Required.) </span></label>
+                                        <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" style="background-color:#fff" required>
                                 </div>
                             </div> 
-                    
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes"></textarea>
+                                </div> 
+                            </div>
                         <h4>Charges<h4>
-                        <table id="charges" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Charge Description</th>
-                                    <th class="text-center">USD Amount</th>
-                                    <th class="text-center">VAT</th>
-                                    <th class="text-center">TOTAL</th>
-                                    <th class="text-center">Egp Amount</th>
-                                    <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    
+                            <table id="debit" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Charge Description</th>
+                                        <th class="text-center">Rate 20/40</th>
+                                        {{-- <th class="text-center">Amount 20/40</th> --}}
+                                        <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" required>
+                                </td>
+                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value=""
+                                    placeholder="Rate" autocomplete="off"  style="background-color: white;"  required>
+                                </td>
+                                {{-- <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
+                                    placeholder="Amount 20/40" autocomplete="off"  style="background-color: white;" required>
+                                </td> --}}
+                            </tr>
                             </tbody>
-                        </table>
+                        </table> 
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
@@ -241,29 +218,6 @@
 </div>
 @endsection
 @push('scripts')
-
-<script>
-
-$(document).ready(function(){
-    $("#charges").on("click", ".remove", function () {
-        $(this).closest("tr").remove();
-    });
-    var counter  = <?= isset($key)? ++$key : 0 ?>;
-    $("#add").click(function(){
-       var tr = '<tr>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount"></td>'+
-           '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-       '</tr>';
-       counter++;
-      $('#charges').append(tr);
-    });
-});
-</script>
-
 <script>
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
@@ -282,4 +236,22 @@ $(document).ready(function(){
             });
         });
 </script>
+
+<script>
+    $(document).ready(function(){
+        $("#debit").on("click", ".remove", function () {
+            $(this).closest("tr").remove();
+        });
+        var counter  = 1;
+        $("#add").click(function(){
+           var tr = '<tr>'+
+               '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+
+               '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Rate" ></td>'+
+               '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+           '</tr>';
+           counter++;
+          $('#debit').append(tr);
+        });
+    });
+    </script>
 @endpush
