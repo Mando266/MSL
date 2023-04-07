@@ -112,6 +112,8 @@
                                         <th>payer</th>
                                         <th>Import or Export</th>
                                         <th>add to quotation</th>
+                                        <th>add to quotation</th>
+
                                         <th>
                                             <a id="add"> Add <i class="fas fa-plus"></i></a>
                                         </th>
@@ -222,6 +224,17 @@
                                         <label for="rate_sh">N</label>&nbsp;
                                             <input type="radio" id="add_to_quotation" name="triffPriceDetailes[0][add_to_quotation]"  value="0" >
                                             @error('add_to_quotation')
+                                            <div style="color:red;">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                    </td>
+                                    <td>
+                                        <label>STANDARD</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[0][standard_or_customise]" required  value="1">
+                                        <label for="rate_sh">STANDARD</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[0][standard_or_customise]"  value="0" >
+                                            @error('standard_or_customise')
                                             <div style="color:red;">
                                                 {{$message}}
                                             </div>

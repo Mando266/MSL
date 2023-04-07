@@ -7,8 +7,13 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
+                            @if($invoice->type == "invoice")
                             <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Invoice</a></li>
+                            @else
+                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Debit</a></li>
+                            @endif
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -168,8 +173,15 @@
                                 </div>
                                 @endif
                             </div> 
-              
+                            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes">{{old('notes',$invoice->notes)}}</textarea>
+                                </div> 
+                            </div>
                         <h4>Charges<h4>
+                    @if($invoice->type == "invoice")
+
                         <table id="charges" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -217,9 +229,41 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @else
+                        <table id="containerDetails" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Charge Description</th>
+                                    <th class="text-center">Rate 20/40</th>
+                                    <th class="text-center">Amount 20/40</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                     @foreach($invoice_details as $key => $item)
+
+                        <tr>
+                            <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
+
+                            <td>
+                                <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" >
+                            </td>
+                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
+                                placeholder="Rate" autocomplete="off" disabled style="background-color: white;">
+                            </td> 
+                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty}}"
+                                placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
+                            </td>
+                        </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                    @endif
+
+
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
+                                    <button type="submit" class="btn btn-primary mt-3">Confirm</button>
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>

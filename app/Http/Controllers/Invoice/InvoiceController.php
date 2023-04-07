@@ -34,12 +34,15 @@ class InvoiceController extends Controller
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
+        $etd = VoyagePorts::get();
         return view('invoice.invoice.index',[
             'invoices'=>$invoices,
             'invoiceRef'=>$invoiceRef,
             'bldrafts'=>$bldrafts,
             'customers'=>$customers,
             'voyages'=>$voyages,
+            'etd'=>$etd,
+
         ]);
     }
 
@@ -179,21 +182,57 @@ class InvoiceController extends Controller
                 'customer' => ['required'],
             ]);
         }
+        if($request->bldraft_id != 'customize'){
 
+        $totalAmount = 0;
+        foreach($request->input('invoiceChargeDesc',[])  as $desc){
+            $totalAmount += $desc['total_amount'];
+        }
+        if($totalAmount == 0){
+            return redirect()->back()->with('error','Invoice Total Amount Can not be Equal Zero')->withInput($request->input());
+        }
+    }
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
         $blkind = $blkind[0];
+        if($request->bldraft_id == 'customize'){
         $invoice = Invoice::create([
             'bldraft_id'=>$request->bldraft_id,
             'customer'=>$request->customer,
+            'qty'=>$request->qty,
             'customer_id'=>$request->customer_id,
+            'place_of_acceptence'=>$request->place_of_acceptence,
+            'load_port'=>$request->load_port,
+            'booking_ref'=>$request->booking_ref,
+            'voyage_id'=>$request->voyage_id,
+            'discharge_port'=>$request->discharge_port,
+            'port_of_delivery'=>$request->port_of_delivery,
+            'equipment_type'=>$request->equipment_type,
             'company_id'=>Auth::user()->company_id,
             'invoice_no'=>'',
             'date'=>$request->date,
-            'invoice_kind'=>$blkind,
+            'rate'=>$request->exchange_rate,
+            'add_egp'=>'false',
+            'invoice_kind'=>'',
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
+            'notes'=>$request->notes,
         ]);
+        }else{
+            $invoice = Invoice::create([
+                'bldraft_id'=>$request->bldraft_id,
+                'customer'=>$request->customer,
+                'customer_id'=>$request->customer_id,
+                'company_id'=>Auth::user()->company_id,
+                'invoice_no'=>'',
+                'date'=>$request->date,
+                'invoice_kind'=>$blkind,
+                'type'=>'debit',
+                'invoice_status'=>$request->invoice_status,
+                'add_egp'=>'false',
+                'notes'=>$request->notes,
+            ]); 
+        }
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
             $invoice_no = $setting->debit_confirm;
@@ -206,8 +245,10 @@ class InvoiceController extends Controller
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
         $setting->save();
+        if($request->bldraft_id != 'customize'){
+
         $qty = $bldraft->blDetails->count();
-        
+        }
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
                 InvoiceChargeDesc::create([
@@ -215,6 +256,16 @@ class InvoiceController extends Controller
                     'charge_description'=>$chargeDesc['charge_description'],
                     'size_large'=>$chargeDesc['size_small'],
                     'total_amount'=>$qty * $chargeDesc['size_small'],
+                ]);
+            }
+        }elseif($request->bldraft_id == 'customize'){
+            //dd($request->input());
+            foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
+                InvoiceChargeDesc::create([
+                    'invoice_id'=>$invoice->id,
+                    'charge_description'=>$chargeDesc['charge_description'],
+                    'size_small'=>$chargeDesc['size_small'],
+                    'total_amount'=>$request->input('qty') * $chargeDesc['size_small'],
                 ]);
             }
         }else{
@@ -227,9 +278,12 @@ class InvoiceController extends Controller
                 ]);
             }
         }
+
+        if($request->bldraft_id != 'customize'){
         $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
         $bldrafts->has_bl = 1;
         $bldrafts->save();
+        }
         return redirect()->route('invoice.index')->with('success',trans('Invoice.created'));
     }
 
@@ -283,6 +337,7 @@ class InvoiceController extends Controller
                 'invoice_kind'=>'',
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
+                'notes'=>$request->notes,
             ]);
         }else{
             $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
@@ -318,21 +373,25 @@ class InvoiceController extends Controller
         $setting->save();
         $invoice->save();
         $egyrate = 0;
-        if($request->bldraft_id == 'customize'){
+        if($request->bldraft_id != 'customize'){
             if($request->exchange_rate == "eta"){
                 $egyrate = optional($invoice->voyage)->exchange_rate;
             }elseif($request->exchange_rate == "etd"){
                 $egyrate = optional($invoice->voyage)->exchange_rate_etd;
             }
-        }else{
-            if($request->exchange_rate == "eta"){
-                $egyrate = optional($bldraft->voyage)->exchange_rate;
-            }elseif($request->exchange_rate == "etd"){
-                $egyrate = optional($bldraft->voyage)->exchange_rate_etd;
-            }
         }
         
-
+    if($request->bldraft_id == 'customize'){
+        foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
+            InvoiceChargeDesc::create([
+                'invoice_id'=>$invoice->id,
+                'charge_description'=>$chargeDesc['charge_description'],
+                'size_small'=>$chargeDesc['size_small'],
+                'total_amount'=>$chargeDesc['total'],
+                'total_egy'=>$chargeDesc['total_egy']
+            ]);
+        }
+    }else{
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
@@ -342,6 +401,7 @@ class InvoiceController extends Controller
                 'total_egy'=>$chargeDesc['total'] * $egyrate
             ]);
         }
+    }
         if($request->bldraft_id != 'customize'){
             $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
             $bldrafts->has_bl = 1;
@@ -539,6 +599,7 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
+        if($request->bldraft_id == 'customize'){
         $totalAmount = 0;
         foreach($request->input('invoiceChargeDesc',[])  as $desc){
             $totalAmount += $desc['total_amount'];
@@ -546,18 +607,20 @@ class InvoiceController extends Controller
         if($totalAmount == 0){
             return redirect()->back()->with('error','Invoice Total Amount Can not be equal zero')->withInput($request->input());
         }
+    }
         if($request->invoice_status == "confirm"){
             if($request->add_egp == "true"){
                 return redirect()->back()->with('error','You Must Choose EGP or USD in Confirmed Invoice')->withInput($request->input());
             }
         }
         $inputs = request()->all();
-        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
+        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);        
         if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){
             $setting = Setting::find(1);
             $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm;
             $setting->invoice_confirm += 1;
             $setting->save();
+
         }elseif($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit"){
             $setting = Setting::find(1);
             $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->debit_confirm;
@@ -567,11 +630,7 @@ class InvoiceController extends Controller
         $invoice->update($inputs);
         InvoiceChargeDesc::destroy(explode(',',$request->removed));
         $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc); 
-        if($invoice->bldraft_id != 0){
-        $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
-        $bldrafts->has_bl = 1;
-        $bldrafts->save();
-        }
+    
         return redirect()->route('invoice.index')->with('success',trans('Invoice.Updated.Success'));
     }
 

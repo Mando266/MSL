@@ -70,7 +70,7 @@
                                             {{ optional($blDraft->dischargePort)->name }}
                                             </td>
                                             <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
-                                                {{ optional($etdvoayege)->eta }}
+                                                {{ optional($etdvoayege)->etd }}
 
                                             </td>
                                         </tr>

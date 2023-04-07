@@ -72,7 +72,7 @@ class BlDraftController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
-        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
+        $voyages = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
             $query->where('port_from_name',$booking->load_port_id);
         })->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
@@ -80,7 +80,7 @@ class BlDraftController extends Controller
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
         $booking_no = Booking::where('id',request('booking_id'))->first();
-
+        if(request('bldraft') == null){
             return view('bldraft.bldraft.create',[
             'booking_containers'=>$booking_containers,
             'customershipper'=>$customershipper,
@@ -95,6 +95,24 @@ class BlDraftController extends Controller
             'oldbookingcontainers'=>$oldbookingcontainers,
             'booking_no'=>$booking_no,
         ]);
+        }else{
+            $blDraft = BlDraft::find(request('bldraft'));
+            return view('bldraft.bldraft.create',[
+                'booking_containers'=>$booking_containers,
+                'blDraft'=>$blDraft,
+                'customershipper'=>$customershipper,
+                'customersConsignee'=>$customersConsignee,
+                'customersNotifiy'=>$customersNotifiy,
+                'booking'=>$booking,
+                'equipmentTypes'=>$equipmentTypes,
+                'ports'=>$ports,
+                'containers'=>$containers,
+                'voyages'=>$voyages,
+                'booking_qyt'=>$booking_qyt,
+                'oldbookingcontainers'=>$oldbookingcontainers,
+                'booking_no'=>$booking_no,
+            ]);
+        }
     }
 
     public function store(Request $request)
@@ -128,7 +146,7 @@ class BlDraftController extends Controller
                 'discharge_port_id.different'=>'Load Port The Same  Discharge Port',
             ]);
         }
-
+        $booking = Booking::where('id',$request->booking_id)->with('bookingContainerDetails')->first();
         $uniqueContainers = array();
         foreach($request->blDraftdetails as $container){
             if(!in_array($container['container_id'],$uniqueContainers) ){
@@ -140,11 +158,49 @@ class BlDraftController extends Controller
             }
         }
         $user = Auth::user();
-        
+        if(isset($request->blDraft_id)){
+            // Childs of Splitted BL Logic Here
+            $ischild = 1;
+            $hasChild = 0;
+            $numOfChilds = BlDraft::where('parent_id',$request->blDraft_id)->count();
+            $blDraftParent = BlDraft::where('id',$request->blDraft_id)->with('childs.blDetails','blDetails')->first();
+            $qtyCount = count($blDraftParent->blDetails);
+            // BlDraft forloop childs 
+            foreach($blDraftParent->childs as $child){
+                $qtyCount = $qtyCount + count($child->blDetails);
+            }
+            $qtyCount = $qtyCount + count($request->input('blDraftdetails'));
+            if($qtyCount == $booking->bookingContainerDetails->sum('qty')){
+                $blDraftParent->has_child = 0;
+                $blDraftParent->save();
+            }elseif($qtyCount > $booking->bookingContainerDetails->sum('qty')){
+                return redirect()->back()->with('error','Containers is More than the booking containers')->withInput($request->input());
+            }
+        }else{
+            $ischild = 0;
+            if($booking->bookingContainerDetails->sum('qty') > count($request->input('blDraftdetails'))){
+                $hasChild = 1;
+            }else{
+                $hasChild = 0;
+            }
+        }
+        if($ischild){
+            $serialNum = $numOfChilds + 2;
+            $serialChar = strtoupper(chr($serialNum + 64));
+            $ref_no = $request->input('ref_no').$serialChar;
+        }else{
+            if($hasChild){
+                $ref_no = $request->input('ref_no')."A";
+            }else{
+                $ref_no = $request->input('ref_no');
+            }
+        }
         $blDraft = BlDraft::create([
             'booking_id'=> $request->input('booking_id'),
             'company_id'=>$user->company_id,
-            'ref_no'=> $request->input('ref_no'),
+            'has_child'=>$hasChild,
+            'ref_no'=> $ref_no,
+            'parent_id'=> $ischild ? $blDraftParent->id : '',
             'customer_id'=> $request->input('customer_id'),
             'customer_consignee_details'=> $request->input('customer_consignee_details'),
             'customer_notifiy_details'=> $request->input('customer_notifiy_details'),

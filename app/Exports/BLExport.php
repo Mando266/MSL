@@ -5,7 +5,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class BLLoadListExport implements FromCollection,WithHeadings
+class BLExport implements FromCollection,WithHeadings
 {
   
     public function headings(): array
@@ -23,18 +23,10 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Vessel",
         "Voyage",
         "Container Type",
-        "Container No",
-        "TARE WEIGHT",
+        // "Qty",
         "OFR",
-        "Seal No",
-        "PACKS",
-        "PACKS TYPE",
-        "GROSS WEIGHT KGS",
-        "NET WEIGHT KGS	",
-        "MEASURE CBM",
-        "Payment TYPE",
         "BL Type",
-        "Description",
+        "Bl Status",
         ];
     }
     
@@ -45,12 +37,12 @@ class BLLoadListExport implements FromCollection,WithHeadings
         $exportbls = collect();
 
         foreach($bldarfts ?? []  as $bldarft){
+            $blstatus = '';
             foreach($bldarft->blDetails as $blDetail){
-
                     if($bldarft->bl_status == 1){
-                        $bldarft->bl_status = "Confirm";
+                        $blstatus = "Confirm";
                     }else{
-                        $bldarft->bl_status = "Draft";
+                        $blstatus = "Draft";
                     }        
                     $tempCollection = collect([
                         'Booking No' => optional($bldarft->booking)->ref_no,
@@ -65,23 +57,15 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'Vessel' => optional($bldarft->voyage)->vessel->name,
                         'Voyage' => optional($bldarft->voyage)->voyage_no,
                         'Container Type' => optional($bldarft->equipmentsType)->name,
-                        'Container No' => optional($blDetail->container)->code,
-                        'TARE WEIGHT' => optional($blDetail->container)->tar_weight,
+                        // 'qty' => "",
                         'OFR' => optional($bldarft->booking->quotation)->ofr,
-                        'Seal No' => $blDetail->seal_no, 
-                        'PACKS' => $blDetail->packs,
-                        'PACKS TYPE' => $blDetail->pack_type,
-                        'CARGO WEIGHT' => $blDetail->gross_weight,
-                        'NET WEIGHT' => $blDetail->net_weight,
-                        'MEASURE' => $blDetail->measurement,
-                        'Payment' => $bldarft->payment_kind,
                         'bl_kind' => $bldarft->bl_kind,
-                        'Description' => $bldarft->descripions,
+                        'bl_status'=>$blstatus,
                     ]);
             $exportbls->add($tempCollection);
 
         }
     }
-        return $exportbls;
+            return $exportbls;
     }
 }

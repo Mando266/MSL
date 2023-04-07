@@ -63,6 +63,10 @@ class BlDraft extends Model implements PermissionSeederContract
     public function principal(){
         return $this->belongsTo(Lines::class,'principal_name','id');
     }
+    public function childs()
+    {
+        return $this->hasMany(BlDraft::class ,'parent_id','id');
+    }
     public function blDetails()
     {
         return $this->hasMany(BlDraftDetails::class ,'bl_id','id');

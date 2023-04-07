@@ -93,6 +93,7 @@
                             <td class="col-md-2 tableStyle text-center" ></td>
                             <td class="col-md-2 tableStyle text-center" ></td>
                         </tr>
+                 
                     </tbody>
                 </table>
                 <br>
@@ -145,8 +146,21 @@
                             <td class="col-md-2 tableStyle " colspan="6"><span class="entry">{{ $EGP }} EGP</span></td>
                         </tr>
                         @endif
+
                     </tbody>
                 </table>
+        <table  class="col-md-12 tableStyle">
+            <tbody>
+                <tr>
+                    <td class="col-md-3 tableStyle text-center">Notes</td>
+                    <td class="col-md-9  tableStyle text-center" colspan="6">
+                        <textarea style="width: 100%; border: none; height: 130px; font-size: 12px; font-weight: bolder !important; background-color: white; color: #000;" disabled>{!! $invoice->notes  !!}</textarea>
+
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
                 <br>
                 <br>
                 <br>

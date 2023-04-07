@@ -17,12 +17,16 @@ class TruckerGateController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
-            $truckerGates = TruckerGates::with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->paginate(30);
-            $exportTruckerGate = TruckerGates::with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->get();
-            $certificate = TruckerGates::get();
+            $truckerGates = TruckerGates::where('company_id',Auth::user()
+            ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->paginate(30);
+            $exportTruckerGate = TruckerGates::where('company_id',Auth::user()
+            ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->get();
+            $certificate = TruckerGates::where('company_id',Auth::user()->company_id)->get();
            // dd($truckerGates);
-            $booking = Booking::where('booking_confirm',1)->get();
-            $truckers = Trucker::get();
+            $booking = Booking::where('company_id',Auth::user()
+            ->company_id)->where('booking_confirm',1)->get();
+            $truckers = Trucker::where('company_id',Auth::user()
+            ->company_id)->get();
             session()->flash('truckergates',$exportTruckerGate);
             
             return view('trucker.truckergate.index',[
@@ -48,11 +52,11 @@ class TruckerGateController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
-        // $BookingDublicate  = TruckerGates::where('company_id',$user->company_id)->where('booking_id',$request->booking_id)->first();
-        // if($BookingDublicate != null){
-        //     return back()->with('alert','This Booking No Already Exists');
-        // }
         $user = Auth::user();
+        $BookingDublicate  = TruckerGates::where('company_id',$user->company_id)->where('booking_id',$request->booking_id)->first();
+        if($BookingDublicate != null){
+            return back()->with('alert','This Booking No Already Exists');
+        }
 
         $certificate_type = 'PL-100-61-6004-2023-84/';
         $truckerGate = TruckerGates::create($request->except('_token'));
@@ -72,8 +76,8 @@ class TruckerGateController extends Controller
     public function edit(TruckerGates $truckergate)
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
-        $booking = Booking::where('booking_confirm',1)->get();
-        $truckers = Trucker::get();
+        $booking = Booking::where('company_id',Auth::user()->company_id)->where('booking_confirm',1)->get();
+        $truckers = Trucker::where('company_id',Auth::user()->company_id)->get();
         return view('trucker.truckergate.edit',[
             'booking'=>$booking,
             'truckers'=>$truckers,
@@ -86,11 +90,11 @@ class TruckerGateController extends Controller
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
 
-        // $user = Auth::user();
-        // $BookingDublicate  = TruckerGates::where('id','!=',$truckerGates->id)->where('company_id',$user->company_id)->where('booking_id',$request->booking_id)->count();
-        // if($BookingDublicate > 0){
-        //     return back()->with('alert','This Booking No Already Exists');
-        // }
+        $user = Auth::user();
+        $BookingDublicate  = TruckerGates::where('id','!=',$truckergate->id)->where('company_id',$user->company_id)->where('booking_id',$request->booking_id)->count();
+        if($BookingDublicate > 0){
+            return back()->with('alert','This Booking No Already Exists');
+        }
 
         $truckergate->update($request->except('_token'));
         return redirect()->route('truckergate.index')->with('success',trans('Trucker Gate.Updated'));

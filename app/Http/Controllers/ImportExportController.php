@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AgentsExportSearch;
+use App\Exports\BLExport;
 use App\Exports\BLLoadListExport;
 use App\Exports\BookingExport;
 use App\Exports\ContainersExport;
@@ -16,8 +18,9 @@ use App\Exports\QuotationExport;
 use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
 use App\Exports\InvoiceListExport;
+use App\Exports\ReceiptExport;
 use App\Imports\MovementsImport;
-use App\Imports\MovementsOvewriteImport;
+use App\Imports\MovementsOvewriteImport; 
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportExportController extends Controller
@@ -83,6 +86,10 @@ class ImportExportController extends Controller
     {
         return Excel::download(new MovementsExportSearch, 'Movements.xlsx');
     }
+    public function agentSearch() 
+    {
+        return Excel::download(new AgentsExportSearch, 'AgentReport.xlsx');
+    }
     
     public function loadlistBl() 
     {
@@ -93,10 +100,19 @@ class ImportExportController extends Controller
     {
         return Excel::download(new InvoiceListExport, 'InvoiceList.xlsx');
     }
-
-            
+    
     public function exportCustomers() 
     {
         return Excel::download(new CustomerExport, 'Customers.xlsx');
+    }
+
+    public function Bllist() 
+    {
+        return Excel::download(new BLExport, 'BLExport.xlsx');
+    }
+
+    public function receiptExport() 
+    {
+        return Excel::download(new ReceiptExport, 'ReceiptExport.xlsx');
     }
 }

@@ -120,13 +120,16 @@
                                         <th>Bl No</th>
                                         <th>Voyage</th>
                                         <th>Vessel</th>
+                                        <th>ETA</th>
+                                        <th>ETD</th>
                                         <th>Date</th>
                                         <th>Invoice Type</th>
                                         <th>payment kind</th>
                                         <th>Total USD</th>
                                         <th>Total EGP</th>
                                         <th>Invoice Status</th>
-                                        <th class='text-center' style='width:100px;'>Receipt</th>
+                                        <th>Payment Status</th>
+
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>
@@ -136,6 +139,15 @@
                                     @php
                                         $totalusd = 0;
                                         $totalegp = 0;
+
+                                        if($invoice->booking != null){
+                                        $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
+                                            ->where('port_from_name',optional(optional($invoice->booking)->loadPort)->id)->first();
+                                        }else{
+                                        $VoyagePort = $etd->where('voyage_id',optional(optional($invoice->bldraft)->booking)->voyage_id)
+                                        ->where('port_from_name',optional(optional(optional($invoice->bldraft)->booking)->loadPort)->id)->first();
+                                        }
+
                                     @endphp
                                     @php
                                         foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
@@ -151,12 +163,17 @@
                                             <td>{{optional($invoice->bldraft)->ref_no}}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</td>
+                                            <td>{{optional($VoyagePort)->eta}}</td>
+                                            <td>{{optional($VoyagePort)->etd}}</td>
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
-
+                                            @if($invoice->add_egp == "false")
                                             <td>{{$totalusd}}</td>
-                                            @if($invoice->type == "invoice" || $invoice->add_egp == "true")
+                                            @else
+                                            <td></td>
+                                            @endif
+                                            @if($invoice->type == "invoice" || $invoice->add_egp == "onlyegp")
                                             <td>{{$totalegp}}</td>
                                             @else
                                             <td></td>
@@ -171,19 +188,16 @@
                                             </td>
            
                                             <td class="text-center">
-                                                <ul class="table-controls">
-                                               @if($invoice->invoice_status == "confirm")
-                                                   <li>
-                                                       <a href="{{route('invoice.receipt',['invoice'=>$invoice->id])}}" target="_blank" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                           <i class="far fa-eye text-primary"></i>
-                                                       </a>
-                                                   </li>
-                                                   @endif
-                                                </ul>
-                                           </td>
+                                                @if($invoice->paymentstauts == 1)
+                                                    <span class="badge badge-info"> Paid </span>
+                                                @else
+                                                    <span class="badge badge-danger"> UnPaid </span>
+                                                @endif
+                                            </td>
 
                                             <td class="text-center">
                                                  <ul class="table-controls">
+                                                     
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
