@@ -38,6 +38,7 @@
                                         <th>payer</th>
                                         <th>Import Or Export</th>
                                         <th>add to quotation</th>
+                                        <th>standard Or customise</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,10 +71,17 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                @if($triffPriceDetailes->add_to_quotation )
+                                                @if($triffPriceDetailes->add_to_quotation == 1)
                                                     <span class="badge badge-info"> Yes </span>
                                                 @else
                                                     <span class="badge badge-danger"> No</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if($triffPriceDetailes->standard_or_customise == 1)
+                                                    <span class="badge badge-info"> standard </span>
+                                                @else
+                                                    <span class="badge badge-danger"> customise</span>
                                                 @endif
                                             </td>
                                         </tr>

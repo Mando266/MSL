@@ -175,11 +175,14 @@ class InvoiceController extends Controller
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
+                'customer_id' => ['required'],
+
             ]);
         }else{
             request()->validate([
                 'bldraft_id' => ['required'],
                 'customer' => ['required'],
+                'customer_id' => ['required'],
             ]);
         }
         if($request->bldraft_id != 'customize'){
@@ -338,6 +341,7 @@ class InvoiceController extends Controller
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
                 'notes'=>$request->notes,
+                'customize_exchange_rate'=>$request->customize_exchange_rate,
             ]);
         }else{
             $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
@@ -388,7 +392,7 @@ class InvoiceController extends Controller
                 'charge_description'=>$chargeDesc['charge_description'],
                 'size_small'=>$chargeDesc['size_small'],
                 'total_amount'=>$chargeDesc['total'],
-                'total_egy'=>$chargeDesc['total_egy']
+                'total_egy'=>$chargeDesc['egy_amount']
             ]);
         }
     }else{

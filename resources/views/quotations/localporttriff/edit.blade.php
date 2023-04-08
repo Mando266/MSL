@@ -99,7 +99,8 @@
                                     @enderror
                                 </div>
                             </div>
-       
+
+                        <div class="table-responsive">
                             <table id="triffPriceDetailes" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -114,6 +115,7 @@
                                         <th>payer</th>
                                         <th>Import or Export</th>
                                         <th>add to quotation</th>
+                                        <th>standard Or customise</th>
                                         <th>
                                             <a id="add"> Add <i class="fas fa-plus"></i></a>
                                         </th>
@@ -230,6 +232,17 @@
                                             </div>
                                             @enderror
                                     </td>
+                                    <td>
+                                        <label>S</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[{{$key}}][standard_or_customise]"  value="1" {{$item->standard_or_customise == 1 ? 'checked="checked"' :''}}>
+                                        <label>C</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[{{$key}}][standard_or_customise]"  value="0" {{$item->standard_or_customise == 0 ? 'checked="checked"' :''}}>
+                                            @error('standard_or_customise')
+                                            <div style="color:red;">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                    </td>
                                     <td style="width:85px;">
                                     <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
                                 </td>
@@ -237,7 +250,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            
+                        </div>    
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
@@ -280,6 +293,7 @@ $(document).ready(function(){
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0">IMPORT</option><option value="1" >EXPORT</option><option value="2" >Empty</option><option value="3" >Transshipment</option></select></td>'+
         '<td><label for="rate_sh">Y</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][add_to_quotation]" value="1">&nbsp;<label for="rate_sh">N</label> &nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][add_to_quotation]" value="0"></td>'+
+        '<td><label for="rate_sh">S</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][standard_or_customise]" value="1">&nbsp;<label for="rate_sh">C</label> &nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][standard_or_customise]" value="0"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
         counter++;

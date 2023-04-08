@@ -168,13 +168,17 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',date('Y-m-d'))}}">
                                 </div>
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <label>QTY</label>
                                         <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" style="background-color:#fff">
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <label>TAX Hold</label>
                                     <input type="text" class="form-control" placeholder="TAX %" name="tax_discount" autocomplete="off"  style="background-color:#fff" value="0">
+                                </div>
+                                <div class="form-group col-md-2" >
+                                    <label>Exchange Rate</label>
+                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate')}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
                                 <!--<div class="col-md-2 form-group">-->
                                 <!--    <div style="padding: 30px;">-->
@@ -195,7 +199,7 @@
                                         <!--    EGP AND USD-->
                                         <!--</label>-->
                                         <!--<br>-->
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" checked>
                                         <label class="form-check-label" for="add_egp">
                                           USD
                                         </label>
@@ -222,8 +226,8 @@
                                     <th class="text-center">Charge Description</th>
                                     <th class="text-center">USD Amount</th>
                                     <th class="text-center">VAT</th>
-                                    <th class="text-center">TOTAL</th>
-                                    <th class="text-center">Egp Amount</th>
+                                    <th class="text-center">TOTAL USD</th>
+                                    <th class="text-center">Total Egp</th>
                                     <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
                                 </tr>
                             </thead>
@@ -265,6 +269,37 @@
     });
 </script>
 <script>
+    $(document).on('input', 'input[name="qty"]', function() {
+        var qty = $(this).val();
+        $('#charges tbody tr').each(function() {
+            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
+            var totalAmount = sizeSmall * qty;
+            $(this).find('input[name$="[total]"]').val(totalAmount);
+        });
+    });
+    $('body').on('input', 'input[name$="[size_small]"]', function() {
+    // Get the current row
+    var row = $(this).closest('tr');
+
+    // Get the qty value from the QTY input field
+    var qty = $('input[name="qty"]').val();
+
+    // Get the size_small value from the current row
+    var sizeSmall = $(this).val();
+
+    // Calculate the total amount and update the total_amount input field of the current row
+    var totalAmount = qty * sizeSmall;
+    row.find('input[name$="[total]"]').val(totalAmount);
+
+    // Calculate the total EGP Amount and update the Amount input field of the current row
+    var exchangeRate = $('input[name="customize_exchange_rate"]').val();
+
+    var egpAmount = qty * sizeSmall * exchangeRate;
+    row.find('input[name$="[egy_amount]"]').val(egpAmount);
+
+});
+</script>
+<script>
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
         $(this).closest("tr").remove();
@@ -274,9 +309,9 @@ $(document).ready(function(){
        var tr = '<tr>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount"></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT" value="0" disabled></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" disabled></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled></td>'+
            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
        '</tr>';
        counter++;

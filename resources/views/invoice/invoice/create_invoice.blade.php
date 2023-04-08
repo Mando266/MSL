@@ -168,8 +168,8 @@
                                         <th class="text-center">Charge Description</th>
                                         <th class="text-center">USD Amount</th>
                                         <th class="text-center">VAT</th>
-                                        <th class="text-center">TOTAL</th>
-                                        <th class="text-center">Egp Amount</th>
+                                        <th class="text-center">TOTAL USD</th>
+                                        <th class="text-center">Total Egp</th>
                                         <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
                                     </tr>
                                 </thead>

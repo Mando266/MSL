@@ -22,7 +22,7 @@
                                 <div class="form-group col-md-6">
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" name="customer_id"  id="customer" data-live-search="true" data-size="10"
-                                 title="{{trans('forms.select')}}" required>
+                                 title="{{trans('forms.select')}}">
                                         @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
                                         <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
@@ -30,17 +30,23 @@
                                         <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
                                         @endif
                                 </select>
-                                @error('customer_id')
+                                @error('customer')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div> 
                             <div class="form-group col-md-6">
-                                <label for="customer_id">Customer Name</label>
+                                <label for="customer">Customer Name</label>
                                     <input type="text" id="notifiy" class="form-control"  name="customer"
-                                    placeholder="Customer Name" autocomplete="off" required>
-                            </div> 
+                                    placeholder="Customer Name" autocomplete="off">
+                                    @error('customer')
+                                    <div style="color: red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror 
+                            </div>
+
                         </div>
                         <div class="form-row">
                         <div class="form-group col-md-3" >
@@ -126,7 +132,7 @@
                                 </div> 
                             </div>
                         <h4>Charges<h4>
-                        <table id="containerDetails" class="table table-bordered">
+                        <table id="containerDepit" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Charge Description</th>
@@ -142,7 +148,7 @@
                                 <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
                                     placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
                                 </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
                                     placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                 </td>
                             </tr>
@@ -164,6 +170,9 @@
 @endsection
 @push('scripts')
 <script>
+    $(document).ready(function() {
+        $("#createForm").validate();
+    });
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
     });
@@ -186,4 +195,5 @@
             });
         });
 </script>
+
 @endpush

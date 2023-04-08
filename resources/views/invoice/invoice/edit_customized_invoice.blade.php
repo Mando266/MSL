@@ -182,7 +182,7 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',$invoice->date)}}">
                                 </div>
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <label>QTY<span class="text-warning"> * (Required.) </span></label>
                                         <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{old('qty',$invoice->qty)}}" style="background-color:#fff" required>
                                 </div>
@@ -201,9 +201,13 @@
                                 </div> -->
                                 @if($invoice->type == "invoice")
 
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <label>TAX Hold</label>
                                         <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
+                                </div>
+                                <div class="form-group col-md-2" >
+                                    <label>Exchange Rate</label>
+                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
@@ -243,7 +247,7 @@
                                         <th class="text-center">Charge Description</th>
                                         <th class="text-center">USD Amount</th>
                                         <th class="text-center">VAT</th>
-                                        <th class="text-center">TOTAL</th>
+                                        <th class="text-center">TOTAL USD</th>
                                         <th class="text-center">Egp Amount</th>
                                        @if($invoice->type == "invoice")
                                         <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
@@ -269,11 +273,11 @@
                                 </td>
                              
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{old('total_amount',$item->total_amount)}}"
-                                    placeholder="Total" autocomplete="off"  style="background-color: white;" requierd>
+                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;" requierd>
                                 </td>
                               
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_egy]" value="{{old('total_egy',$item->total_egy)}}"
-                                    placeholder="Egp Amount" autocomplete="off" style="background-color: white;" requierd>
+                                    placeholder="Egp Amount" autocomplete="off" disabled style="background-color: white;" requierd>
                                 </td>
                                 @if($invoice->type == "invoice")
                                     <td style="width:85px;">
@@ -357,6 +361,13 @@
     // Calculate the total amount and update the total_amount input field of the current row
     var totalAmount = qty * sizeSmall;
     row.find('input[name$="[total_amount]"]').val(totalAmount);
+
+    // Calculate the total EGP Amount and update the Amount input field of the current row
+    var exchangeRate = $('input[name="customize_exchange_rate"]').val();
+
+    var egpAmount = qty * sizeSmall * exchangeRate;
+    row.find('input[name$="[total_egy]"]').val(egpAmount);
+
 });
 </script>
 <script>
@@ -395,7 +406,7 @@ $(document).ready(function(){
        var tr = '<tr>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description"></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount"></td>'+
-           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
+           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT" disabled></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total"></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_egy]" class="form-control" autocomplete="off" placeholder="Egp Amount" requierd></td>'+
            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
@@ -419,9 +430,9 @@ $(document).ready(function(){
 
     $("#add").click(function(){
        var tr = '<tr>'+
-            '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description"></td>'+
-            '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;"></td>'+
-            '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc['+counter+'][total_amount]"  placeholder="Ofr" autocomplete="off" style="background-color: white;"></td>'+
+            '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+            '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;" required></td>'+
+            '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc['+counter+'][total_amount]"  placeholder="Ofr" autocomplete="off" style="background-color: white;" required></td>'+
             '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
        counter++;

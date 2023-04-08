@@ -168,12 +168,12 @@
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
-                                            @if($invoice->add_egp == "false")
+                                            @if( $invoice->add_egp != 'onlyegp')
                                             <td>{{$totalusd}}</td>
                                             @else
                                             <td></td>
                                             @endif
-                                            @if($invoice->type == "invoice" || $invoice->add_egp == "onlyegp")
+                                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                                             <td>{{$totalegp}}</td>
                                             @else
                                             <td></td>
@@ -197,7 +197,7 @@
 
                                             <td class="text-center">
                                                  <ul class="table-controls">
-                                                     
+
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">

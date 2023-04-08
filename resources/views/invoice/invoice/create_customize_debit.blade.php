@@ -184,8 +184,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">Charge Description</th>
-                                        <th class="text-center">Rate 20/40</th>
-                                        {{-- <th class="text-center">Amount 20/40</th> --}}
+                                        <th class="text-center">Rate</th>
+                                        <th class="text-center">Total</th>
                                         <th class="text-center"><a id="add"> Add <i class="fas fa-plus"></i></a></th>
                                     </tr>
                                 </thead>
@@ -195,11 +195,11 @@
                                     <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" required>
                                 </td>
                                 <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value=""
-                                    placeholder="Rate" autocomplete="off"  style="background-color: white;"  required>
+                                    placeholder="Amount" autocomplete="off"  style="background-color: white;"  required>
                                 </td>
-                                {{-- <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
-                                    placeholder="Amount 20/40" autocomplete="off"  style="background-color: white;" required>
-                                </td> --}}
+                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
+                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;" required>
+                                </td>
                             </tr>
                             </tbody>
                         </table> 
@@ -218,6 +218,30 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    $(document).on('input', 'input[name="qty"]', function() {
+        var qty = $(this).val();
+        $('#debit tbody tr').each(function() {
+            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
+            var totalAmount = sizeSmall * qty;
+            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
+        });
+    });
+    $('body').on('input', 'input[name$="[size_small]"]', function() {
+    // Get the current row
+    var row = $(this).closest('tr');
+
+    // Get the qty value from the QTY input field
+    var qty = $('input[name="qty"]').val();
+
+    // Get the size_small value from the current row
+    var sizeSmall = $(this).val();
+
+    // Calculate the total amount and update the total_amount input field of the current row
+    var totalAmount = qty * sizeSmall;
+    row.find('input[name$="[total_amount]"]').val(totalAmount);
+});
+</script>
 <script>
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
@@ -245,8 +269,9 @@
         var counter  = 1;
         $("#add").click(function(){
            var tr = '<tr>'+
-               '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+
-               '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Rate" ></td>'+
+               '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+               '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Rate" required></td>'+
+               '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
                '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
            '</tr>';
            counter++;
