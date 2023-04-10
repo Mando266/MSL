@@ -317,7 +317,7 @@ class BookingController extends Controller
             return $query->where('role_id', '!=', 6);
         })->with('CustomerRoles.role')->get();
         
-        if(request('quotation_id') == 'draft' || request('quotation_id') == null){
+        if(request('quotation_id') == 'draft' || $booking->quotation_id == null){
             $quotation = new Quotation();
             $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
         }else{
@@ -329,7 +329,7 @@ class BookingController extends Controller
         $terminal   = Terminals::where('company_id',Auth::user()->company_id)->get();
         $vessels    = Vessels::where('company_id',Auth::user()->company_id)->get();
 
-        if(request('quotation_id') == 'draft'){
+        if(request('quotation_id') == 'draft' || $booking->quotation_id == null){
             $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->get();
         }else{
         $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($quotation ){
@@ -344,7 +344,7 @@ class BookingController extends Controller
         // $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $activityLocations = Ports::where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
-
+        
         return view('booking.booking.edit',[
             'quotationRate'=>$quotationRate,
             'booking_details'=>$booking_details,
