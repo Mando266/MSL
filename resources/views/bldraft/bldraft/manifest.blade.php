@@ -33,7 +33,7 @@
                                     $gross_weight =$gross_weight + (float)$bldetails->gross_weight;
                                     $measurement = $measurement + (float)$bldetails->measurement;
                                 @endphp
-                            @endforeach
+                            @endforeach 
                             <div class="row">
                                 <div class="col-md-2">
                                     @if(optional($blDraft->loadPort)->code == "EGEDK")

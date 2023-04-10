@@ -14,6 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
+                    @if($booking->quotation_id != null)
                     <form>
                     <div class="form-row">
                         <div class="form-group col-md-10">
@@ -32,6 +33,7 @@
                         </div>
                     </div>
                 </form>
+                @endif
                     <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
@@ -44,14 +46,20 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label>OFR</label>
+                                    @if($booking->quotation_id == null) 
                                         <input type="text" class="form-control" value="{{$quotation->ofr}}"
                                             placeholder="OFR" autocomplete="off"> 
+                                    @else
+                                    <input type="text" class="form-control" value="{{$quotation->ofr}}"
+                                    placeholder="OFR" autocomplete="off" disabled> 
+                                    @endif
                                 </div>
                             </div>
                             @php
                             $is_shipper = 0;
                             $is_ffw = 0;
-                            $is_consignee = 0;
+                            $is_consignee = 0 ; 
+                            if($booking->quotation_id != null){
                                 foreach($quotation->customer->CustomerRoles as $customerRole){
                                     if($customerRole->role->name == "Fright Forwarder"){
                                         $is_ffw = 1;
@@ -62,6 +70,7 @@
                                         $is_consignee = 1;
                                     }
                                 }
+                            }
                             @endphp
                             <div class="form-row">
                                 <div class="form-group col-md-4">
@@ -73,6 +82,8 @@
                                         <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                         @elseif($quotation->customer_id != null) 
                                         <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                        @elseif($booking->quotation_id == null) 
+                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                         @endif
                                     @endforeach
                                     </select>
@@ -86,9 +97,13 @@
                                 <div class="form-group col-md-2">
                                     <label for="equipment_type_id">Equipment Type <span class="text-warning"> *</span></label>
                                     <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
-                                    title="{{trans('forms.select')}}" disabled>
+                                    title="{{trans('forms.select')}}">
                                         @foreach ($equipmentTypes as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        @if($booking->quotation_id == null) 
+                                            <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        @else
+                                            <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                         @error('equipment_type_id')
@@ -130,6 +145,8 @@
                                     @foreach ($line as $item)
                                     @if($quotation->principal_name != null)
                                         <option value="{{$item->id}}" {{$item->id == old('principal_name',$quotation->principal_name) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @elseif($booking->quotation_id == null) 
+                                    <option value="{{$item->id}}" {{$item->id == old('principal_name',$booking->principal_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
                                 </select>
@@ -146,6 +163,8 @@
                                     @foreach ($line as $item)
                                     @if($quotation->vessel_name != null)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_name',$quotation->vessel_name) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @elseif($booking->quotation_id == null) 
+                                    <option value="{{$item->id}}" {{$item->id == old('vessel_name',$booking->vessel_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
                                 </select>
@@ -196,10 +215,13 @@
                             <div class="form-group col-md-4">
                                 <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
                                  <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
-
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$quotation->place_of_acceptence_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @if($booking->quotation_id == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$booking->place_of_acceptence_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$quotation->place_of_acceptence_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('place_of_acceptence_id')
@@ -211,9 +233,13 @@
                             <div class="form-group col-md-4">
                                 <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
                                  <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @if($booking->quotation_id == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$booking->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
+                                        <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @endif    
                                     @endforeach
                                 </select>
                                 @error('load_port_id')
@@ -237,9 +263,13 @@
                             <div class="form-group col-md-4">
                                 <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @if($booking->quotation_id == null)
+                                    <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$booking->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
+                                        <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @endif    
                                     @endforeach
                                 </select>
                                 @error('place_of_delivery_id')
@@ -251,9 +281,13 @@
                             <div class="form-group col-md-4">
                                 <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @if($booking->quotation_id == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$booking->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
+                                        <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
+                                    @endif    
                                     @endforeach
                                 </select>
                                 @error('discharge_port_id')
@@ -280,7 +314,11 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select...</option>
                                     @foreach ($ports as $item)
+                                    @if($booking->quotation_id == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$quotation->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endif    
                                     @endforeach
                                 </select>
                                 @error('pick_up_location')
@@ -295,7 +333,11 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select...</option>
                                     @foreach ($ports as $item)
+                                    @if($booking->quotation_id == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @else
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id',$quotation->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endif    
                                     @endforeach
                                 </select>
                                 @error('place_return_id')
@@ -369,8 +411,13 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="discharge_etd">Discharge ETA</label>
+                                @if($booking->quotation_id == null)
+                                <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$booking->discharge_etd)}}"
+                                    placeholder="Discharge ETA" autocomplete="off">
+                                @else
                                 <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$quotation->discharge_etd)}}"
                                     placeholder="Discharge ETA" autocomplete="off">
+                                @endif    
                                 @error('discharge_etd')
                                 <div style="color: red;">
                                     {{$message}}
@@ -379,8 +426,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_cutoff">Load Port Cutoff</label>
+                                @if($booking->quotation_id == null)
+                                <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$booking->load_port_cutoff)}}"
+                                placeholder="Load Port Cutoff" autocomplete="off">
+                                @else
                                 <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$quotation->load_port_cutoff)}}"
                                     placeholder="Load Port Cutoff" autocomplete="off">
+                                @endif    
                                 @error('load_port_cutoff')
                                 <div style="color: red;">
                                     {{$message}}
@@ -389,8 +441,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_dayes">Load Port Days</label>
-                                <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$quotation->load_port_dayes)}}"
+                                @if($booking->quotation_id == null)
+                                <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$booking->load_port_dayes)}}"
                                     placeholder="Load Port Days" autocomplete="off">
+                                @else
+                                <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$quotation->load_port_dayes)}}"
+                                placeholder="Load Port Days" autocomplete="off">
+                                @endif    
                                 @error('load_port_dayes')
                                 <div style="color: red;">
                                     {{$message}}
@@ -401,8 +458,13 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="tariff_service">Tariff Service</label>
+                                @if($booking->quotation_id == null)
+                                <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$booking->tariff_service)}}"
+                                placeholder="Tariff Service" autocomplete="off">
+                                @else
                                 <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$quotation->ref_no)}}"
                                     placeholder="Tariff Service" autocomplete="off" disabled>
+                                @endif    
                                 @error('tariff_service')
                                 <div style="color: red;">
                                     {{$message}}
@@ -484,6 +546,8 @@
                                                 @foreach ($equipmentTypes as $equipmentType)
                                                 @if($quotation->equipment_type_id != null)
                                                 <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$equipmentType->name}}</option>
+                                                @elseif($booking->quotation_id == null)
+                                                <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
                                                 @else
                                                 <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
                                                 @endif                                                

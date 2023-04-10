@@ -259,6 +259,7 @@ class InvoiceController extends Controller
                     'charge_description'=>$chargeDesc['charge_description'],
                     'size_large'=>$chargeDesc['size_small'],
                     'total_amount'=>$qty * $chargeDesc['size_small'],
+                    'enabled'=>$chargeDesc['enabled'],
                 ]);
             }
         }elseif($request->bldraft_id == 'customize'){
@@ -269,6 +270,7 @@ class InvoiceController extends Controller
                     'charge_description'=>$chargeDesc['charge_description'],
                     'size_small'=>$chargeDesc['size_small'],
                     'total_amount'=>$request->input('qty') * $chargeDesc['size_small'],
+                    'enabled'=>$chargeDesc['enabled'],
                 ]);
             }
         }else{
@@ -392,7 +394,8 @@ class InvoiceController extends Controller
                 'charge_description'=>$chargeDesc['charge_description'],
                 'size_small'=>$chargeDesc['size_small'],
                 'total_amount'=>$chargeDesc['total'],
-                'total_egy'=>$chargeDesc['egy_amount']
+                'total_egy'=>$chargeDesc['egy_amount'],
+                'enabled'=>$chargeDesc['enabled'],
             ]);
         }
     }else{
@@ -402,7 +405,7 @@ class InvoiceController extends Controller
                 'charge_description'=>$chargeDesc['charge_description'],
                 'size_small'=>$chargeDesc['size_small'],
                 'total_amount'=>$chargeDesc['total'],
-                'total_egy'=>$chargeDesc['total'] * $egyrate
+                'total_egy'=>$chargeDesc['egy_amount'],
             ]);
         }
     }

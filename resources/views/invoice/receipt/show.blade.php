@@ -74,7 +74,7 @@
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">                                     
                         @if($receipt->bank_transfer != null)
-                            Bank Transfer 
+                            Bank Transfer  
                         @endif
                         @if($receipt->bank_deposit != null)
                             Bank Deposit 
