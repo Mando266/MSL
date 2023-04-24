@@ -128,28 +128,28 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',$invoice->date)}}">
                                 </div>
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <label>QTY</label>
-                                        <input type="text" class="form-control" placeholder="Qty"  autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
+                                        <input type="text" class="form-control" placeholder="Qty"  name="qty" autocomplete="off" value="{{$qty}}" style="background-color:#fff" disabled>
                                 </div>
-                                <!-- <div class="col-md-3 form-group">
+                                @if($invoice->type == "invoice")
+
+                                <div class="form-group col-md-2" >
+                                    <label>TAX</label>
+                                        <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
+                                </div>
+                                <div class="col-md-2 form-group " >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
+                                        <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" checked>
                                         <label class="form-check-label" for="exchange_rate">
                                         ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
+                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd">
                                         <label class="form-check-label" for="exchange_rate">
                                           ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                         </label>
                                     </div>
-                                </div> -->
-                                @if($invoice->type == "invoice")
-
-                                <div class="form-group col-md-3" >
-                                    <label>TAX</label>
-                                        <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
@@ -188,6 +188,7 @@
                                         <th class="text-center">Charge Description</th>
                                         <th class="text-center">USD Amount</th>
                                         <th class="text-center">VAT</th>
+                                        <th class="text-center">Multiply QTY</th>
                                         <th class="text-center">TOTAL</th>
                                         <th class="text-center">Egp Amount</th>
                                        @if($invoice->type == "invoice")
@@ -212,13 +213,22 @@
                                     <input type="text" id="vat"  class="form-control" 
                                     autocomplete="off" placeholder="VAT" value="{{ (int)$item->size_small * 0 }}" disabled style="background-color: white;"> 
                                 </td>
-                             
+                                <td>
+                                    <div class="form-check" style="display: none">
+                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_yes" value="1" {{ $item->unit == "Container" ? 'checked' : ''}} disabled>
+                                        <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
+                                    </div>
+                                    <div class="form-check" style="display: none">
+                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_no" value="0" {{ $item->unit == "Document" ? 'checked' : ''}} disabled>
+                                        <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
+                                    </div>
+                                </td>
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{old('total_amount',$item->total_amount)}}"
-                                    placeholder="Total" autocomplete="off"  style="background-color: white;" requierd>
+                                    placeholder="Total" autocomplete="off"  style="background-color: white;" requierd disabled>
                                 </td>
                               
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_egy]" value="{{old('total_egy',$item->total_egy)}}"
-                                    placeholder="Egp Amount" autocomplete="off" style="background-color: white;" requierd>
+                                    placeholder="Egp Amount" autocomplete="off" style="background-color: white;" requierd disabled>
                                 </td>
                                 @if($invoice->type == "invoice")
                                     <td style="width:85px;">
@@ -280,13 +290,10 @@
 <script>
     $('#editForm').submit(function() {
         $('input').removeAttr('disabled');
-    });
-</script>
-<script>
-    $('#editForm').submit(function() {
         $('select').removeAttr('disabled');
     });
 </script>
+
 <script>
         $(function(){
                 let customer = $('#customer');
@@ -301,6 +308,69 @@
         });
 </script>
 <script>
+    $(document).on('input', 'input[name="rate"]', function() {
+        var exchange = $(this).val();
+        var qty = $('input[name="qty"]').val();
+        $('#charges tbody tr').each(function() {
+            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
+            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
+            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
+            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
+            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            var exchangeRate = exchange === 'eta' ? eta : etd;
+            var egpAmount = totalAmount * exchangeRate;
+            $(this).find('input[name$="[total_egy]"]').val(egpAmount);
+        });
+    });
+    $('body').on('change', 'input[name$="[enabled]"]', function() {
+    var row = $(this).closest('tr');
+    var sizeSmall = row.find('input[name$="[size_small]"]').val();
+    var qty = $('input[name="qty"]').val();
+    var totalAmount = 0;
+    if($(this).val() == 1) {
+        totalAmount = sizeSmall * qty;
+    } else {
+        totalAmount = sizeSmall;
+    }
+    row.find('input[name$="[total_amount]"]').val(totalAmount);
+
+    // Calculate the total EGP Amount and update the Amount input field of the current row
+    var exchange = $('input[name="rate"]:checked').val();
+    var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+    var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+    var exchangeRate = exchange === 'eta' ? eta : etd;
+    var egpAmount = totalAmount * exchangeRate;
+    row.find('input[name$="[total_egy]"]').val(egpAmount);
+});
+
+$('body').on('input', 'input[name$="[size_small]"]', function() {
+    // Get the current row
+    var row = $(this).closest('tr');
+
+    // Get the qty value from the QTY input field
+    var qty = $('input[name="qty"]').val();
+
+    // Get the size_small value from the current row
+    var sizeSmall = $(this).val();
+
+    var enabled = row.find('input[name$="[enabled]"]:checked').val();
+
+    // Calculate the total amount and update the total_amount input field of the current row
+    var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
+
+    row.find('input[name$="[total_amount]"]').val(totalAmount);
+    var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+    var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+    // Calculate the total EGP Amount and update the Amount input field of the current row
+    var exchangeRate = $('input[name="rate"]:checked').val();
+    exchangeRate = exchangeRate === 'eta' ? eta : etd;
+    var egpAmount = totalAmount * exchangeRate;
+    row.find('input[name$="[total_egy]"]').val(egpAmount);
+
+});
+</script>
+<script>
 var removed = [];
 function removeItem( item )
 {
@@ -312,15 +382,16 @@ $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
-    var counter  = <?= isset($key)? ++$key : 0 ?>;
 
+     var counter  = '<?= isset($key)? ++$key : 0 ?>';
     $("#add").click(function(){
        var tr = '<tr>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
-           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_egy]" class="form-control" autocomplete="off" placeholder="Egp Amount" requierd></td>'+
+           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT" disabled></td>'+
+           '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" required disabled></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_egy]" class="form-control" autocomplete="off" placeholder="Egp Amount" requierd disabled></td>'+
            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
        '</tr>';
        counter++;

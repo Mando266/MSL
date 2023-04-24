@@ -78,12 +78,28 @@
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" @if($is_shipper) disabled @endif>
                                     @foreach ($customers as $item)
-                                        @if($booking->customer_id != null)
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                        @elseif($quotation->customer_id != null) 
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                        @elseif($booking->quotation_id == null) 
-                                        <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                        @if($quotation->id != $booking->quotation_id)
+                                            @if($quotation->customer_id != null)
+                                                @if(in_array(1, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
+                                                    <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @else 
+                                                    <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @endif
+                                            @else 
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            @endif
+                                        @else
+                                            @if($booking->customer_id != null)
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            @elseif($quotation->customer_id != null) 
+                                                @if(in_array(1, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @else 
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @endif
+                                            @else 
+                                                <option value="{{$item->id}}" {{$item->id == old('customer_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                            @endif
                                         @endif
                                     @endforeach
                                     </select>
@@ -181,11 +197,29 @@
                                     <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
                                     title="{{trans('forms.select')}}" @if($is_ffw) disabled @endif>
                                         @foreach ($ffw as $item)
-                                        @if($booking->customer_id != null)
-                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',$booking->ffw_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                            @elseif($quotation->customer_id != null) 
-                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                        @endif
+                                            @if($quotation->id != $booking->quotation_id)
+                                                @if($quotation->customer_id != null)
+                                                    @if(in_array(6, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
+                                                        <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                    @else 
+                                                        <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                    @endif
+                                                @else 
+                                                    <option value="{{$item->id}}" {{$item->id == old('ffw_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @endif
+                                            @else
+                                                @if($booking->ffw_id != null)
+                                                    <option value="{{$item->id}}" {{$item->id == old('ffw_id',$booking->ffw_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @elseif($quotation->customer_id != null) 
+                                                    @if(in_array(6, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
+                                                        <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                    @else 
+                                                        <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                    @endif
+                                                @else 
+                                                    <option value="{{$item->id}}" {{$item->id == old('ffw_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
+                                                @endif
+                                            @endif
                                         @endforeach
                                     </select>
                                     @error('ffw_id')
@@ -317,7 +351,7 @@
                                     @if($booking->quotation_id == null)
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
-                                        <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$quotation->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif    
                                     @endforeach
                                 </select>
@@ -336,7 +370,7 @@
                                     @if($booking->quotation_id == null)
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
-                                        <option value="{{$item->id}}" {{$item->id == old('place_return_id',$quotation->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif    
                                     @endforeach
                                 </select>

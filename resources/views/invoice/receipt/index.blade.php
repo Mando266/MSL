@@ -31,8 +31,8 @@
                                 <label for="Receipt_no">RECEIPT NO</label>
                                 <select class="selectpicker form-control" id="Receipt_no" data-live-search="true" name="receipt_no" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                 @foreach($receipts as $receipt)
-                                        <option value="{{$receipt->id}}">{{$receipt->receipt_no}}</option>
+                                 @foreach($receiptno as $receipt)
+                                        <option value="{{$receipt->receipt_no}}">{{$receipt->receipt_no}}</option>
                                 @endforeach
                                 </select>
                             </div>
@@ -91,38 +91,44 @@
                                         <th>Payment Methods</th>
                                         <th>Total</th>
                                         <th>Paid</th>
+                                        <th>Curency</th>
+
                                         <th>User</th>
                                         <th class='text-center' style='width:100px;'>Receipt</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($receipts as $receipt)
-                                    
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($receipts,$loop)}}</td>
                                             <td>{{$receipt->receipt_no}}</td>
                                             <td>{{optional($receipt->invoice)->invoice_no}}</td>
                                             <td>{{optional($receipt->bldraft)->ref_no}}</td>
-                                            <td>{{optional($receipt->invoice->customerShipperOrFfw)->name}}</td>
+                                            <td>{{optional(optional($receipt->invoice)->customerShipperOrFfw)->name}}</td>
                                             <td>
                                                 @if($receipt->bank_transfer != null)
-                                                    Bank Transfer <br>
+                                                    Bank Transfer {{$receipt->bank_transfer}}<br>
                                                 @endif
                                                 @if($receipt->bank_deposit != null)
-                                                    Bank Deposit <br>
+                                                    Bank Deposit {{$receipt->bank_deposit}}<br>
                                                 @endif
                                                 @if($receipt->bank_check != null)
-                                                    Bank Check <br>
+                                                    Bank Cheque  {{$receipt->bank_check}}<br>
                                                 @endif
                                                 @if($receipt->bank_cash != null)
-                                                    Cash <br>
+                                                    Cash {{$receipt->bank_cash}}<br>
                                                 @endif
                                                 @if($receipt->matching != null)
-                                                    Matching <br>
+                                                    Matching {{$receipt->matching}}<br>
                                                 @endif
                                             </td>
                                             <td>{{$receipt->total}}</td>
                                             <td>{{$receipt->paid}}</td>
+                                            @if(optional($receipt->invoice)->add_egp == 'false')
+                                            <td>USD</td>
+                                            @else
+                                            <td>EGP</td>
+                                            @endif
                                             <td>{{optional($receipt->user)->name}}</td>
                                             
                                             <td class="text-center">

@@ -7,7 +7,7 @@
                 <div class="widget-heading hide">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('invoice.index')}}">Receipt </a></li>
+                            <li class="breadcrumb-item"><a href="{{route('refund.index')}}">Refund</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -26,58 +26,81 @@
                 <table class="col-md-12 tableStyle" style="border-style: hidden !important;">
                     <thead>
                         <tr>
-                            <th class="text-center  underline" style="font-size: 24px !important;"> إيصال إستلام نقدية / إيداع بنكي  </th>
+                            <th class="text-center  underline" style="font-size: 24px !important;"> إيصال إسترجاع نقدية / إيداع بنكي  </th>
                         </tr>
                     </thead>
                 </table>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        @if($invoice->add_egp == 'onlyegp')
-                            <h3><span style="font-size:22px;">{{ $total_eg }} EGP</span> &nbsp;&nbsp;:المبلغ <h3>
+                        @if($receipt->status == 'refund_egp')
+                            <h3><span style="font-size:22px;">{{ $receipt->paid }} EGP</span> &nbsp;&nbsp;: المبلغ<h3>
                         @else
-                            <h3><span style="font-size:22px;">{{ $total }} USD</span> &nbsp;&nbsp;:المبلغ <h3>
+                            <h3><span style="font-size:22px;">{{ $receipt->paid }} USD</span> &nbsp;&nbsp;: المبلغ<h3>
                         @endif
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <textarea style="border:none; height: 32px; text-align: right;font-size: 22px; resize: none;"></textarea>&nbsp;&nbsp; &nbsp;&nbsp;:رقم<h3>
+                        <h3> <span style="font-size:22px;">{{$receipt->receipt_no }} </span> &nbsp; &nbsp;&nbsp; : رقم<h3>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $invoice->customer }} </span>&nbsp;&nbsp;:استلمت من<h3>
+                        <h3> <span style="font-size:22px;">{{optional($receipt->customer)->name}} </span>&nbsp;&nbsp; : استلم <h3>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $now }} </span>:التاريخ<h3>
+                        <h3> <span style="font-size:22px;">{{ $now }} </span> :  التاريخ<h3>
                     </div>
                 </div>
-                @if($invoice->add_egp == 'onlyegp')
+                @if($receipt->status == 'refund_egp')
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $EGP }} Egyptian Pound</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
+                        <h3> <span style="font-size:22px;">{{ $total }} Egyptian Pound</span>&nbsp;&nbsp;: مبلغ وقدره<h3>
                     </div>
                 </div>
                 @else
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $USD }} Dollar</span>&nbsp;&nbsp;:مبلغ وقدره<h3>
+                        <h3> <span style="font-size:22px;">{{ $total }} Dollar</span>&nbsp;&nbsp;: مبلغ وقدره<h3>
                     </div>
                 </div>
                 @endif
+ 
+                <div class="form-row">
+                    <div class="form-group col-md-10  text-right">
+                        <h3> <span style="font-size:22px;">                                     
+                        @if($receipt->bank_transfer != null) 
+                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->bank)->name}}<br> 
+                        @endif
+                        @if($receipt->bank_deposit != null)
+                            {{$receipt->bank_deposit}}  Bank Deposit {{optional($receipt->bank)->name}}<br> 
+                        @endif 
+                        @if($receipt->bank_check != null)
+                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}}<br> 
+                        @endif
+                        @if($receipt->bank_cash != null)
+                            {{$receipt->bank_cash}}  Cash <br>
+                        @endif
+                        @if($receipt->matching != null)
+                        {{$receipt->matching}}  Matching 
+                        @endif
+                    </span>&nbsp;&nbsp;<h3>
+                    </div>
+                    <div class="form-group col-md-2  text-right">
+                        <h3>: طريقة الدفع </h3>
+                    </div>
+                </div>
+       
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{optional($invoice)->invoice_no}}</span>&nbsp;&nbsp;:وذلك عن فواتير<h3>
+                        <h3> <span style="font-size:22px;">{{optional($receipt)->notes}}</span>&nbsp;&nbsp; :  ملاحظات <h3>
                     </div>
-                </div>
+                </div>    
                 <div class="form-row">
-                    <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;:بوليصة<h3>
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{optional($receipt->user)->name}}</span>&nbsp;&nbsp; :  المستخدم <h3>
                     </div>
-                    <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }} &nbsp; {{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span>&nbsp;&nbsp;:الباخرة / رحلة <h3>
-                    </div>
-                </div>
+                </div>   
                 <div class="form-row">
                     <div class="form-group col-md-3  text-right">
                     <h3> <span></span>يعتمد<h3>

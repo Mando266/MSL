@@ -18,7 +18,12 @@
                         <div class="col-md-6 text-center">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                         </div>
-                        <table class="col-md-6 " style="    height: 20px;">
+                        <div class="col-md-6 tableStyle text-right underline" style="font-size: 30px; font-weight:bold !important">
+                            {{optional($booking->principal)->name}}
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                        <table class="col-md-6 " style="height: 20px;">
                         
                             <tbody>
                             <tr>

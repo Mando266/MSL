@@ -86,7 +86,11 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $row['vessel_id'] = Vessels::where('name',$row['vessel_id'])->where('company_id',Auth::user()->company_id)->pluck('id')->first();
         $row['booking_agent_id'] = Agents::where('name',$row['booking_agent_id'])->pluck('id')->first();
         $row['import_agent'] = Agents::where('name',$row['import_agent'])->pluck('id')->first();
-
+        
+        if(!$row['movement_id']){
+            
+            return session()->flash('message',"This Movement Code: {$movementCode} Not found ");
+        } 
         if($lastMove == null){
             $moveUpdate->update([
                 'container_id' => $row['container_id'],

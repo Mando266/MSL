@@ -56,11 +56,11 @@
                                 <th class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
                                 <div class="col-md-12 text-center">
-                                    @if(optional($blDraft->loadPort)->code == "EGEDK")
+                                    {{-- @if(optional($blDraft->loadPort)->code == "EGEDK") --}}
                                         <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
-                                        @else
+                                        {{-- @else
                                         <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
-                                    @endif
+                                    @endif --}}
                                 </div>
                                 </th>
                             </tr>
@@ -124,10 +124,16 @@
                                         {!!  $blDraft->descripions  !!}
                                     </textarea> 
                                     </br>
-                                    @if(optional($blDraft->booking->principal)->code == 'PLS')
+                                    @if($blDraft->id == 131)
+                                    polar star booking Freight collect
+                                    @elseif(optional($blDraft->booking->principal)->code == 'PLS')
                                     {{optional($blDraft->booking->principal)->name}} Soc
+                                    @elseif(optional($blDraft->booking->principal)->code == 'FLW')
+                                    {{optional($blDraft->booking->principal)->name}} SOC
+                                    @elseif(optional($blDraft->booking->principal)->code == 'MAS')
+                                    {{optional($blDraft->booking->principal)->name}} COC
                                     @else
-                                    {{optional($blDraft->booking->principal)->name}} Coc
+                                    {{optional($blDraft->booking->principal)->name}}
                                     @endif
                                 </td>
                                 <td class="col-md-2 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;"></td>

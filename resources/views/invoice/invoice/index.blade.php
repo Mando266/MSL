@@ -129,6 +129,7 @@
                                         <th>Total EGP</th>
                                         <th>Invoice Status</th>
                                         <th>Payment Status</th>
+                                        <th>Receipts</th>
 
                                         <th class='text-center' style='width:100px;'></th>
 
@@ -136,6 +137,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($invoices as $invoice)
+                                    {{-- @dd($invoice->customer) --}}
                                     @php
                                         $totalusd = 0;
                                         $totalegp = 0;
@@ -190,14 +192,25 @@
                                             <td class="text-center">
                                                 @if($invoice->paymentstauts == 1)
                                                     <span class="badge badge-info"> Paid </span>
+                                                @elseif($invoice->receipts->count() != 0)
+                                                    <span class="badge badge-success"> Partially Paid </span>
                                                 @else
                                                     <span class="badge badge-danger"> UnPaid </span>
                                                 @endif
                                             </td>
 
                                             <td class="text-center">
+                                                @if($invoice->receipts->count() != 0)
+                                                    @foreach($invoice->receipts as $receipt)
+                                                        {{$receipt->receipt_no}} <br>
+                                                    @endforeach
+                                                @endif
+                                            </td>
+
+                                            <td class="text-center">
                                                  <ul class="table-controls">
 
+                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7)
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -205,6 +218,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                @endif 
+
                                                     @permission('Invoice-Show')
                                                     <li>
                                                         <a href="{{route('invoice.show',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
@@ -212,7 +227,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission 
-                                                    
+                                                @if($invoice->paymentstauts == 0)
+
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" method="post">
@@ -222,6 +238,7 @@
                                                         </form> 
                                                     </li>
                                                     @endpermission
+                                                @endif
                                                 </ul>
                                             </td>
                                         </tr>

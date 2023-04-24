@@ -91,7 +91,7 @@
                                 <div class ="invalid-feedback">
                                     {{$message}}
                                 </div>
-                                @enderror
+                                @enderror 
                             </div>
                     
                             <div class="form-group col-md-3">
@@ -160,6 +160,34 @@
                                     <label for="remarkes">Remarkes</label>
                                     <input type="text" class="form-control" id="remarkes" name="remarkes" value="{{request()->input('remarkes')}}"
                                     placeholder="Remarkes" autocomplete="off">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput"> Container Ownership </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id',request()->input('container_ownership_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput"> LESSOR/SELLER REFRENCE </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($lessor as $item)
+                                        <option value="{{$item->description}}" {{$item->description == old('description',request()->input('description')) ? 'selected':''}}>{{$item->description}}</option>
+                                    @endforeach
+                                </select>
+                                @error('description')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
                         </div>
 

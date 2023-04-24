@@ -20,7 +20,9 @@ class ReceiptController extends Controller
    
     public function index()
     { 
-        $receipts = Receipt::filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+        $this->authorize(__FUNCTION__,Receipt::class);
+        $receipts = Receipt::filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->where('status','valid')->paginate(30);
+        $receiptno = Receipt::orderBy('id','desc')->where('status','valid')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $invoices  = Invoice::where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('has_bl',1)->where('bl_status','=',1)->where('company_id',Auth::user()->company_id)->get();
@@ -29,6 +31,7 @@ class ReceiptController extends Controller
 
         return view('invoice.receipt.index',[
             'receipts'=>$receipts,
+            'receiptno'=>$receiptno,
             'customers'=>$customers,
             'invoices'=>$invoices,
             'bldrafts'=>$bldrafts,
@@ -52,6 +55,8 @@ class ReceiptController extends Controller
    
     public function create()
     {
+        $this->authorize(__FUNCTION__,Receipt::class);
+
         $invoice = Invoice::where('id',request('invoice_id'))->with('chargeDesc')->first();
         $bldraft = BlDraft::where('id',request('bldraft_id'))->first();
         $oldPayment = 0;
@@ -103,6 +108,7 @@ class ReceiptController extends Controller
                 'bank_id' => ['required'],
             ],[
                 'bank_id.required'=>'Please Choose Bank Account',
+                
             ]);
         }
         if($request->input('bank_check') != Null){
@@ -113,6 +119,7 @@ class ReceiptController extends Controller
                 'cheak_no.required'=>'Please Enter Cheak No',
             ]);
         }
+
         $invoice = Invoice::where('id',request('invoice_id'))->with('chargeDesc')->first();
         $oldReceipts = Receipt::where('invoice_id',request('invoice_id'))->get();
         $customer = Customers::where('id',$invoice->customer_id)->first();
@@ -191,14 +198,20 @@ class ReceiptController extends Controller
             'matching'=>$request->matching,
             'total'=>$request->total_payment,
             'notes'=>$request->notes,
-            'paid'=>$paid,
+            'paid'=>($paid - $request->matching),
             'user_id'=>Auth::user()->id,
         ]);
-        $setting = Setting::find(1);
-        $setting->receipt_no += 1;
-        $receipt->receipt_no = 'ALY/ '.$setting->receipt_no.' / 23';
-        $setting->save();
+
+        if(request('receipt_no') != null){
+            $receipt->receipt_no = request('receipt_no');
+        }else{
+            $setting = Setting::find(1);
+            $receipt->receipt_no = 'ALY/ '.$setting->receipt_no.' / 23';
+            $setting->receipt_no += 1;
+            $setting->save();
+        }
         $receipt->save();
+        
 
         if($oldReceipts->count() == 0){
             // ADD to Credit
@@ -275,6 +288,8 @@ class ReceiptController extends Controller
    
     public function show($id)
     {
+        $this->authorize(__FUNCTION__,Receipt::class);
+
         $receipt = Receipt::find($id);
         $now = Carbon::now();
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
-use App\Filters\Containers\ContainersIndexFilter;
+use App\Filters\Movements\ContainersIndexFilter;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;

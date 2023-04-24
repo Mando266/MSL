@@ -339,8 +339,8 @@
                                 </div>
                                 @enderror
                             </div> -->
-                            <div class="form-group col-md-4">
-                                <label for="oog_dimensions">HAZ / Reefer/ OOG Details / Haz Approval Ref</label>
+                            <div class="form-group col-md-3">
+                                <label for="oog_dimensions">HAZ / Reefer/ OOG Details </label>
                                 <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions',$quotation->oog_dimensions)}}"
                                     placeholder="HAZ / Reefer/ OOG Details / Haz Approval Ref" autocomplete="off">
                                 @error('oog_dimensions')
@@ -349,7 +349,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_code">Commodity Code</label>
                                 <input type="text" class="form-control" id="commodity_code" name="commodity_code" value="{{old('commodity_code',$quotation->commodity_code)}}"
                                     placeholder="Commodity Code" autocomplete="off">
@@ -359,7 +359,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_des">Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_des" name="commodity_des" value="{{old('commodity_des',$quotation->commodity_des)}}"
                                     placeholder="Commodity Description" autocomplete="off" required>
@@ -369,6 +369,18 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="status">Payment kind</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                    <option value="Prepaid" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
+                                    <option value="Collect" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Collect"? 'selected':''}}>Collect</option>
+                                </select>
+                                @error('payment_kind')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
                         </div>
 
                         <h4>Export Price</h4>
@@ -724,7 +736,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffLoadRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"  && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -786,7 +798,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -858,7 +870,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -906,7 +918,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -958,7 +970,7 @@ function removeLoad( item )
                             for(x in agentTriff[i])
                             {
                                 
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");

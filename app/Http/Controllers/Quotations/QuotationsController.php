@@ -188,6 +188,7 @@ class QuotationsController extends Controller
                 'ofr'=>$request->input('ofr'),
                 'show_import'=>$request->input('show_import'),
                 'power_charges'=>$request->input('power_charges'),
+                'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
             ]);
             $refNo .=$quotations->id;
@@ -227,6 +228,7 @@ class QuotationsController extends Controller
                 'ofr'=>$request->input('ofr'),
                 'show_import'=>$request->input('show_import'),
                 'power_charges'=>$request->input('power_charges'),
+                'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
             ]);
             $refNo .=$quotations->id;
@@ -362,6 +364,8 @@ class QuotationsController extends Controller
             'agent_id'=>$request->agent_id,
             'oog_dimensions'=>$request->oog_dimensions,
             'power_charges'=>$request->power_charges,
+            'payment_kind'=> $request->payment_kind,
+
         ];
         if($user->is_super_admin){
             if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){

@@ -90,7 +90,7 @@ class BookingController extends Controller
             return $query->where('role_id', 2);
         })->with('CustomerRoles.role')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
-            return $query->where('role_id', '!=', 6)->where('role_id', '!=', 2);
+            return $query->where('role_id', 1);
         })->with('CustomerRoles.role')->get();
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
         if(request('quotation_id') == 'draft'){
@@ -238,8 +238,8 @@ class BookingController extends Controller
             ]);
         }
         $setting = Setting::find(1);
-        $setting->booking_ref_no += 1;
         $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
+        $setting->booking_ref_no += 1;
         $setting->save();
         $booking->save();
 
@@ -314,7 +314,7 @@ class BookingController extends Controller
             return $query->where('role_id', 2);
         })->with('CustomerRoles.role')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
-            return $query->where('role_id', '!=', 6);
+            return $query->where('role_id', 1);
         })->with('CustomerRoles.role')->get();
         
         if(request('quotation_id') == 'draft' || $booking->quotation_id == null){

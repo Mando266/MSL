@@ -25,9 +25,9 @@ class InvoiceController extends Controller
     public function index()
     {
         $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft')->paginate(30);
+        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->paginate(30);
         $exportinvoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft')->get();
+        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
         //dd($exportinvoices);
         session()->flash('invoice',$exportinvoices);
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
@@ -259,7 +259,7 @@ class InvoiceController extends Controller
                     'charge_description'=>$chargeDesc['charge_description'],
                     'size_large'=>$chargeDesc['size_small'],
                     'total_amount'=>$qty * $chargeDesc['size_small'],
-                    'enabled'=>$chargeDesc['enabled'],
+                    // 'enabled'=>$chargeDesc['enabled'],
                 ]);
             }
         }elseif($request->bldraft_id == 'customize'){
@@ -378,16 +378,15 @@ class InvoiceController extends Controller
         }
         $setting->save();
         $invoice->save();
-        $egyrate = 0;
-        if($request->bldraft_id != 'customize'){
-            if($request->exchange_rate == "eta"){
-                $egyrate = optional($invoice->voyage)->exchange_rate;
-            }elseif($request->exchange_rate == "etd"){
-                $egyrate = optional($invoice->voyage)->exchange_rate_etd;
-            }
-        }
+        // $egyrate = 0;
+        // if($request->bldraft_id != 'customize'){
+        //     if($request->exchange_rate == "eta"){
+        //         $egyrate = optional($invoice->voyage)->exchange_rate;
+        //     }elseif($request->exchange_rate == "etd"){
+        //         $egyrate = optional($invoice->voyage)->exchange_rate_etd;
+        //     }
+        // }
         
-    if($request->bldraft_id == 'customize'){
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
@@ -398,17 +397,7 @@ class InvoiceController extends Controller
                 'enabled'=>$chargeDesc['enabled'],
             ]);
         }
-    }else{
-        foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
-            InvoiceChargeDesc::create([
-                'invoice_id'=>$invoice->id,
-                'charge_description'=>$chargeDesc['charge_description'],
-                'size_small'=>$chargeDesc['size_small'],
-                'total_amount'=>$chargeDesc['total'],
-                'total_egy'=>$chargeDesc['egy_amount'],
-            ]);
-        }
-    }
+ 
         if($request->bldraft_id != 'customize'){
             $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
             $bldrafts->has_bl = 1;
@@ -518,45 +507,6 @@ class InvoiceController extends Controller
         
     }
 
-    public function receipt($id)
-    {
-        $invoice = Invoice::with('chargeDesc')->find($id);
-        $total = 0;
-        $total_eg = 0;
-        $now = Carbon::now();
-        foreach($invoice->chargeDesc as $chargeDesc){
-            $total += $chargeDesc->total_amount;
-            $total_eg += $chargeDesc->total_egy;
-        }
-        $total = $total - (($total * $invoice->tax_discount)/100);
-        $total_eg = $total_eg - (($total_eg * $invoice->tax_discount)/100);
-        $exp = explode('.', $total);
-        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
-        if(count($exp) >1){
-            $USD =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
-
-        }else{
-            $USD =  ucfirst($f->format($exp[0]));
-        }
-
-        $exp = explode('.', $total_eg);
-        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
-        if(count($exp) >1){
-            $EGP =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
-
-        }else{
-            $EGP =  ucfirst($f->format($exp[0]));
-        }
-        //dd($receipt);
-        return view('invoice.invoice.receipt',[
-            'invoice'=>$invoice,
-            'now'=>$now,
-            'total'=>$total,
-            'total_eg'=>$total_eg,
-            'USD'=>$USD,
-            'EGP'=>$EGP,
-        ]);
-    }
     public function edit(Request $request, Invoice $invoice)
     {
         if($invoice->bldraft_id != 0){

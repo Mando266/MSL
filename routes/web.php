@@ -4,6 +4,7 @@ use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
+use App\Http\Controllers\Invoice\RefundController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Http\Controllers\Trucker\TruckerGateController;
@@ -101,7 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('receiptExport', 'ImportExportController@receiptExport')->name('export.receipt');
 
-
+    Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name('export.statements');
 
     /*
     |-------------------------------------------
@@ -139,6 +140,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('manifest/{bldraft}',[BlDraftController::class,'manifest'])->name('bldraft.manifest');
         Route::get('serviceManifest/{bldraft}',[BlDraftController::class,'serviceManifest'])->name('bldraft.serviceManifest');
     });
+
+    /*
+    |-------------------------------------------
+    | statements routes
+    |--------------------------------------------
+    */
+    Route::prefix('statements')->namespace('Statements')->group(function () {
+        Route::resource('statements','CustomerStatementController');
+    });
     /*
     |-------------------------------------------
     | Trucker
@@ -162,7 +172,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('create_invoice',[InvoiceController::class,'storeInvoice'])->name('invoice.store_invoice');
         Route::resource('receipt','ReceiptController');
         Route::get('selectinvoice',[ReceiptController::class,'selectinvoice'])->name('receipt.selectinvoice');
-        // Route::get('receipt/{invoice}',[InvoiceController::class,'receipt'])->name('invoice.receipt');
+        Route::resource('refund','RefundController');
     });
     /*
     |-------------------------------------------

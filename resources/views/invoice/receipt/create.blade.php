@@ -73,26 +73,32 @@
                             </div>
 
                         <h4 style="color:#1b55e2">Payment Methods<h4>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>Receipt No</label>
+                                    <input type="text" class="form-control"  style="background-color:#fff" name="receipt_no">
+                                </div>
+                            </div>
 
                             <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label>Cash</label>
-                                        <input type="number" class="form-control" name="bank_cash" value="{{old('bank_cash',request()->input('bank_cash'))}}">
+                                        <input type="text" class="form-control" name="bank_cash" value="{{old('bank_cash',request()->input('bank_cash'))}}">
                                 </div>
                              
                                 <div class="col-md-3 form-group">
                                     <label>Matching</label>
-                                        <input type="number" class="form-control" name="matching" value="{{old('matching',request()->input('matching'))}}">
+                                        <input type="text" class="form-control" name="matching" value="{{old('matching',request()->input('matching'))}}">
                                 </div>
                            
                                 <div class="col-md-3 form-group">
-                                    <label>Cheak Amount</label>
-                                    <input type="number" class="form-control" name="bank_check" value="{{old('bank_check',request()->input('bank_check'))}}">
+                                    <label>Cheque Amount</label>
+                                    <input type="text" class="form-control" name="bank_check" value="{{old('bank_check',request()->input('bank_check'))}}">
                                 </div>
 
                                 <div class="form-group col-md-3" >
-                                    <label>Cheak NO</label>
-                                    <input type="text" class="form-control" placeholder="Cheak NO" name="cheak_no" autocomplete="off"  style="background-color:#fff">
+                                    <label>Cheque NO</label>
+                                    <input type="text" class="form-control" placeholder="Cheque NO" name="cheak_no" autocomplete="off"  style="background-color:#fff">
                                     @error('cheak_no')
                                     <div style="color: red; font-size:14px;">
                                         {{$message}}
@@ -106,12 +112,12 @@
                           
                             <div class="col-md-2 form-group">
                                 <label> Bank Deposit </label>
-                                <input type="number" class="form-control" name="bank_deposit" value="{{old('bank_deposit',request()->input('bank_deposit'))}}">
+                                <input type="text" class="form-control" name="bank_deposit" value="{{old('bank_deposit',request()->input('bank_deposit'))}}">
                             </div>
                         
                             <div class="col-md-2 form-group">
                                 <label> Bank Transfer </label>
-                                    <input type="number" class="form-control" name="bank_transfer" value="{{old('bank_transfer',request()->input('bank_transfer'))}}">
+                                    <input type="text" class="form-control" name="bank_transfer" value="{{old('bank_transfer',request()->input('bank_transfer'))}}">
                             </div>
 
                             <div class="form-group col-md-8">

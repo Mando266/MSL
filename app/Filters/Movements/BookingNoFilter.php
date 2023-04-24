@@ -1,5 +1,5 @@
 <?php
-namespace App\Filters\Containers;
+namespace App\Filters\Movements;
 
 use App\Filters\AbstractBasicFilter;
 
