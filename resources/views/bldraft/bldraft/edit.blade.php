@@ -223,6 +223,7 @@
                                 <label for="status">Movement</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
                                     <option value="FCL/FCL" {{$bldraft->movement == old('movement',$bldraft->movement) ? 'selected':''}}>FCL/FCL</option>
+                                    <option value="CY/CY" {{$bldraft->movement == old('movement',$bldraft->movement) ? 'selected':''}}>CY/CY</option>
                                 </select>
                                 @error('movement')
                                 <div style="color:red;">

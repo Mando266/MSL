@@ -345,7 +345,7 @@ $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
         $(this).closest("tr").remove();
     });
-    var counter  = <?= isset($key)? ++$key : 0 ?>;
+    var counter  = '<?= isset($key)? ++$key : 0 ?>';
     $("#add").click(function(){
        var tr = '<tr>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+

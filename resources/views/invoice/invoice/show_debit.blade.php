@@ -65,6 +65,48 @@
                     </tbody>
                 </table>
                 <br>
+                @if($invoice->bldraft_id == "0")
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
+                            <th class="col-md-3 tableStyle text-center">Quantity</th>
+                            <th class="col-md-6 tableStyle text-center">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tableStyle text-center">{{ $qty }}</td>
+                            <td class="tableStyle text-center"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <h4 style="font-size: 24px !important; font-weight: bolder !important; color:black">Charges</h4>
+                <table class="col-md-12 tableStyle">
+                    <thead>
+                        <tr>
+                            <th class="col-md-4 tableStyle">Charge Description</th>
+                            <th class="col-md-3 tableStyle text-center">Rate</th>
+                            <th class="col-md-2 tableStyle text-center">Total US$</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($invoice->chargeDesc as $chargeDesc)
+                        <tr>
+                            <td class="col-md-4 tableStyle" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->charge_description }}</td>
+                            <td class="col-md-3 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->size_small }}</td>
+                            <td class="col-md-2 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->total_amount }}</td>
+                        </tr>
+                        @endforeach
+                        <tr>
+                            <td class="col-md-10 tableStyle text-right" colspan="2">Total US$</td>
+                            <td class="col-md-2 tableStyle text-center">{{ $total }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                @else
                 <h4 style="font-size: 24px !important; font-weight: bolder !important; color:black">Container Details </h4>
                 <table class="col-md-12 tableStyle">
                     <thead>
@@ -123,6 +165,7 @@
                 </table>
                 <br>
                 <br>
+                @endif
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>

@@ -19,7 +19,8 @@
                         <div class="col-md-6">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 tableStyle text-right underline" style="font-size: 30px; font-weight:bold !important">
+                            {{optional($booking->principal)->name}}
                         </div>
                         <div class="col-md-3">
                         </div>

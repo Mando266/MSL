@@ -33,7 +33,7 @@ class QuotationExport implements FromCollection,WithHeadings
         $quotations = session('quotations');
         //$quotations = Quotation::all();
 
-        foreach($quotations as $quotation){
+        foreach($quotations  ?? [] as $quotation){
             $quotation->customer_id = optional($quotation->customer)->name;
             $quotation->equipment_type_id = optional($quotation->equipmentsType)->name;
             $quotation->place_of_acceptence_id = optional($quotation->placeOfAcceptence)->name;

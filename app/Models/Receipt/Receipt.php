@@ -4,6 +4,7 @@ namespace App\Models\Receipt;
 
 use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
+use App\Models\Master\Bank;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -36,5 +37,9 @@ class Receipt extends Model implements PermissionSeederContract
 
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function Bank(){
+        return $this->belongsTo(Bank::class,'bank_id','id');
     }
 }

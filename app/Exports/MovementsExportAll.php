@@ -51,7 +51,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
     {
         $movements = Movements::where('company_id',Auth::user()->company_id)->with('container')->get();
 
-        foreach($movements as $movement){
+        foreach($movements  ?? [] as $movement){
             $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
             $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
             $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();

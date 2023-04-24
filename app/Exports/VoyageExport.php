@@ -29,7 +29,7 @@ class VoyageExport implements FromCollection,WithHeadings
        
         $voyages = session('voyages');
         $exportVoyages = collect();
-        foreach($voyages as $voyage){
+        foreach($voyages  ?? [] as $voyage){
             foreach($voyage->voyagePorts as $voyagePort){
                 $tempCollection = collect([
                     'code' => optional($voyage->vessel)->code,

@@ -8,6 +8,7 @@ use App\Exports\BLLoadListExport;
 use App\Exports\BookingExport;
 use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
+use App\Exports\CustomerStatementsExport;
 use App\Exports\LoadListExport;
 use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
@@ -114,5 +115,11 @@ class ImportExportController extends Controller
     public function receiptExport() 
     {
         return Excel::download(new ReceiptExport, 'ReceiptExport.xlsx');
+    }
+
+    
+    public function customerStatementsExport() 
+    {
+        return Excel::download(new CustomerStatementsExport, 'CustomerStatements.xlsx');
     }
 }

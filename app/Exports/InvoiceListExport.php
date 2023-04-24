@@ -27,6 +27,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
             "Invoice Curency",
             "INVOICE STATUS",
             "Payment STATUS",
+            "Receipts",
         ];
     }
     
@@ -61,12 +62,19 @@ class InvoiceListExport implements FromCollection,WithHeadings
                 $Curency = 'EGP';
             }
         }
-        if($invoice->paymentstauts == '0'){
-            $Payment = 'UnPaid';
-        }elseif($invoice->paymentstauts == '1'){
+        if($invoice->paymentstauts == '1'){
             $Payment = 'Paid';
+        }elseif($invoice->receipts->count() != 0){
+            $Payment = 'Partially Paid';
+        }else{
+            $Payment = 'UnPaid';
         }
-        
+        $receipts = '';
+        if($invoice->receipts->count() != 0){
+            foreach($invoice->receipts as $receipt){
+                $receipts .= $receipt->receipt_no . "\n";
+            }
+        }
             $totalusd = 0;
             $totalegp = 0;
             foreach($invoice->chargeDesc as $invoiceDesc ){
@@ -90,6 +98,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'Curency' =>$Curency,
                     'STATUS' => $invoice->invoice_status,
                     'PaymentSTATUS' => $Payment,
+                    'receipts' => $receipts,
                 ]);
                 
                 $exportinvoices->add($tempCollection);

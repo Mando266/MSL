@@ -30,7 +30,7 @@ class CustomerExport implements FromCollection,WithHeadings
     {
        
         $customers = session('customers');
-        foreach($customers as $customer){
+        foreach($customers  ?? [] as $customer){
             $customer->country_id = optional($customer->country)->name;
             foreach($customer->CustomerRoles as $customerRole){
                 $customer->customer_role_id .= optional($customerRole->role)->name. "  ";

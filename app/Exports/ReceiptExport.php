@@ -18,6 +18,7 @@ class ReceiptExport implements FromCollection,WithHeadings
             "Total",
             "Paid",
             "User" ,
+            "created_at",
         ];
     }
     
@@ -27,7 +28,7 @@ class ReceiptExport implements FromCollection,WithHeadings
        
         $receipts = session('receipts');
         $receiptexport = collect();
-        foreach($receipts as $receipt){
+        foreach($receipts  ?? [] as $receipt){
             $PaymentMethods = '';
             if($receipt->bank_transfer != null){
                 $PaymentMethods = 'Bank Transfer';
@@ -57,6 +58,8 @@ class ReceiptExport implements FromCollection,WithHeadings
                     'Total'=> $receipt->total,
                     'Paid'=> $receipt->paid,
                     'User'=> optional($receipt->user)->name,
+                    'created_at'=> $receipt->created_at,
+
                 ]);
                 $receiptexport->add($tempCollection);
         }

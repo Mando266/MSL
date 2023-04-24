@@ -12,7 +12,7 @@ use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Master\Customers;
-
+use App\Models\Receipt\Receipt;
 
 class Invoice extends Model implements PermissionSeederContract
 {
@@ -56,6 +56,11 @@ class Invoice extends Model implements PermissionSeederContract
 
     public function booking(){
         return $this->belongsTo(Booking::class,'booking_ref','id');
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class ,'invoice_id','id');
     }
 
     public function chargeDesc()

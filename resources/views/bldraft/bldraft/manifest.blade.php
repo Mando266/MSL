@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.bldraft')
 @section('content')
-<div class="layout-px-spacing transform" style="padding: 20px 20px 0px 20px !important">
+<div class="layout-px-spacing transform" style="margin-top: 0px; !important">
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-one">
@@ -36,10 +36,12 @@
                             @endforeach 
                             <div class="row">
                                 <div class="col-md-2">
-                                    @if(optional($blDraft->loadPort)->code == "EGEDK")
+                                    @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+
+                                    {{-- <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo"> --}}
                                     @else
-                                    <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
+                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                     @endif
                                 </div>
                                 
@@ -189,9 +191,7 @@
 <style>
     @media print {
     .search_row,
-    .transform{
-        transform: rotate(90deg);
-    }
+
     .hide {
         display: none !important;
         }
@@ -223,4 +223,14 @@
     td{
         width: 50Px !important;
     }
+    @page {
+		  size: A4 landscape !important;
+		}
+		
+		body {
+          margin: 0 !important;
+          margin-top: 0 !important;
+		  padding: 0 !important;
+        }
+        
 </style>

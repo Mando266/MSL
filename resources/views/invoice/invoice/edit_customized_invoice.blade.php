@@ -464,7 +464,7 @@ $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
-    var counter  = <?= isset($key)? ++$key : 0 ?>;
+    var counter  = '<?= isset($key)? ++$key : 0 ?>';
 
     $("#add").click(function(){
        var tr = '<tr>'+
@@ -491,7 +491,7 @@ $(document).ready(function(){
     $("#containerDepit").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
-    var counter  = <?= isset($key)? $key++ : 0 ?>;
+    var counter  = '<?= isset($key)? $key++ : 0 ?>';
 
     $("#addDepit").click(function(){
        var tr = '<tr>'+

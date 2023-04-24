@@ -38,7 +38,7 @@ class AgentsExportSearch implements FromCollection,WithHeadings
         $movements = session('items');
 
         $exportmovements = collect();
-        foreach($movements as $movement){
+        foreach($movements  ?? [] as $movement){
                 $tempCollection = collect([
                     'movement_date' => $movement->movement_date,
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first(),

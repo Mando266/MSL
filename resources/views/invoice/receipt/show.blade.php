@@ -71,24 +71,28 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-12  text-right">
+
+                    <div class="form-group col-md-10  text-right">
                         <h3> <span style="font-size:22px;">                                     
-                        @if($receipt->bank_transfer != null)
-                            Bank Transfer  
+                        @if($receipt->bank_transfer != null) 
+                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->bank)->name}}<br> 
                         @endif
                         @if($receipt->bank_deposit != null)
-                            Bank Deposit 
-                        @endif
+                            {{$receipt->bank_deposit}}  Bank Deposit {{optional($receipt->bank)->name}}<br> 
+                        @endif 
                         @if($receipt->bank_check != null)
-                            Bank Check 
+                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}}<br> 
                         @endif
                         @if($receipt->bank_cash != null)
-                            Cash 
+                            {{$receipt->bank_cash}}  Cash <br>
                         @endif
                         @if($receipt->matching != null)
-                            Matching 
+                        {{$receipt->matching}}  Matching 
                         @endif
-                    </span>&nbsp;&nbsp;: طريقة الدفع<h3>
+                    </span>&nbsp;&nbsp;<h3>
+                    </div>
+                    <div class="form-group col-md-2  text-right">
+                        <h3>: طريقة الدفع </h3>
                     </div>
                 </div>
                 <div class="form-row">
@@ -104,6 +108,12 @@
                         <h3> <span style="font-size:22px;">{{optional($receipt)->notes}}</span>&nbsp;&nbsp; :  ملاحظات <h3>
                     </div>
                 </div>    
+                <div class="form-row">
+                    <div class="form-group col-md-12  text-right">
+                        <h3> <span style="font-size:22px;">{{optional($receipt->user)->name}}</span>&nbsp;&nbsp; :  المستخدم <h3>
+                    </div>
+                </div>   
+                
                 <div class="form-row">
                     <div class="form-group col-md-3  text-right">
                     <h3> <span></span>يعتمد<h3>

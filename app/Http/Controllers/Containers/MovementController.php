@@ -13,12 +13,13 @@ use App\Models\Voyages\Voyages;
 use App\Models\Containers\Movements;
 use App\Models\Master\Agents;
 use App\Models\Master\ContainerStatus;
-use App\Filters\Containers\ContainersIndexFilter;
+use App\Filters\Movements\ContainersIndexFilter;
 use App\MovementImportErrors;
 use Illuminate\Support\Carbon;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Master\ContinerOwnership;
 
 class MovementController extends Controller
 {
@@ -28,7 +29,7 @@ class MovementController extends Controller
         
         $movementErrors = MovementImportErrors::all();
         $container_id =  request()->input('container_id');
-        $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')->get();
+        $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')->with('container')->get();
         
         // dd($filteredData);
                 // $movements = Movements::where('movement_id', request('movement_id'))->paginate(30);
@@ -39,7 +40,7 @@ class MovementController extends Controller
         // remove element if last movement doesn't include movement_id or port_location_id
         if(request('movement_id') != null || request('port_location_id') != null){
             // Get All movements and sort it and get the last movement before this movement 
-            $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('movement_date','desc')->with('movementcode.containerstock','container')->get();
                         
             $new = $movements;
             $new = $new->groupBy('movement_date');
@@ -255,12 +256,15 @@ class MovementController extends Controller
         // End of Export Movements 
 
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $lessor = Containers::where('company_id',Auth::user()->company_id)->where('description','!=',null)
+        ->orderBy('id')->select('description')->distinct()->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $container_ownership = ContinerOwnership::orderBy('id')->get();
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
         $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
-        $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
+        // $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();        
         session()->flash('items',$exportMovements);
         if(count($temp) != 1){
             return view('containers.movements.index',[
@@ -270,7 +274,9 @@ class MovementController extends Controller
                 'containers'=>$containers,
                 'movementerrors' => $movementErrors,
                 'plNo' => $plNo,
+                'lessor'=>$lessor,
                 'ports'=>$ports,
+                'container_ownership'=>$container_ownership,
                 'voyages'=>$voyages,
                 'containersMovements'=>$containersMovements,
                 'vessels'=>$vessels,
@@ -286,7 +292,9 @@ class MovementController extends Controller
                         'containers'=>$containers,
                         'movementerrors' => $movementErrors,
                         'plNo' => $plNo,
+                        'lessor'=>$lessor,
                         'ports'=>$ports,
+                        'container_ownership'=>$container_ownership,
                         'voyages'=>$voyages,
                         'containersMovements'=>$containersMovements,
                         'vessels'=>$vessels,
