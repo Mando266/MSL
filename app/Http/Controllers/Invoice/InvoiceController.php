@@ -579,7 +579,7 @@ class InvoiceController extends Controller
 
         }elseif($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit"){
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->debit_confirm;
+            $inputs['invoice_no'] = 'DN'.' '.'/'.' '.$setting->debit_confirm;
             $setting->debit_confirm += 1;
             $setting->save();
         }
