@@ -551,6 +551,11 @@
 
                     </div>
                         <h4>Container Details</h4>
+                            @error('containerDetails')
+                                <div style="color: red; font-size: 38px">
+                                    {{$message}}
+                                </div>
+                            @enderror
                             <table id="containerDetails" class="table table-bordered">
                                 <thead>
                                     <tr>
