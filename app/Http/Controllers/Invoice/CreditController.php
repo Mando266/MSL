@@ -9,6 +9,7 @@ use App\Models\Invoice\CreditNote;
 use App\Models\Invoice\CreditNoteDesc;
 use App\Models\Master\Customers;
 use Illuminate\Support\Facades\Auth;
+use App\Setting;
 
 class CreditController extends Controller
 {
@@ -59,13 +60,21 @@ class CreditController extends Controller
         }
         $customer->save();
         $credit = CreditNote::create([
-            'credit_no'=>$request->credit_no,
             'company_id'=>Auth::user()->company_id,
             'customer_id'=>$request->customer_id,
             'notes'=>$request->notes,
             'total_amount'=>$total_amount,
             'currency'=>$request->currency,
         ]);
+        if(request('credit_no') != null){
+            $credit->credit_no = request('credit_no');
+        }else{
+            $setting = Setting::find(1);
+            $credit->credit_no = 'CN'.sprintf('%03u', $setting->credit_no).' / 23';
+            $setting->credit_no += 1;
+            $setting->save();
+        }
+        $credit->save();
         foreach($request->input('creditNoteDesc',[])  as $description){
             CreditNoteDesc::create([
                 'credit_note_id'=>$credit->id,

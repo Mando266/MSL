@@ -238,7 +238,7 @@ class InvoiceController extends Controller
         }
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
-            $invoice_no = $setting->debit_confirm;
+            $invoice_no = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 23';
             $setting->debit_confirm += 1;
         }else{
             $invoice_no = 'DRAFTD';
@@ -341,6 +341,7 @@ class InvoiceController extends Controller
                 'invoice_kind'=>'',
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
+                'booking_status'=>$request->booking_status,
                 'notes'=>$request->notes,
                 'customize_exchange_rate'=>$request->customize_exchange_rate,
             ]);
@@ -365,15 +366,26 @@ class InvoiceController extends Controller
         }
         
         $setting = Setting::find(1);
-        if($invoice->invoice_status == "confirm"){
-            $invoice_no = $setting->invoice_confirm;
-            $invoice->invoice_no = $invoice_no;
-            $setting->invoice_confirm += 1;
+        if($request->bldraft_id != 'customize'){
+            if($invoice->invoice_status == "confirm"){
+                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
+                    $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
+                    $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }
+                $setting->invoice_confirm += 1;
+            }else{
+                $invoice_no = 'DRAFTV';
+                $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+                $invoice->invoice_no = $invoice_no;
+                $setting->invoice_draft += 1;
+            }
         }else{
-            $invoice_no = 'DRAFTV';
-            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
-            $invoice->invoice_no = $invoice_no;
-            $setting->invoice_draft += 1;
+            if($request->booking_status == "import"){
+                $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+            }elseif($request->booking_status == "export"){
+                $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+            }
         }
         $setting->save();
         $invoice->save();
@@ -555,15 +567,15 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        if($request->bldraft_id == 'customize'){
-        $totalAmount = 0;
-        foreach($request->input('invoiceChargeDesc',[])  as $desc){
-            $totalAmount += $desc['total_amount'];
+        if($invoice->bldraft_id == 0){
+            $totalAmount = 0;
+            foreach($request->input('invoiceChargeDesc',[])  as $desc){
+                $totalAmount += $desc['total_amount'];
+            }
+            if($totalAmount == 0){
+                return redirect()->back()->with('error','Invoice Total Amount Can not be equal zero')->withInput($request->input());
+            }
         }
-        if($totalAmount == 0){
-            return redirect()->back()->with('error','Invoice Total Amount Can not be equal zero')->withInput($request->input());
-        }
-    }
         if($request->invoice_status == "confirm"){
             if($request->add_egp == "true"){
                 return redirect()->back()->with('error','You Must Choose EGP or USD in Confirmed Invoice')->withInput($request->input());
@@ -573,16 +585,27 @@ class InvoiceController extends Controller
         unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);        
         if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm;
+            // check if this invoice is customized
+            if($invoice->bldraft_id != 0){
+                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
+                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
+                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }
+            }else{
+                if($inputs['booking_status'] == "import"){
+                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }elseif($inputs['booking_status'] == "export"){
+                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                }
+            }
             $setting->invoice_confirm += 1;
-            $setting->save();
-
         }elseif($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit"){
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'DN'.' '.'/'.' '.$setting->debit_confirm;
+            $inputs['invoice_no'] = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 23';
             $setting->debit_confirm += 1;
-            $setting->save();
         }
+        $setting->save();
         $invoice->update($inputs);
         InvoiceChargeDesc::destroy(explode(',',$request->removed));
         $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc); 
