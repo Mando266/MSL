@@ -49,6 +49,10 @@
                                 <label>Receipt No</label>
                                     <input type="text" class="form-control" placeholder="Receipt No" autocomplete="off" value="{{old('receipt_no',$setting->receipt_no )}}" style="background-color:#fff" name="receipt_no">
                             </div>
+                            <div class="form-group col-md-3" >
+                                <label>Credit Note No</label>
+                                    <input type="text" class="form-control" placeholder="Credit Note No" autocomplete="off" value="{{old('credit_no',$setting->credit_no )}}" style="background-color:#fff" name="credit_no">
+                            </div>
                         </div>
 
                             <div class="row">
