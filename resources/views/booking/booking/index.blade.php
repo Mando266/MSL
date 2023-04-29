@@ -266,7 +266,7 @@
                                                     <ul class="table-controls">
                                                     @if($item->booking_confirm == 1)
                                                         <li>
-                                                            <a href="{{route('booking.showGateOut',['booking'=>$item->id])}}" target="_blank">
+                                                            <a href="{{route('booking.selectGateOut',['booking'=>$item->id])}}" target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
                                                             </a>
                                                         </li>

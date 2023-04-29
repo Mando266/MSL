@@ -191,29 +191,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                            <tr>
-                                <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" required>
-                                </td>
-                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value=""
-                                    placeholder="Amount" autocomplete="off"  style="background-color: white;"  required>
-                                </td>
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_yes" value="1" checked>
-                                        <label class="form-check-label" for="item_0_enabled_yes">Yes</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_no" value="0">
-                                        <label class="form-check-label" for="item_0_enabled_no">No</label>
-                                    </div>
-                                </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
-                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;" required>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table> 
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" required>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value=""
+                                            placeholder="Amount" autocomplete="off"  style="background-color: white;"  required>
+                                        </td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_yes" value="1" checked>
+                                                <label class="form-check-label" for="item_0_enabled_yes">Yes</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_no" value="0">
+                                                <label class="form-check-label" for="item_0_enabled_no">No</label>
+                                            </div>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
+                                            placeholder="Total" autocomplete="off" disabled style="background-color: white;" required>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>

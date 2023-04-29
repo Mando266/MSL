@@ -124,6 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('booking')->namespace('Booking')->group(function () {
         Route::resource('booking','BookingController');
         Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
+        Route::get('selectGateOut/{booking}',[BookingController::class,'selectGateOut'])->name('booking.selectGateOut');
         Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
         Route::get('showGateIn/{booking}',[BookingController::class,'showGateIn'])->name('booking.showGateIn');
         Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
@@ -173,6 +174,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('receipt','ReceiptController');
         Route::get('selectinvoice',[ReceiptController::class,'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund','RefundController');
+        Route::resource('creditNote','CreditController');
+
     });
     /*
     |-------------------------------------------
@@ -180,6 +183,7 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::get('/update/manual',[RefreshController::class,'updateContainers'])->name('containerRefresh');
+    Route::get('/update/quotation',[RefreshController::class,'updateQuotation'])->name('updateQuotation');
     Route::get('/update/booking/containers/{id?}',[RefreshController::class,'updateBookingContainers'])->name('bookingContainersRefresh');
 });
 Auth::routes(['register' => false]);

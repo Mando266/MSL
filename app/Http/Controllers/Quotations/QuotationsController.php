@@ -131,6 +131,16 @@ class QuotationsController extends Controller
         //         break;                
         // }
         // Admin 
+            $portOfLoad = Ports::find($request->input('load_port_id'));
+            $portOfDischarge = Ports::find($request->input('discharge_port_id'));
+            $shipment_type = '';
+            //check if port of load in egypt to make shipment type export or import
+            if($portOfLoad->country_id == 61){
+                $shipment_type = 'Export';
+            }
+            if($portOfDischarge->country_id == 61){
+                $shipment_type = 'Import';
+            }
         if(isset($request->agent_id)){
             $oldQuotations = 
             Quotation::where("customer_id",$request->input('customer_id'))
@@ -153,6 +163,7 @@ class QuotationsController extends Controller
                 }    
             }
             //  $request->agent_id ==> Import Agent  ,  $request->discharge_agent_id   ==> Discharge Agent
+            
             $quotations = Quotation::create([
                 'ref_no'=> "",
                 'agent_id'=>$request->agent_id,
@@ -190,6 +201,7 @@ class QuotationsController extends Controller
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
+                'shipment_type'=> $shipment_type,
             ]);
             $refNo .=$quotations->id;
             $quotations->ref_no = $refNo;
@@ -230,6 +242,7 @@ class QuotationsController extends Controller
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
+                'shipment_type'=> $shipment_type,
             ]);
             $refNo .=$quotations->id;
             $quotations->ref_no = $refNo;
