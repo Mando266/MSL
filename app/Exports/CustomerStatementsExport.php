@@ -18,8 +18,6 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             "BL NO",
             "Receipt No",
             "Receipt Amount",
-            "Refund Receipt No",
-            "Refund Amount",
             "Balance",
             "Vessel",
             "Voyage",
@@ -30,8 +28,9 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
 
     public function collection()
     {
-       
+        
         $invoices = session('customerStatement');
+        $exporRefunds = session('exporRefunds');
         $exportinvoices = collect();
 
         foreach($invoices  ?? [] as $invoice){
@@ -46,7 +45,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
         }
 
         $receipts = '';
-        $refunds = '';
+        // $refunds = '';
         $totalreceipt = 0;
         $totalrefund = 0;
         $receiptDate = '';
@@ -56,10 +55,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 if($receipt->status == "valid"){
                     $receipts .= $receipt->receipt_no . "\n";
                     $totalreceipt += $receipt->paid;
-                }else{
-                    $refunds .= $receipt->receipt_no . "\n";
-                    $totalrefund += $receipt->paid;
                 }
+                // else{
+                //     $refunds .= $receipt->receipt_no . "\n";
+                //     $totalrefund += $receipt->paid;
+                // }
             }
         }
             $totalusd = 0;
@@ -84,8 +84,6 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     'bl no' => optional($invoice->bldraft)->ref_no,
                     'receipts' => $receipts,
                     'receipt_amount' => $totalreceipt,
-                    'refunds' => $refunds,
-                    'totalrefund' => $totalrefund,
                     'balance' =>  $Curency == 'USD' ? optional($invoice->customerShipperOrFfw)->credit : optional($invoice->customerShipperOrFfw)->credit_egp,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
@@ -93,6 +91,24 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 ]);
                 
                 $exportinvoices->add($tempCollection);
+        }
+        foreach($exporRefunds as $exporRefund){
+            $tempCollection = collect([
+                'customer' => optional($exporRefund->customer)->name,
+                'invoice_no' => '',
+                'date' => '',
+                'invoice_amount' => '',
+                'invoice_amount_egp' => '',
+                'bl no' => '',
+                'receipts' => $exporRefund->receipt_no,
+                'receipt_amount' => $exporRefund->paid,
+                'balance' =>  '',
+                'vessel' => '',
+                'voyage' => '',
+                'created_at' => $exporRefund->created_at
+            ]);
+            
+            $exportinvoices->add($tempCollection);
         }
         
         return $exportinvoices;
