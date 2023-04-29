@@ -288,13 +288,13 @@ class BookingController extends Controller
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
         $gateouts = collect();
         foreach($booking->bookingContainerDetails as $detail){
-            
             if($gateouts->count() == 0){
                 $port = Ports::find($detail->activity_location_id);
                 $temp = collect([
                     'id' => $port->id,
                     'pick_up_location' => $port->pick_up_location,
                 ]);
+                $gateouts->add($temp->toArray());
             }else{
                 $activityLocationAdded = false;
                 foreach($gateouts as $gateout){
@@ -302,15 +302,16 @@ class BookingController extends Controller
                         $activityLocationAdded = true;
                     }
                 }
-                if(!$activityLocationAdded){
+                if($activityLocationAdded == false){
                     $port = Ports::find($detail->activity_location_id);
                     $temp = collect([
                         'id' => $port->id,
                         'pick_up_location' => $port->pick_up_location,
                     ]);
+                    $gateouts->add($temp->toArray());
                 }
             }
-            $gateouts->add($temp->toArray());
+            
         }
         return view('booking.booking.selectGateOut',[
             'booking'=>$booking,
