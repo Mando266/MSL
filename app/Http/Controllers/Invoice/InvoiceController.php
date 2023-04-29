@@ -382,10 +382,11 @@ class InvoiceController extends Controller
             }
         }else{
             if($request->booking_status == "import"){
-                $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
             }elseif($request->booking_status == "export"){
-                $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
             }
+            $setting->invoice_confirm += 1;
         }
         $setting->save();
         $invoice->save();
