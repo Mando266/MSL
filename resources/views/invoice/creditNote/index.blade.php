@@ -55,6 +55,7 @@
                                         <th>Credit Note No</th>
                                         <th>Customer Name</th>
                                         <th>Total Amount</th>
+                                        <th>Currancy</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,6 +64,8 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($creditNotes,$loop)}}</td>
                                             <td>{{$creditNote->credit_no}}</td>
                                             <td>{{optional($creditNote->customer)->name}}</td>
+                                            <td>{{$creditNote->total_amount}}</td>  
+                                            
                                             <td>{{$creditNote->total_amount}}</td>                              
                                         </tr>
                                     @empty

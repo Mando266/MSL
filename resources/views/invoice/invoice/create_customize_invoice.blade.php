@@ -210,8 +210,17 @@
                                         </label> 
                                     </div>
                                 </div>
-                                </div>
+                            </div>
 
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="status">Booking Status<span class="text-warning"> * </span></label>
+                                    <select class="selectpicker form-control" data-live-search="true" name="booking_status" title="{{trans('forms.select')}}" required>
+                                        <option value="import">Import</option>
+                                        <option value="export">Export</option>
+                                    </select>
+                                </div>
+                            </div>  
                                 
                             <div class="form-row">
                                 <div class="col-md-12 form-group">

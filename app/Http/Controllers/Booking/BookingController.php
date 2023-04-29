@@ -291,7 +291,7 @@ class BookingController extends Controller
             
             if($gateouts->count() == 0){
                 $port = Ports::find($detail->activity_location_id);
-                dd($port);
+                //dd($port);
                 $temp = collect([
                     'id' => $port->id,
                     'pick_up_location' => $port->pick_up_location,
