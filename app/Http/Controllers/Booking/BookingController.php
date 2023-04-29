@@ -419,6 +419,9 @@ class BookingController extends Controller
             'commodity_description' =>['required'],
             'bl_release' =>['required'],
             'customer_id' => ['required'], 
+            'containerDetails' => ['required'],
+        ],[
+            'containerDetails.required'=>'Table Cannot be empty',
         ]);
 
         // $quotation = Quotation::find($request->quotation_id);
