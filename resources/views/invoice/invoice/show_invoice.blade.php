@@ -27,7 +27,10 @@
                 <table class="col-md-12 tableStyle" style="border-style: hidden !important;">
                     <thead>
                         <tr>
-                            @if($invoice->invoice_status == "draft")
+
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                            <th class="text-center  underline" style="font-size: 24px !important;">IMPORT INVOICE</th>
+                            @elseif($invoice->invoice_status == "draft")
                             <th class="text-center  underline" style="font-size: 24px !important;">PROFORMA INVOICE</th>
                             @else
                             <th class="text-center  underline" style="font-size: 24px !important;">EXPORT INVOICE</th>
@@ -76,7 +79,7 @@
                             <td class="col-md-2 tableStyle text-center" >IMO Class</td>
                             <td class="col-md-2 tableStyle text-center" ><input type="text" style="overflow: hidden; border-style: hidden;"></td>
                         </tr>
-                        
+                         
                         <tr>
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>

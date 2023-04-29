@@ -187,14 +187,14 @@ class InvoiceController extends Controller
         }
         if($request->bldraft_id != 'customize'){
 
-        $totalAmount = 0;
-        foreach($request->input('invoiceChargeDesc',[])  as $desc){
-            $totalAmount += $desc['total_amount'];
+            $totalAmount = 0;
+            foreach($request->input('invoiceChargeDesc',[])  as $desc){
+                $totalAmount += $desc['total_amount'];
+            }
+            if($totalAmount == 0){
+                return redirect()->back()->with('error','Invoice Total Amount Can not be Equal Zero')->withInput($request->input());
+            }
         }
-        if($totalAmount == 0){
-            return redirect()->back()->with('error','Invoice Total Amount Can not be Equal Zero')->withInput($request->input());
-        }
-    }
         $bldraft = BlDraft::where('id',$request->bldraft_id)->with('blDetails')->first();
         $blkind = str_split($request->bl_kind, 2);
         $blkind = $blkind[0];
@@ -263,7 +263,6 @@ class InvoiceController extends Controller
                 ]);
             }
         }elseif($request->bldraft_id == 'customize'){
-            //dd($request->input());
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
                 InvoiceChargeDesc::create([
                     'invoice_id'=>$invoice->id,

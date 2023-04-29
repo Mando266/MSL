@@ -168,7 +168,7 @@ class BookingController extends Controller
             //     }
             // }
             $user = Auth::user();
-
+            
             $booking = Booking::create([
                 'ref_no'=> "",
                 'booked_by'=>$user->id,
@@ -237,10 +237,16 @@ class BookingController extends Controller
                 'counter'=>0
             ]);
         }
-        $setting = Setting::find(1);
-        $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
-        $setting->booking_ref_no += 1;
-        $setting->save();
+        // check if quotation Export create serial No else will not create serial No
+        $quotation = Quotation::find($request->input('quotation_id'));
+        if($quotation->shipment_type == "Export"){
+            $setting = Setting::find(1);
+            $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
+            $setting->booking_ref_no += 1;
+            $setting->save();
+        }elseif($quotation->shipment_type == "Import"){
+            $booking->ref_no = $request->input('ref_no');
+        }
         $booking->save();
 
         if($request->hasFile('certificat')){
@@ -276,9 +282,48 @@ class BookingController extends Controller
             'secondVoyagePort'=>$secondVoyagePort
         ]);
     }
-    public function showGateOut($id)
+    // booking.showGateOut',['booking'=>$item->id]
+    public function selectGateOut($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $gateouts = collect();
+        foreach($booking->bookingContainerDetails as $detail){
+            
+            if($gateouts->count() == 0){
+                $port = Ports::find($detail->activity_location_id);
+                dd($port);
+                $temp = collect([
+                    'id' => $port->id,
+                    'pick_up_location' => $port->pick_up_location,
+                ]);
+            }else{
+                $activityLocationAdded = false;
+                foreach($gateouts as $gateout){
+                    if($gateout['id'] == $detail->activity_location_id){
+                        $activityLocationAdded = true;
+                    }
+                }
+                if(!$activityLocationAdded){
+                    $port = Ports::find($detail->activity_location_id);
+                    $temp = collect([
+                        'id' => $port->id,
+                        'pick_up_location' => $port->pick_up_location,
+                    ]);
+                }
+            }
+            $gateouts->add($temp->toArray());
+        }
+        return view('booking.booking.selectGateOut',[
+            'booking'=>$booking,
+            'gateouts'=>$gateouts,
+        ]);
+    }
+    public function showGateOut($id)
+    {
+        $activityLoc = request()->activity_location_id;
+        $booking = Booking::with(['bookingContainerDetails'=> function ($query) use ($activityLoc) {
+            $query->where('activity_location_id', $activityLoc)->with('containerType','container');
+        }])->with('voyage.vessel','secondvoyage.vessel')->find($id);
         $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
         $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
         

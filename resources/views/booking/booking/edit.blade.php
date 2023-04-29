@@ -537,7 +537,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <div class="custom-file-container" data-upload-id="certificat">
                                     <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
                                     <label class="custom-file-container__custom-file" >
@@ -548,6 +548,7 @@
                                     <div class="custom-file-container__image-preview"></div>
                                 </div>
                             </div>
+
                     </div>
                         <h4>Container Details</h4>
                             <table id="containerDetails" class="table table-bordered">

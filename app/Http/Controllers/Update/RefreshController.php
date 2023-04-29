@@ -12,9 +12,30 @@ use App\Models\Master\Containers;
 use App\Models\Master\Ports;
 use App\Services\BldraftService;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Quotations\Quotation;
+
 
 class RefreshController extends Controller
 {
+    
+    public function updateQuotation() 
+    {
+        $quotations = Quotation::all();
+        foreach($quotations as $quotation){
+            $portOfLoad = Ports::find($quotation->load_port_id);
+            $portOfDischarge = Ports::find($quotation->discharge_port_id);
+            $shipment_type = '';
+            //check if port of load in egypt to make shipment type export or import
+            if($portOfLoad->country_id == 61){
+                $shipment_type = 'Export';
+            }
+            if($portOfDischarge->country_id == 61){
+                $shipment_type = 'Import';
+            }
+            $quotation->update(['shipment_type'=> $shipment_type]);
+        }
+        dd("Done");
+    }
     public function updateContainers() 
     {
         $movements = Movements::orderBy('movement_date','desc')->with('movementcode.containerstock')->get();

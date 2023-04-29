@@ -51,16 +51,16 @@
                             <td class="col-md-12 tableStyle" colspan="4">Customer: <span class="entry">{{ $invoice->customer }}</span></td>
                         </tr>
                         <tr>
-                            <td class="col-md-3 tableStyle" >Booking Ref:  <span class="entry">{{ optional(optional($invoice->bldraft)->booking)->ref_no }}</span></td>
-                            <td class="col-md-3 tableStyle" >Vessel: <span class="entry">{{optional(optional(optional($invoice->bldraft)->voyage)->vessel)->name }}</span></td>
-                            <td class="col-md-3 tableStyle" >Voyage: <span class="entry">{{ optional(optional($invoice->bldraft)->voyage)->voyage_no }}</span></td>
+                            <td class="col-md-3 tableStyle" >Booking Ref:  <span class="entry">{{$invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no :  optional(optional($invoice->bldraft)->booking)->ref_no }}</span></td>
+                            <td class="col-md-3 tableStyle" >Vessel: <span class="entry">{{$invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name :  optional(optional(optional($invoice->bldraft)->voyage)->vessel)->name }}</span></td>
+                            <td class="col-md-3 tableStyle" >Voyage: <span class="entry">{{$invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no :  optional(optional($invoice->bldraft)->voyage)->voyage_no }}</span></td>
                             <td class="col-md-3 tableStyle" >ATD: <span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                         </tr>
                         <tr>
-                            <td class="col-md-3 tableStyle" >Place of Receipt:  <br> <br> <span class="entry" style="text-align: center;">{{ optional(optional($invoice->bldraft)->placeOfAcceptence)->code }}</span></td>
-                            <td class="col-md-3 tableStyle" >Loading Port: <br> <br> <span class="entry" style="text-align: center;">{{ optional(optional($invoice->bldraft)->loadPort)->code }}</span></td>
-                            <td class="col-md-3 tableStyle" >Discharging Port: <br> <br> <span class="entry" style="text-align: center;">{{ optional(optional($invoice->bldraft)->dischargePort)->code }}</span></td>
-                            <td class="col-md-3 tableStyle" >Port of Delivery: <br> <br> <span class="entry" style="text-align: center;">{{ optional(optional($invoice->bldraft)->placeOfDelivery)->code }}</span></td>
+                            <td class="col-md-3 tableStyle" >Place of Receipt:  <br> <br> <span class="entry" style="text-align: center;">{{optional(optional($invoice->bldraft)->placeOfAcceptence)->code }}</span></td>
+                            <td class="col-md-3 tableStyle" >Loading Port: <br> <br> <span class="entry" style="text-align: center;">{{$invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional(optional($invoice->bldraft)->loadPort)->code }}</span></td>
+                            <td class="col-md-3 tableStyle" >Discharging Port: <br> <br> <span class="entry" style="text-align: center;">{{$invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional(optional($invoice->bldraft)->dischargePort)->code }}</span></td>
+                            <td class="col-md-3 tableStyle" >Port of Delivery: <br> <br> <span class="entry" style="text-align: center;">{{$invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code :  optional(optional($invoice->bldraft)->placeOfDelivery)->code }}</span></td>
                         </tr>
                     </tbody>
                 </table>

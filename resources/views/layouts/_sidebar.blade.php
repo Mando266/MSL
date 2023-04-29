@@ -428,7 +428,11 @@
                                     <a href="{{route('receipt.index')}}">Receipt Gates</a>
                                 </li>
                                 @endpermission
-
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('creditNote.index')}}">Credit Note</a>
+                                </li>
+                                @endpermission
                                 @permission('Refund-List')
                                 <li>
                                     <a href="{{route('refund.index')}}">Refund Gates</a>
@@ -439,6 +443,7 @@
                                     <a href="{{route('statements.index')}}">Customer Statements</a>
                                 </li>
                                 @endpermission
+
                         </ul>
             </li>
             @endpermission

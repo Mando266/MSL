@@ -26,6 +26,8 @@
                                         @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
                                         <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
+                                        @elseif(optional($bldraft->booking->consignee)->name != null)
+                                        <option value="{{optional($bldraft->booking)->customer_consignee_id}}">{{ optional($bldraft->booking->consignee)->name }} Consignee</option>
                                         @endif
                                         <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
                                         @endif
@@ -175,7 +177,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($triffDetails->triffPriceDetailes as $key => $detail)
+                                    @foreach($triffDetails->triffPriceDetailes ?? [] as $key => $detail) 
                                   
                             <tr>
                                 <td>

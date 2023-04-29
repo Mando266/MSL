@@ -457,7 +457,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <div class="custom-file-container" data-upload-id="certificat">
                                     <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
                                     <label class="custom-file-container__custom-file" >
@@ -473,6 +473,12 @@
                                 </div>
                                 @enderror
                             </div>
+                            @if(optional($quotation)->shipment_type == "Import")
+                            <div class="form-group col-md-3">
+                                <label>Ref No</label>
+                                <input type="text" class="form-control"  style="background-color:#fff" name="ref_no">
+                            </div>
+                            @endif
                             
                         </div>
 
