@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Statements;
 
 use App\Filters\Statements\CustomerStatementIndexFilter;
+use App\Filters\Statements\CustomerStatementRefundIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Invoice\Invoice;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Voyages\Voyages;
 use App\Models\Master\Customers;
+use App\Models\Receipt\Receipt;
 
 class CustomerStatementController extends Controller
 {
@@ -24,8 +26,11 @@ class CustomerStatementController extends Controller
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->paginate(30);
         $exportinvoices = Invoice::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
+        $exporRefunds = Receipt::filter(new CustomerStatementRefundIndexFilter(request()))->orderBy('id','desc')
+        ->where('company_id',Auth::user()->company_id)->where('status','refund_egp')->get();
 
         session()->flash('customerStatement',$exportinvoices);
+        session()->flash('exporRefunds',$exporRefunds);
 
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
