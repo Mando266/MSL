@@ -55,7 +55,7 @@
                                         <th>Credit Note No</th>
                                         <th>Customer Name</th>
                                         <th>Total Amount</th>
-                                        <th>Currancy</th>
+                                        <th>Currency</th>
                                     </tr>
                                 </thead>
                                 <tbody>
