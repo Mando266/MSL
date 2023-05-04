@@ -18,14 +18,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Setting;
 use App\Models\Master\Customers;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class InvoiceController extends Controller
 {
    
     public function index()
     {
-        $invoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->paginate(30);
+
+        $invoices = Invoice::filter(new InvoiceIndexFilter(request()))
+        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')
+        ->orderBy('id', 'desc')
+        ->get(); // Get all receipts from the database
+
+        $sortedInvoices = $invoices->sortByDesc(function ($invoice) {
+        $matches = [];
+        preg_match('/\d+/', $invoice->invoice_no, $matches); // Extract the number from the receipt number using a regular expression
+        return (int) $matches[0]; // Return the number as an integer for sorting
+        });
+
+        $perPage = 30;
+        $page = request('page', 1);
+        $offset = ($page - 1) * $perPage;
+
+        // Create a new collection containing the receipts for the current page
+        $currentPagesortedInvoices = collect($sortedInvoices->slice($offset, $perPage));
+
+        // Create a paginator for the sortedInvoices
+        $paginator = new LengthAwarePaginator(
+        $currentPagesortedInvoices,
+        $sortedInvoices->count(),
+        $perPage,
+        $page,
+        ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+
         $exportinvoices = Invoice::filter(new InvoiceIndexFilter(request()))->orderBy('id','desc')
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
         //dd($exportinvoices);
@@ -36,7 +64,7 @@ class InvoiceController extends Controller
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $etd = VoyagePorts::get();
         return view('invoice.invoice.index',[
-            'invoices'=>$invoices,
+            'invoices'=>$paginator,
             'invoiceRef'=>$invoiceRef,
             'bldrafts'=>$bldrafts,
             'customers'=>$customers,
@@ -381,12 +409,19 @@ class InvoiceController extends Controller
                 $setting->invoice_draft += 1;
             }
         }else{
-            if($request->booking_status == "import"){
+            if($request->booking_status == "import" && $invoice->invoice_status == "confirm"){
                 $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
-            }elseif($request->booking_status == "export"){
+                $setting->invoice_confirm += 1;
+            }elseif($request->booking_status == "export" && $invoice->invoice_status == "confirm"){
                 $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                $setting->invoice_confirm += 1;
             }
-            $setting->invoice_confirm += 1;
+            elseif($invoice->invoice_status == "draft"){
+            $invoice_no = 'DRAFTV';
+            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+            $invoice->invoice_no = $invoice_no;
+            $setting->invoice_draft += 1;
+            }
         }
         $setting->save();
         $invoice->save();
@@ -582,6 +617,7 @@ class InvoiceController extends Controller
                 return redirect()->back()->with('error','You Must Choose EGP or USD in Confirmed Invoice')->withInput($request->input());
             }
         }
+        $setting = Setting::find(1);
         $inputs = request()->all();
         unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);        
         if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){

@@ -55,7 +55,7 @@
                                         <th>Credit Note No</th>
                                         <th>Customer Name</th>
                                         <th>Total Amount</th>
-                                        <th>Currancy</th>
+                                        <th>Currency</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,8 +65,11 @@
                                             <td>{{$creditNote->credit_no}}</td>
                                             <td>{{optional($creditNote->customer)->name}}</td>
                                             <td>{{$creditNote->total_amount}}</td>  
-                                            
-                                            <td>{{$creditNote->total_amount}}</td>                              
+                                            @if($creditNote->currency == 'credit_egp')
+                                            <td>EGP</td>    
+                                            @else
+                                            <td>USD</td>    
+                                            @endif
                                         </tr>
                                     @empty
                                         <tr class="text-center">

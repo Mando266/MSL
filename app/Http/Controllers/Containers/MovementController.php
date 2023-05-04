@@ -29,19 +29,60 @@ class MovementController extends Controller
         
         $movementErrors = MovementImportErrors::all();
         $container_id =  request()->input('container_id');
-        $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')->with('container')->get();
+
+        if(Auth::user()->id == 14){
+            $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')
+            ->whereHas('container.containersOwner', function ($query) {
+                $query->where('id', 1);
+            })->orWhere(function ($query2) {
+                $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                    $qq->where('id', 1);
+                })
+                ->whereHas('container.containersOwner', function ($qqq) {
+                    $qqq->where('id', 6);
+                });
+            })->groupBy('container_id')->with('container')->get();
+            $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')
+            ->whereHas('container.containersOwner', function ($query) {
+                $query->where('id', 1);
+            })->orWhere(function ($query2) {
+                $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                    $qq->where('id', 1);
+                })
+                ->whereHas('container.containersOwner', function ($qqq) {
+                    $qqq->where('id', 6);
+                });
+            })->distinct()->get()->pluck('bl_no');
+        }else{
+            $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
+            $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy('container_id')->with('container')->get();
+        }
         
         // dd($filteredData);
                 // $movements = Movements::where('movement_id', request('movement_id'))->paginate(30);
         $plNo = request()->input('bl_no');
-        $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
         
         
         // remove element if last movement doesn't include movement_id or port_location_id
         if(request('movement_id') != null || request('port_location_id') != null){
             // Get All movements and sort it and get the last movement before this movement 
+            if(Auth::user()->id == 14){
+                $movements = Movements::filter(new ContainersIndexFilter(request()))
+                ->whereHas('container.containersOwner', function ($query) {
+                    $query->where('id', 1);
+                })->orWhere(function ($query2) {
+                    $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                        $qq->where('id', 1);
+                    })
+                    ->whereHas('container.containersOwner', function ($qqq) {
+                        $qqq->where('id', 6);
+                    });
+                })->orderBy('movement_date','desc')->with('movementcode.containerstock','container')->get();
+            }else{
+                $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('movement_date','desc')->with('movementcode.containerstock','container')->get();
+            }
             $movements = Movements::filter(new ContainersIndexFilter(request()))->orderBy('movement_date','desc')->with('movementcode.containerstock','container')->get();
-                        
+
             $new = $movements;
             $new = $new->groupBy('movement_date');
             
@@ -58,7 +99,22 @@ class MovementController extends Controller
             if(request('movement_id') != null){
                 foreach($filteredData as $key => $move){
                     // Get All movements and sort it and get the last movement before this movement 
-                    $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                    if(Auth::user()->id == 14){
+                        $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')
+                        ->whereHas('container.containersOwner', function ($query) {
+                            $query->where('id', 1);
+                        })->orWhere(function ($query2) {
+                            $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                                $qq->where('id', 1);
+                            })
+                            ->whereHas('container.containersOwner', function ($qqq) {
+                                $qqq->where('id', 6);
+                            });
+                        })->with('movementcode.containerstock')->get();
+                    }else{
+                        $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                    }
+                        $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
                                 
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
@@ -82,7 +138,21 @@ class MovementController extends Controller
             if(request('port_location_id') != null){
                 foreach($filteredData as $key =>$move){
                     // Get All movements and sort it and get the last movement before this movement 
-                    $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                    if(Auth::user()->id == 14){
+                        $tempMovements = Movements::where('container_id',$move->container_id)
+                        ->whereHas('container.containersOwner', function ($query) {
+                            $query->where('id', 1);
+                        })->orWhere(function ($query2) {
+                            $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                                $qq->where('id', 1);
+                            })
+                            ->whereHas('container.containersOwner', function ($qqq) {
+                                $qqq->where('id', 6);
+                            });
+                        })->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                    }else{
+                        $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+                    }
                                 
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
@@ -109,7 +179,21 @@ class MovementController extends Controller
             $tillDate = request('TillDate');
             $periods = Period::where('demurrage_id',request('Triff_id'))->get();
             // Get All movements and sort it and get the last movement before this movement 
-            $movements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            if(Auth::user()->id == 14){
+                $movements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')
+                ->whereHas('container.containersOwner', function ($query) {
+                    $query->where('id', 1);
+                })->orWhere(function ($query2) {
+                    $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                        $qq->where('id', 1);
+                    })
+                    ->whereHas('container.containersOwner', function ($qqq) {
+                        $qqq->where('id', 6);
+                    });
+                })->with('movementcode.containerstock')->get();
+            }else{
+                $movements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            }
                         
             $new = $movements;
             $new = $new->groupBy('movement_date');
@@ -145,7 +229,21 @@ class MovementController extends Controller
         
         foreach($movements as $move){
             // Get All movements and sort it and get the last movement before this movement 
-            $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            if(Auth::user()->id == 14){
+                $tempMovements = Movements::where('container_id',$move->container_id)
+                ->whereHas('container.containersOwner', function ($query) {
+                    $query->where('id', 1);
+                })->orWhere(function ($query2) {
+                    $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                        $qq->where('id', 1);
+                    })
+                    ->whereHas('container.containersOwner', function ($qqq) {
+                        $qqq->where('id', 6);
+                    });
+                })->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            }else{
+                $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
+            }
                         
             $new = $tempMovements;
             $new = $new->groupBy('movement_date');
@@ -306,7 +404,21 @@ class MovementController extends Controller
             }
             $movement = Movements::find($container_id)->first();
             $container = Containers::find($container_id)->first();
-            $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$container_id);
+            if(Auth::user()->id == 14){
+                $movements = Movements::filter(new ContainersIndexFilter(request()))
+                ->whereHas('container.containersOwner', function ($query) {
+                    $query->where('id', 1);
+                })->orWhere(function ($query2) {
+                    $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                        $qq->where('id', 1);
+                    })
+                    ->whereHas('container.containersOwner', function ($qqq) {
+                        $qqq->where('id', 6);
+                    });
+                })->where('container_id',$container_id);
+            }else{
+                $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id',$container_id);
+            }
             
             $movementId = false;
             $movementsArray = false;
@@ -373,7 +485,21 @@ class MovementController extends Controller
                     }
                     $exportmovements = $exportmovements->collapse();
                     // prepare Data for show
-                    $movements = Movements::where('container_id',$container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->paginate(30);
+                    if(Auth::user()->id == 14){
+                        $movements = Movements::where('container_id',$container_id)->orderBy('movement_date','desc')
+                        ->whereHas('container.containersOwner', function ($query) {
+                            $query->where('id', 1);
+                        })->orWhere(function ($query2) {
+                            $query2->whereHas('movementcode.containerstatus', function ($qq) {
+                                $qq->where('id', 1);
+                            })
+                            ->whereHas('container.containersOwner', function ($qqq) {
+                                $qqq->where('id', 6);
+                            });
+                        })->with('movementcode.containerstock')->paginate(30);
+                    }else{
+                        $movements = Movements::where('container_id',$container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->paginate(30);
+                    }
                     $new = $movements->getCollection();
                     $new = $new->groupBy('movement_date');
                     

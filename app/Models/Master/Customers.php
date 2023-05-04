@@ -2,6 +2,9 @@
 
 namespace App\Models\Master;
 
+use App\Models\Invoice\CreditNote;
+use App\Models\Invoice\Invoice;
+use App\Models\Receipt\Receipt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
@@ -25,6 +28,16 @@ class Customers extends Model implements PermissionSeederContract
     }
     public function CustomerRoles (){
         return $this->hasMany(CustomerRoles::class,'customer_id','id');
+    }
+    public function invoices (){
+        return $this->hasMany(Invoice::class,'customer_id','id');
+    }
+    public function creditNotes (){
+        return $this->hasMany(CreditNote::class,'customer_id','id');
+    }
+    public function refunds (){
+        return $this->hasMany(Receipt::class,'customer_id','id')
+            ->where('status', 'refund_usd')->orWhere('status', 'refund_egp');
     }
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');

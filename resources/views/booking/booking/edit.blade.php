@@ -605,7 +605,7 @@
                                     @if($item->container_id == 000)
                                     <td class="ports">
                                         <select class="selectpicker form-control" name="containerDetails[{{ $key }}][activity_location_id]" id="activity_location_id" data-live-search="true"  data-size="10"
-                                        title="{{trans('forms.select')}}">
+                                        title="{{trans('forms.select')}}" required>
                                             @foreach ($activityLocations as $activityLocation)
                                                 <option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id',$item->activity_location_id) ? 'selected':''}}>{{$activityLocation->code}}</option>
                                             @endforeach
@@ -713,7 +713,7 @@ $(document).ready(function(){
                 '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
                 '<td><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" id="number"  onchange="return check_value();" placeholder="QTY" required></td>'+
-                '<td class="ports"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}} required>{{$activityLocation->code}}</option> @endforeach </select></td>'+
+                '<td class="ports"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" required name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
                 '<td class="containerDetailsID"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option>@foreach ($containers as $item)<option value="{{$item->id}}">{{$item->code}}</option>@endforeach</select></td>'+
                 '<td><input type="text" value="" name="containerDetails['+counter+'][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF"></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][weight]" class="form-control" autocomplete="off" placeholder="Weight"></td>'+
