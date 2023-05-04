@@ -17,13 +17,13 @@
            
                     <form id="createForm" action="{{route('creditNote.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-row">
+                            {{-- <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Ref No</label>
                                         <input type="text" class="form-control" id="credit_no" name="credit_no" value="{{old('credit_no')}}"
                                             placeholder="Ref No" autocomplete="off"> 
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="form-row">
                                 <div class="form-group col-md-10">
                                     <label for="Customer">Customer</label>

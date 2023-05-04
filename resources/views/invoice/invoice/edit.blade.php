@@ -142,12 +142,12 @@
                                 </div>
                                 <div class="col-md-2 form-group " >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" checked>
+                                        <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" {{ "eta" == old('rate',$invoice->rate) ? 'checked':''}}>
                                         <label class="form-check-label" for="exchange_rate">
                                         ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd">
+                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd"  {{ "etd" == old('rate',$invoice->rate) ? 'checked':''}}>
                                         <label class="form-check-label" for="exchange_rate">
                                           ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                         </label>
@@ -216,15 +216,17 @@
                                     autocomplete="off" placeholder="VAT" value="{{ (int)$item->size_small * 0 }}" disabled style="background-color: white;"> 
                                 </td>
                                 <td>
-                                    <div class="form-check" style="display: none">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_yes" value="1" {{ $item->unit == "Container" ? 'checked' : ''}} disabled>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_yes" value="1" {{ $item->enabled ==  1 ? 'checked="checked"' :''}} disabled>
                                         <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
                                     </div>
-                                    <div class="form-check" style="display: none">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_no" value="0" {{ $item->unit == "Document" ? 'checked' : ''}} disabled>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_no"  value="0" {{$item->enabled == 0 ? 'checked="checked"' :''}} disabled>
                                         <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
                                     </div>
                                 </td>
+
+
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{old('total_amount',$item->total_amount)}}"
                                     placeholder="Total" autocomplete="off"  style="background-color: white;" requierd disabled>
                                 </td>

@@ -313,6 +313,12 @@ class BookingController extends Controller
             }
             
         }
+        if($gateouts->count() == 1){
+            return redirect()->route('booking.showGateOut',[
+                'booking'=>$booking->id,
+                'location'=> $gateouts[0]['id']
+                ]);
+        }
         return view('booking.booking.selectGateOut',[
             'booking'=>$booking,
             'gateouts'=>$gateouts,
@@ -320,7 +326,11 @@ class BookingController extends Controller
     }
     public function showGateOut($id)
     {
-        $activityLoc = request()->activity_location_id;
+        if(request('location') == null){
+            $activityLoc = request()->activity_location_id;
+        }else{
+            $activityLoc = request('location');
+        }
         $booking = Booking::with(['bookingContainerDetails'=> function ($query) use ($activityLoc) {
             $query->where('activity_location_id', $activityLoc)->with('containerType','container');
         }])->with('voyage.vessel','secondvoyage.vessel')->find($id);
@@ -422,7 +432,7 @@ class BookingController extends Controller
             'customer_id' => ['required'], 
             'containerDetails' => ['required'],
         ],[
-            'containerDetails.required'=>'Table Cannot be empty',
+            'containerDetails.required'=>'Container Details Cannot be empty',
         ]);
 
         // $quotation = Quotation::find($request->quotation_id);

@@ -446,6 +446,10 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Shipment Status</label>
+                                <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"

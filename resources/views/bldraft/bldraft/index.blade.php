@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@include('bldraft.bldraft._modal_show_containers')
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -145,6 +146,7 @@
                                             <td>{{optional($item->loadPort)->code}}</td>
                                             <td>{{optional($item->dischargePort)->code}}</td>
                                             <td>{{optional($item->equipmentsType)->name}}</td> 
+                                            @if($item->blDetails->count()  == 1 )
                                             <td> 
                                                 @foreach($item->blDetails as $blDetail)
                                                 <table style="border: hidden;">
@@ -152,6 +154,11 @@
                                                 </table>
                                                 @endforeach
                                             </td>
+                                            @else
+                                            <td class="container-count" data-id="{{ $item->id }}">
+                                                {{ $item->blDetails->count() }} Containers
+                                             </td>  
+                                             @endif                                           
                                             <td>{{optional($item->voyage)->vessel->name}}  {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td>
@@ -288,4 +295,40 @@
       });
   
 </script>
+<script>
+$(document).on('click', '.container-count', function() {
+    var blDraftId = $(this).data('id');
+    $.ajax({
+        url: '/api/bldrafts/' + blDraftId + '/containers',
+        method: 'GET',
+        success: function(data) {
+    console.log(data)
+            var blNo = data.bl_no;
+            var containers = data.containers;
+            var containerList = '';
+
+            // Create the HTML for the container list
+            for (var i = 0; i < containers.length; i++) {
+                containerList += '<h6>' + containers[i] + '</h6>';
+            }
+
+            // Create the HTML for the modal body
+            var modalBody = '<h5 style="color:#1b55e2;">BLNO: ' + blNo + '</h5><ul>' + containerList + '</ul>';
+
+            // Set the modal body and show the modal
+            $('#container-modal .modal-body').html(modalBody);
+            $('#container-modal').modal('show');
+        },
+        error: function() {
+            alert('Error fetching containers');
+        }
+    });
+});
+</script>
+<style>
+.container-count:hover {
+  cursor: pointer;
+  background-color: #dddddd96;
+}
+</style>
 @endpush
