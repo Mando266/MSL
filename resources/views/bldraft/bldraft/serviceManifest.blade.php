@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.bldraft')
 @section('content')
 <div class="layout-px-spacing transform" style="padding: 20px 20px 0px 20px !important">
         <div class="row layout-top-spacing ">
@@ -22,62 +22,62 @@
 
  
                     @php
-                            $net_weight = 0;
-                            $gross_weight = 0;
-                            $measurement = 0;
-                            $packages = 0;
+                        $net_weight = 0;
+                        $gross_weight = 0;
+                        $measurement = 0;
+                        $packages = 0;
+                    @endphp
+                    @foreach($blDraft->blDetails as $blkey => $bldetails)
+                        @php
+                            $packages = $packages + (float)$bldetails->packs;
+                            $net_weight = $net_weight + (float)$bldetails->net_weight;
+                            $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
+                            $measurement = $measurement + (float)$bldetails->measurement;
                         @endphp
-                            @foreach($blDraft->blDetails as $blkey => $bldetails)
-                                @php
-                                    $packages = $packages + (float)$bldetails->packs;
-                                    $net_weight = $net_weight + (float)$bldetails->net_weight;
-                                    $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
-                                    $measurement = $measurement + (float)$bldetails->measurement;
-                                @endphp
-                            @endforeach
-                            <div class="row">
-                                <div class="col-md-2">
-                                    @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
-                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
-                                    {{-- <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo"> --}}
-                                    @else
-                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
-                                    @endif
-                                </div>
-                                <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
-                                    <tbody>
-                                        <tr>
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
-                                            <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
-                                            
-                                            </td>
-                                            </tbody>
-                                </table>
-                            </div>
-                            <table class="col-md-12 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
-                                    <tbody>
-
-                                            <td class="tableStyle" style="border-style: hidden;">Port of Loading </br>
-                                            {{ optional($blDraft->loadPort)->name }}
-                                            </td>
-                                            <td class="tableStyle" style="border-style: hidden;">Transhipment Port </br>
-                                                &nbsp
-                                            </td>
-                                            <td class="tableStyle" style="border-style: hidden;">Port of Discharge </br>
-                                            {{ optional($blDraft->dischargePort)->name }}
-                                            </td>
-                                            <td class="tableStyle" style="border-style: hidden;">Final Destination </br>
-                                            {{ optional($blDraft->dischargePort)->name }}
-                                            </td>
-                                            <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
-                                                {{ optional($etdvoayege)->etd }}
-                                            </td>
-                                        </tr>
+                    @endforeach
+                    <div class="row">
+                        <div class="col-md-2">
+                            @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
+                            <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                            {{-- <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo"> --}}
+                            @else
+                            <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                            @endif
+                        </div>
+                        <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
+                            <tbody>
+                                <tr>
+                                    <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
+                                    <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
+                                    
+                                    </td>
                                     </tbody>
-                                </table>
-                            </div>
+                        </table>
+                    </div>
+                    <table class="col-md-12 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
+                        <tbody>
 
-                    <table class="col-md-12 tableStyle" style="border-top-style: hidden; border-right-style: hidden; margin-bottom: 1rem;">
+                                <td class="tableStyle" style="border-style: hidden;">Port of Loading </br>
+                                {{ optional($blDraft->loadPort)->name }}
+                                </td>
+                                <td class="tableStyle" style="border-style: hidden;">Transhipment Port </br>
+                                    &nbsp
+                                </td>
+                                <td class="tableStyle" style="border-style: hidden;">Port of Discharge </br>
+                                {{ optional($blDraft->dischargePort)->name }}
+                                </td>
+                                <td class="tableStyle" style="border-style: hidden;">Final Destination </br>
+                                {{ optional($blDraft->dischargePort)->name }}
+                                </td>
+                                <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
+                                    {{ optional($etdvoayege)->etd }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <table class="col-md-12 tableStyle" style="border-top-style: hidden; border-right-style: hidden; margin-bottom: 1rem; height: 700px;">
                    
                         <tbody>
                         <tr style="border-bottom-style: 1px solid !important; margin-bottom: 1rem;">
@@ -106,6 +106,75 @@
                         
                         </tbody>
                     </table>
+                    @php
+                        $chunkedDetails = $blDraft->blDetails->chunk(15); // Divide the collection into chunks of 15 items
+                    @endphp
+                    @foreach($chunkedDetails as $chunkIndex => $chunk)
+                    <div class="widget-content widget-content-area">
+                        <div class="col-md-12 text-center">
+                        </div>
+                        </br>
+                        </br>
+                        </br>
+    
+     
+                        @php
+                            $net_weight = 0;
+                            $gross_weight = 0;
+                            $measurement = 0;
+                            $packages = 0;
+                        @endphp
+                        @foreach($blDraft->blDetails as $blkey => $bldetails)
+                            @php
+                                $packages = $packages + (float)$bldetails->packs;
+                                $net_weight = $net_weight + (float)$bldetails->net_weight;
+                                $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
+                                $measurement = $measurement + (float)$bldetails->measurement;
+                            @endphp
+                        @endforeach
+                        <div class="row">
+                            <div class="col-md-2">
+                                @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
+                                <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                {{-- <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo"> --}}
+                                @else
+                                <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                @endif
+                            </div>
+                            <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
+                                <tbody>
+                                    <tr>
+                                        <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
+                                        <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
+                                        
+                                        </td>
+                                        </tbody>
+                            </table>
+                        </div>
+                        <table class="col-md-12 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
+                            <tbody>
+                                    <td class="tableStyle" style="border-style: hidden;">BL NO </br>
+                                        {{ $blDraft->ref_no }}
+                                    </td>
+                                    <td class="tableStyle" style="border-style: hidden;">Port of Loading </br>
+                                    {{ optional($blDraft->loadPort)->name }}
+                                    </td>
+                                    <td class="tableStyle" style="border-style: hidden;">Transhipment Port </br>
+                                        &nbsp
+                                    </td>
+                                    <td class="tableStyle" style="border-style: hidden;">Port of Discharge </br>
+                                    {{ optional($blDraft->dischargePort)->name }}
+                                    </td>
+                                    <td class="tableStyle" style="border-style: hidden;">Final Destination </br>
+                                    {{ optional($blDraft->dischargePort)->name }}
+                                    </td>
+                                    <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
+                                        {{ optional($etdvoayege)->etd }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <table class="col-md-12 tableStyle" style="border-style: hidden;">
                         <tbody>
                             <tr style="border-bottom-style: 1px solid !important; margin-bottom: 1rem;">
@@ -113,23 +182,25 @@
                                 <td class=" tableStyle" style="border-left-style: hidden;">Size</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Iso</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Seal</td>
-                                <td class=" tableStyle" style="border-left-style: hidden;">Packages/Type</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">Packages</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">Type</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">G. Weight</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Measurement</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;">Net Weight</td>
-                                <td class=" tableStyle" style="border-left-style: hidden; width: 139px !important;">HAZ / Reefer/ OOG Details</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">UNNO</td>
                             </tr>
-                        @foreach($blDraft->blDetails as  $bldetails)
+                        @foreach($chunk as  $bldetails)
                         <tr class="col-md-12 tableStyle" >
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->code }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($blDraft->equipmentsType)->name }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->iso}}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->seal_no }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }} &nbsp {{ $bldetails->pack_type }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->pack_type }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->gross_weight }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->measurement }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->net_weight }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden; width: 139px !important;">{{ $bldetails->description }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">&nbsp</td>
                         </tr>
                         @endforeach
                         <tr style="border-top-style: 1px solid !important; margin-bottom: 1rem;">
@@ -138,13 +209,15 @@
                                 <td class=" tableStyle" style="border-left-style: hidden;"></td>
                                 <td class=" tableStyle text-right" style="border-left-style: hidden;">Total</td>
                                 <td class=" tableStyle " style="border-left-style: hidden;">{{ $packages }}</td>
-                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $gross_weight }}</td>
-                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $measurement }}</td>
-                                <td class=" tableStyle col-md-1" style="border-left-style: hidden;">{{ $net_weight }}</td>
+                                <td class=" tableStyle " style="border-left-style: hidden;"></td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $measurement }}</td>
+                                <td class=" tableStyle" style="border-left-style: hidden;">{{ $net_weight }}</td>
                                 <td class=" tableStyle" style="border-left-style: hidden;"></td>
                             </tr>
                         </tbody>
                     </table>
+                    @endforeach
                 <div class="row">
                         <div class="col-md-12 text-center">
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Manifest</button>
@@ -173,9 +246,7 @@
 <style>
     @media print {
     .search_row,
-    .transform{
-        transform: rotate(90deg);
-    }
+
     .hide {
         display: none !important;
         }
@@ -207,4 +278,13 @@
     td{
         width: 50Px !important;
     }
+
+		
+		body {
+          margin: 0 !important;
+          margin-top: 0 !important;
+		  padding: 0 !important;
+        }
+        
 </style>
+@endpush

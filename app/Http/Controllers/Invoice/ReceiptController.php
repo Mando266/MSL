@@ -14,6 +14,8 @@ use App\Models\Receipt\Receipt;
 use App\Setting;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class ReceiptController extends Controller
 {
@@ -21,7 +23,38 @@ class ReceiptController extends Controller
     public function index()
     { 
         $this->authorize(__FUNCTION__,Receipt::class);
-        $receipts = Receipt::filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->where('status','valid')->paginate(30);
+
+        $receipts = Receipt::filter(new ReceiptIndexFilter(request()))
+                    ->where('status', 'valid')
+                    ->orderBy('id', 'desc')
+                    ->get(); // Get all receipts from the database
+
+        $sortedReceipts = $receipts->sortByDesc(function ($receipt) {
+            $matches = [];
+            preg_match('/\d+/', $receipt->receipt_no, $matches); // Extract the number from the receipt number using a regular expression
+            return (int) $matches[0]; // Return the number as an integer for sorting
+        });
+
+        $perPage = 30;
+        $page = request('page', 1);
+        $offset = ($page - 1) * $perPage;
+
+        // Create a new collection containing the receipts for the current page
+        $currentPageReceipts = collect($sortedReceipts->slice($offset, $perPage));
+
+        // Create a paginator for the receipts
+        $paginator = new LengthAwarePaginator(
+            $currentPageReceipts,
+            $sortedReceipts->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        // Set the current page on the paginator
+        $paginator->setPageName('page');
+
+                    
         $receiptno = Receipt::orderBy('id','desc')->where('status','valid')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $invoices  = Invoice::where('company_id',Auth::user()->company_id)->get();
@@ -30,7 +63,7 @@ class ReceiptController extends Controller
         session()->flash('receipts',$receiptexport);
 
         return view('invoice.receipt.index',[
-            'receipts'=>$receipts,
+            'receipts'=>$paginator,
             'receiptno'=>$receiptno,
             'customers'=>$customers,
             'invoices'=>$invoices,

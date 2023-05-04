@@ -98,7 +98,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($receipts as $receipt)
+                                    @foreach ($receipts as $receipt)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($receipts,$loop)}}</td>
                                             <td>{{$receipt->receipt_no}}</td>
@@ -143,11 +143,8 @@
                                                 </ul>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr class="text-center">
-                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
-                                        </tr>
-                                    @endforelse
+                                    
+                                    @endforeach
 
                                 </tbody>
 

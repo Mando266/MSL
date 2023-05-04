@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AgentCountry;
+use App\Http\Controllers\API\BlDraftController;
 use App\Http\Controllers\API\CompanyDataController;
 use App\Http\Controllers\API\CountriesController;
 use App\Http\Controllers\API\PriceController;
@@ -44,3 +45,4 @@ Route::get('agent/agentCountry/{id}/{company_id}', [AgentCountry::class, 'getAge
 Route::get('booking/activityContainers/{id}/{company_id}/{equipment_id}', [CountriesController::class, 'getActivityContainers']);
 Route::get('master/invoices/{id}', [CompanyDataController::class, 'blinvoice']);
 Route::get('master/invoicesCustomers/{id}', [CompanyDataController::class, 'customerInvoice']);
+Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'containers']);

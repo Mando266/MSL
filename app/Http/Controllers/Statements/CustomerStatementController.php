@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Voyages\Voyages;
 use App\Models\Master\Customers;
-use App\Models\Receipt\Receipt;
 
 class CustomerStatementController extends Controller
 {
@@ -22,15 +21,19 @@ class CustomerStatementController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->paginate(30);
-        $exportinvoices = Invoice::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
-        $exporRefunds = Receipt::filter(new CustomerStatementRefundIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->where('status','refund_egp')->get();
-
-        session()->flash('customerStatement',$exportinvoices);
-        session()->flash('exporRefunds',$exporRefunds);
+        // $exportinvoices = Invoice::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
+        // ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
+        // $exporRefunds = Receipt::filter(new CustomerStatementRefundIndexFilter(request()))->orderBy('id','desc')
+        // ->where('company_id',Auth::user()->company_id)->where('status','refund_egp')->get();
+        $statements = Customers::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
+        ->where('company_id',Auth::user()->company_id)->with('invoices.receipts','creditNotes','refunds')->where( function ($query){
+            $query->whereHas('invoices')
+            ->orWhereHas('creditNotes')
+            ->orWhereHas('refunds');
+        })->paginate(30);
+        //dd($statements);
+        // session()->flash('customerStatement',$exportinvoices);
+        // session()->flash('exporRefunds',$exporRefunds);
 
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
@@ -38,7 +41,7 @@ class CustomerStatementController extends Controller
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
 
         return view('statements.customerstatements.index',[
-            'invoices'=>$invoices, 
+            'statements'=>$statements, 
             'invoiceRef'=>$invoiceRef,
             'bldrafts'=>$bldrafts,
             'customers'=>$customers,
