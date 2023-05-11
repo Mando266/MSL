@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
-use App\Filters\User\UserIndexFilter;
+use App\Filters\Customers\UserIndexFilter;
 use App\Models\Master\Country;
 use App\Models\Master\CustomerRoles;
 use App\Models\Master\Customers;

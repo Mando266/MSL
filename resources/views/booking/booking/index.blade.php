@@ -113,7 +113,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="Container">Container  No</label>
+                                <label for="Container">Container No</label>
                                 <select class="selectpicker form-control" id="Container" data-live-search="true" name="container_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)

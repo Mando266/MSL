@@ -37,7 +37,7 @@ class Customers extends Model implements PermissionSeederContract
     }
     public function refunds (){
         return $this->hasMany(Receipt::class,'customer_id','id')
-            ->where('status', 'refund_usd')->orWhere('status', 'refund_egp');
+            ->where('status','!=' ,'valid');
     }
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');
