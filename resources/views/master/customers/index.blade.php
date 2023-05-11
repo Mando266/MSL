@@ -26,8 +26,8 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                             <label for="name">Customer</label>
-                            <select class="selectpicker form-control" id="name" data-live-search="true" name="name" data-size="10"
-                                title="{{trans('forms.select')}}">
+                            <select class="selectpicker form-control" id="name" data-live-search="true" name="name[]" data-size="10"
+                                title="{{trans('forms.select')}}" multiple>
                                 @foreach ($customer as $item)
                                     <option value="{{$item->name}}" {{$item->name == old('name',request()->input('name')) ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach

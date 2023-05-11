@@ -380,8 +380,22 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div>
                         </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}">
+                                <option value="full" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "full"? 'selected':''}}>Full</option>
+                                <option value="empty" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "empty"? 'selected':''}}>Empty</option>
+                            </select>
+                            @error('quotation_type')
+                            <div style="color:red;">
+                                {{$message}}
+                            </div>
+                            @enderror
                         </div>
+                    </div>
 
                         <h4>Export Price</h4>
                             <table id="quotationTriffDischarge" class="table table-bordered">
