@@ -398,7 +398,21 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="status">Quotation Type</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required> 
+                                    <option value="full">Full</option>
+                                    <option value="empty">Empty</option>
+                                </select>
+                                @error('quotation_type')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
 
                             <h4>Port Of Load Local Charges</h4>

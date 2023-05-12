@@ -48,8 +48,11 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $now }} </span> :  التاريخ<h3>
+                    <div class="form-group col-md-6  text-right">
+                        <h3> <span style="font-size:22px;">{{ $now }} </span> : تاريخ الطباعه<h3>
+                    </div>
+                    <div class="form-group col-md-6  text-right">
+                        <h3> <span style="font-size:22px;">{{ $receipt->created_at }} </span> : تاريخ الانشاء<h3>
                     </div>
                 </div>
                 @if(optional($receipt->invoice)->add_egp == 'onlyegp')
@@ -126,7 +129,12 @@
                     <div class="form-group col-md-3  text-right">
                     </div>
                 </div>
-                
+            </br>
+            </br>
+            </br>
+
+                <h4 style="font-size: 18px; color:#000; text-align: right;">لا يحق للعميل القيام بأي استرداد متعلق بالايصال بعد مرور 90 يوم من تاريخ اصدار الايصال<h4>
+
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Receipt</button>

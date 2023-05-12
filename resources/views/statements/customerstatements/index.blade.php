@@ -16,16 +16,16 @@
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
 
-                            {{-- @permission('Invoice-List')
+                            @permission('Invoice-List')
                             <a class="btn btn-warning" href="{{ route('export.statements') }}">Export</a>
-                            @endpermission --}}
+                            @endpermission
                             </div>
                         </div>
                     </br>
                     <form>
     
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-8">
                                 <label for="Bldraft">Customer</label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -78,10 +78,11 @@
                                     <tr>
                                         {{-- <th>#</th> --}}
                                         <th>Customer</th>
-                                        <th>Invoice No</th>
-                                        <th>Date Of Invoice</th>
-                                        <th>Invoice Amount Usd</th>
-                                        <th>Invoice Amount Egp</th>
+                                        <th>Type</th>
+                                        <th>Ref No</th>
+                                        <th>Date </th>
+                                        <th>Amount Usd</th>
+                                        <th>Amount Egp</th>
                                         <th>Bl No</th>
                                         <th>Receipt No</th>
                                         <th>Receipt Amount</th>
@@ -103,6 +104,8 @@
                                                     $totalegp = null;
                                                     $receipts = null;
                                                     $totalreceipt = null;
+                                                    $blanceEgp = null;
+                                                    $blanceUSD = null; 
                                                     if($invoice->receipts->count() != 0){
                                                         foreach($invoice->receipts as $receipt){
                                                             $receipts .= $receipt->receipt_no . "\n";
@@ -113,8 +116,11 @@
                                                         $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
                                                         $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
                                                     }
+                                                        $blanceEgp = $totalreceipt - $totalegp;
+                                                        $blanceUSD = $totalreceipt - $totalusd;
                                                 @endphp
                                                 <tr>
+                                                    <td>{{optional($invoice)->type}}</td>
                                                     <td>{{optional($invoice)->invoice_no}}</td>
                                                     <td>{{optional($invoice)->date}}</td>
                                                     @if( $invoice->add_egp != 'onlyegp')
@@ -127,7 +133,7 @@
                                                     @else
                                                         <td></td>
                                                     @endif
-                                                    <td>{{optional($invoice->bldraft)->ref_no}}</td>
+                                                    <td>{{ $invoice->bldraft_id == 0 ?  'Customize' : optional($invoice->bldraft)->ref_no }}</td>
                                                     <td class="text-center">
                                                         @if($invoice->receipts->count() != 0)
                                                             @foreach($invoice->receipts as $receipt)
@@ -136,18 +142,29 @@
                                                         @endif
                                                     </td>
                                                     <td>{{$totalreceipt}}</td>
-                                                    <td>{{optional($invoice->customerShipperOrFfw)->credit}}</td>
-                                                    <td>{{optional($invoice->customerShipperOrFfw)->credit_egp}}</td>
+                                                    
+                                                    @if( $invoice->add_egp != 'onlyegp')
+                                                        <td >{{$blanceUSD}}</td>
+                                                    @else
+                                                        <td>0</td>
+                                                    @endif
+                                                    @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
+                                                        <td>{{$blanceEgp}}</td>
+                                                    @else
+                                                        <td>0</td>
+                                                    @endif
+
                                                     <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</td>
                                                     <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
                                                 </tr>
                                             @endforeach
                                             @foreach($customer->creditNotes as $creditNote)
                                             <tr>
+                                                <td>Credit Note</td>
                                                 <td>{{optional($creditNote)->credit_no}}</td>
                                                 <td>{{optional($creditNote)->created_at}}</td>
                                                 @if($creditNote->currency == "credit_usd")
-                                                <td>{{optional($creditNote)->total_amount}}</td>
+                                                <td>{{optional($creditNote)->total_amount}} </td>
                                                 @else
                                                 <td></td>
                                                 @endif
@@ -160,6 +177,7 @@
                                             @endforeach
                                             @foreach($customer->refunds as $refund)
                                             <tr>
+                                                <td>Refund</td>
                                                 <td>{{optional($refund)->receipt_no}}</td>
                                                 <td>{{optional($refund)->created_at}}</td>
                                                 @if($refund->status == "refund_usd")
@@ -168,7 +186,7 @@
                                                 <td></td>
                                                 @endif
                                                 @if($refund->status == "refund_egp")
-                                                <td>{{optional($refund)->paid}}</td>
+                                                <td>-{{optional($refund)->paid}}</td>
                                                 @else
                                                 <td></td>
                                                 @endif

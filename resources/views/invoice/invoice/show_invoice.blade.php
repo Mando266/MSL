@@ -68,21 +68,21 @@
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
-                            <td class="col-md-2 tableStyle text-center" >G. weight</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $gross_weight }} KGM</span></td>
+                            <td class="col-md-2 tableStyle text-center">Arrival Date</td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span></td>
                             <td class="col-md-2 tableStyle text-center" >POL</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
-                            <td class="col-md-2 tableStyle text-center" >IMO Class</td>
-                            <td class="col-md-2 tableStyle text-center" ><input type="text" style="overflow: hidden; border-style: hidden;"></td>
+                            <td class="col-md-2 tableStyle text-center">Departure Date</td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                         </tr>
                          
                         <tr>
-                            <td class="col-md-2 tableStyle text-center">Arrival Date</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
+                            <td class="col-md-2 tableStyle text-center">IMO ClASS</td>
+                            <td class="col-md-2 tableStyle text-center" ></td>
                             <td class="col-md-2 tableStyle text-center" >POD</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->dischargePort)->code : optional($invoice->bldraft->dischargePort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Cntr. Type(s)</td>

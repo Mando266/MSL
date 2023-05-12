@@ -42,8 +42,8 @@
                 $mytime = Carbon\Carbon::now();
                 $containerCount = 0;
                 $firstContainerDetail = $booking->bookingContainerDetails->first();
-                $containerType = optional($firstContainerDetail->containerType)->name;
-                $haz = $firstContainerDetail->haz;
+                $containerType = optional(optional($firstContainerDetail)->containerType)->name;
+                $haz = optional($firstContainerDetail)->haz;
                 foreach($booking->bookingContainerDetails as $detail){
                     $containerCount = $containerCount + $detail->qty;
                     $containerType = optional($detail->containerType)->name;

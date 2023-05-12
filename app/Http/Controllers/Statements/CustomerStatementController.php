@@ -14,26 +14,33 @@ use App\Models\Master\Customers;
 
 class CustomerStatementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        // $exportinvoices = Invoice::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
-        // ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')->get();
-        // $exporRefunds = Receipt::filter(new CustomerStatementRefundIndexFilter(request()))->orderBy('id','desc')
-        // ->where('company_id',Auth::user()->company_id)->where('status','refund_egp')->get();
-        $statements = Customers::filter(new CustomerStatementIndexFilter(request()))->orderBy('id','desc')
-        ->where('company_id',Auth::user()->company_id)->with('invoices.receipts','creditNotes','refunds')->where( function ($query){
-            $query->whereHas('invoices')
-            ->orWhereHas('creditNotes')
-            ->orWhereHas('refunds');
-        })->paginate(30);
-        //dd($statements);
-        // session()->flash('customerStatement',$exportinvoices);
-        // session()->flash('exporRefunds',$exporRefunds);
+
+        $statements = Customers::filter(new CustomerStatementIndexFilter(request()))
+        ->orderBy('id', 'desc')
+        ->where('company_id', Auth::user()->company_id)
+        ->with('invoices.receipts', 'creditNotes', 'refunds')
+        ->where(function ($query) {
+            $query->WhereHas('invoices');
+            $query->orWhereHas('creditNotes');
+            $query->orWhereHas('refunds');
+        })
+        ->paginate(30);
+    
+        $exportinvoices = Customers::filter(new CustomerStatementIndexFilter(request()))
+        ->orderBy('id', 'desc')
+        ->where('company_id', Auth::user()->company_id)
+        ->with('invoices.receipts', 'creditNotes', 'refunds')
+        ->where(function ($query) {
+            $query->WhereHas('invoices');
+            $query->orWhereHas('creditNotes');
+            $query->orWhereHas('refunds');
+        })
+        ->get();
+        session()->flash('statements',$exportinvoices);
+
 
         $invoiceRef = Invoice::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('company_id',Auth::user()->company_id)->get();
