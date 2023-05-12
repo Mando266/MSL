@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlDraft\BlDraftController;
+use App\Http\Controllers\BlDraft\PDFController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
@@ -140,6 +141,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
         Route::get('manifest/{bldraft}',[BlDraftController::class,'manifest'])->name('bldraft.manifest');
         Route::get('serviceManifest/{bldraft}',[BlDraftController::class,'serviceManifest'])->name('bldraft.serviceManifest');
+        Route::get('pdf',[PDFController::class,'showPDF'])->name('bldraft.showPDF');
     });
 
     /*
