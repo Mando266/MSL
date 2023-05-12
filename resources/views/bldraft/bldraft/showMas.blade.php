@@ -294,6 +294,7 @@
                 <div class="row">
                         <div class="col-md-12 text-center">
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Bl</button>
+                <a href="{{route('bldraft.showPDF',['bldraft'=>$blDraft->id])}}" class="btn btn-success hide mt-3">Print Original</a>
                 <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
                 </div>
     
