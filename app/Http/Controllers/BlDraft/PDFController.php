@@ -44,19 +44,19 @@ class PDFController extends Controller
         $pdf->MultiCell(100, 3, optional($blDraft->customer)->name, 0, 'L');
 
         $pdf->SetXY(5, 45);   // shipper Details
-        $pdf->MultiCell(100, 3, $blDraft->customer_shipper_details, 0, 'L');
+        $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_shipper_details)), 0, 'L');
 
         $pdf->SetXY(5, 61);   // consignee
         $pdf->MultiCell(100, 3, optional($blDraft->customerConsignee)->name, 0, 'L');
 
         $pdf->SetXY(5, 71);   // consignee Details
-        $pdf->MultiCell(100, 3, $blDraft->customer_consignee_details, 0, 'L');
+        $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_consignee_details)), 0, 'L');
 
         $pdf->SetXY(5, 85);   // notify
         $pdf->MultiCell(100, 3, optional($blDraft->customerNotify)->name, 0, 'L');
 
         $pdf->SetXY(5, 95);   // notify Details
-        $pdf->MultiCell(100, 3, $blDraft->customer_notifiy_details, 0, 'L');
+        $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_notifiy_details)), 0, 'L');
 
         $pdf->SetXY(114, 50);   // bl no 
         $pdf->MultiCell(100, 3, $blDraft->ref_no, 0, 'L');
@@ -72,9 +72,68 @@ class PDFController extends Controller
 
         $pdf->SetXY(140, 82);   // port of discharge
         $pdf->MultiCell(100, 3, optional($blDraft->dischargePort)->name, 0, 'L');
+        
+        // table
+        $pdf->SetXY(60, 130);   // Description 
+        $pdf->MultiCell(150, 3, str_replace('<br />', '', nl2br($blDraft->descripions)), 0, 'L'); // Description 
 
-        $pdf->SetXY(140, 82);   // port of discharge
-        $pdf->MultiCell(100, 3, optional($blDraft->dischargePort)->name, 0, 'L');
+        $pdf->SetXY(80, 190);   // Description 
+        if($blDraft->id == 131)
+        $pdf->MultiCell(100, 3, 'polar star booking Freight collect', 0, 'L');
+        elseif(optional($blDraft->booking->principal)->code == 'PLS')
+        $pdf->MultiCell(100, 3, optional($blDraft->booking->principal)->name. ' SOC', 0, 'L');
+        elseif(optional($blDraft->booking->principal)->code == 'FLW')
+        $pdf->MultiCell(100, 3, optional($blDraft->booking->principal)->name. ' SOC', 0, 'L');
+        elseif(optional($blDraft->booking->principal)->code == 'MAS')
+        $pdf->MultiCell(100, 3, optional($blDraft->booking->principal)->name. ' COC', 0, 'L');
+        else
+        $pdf->MultiCell(100, 3, optional($blDraft->booking->principal)->name, 0, 'L');
+         
+        // Containers 
+        if($blDraft->blDetails->count() <= 4){
+            $i = 0;
+            foreach($blDraft->blDetails as  $bldetails){
+                $pdf->SetXY(5, 200+$i);   // container no 
+                $pdf->cell(0, 0, optional($bldetails->container)->code, 0, 'L');
+    
+                $pdf->SetXY(30, 200+$i);   // seal no 
+                $pdf->cell(0, 0, $bldetails->seal_no, 0, 'L');
+                
+                $pdf->SetXY(60, 200+$i);   // packs no & type 
+                $pdf->cell(0, 0, $bldetails->packs .' - '. $bldetails->pack_type, 0, 'L');
+
+                
+                $pdf->SetXY(165, 200+$i);   // gross
+                $pdf->cell(0, 0, $bldetails->gross_weight, 0, 'L');
+
+                if($bldetails->measurement != 0){
+                    $pdf->SetXY(190, 200+$i);   // measurement 
+                    $pdf->cell(0, 0, $bldetails->measurement, 0, 'L');
+                }
+                
+                $i = $i + 5;
+            }
+        }
+        $net_weight = 0;
+        $gross_weight = 0;
+        $measurement = 0;
+        $packages = 0;
+        foreach($blDraft->blDetails as $blkey => $bldetails){
+            $packages = $packages + (float)$bldetails->packs;
+            $net_weight = $net_weight + (float)$bldetails->net_weight;
+            $gross_weight = $gross_weight + (float)$bldetails->gross_weight;
+            $measurement = $measurement + (float)$bldetails->measurement;
+        }
+        $pdf->SetXY(55, 235);   // total packs
+        $pdf->cell(0, 0, 'Total No. Of packs  '.$packages, 0, 'L');
+
+        $pdf->SetXY(160, 235);   // total gross
+        $pdf->cell(0, 0, 'Total GW  ' .$gross_weight, 0, 'L');
+
+        if($bldetails->measurement != 0){
+            $pdf->SetXY(185, 235);   // total measurement 
+            $pdf->cell(0, 0, 'Total  '  .$measurement, 0, 'L');
+        }
 
         // Output the PDF as a string
         $pdfContent = $pdf->Output('filled_form.pdf', 'S', 'UTF-8');
