@@ -20,6 +20,8 @@ class VoyageExport implements FromCollection,WithHeadings
             "ETD",
             "Terminal Name" ,
             "Road NO",
+            "BL Engaged",
+            "Shipment Type",
         ];
     }
     
@@ -29,7 +31,17 @@ class VoyageExport implements FromCollection,WithHeadings
        
         $voyages = session('voyages');
         $exportVoyages = collect();
+        
         foreach($voyages  ?? [] as $voyage){
+            $exportNum = 0;
+            $importNum = 0;
+            foreach($voyage->bldrafts as $bldraft){
+                if(optional(optional($bldraft->booking)->quotation)->shipment_type == "Export"){
+                    $exportNum++;
+                }else{
+                    $importNum++;
+                }
+            }
             foreach($voyage->voyagePorts as $voyagePort){
                 $tempCollection = collect([
                     'code' => optional($voyage->vessel)->code,
@@ -41,6 +53,8 @@ class VoyageExport implements FromCollection,WithHeadings
                     'etd'=> $voyagePort->etd,
                     'terminal'=> optional($voyagePort->terminal)->name,
                     'road_no'=> $voyagePort->road_no,
+                    'bl_engaged'=> $voyage->bldrafts->count(),
+                    'shipment_type'=> $exportNum . ' Export - ' . $importNum . ' Import',
                 ]);
                 $exportVoyages->add($tempCollection);
             }
