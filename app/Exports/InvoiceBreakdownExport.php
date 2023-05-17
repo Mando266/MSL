@@ -12,8 +12,21 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
     {
         return [
             "Invoice No",
-            "Quantity",
+            "Customer",
+            "TAX NO",
+            "BL NO",
+            "Voyage",
+            "Vessel",
+            "ETA",
+            "ETD",
+            "Date Creation",
+            "INVOICE TYPE",
+            "PAYMENT KIND",
+            "INVOICE STATUS",
+            "Payment STATUS",
+            "Receipts",
             "Charge Description",
+            "Quantity",
             "Amount USD",
             "Total USD",
             "Total EGP",
@@ -31,6 +44,18 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
         foreach($invoices  ?? [] as $invoice){
             $Curency = '';
             $Payment = '';
+
+            if($invoice->bldraft_id == 0){
+                if($invoice->booking != null){
+                    $VoyagePort = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id)
+                    ->where('port_from_name',optional($invoice->booking->loadPort)->id)->first();
+                }else{
+                    $VoyagePort = null;
+                }
+            }else{
+                $VoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
+                ->where('port_from_name',optional($invoice->bldraft->booking->loadPort)->id)->first();
+            }
 
         if($invoice->invoice_status == 'confirm'){
             if($invoice->add_egp == 'false'){
@@ -61,8 +86,21 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
             foreach($invoice->chargeDesc as $desc ){
                 $tempCollection = collect([
                     'invoice_no' => $invoice->invoice_no,
-                    'qty' => $invoice->qty,
+                    'customer' => $invoice->customer,
+                    'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
+                    'bl no' => optional($invoice->bldraft)->ref_no,
+                    'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
+                    'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
+                    'eta' => optional($VoyagePort)->eta,
+                    'etd' => optional($VoyagePort)->etd,
+                    'date' => $invoice->date,
+                    'type' => $invoice->type,
+                    'payment_kind' => optional($invoice->bldraft)->payment_kind,
+                    'STATUS' => $invoice->invoice_status,
+                    'PaymentSTATUS' => $Payment,
+                    'receipts' => $receipts,
                     'charge_desc' => $desc->charge_description,
+                    'qty' => $invoice->qty,
                     'amount_usd' => $desc->size_small,
                     'total usd' => $totalusd,
                     'total egp' => $totalegp,
