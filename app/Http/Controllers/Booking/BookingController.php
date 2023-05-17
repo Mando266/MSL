@@ -240,7 +240,8 @@ class BookingController extends Controller
         }
         // check if quotation Export create serial No else will not create serial No
         $quotation = Quotation::find($request->input('quotation_id'));
-        if($quotation->shipment_type == "Export"){
+        
+        if(optional($quotation)->shipment_type == "Export"){
             $setting = Setting::find(1);
             $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
             $setting->booking_ref_no += 1;
