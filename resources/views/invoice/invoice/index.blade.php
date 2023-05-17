@@ -21,6 +21,7 @@
                             @endpermission
                             @permission('Invoice-List')
                             <a class="btn btn-warning" href="{{ route('export.invoice') }}">Export</a>
+                            <a class="btn btn-warning" href="{{ route('export.invoice.breakdown') }}">Export Invoice Breakdown</a>
                             @endpermission
                             </div>
                         </div>

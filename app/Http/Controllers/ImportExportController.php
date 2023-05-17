@@ -9,6 +9,7 @@ use App\Exports\BookingExport;
 use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
 use App\Exports\CustomerStatementsExport;
+use App\Exports\InvoiceBreakdownExport;
 use App\Exports\LoadListExport;
 use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
@@ -100,6 +101,11 @@ class ImportExportController extends Controller
     public function invoiceList() 
     {
         return Excel::download(new InvoiceListExport, 'InvoiceList.xlsx');
+    }
+    
+    public function invoiceBreakdown() 
+    {
+        return Excel::download(new InvoiceBreakdownExport, 'InvoiceBreakdownList.xlsx');
     }
     
     public function exportCustomers() 
