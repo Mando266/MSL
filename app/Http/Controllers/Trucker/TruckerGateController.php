@@ -19,12 +19,13 @@ class TruckerGateController extends Controller
         $this->authorize(__FUNCTION__,TruckerGates::class);
             $truckerGates = TruckerGates::where('company_id',Auth::user()
             ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->paginate(30);
+            // dd($truckerGates);
             $exportTruckerGate = TruckerGates::where('company_id',Auth::user()
             ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->get();
             $certificate = TruckerGates::where('company_id',Auth::user()->company_id)->get();
            // dd($truckerGates);
             $booking = Booking::where('company_id',Auth::user()
-            ->company_id)->where('booking_confirm',1)->get();
+            ->company_id)->where('booking_confirm','!=',3)->get();
             $truckers = Trucker::where('company_id',Auth::user()
             ->company_id)->get();
             session()->flash('truckergates',$exportTruckerGate);

@@ -16,6 +16,23 @@
                 <div class="widget-content widget-content-area">
                     <form id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
+                        @if($quotation->id == 0)
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                    <label for="status">Is Transhipment</label>
+                                    <select class="selectpicker form-control" data-live-search="true" name="is_transhipment" title="{{trans('forms.select')}}">
+                                        <option value="1">Yes</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                    @error('is_transhipment')
+                                    <div style="color:red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
                             <div class="form-group col-md-4">
