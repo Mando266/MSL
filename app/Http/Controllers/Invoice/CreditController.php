@@ -4,6 +4,7 @@ namespace App\Http\Controllers\invoice;
 
 use App\Filters\Invoice\CreditNote\CreditIndexFilter;
 use App\Http\Controllers\Controller;
+use App\Models\Bl\BlDraft;
 use Illuminate\Http\Request;
 use App\Models\Invoice\CreditNote;
 use App\Models\Invoice\CreditNoteDesc;
@@ -28,9 +29,10 @@ class CreditController extends Controller
     public function create()
     {
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
-
+        $blnos = BlDraft::where('company_id',Auth::user()->company_id)->get();
         return view('invoice.creditNote.create',[
             'customers'=>$customers,
+            'blnos'=>$blnos,
         ]);
     }
 

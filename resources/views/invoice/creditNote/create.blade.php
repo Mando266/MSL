@@ -17,13 +17,27 @@
            
                     <form id="createForm" action="{{route('creditNote.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            {{-- <div class="form-row">
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Ref No</label>
                                         <input type="text" class="form-control" id="credit_no" name="credit_no" value="{{old('credit_no')}}"
                                             placeholder="Ref No" autocomplete="off"> 
                                 </div>
-                            </div> --}}
+                                <div class="form-group col-md-8">
+                                    <label for="bl_no">BL NO (Optional)</label>
+                                    <select class="selectpicker form-control" id="bl_no" data-live-search="true" name="bl_no" data-size="10"
+                                     title="{{trans('forms.select')}}" >
+                                     @foreach($blnos as $blno)
+                                            <option value="{{$blno->id}}" {{$blno->id == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$blno->ref_no}}</option>
+                                    @endforeach
+                                    </select>
+                                    @error('bl_no')
+                                        <div style="color:red;">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div> 
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-10">
                                     <label for="Customer">Customer</label>

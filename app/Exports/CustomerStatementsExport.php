@@ -105,7 +105,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     'date' => optional($creditNote)->created_at,
                     'invoice_amount' => $creditNote->currency == "credit_usd" ? optional($creditNote)->total_amount : '',
                     'invoice_amount_egp' => $creditNote->currency == "credit_egp" ? optional($creditNote)->total_amount : '',
-                    'bl no' => '',
+                    'bl no' => $creditNote->bl_no??'',
                     'receipts' => '',
                     'receipt_amount' => '',
                     'balance_usd' =>  '',
