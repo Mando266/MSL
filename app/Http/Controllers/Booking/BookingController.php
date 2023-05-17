@@ -116,10 +116,12 @@ class BookingController extends Controller
         $containers = Containers::where('company_id',Auth::user()->company_id)->whereHas('activityLocation', function ($query) use($quotation ){
             $query->where('country_id',  $quotation->countrydis)->where('container_type_id',$quotation->equipment_type_id);
         })->where('status',2)->get();
+        $transhipmentContainers = Containers::where('company_id',Auth::user()->company_id)->where('is_transhipment',1)->get();
         $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
         return view('booking.booking.create',[
             'ffw'=>$ffw,
+            'transhipmentContainers'=>$transhipmentContainers,
             'consignee'=>$consignee,
             'containers'=>$containers,
             'agents'=>$agents,
