@@ -24,6 +24,9 @@
                                     @foreach ($booking as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('booking_id') ? 'selected':''}}>{{$item->ref_no}} - {{optional($item->customer)->name}}</option>
                                     @endforeach
+                                    @foreach ($transhipments as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('booking_id') ? 'selected':''}}>{{$item->ref_no}} - {{optional($item->customer)->name}}</option>
+                                @endforeach
                                 </select>
                                 @error('booking_id')
                                 <div style="color:red;">
