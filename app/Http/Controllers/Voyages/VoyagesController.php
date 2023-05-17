@@ -187,8 +187,8 @@ class VoyagesController extends Controller
             }
         }
 
-        $VoyagesDublicate  = Voyages::where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->first();
-            if($VoyagesDublicate != null && $VoyagesDublicate->vessel_id != null && $VoyagesDublicate->voyage_no != null ){
+        $VoyagesDublicate  = Voyages::where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
+            if($VoyagesDublicate != null && $VoyagesDublicate->vessel_id != null && $VoyagesDublicate->voyage_no != null && $VoyagesDublicate->leg_id != null ){
                 return back()->with('error','This Voyage Already Exists');
         }
 

@@ -147,6 +147,8 @@ class PDFController extends Controller
         $pdf->SetXY(120, 245);   // date shipping on board
         $pdf->cell(0, 0, $etdvoayege->etd, 0, 'L');
 
+        $pdf->SetXY(132, 249);   // freight charges 
+        $pdf->cell(0, 0, $blDraft->payment_kind, 0, 'L');
         // Output the PDF as a string
         $pdfContent = $pdf->Output('filled_form.pdf', 'S', 'UTF-8');
         header('Content-Type: application/pdf; charset=utf-8');

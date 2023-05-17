@@ -142,6 +142,7 @@
                                         <th>Forwarder</th>
                                         <th>vessel</th>
                                         <th>voyage</th>
+                                        <th>leg</th>
                                         <th>Main Line</th>
                                         <th>Vessel Operator</th>
                                         <th>load port</th>
@@ -187,6 +188,7 @@
                                             <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->voyage)->vessel->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
+                                            <td>{{optional($item->voyage->leg)->name}}</td>
                                             <td>{{optional($item->principal)->name}}</td>
                                             <td>{{optional($item->operator)->name}}</td>
                                             <td>{{optional($item->loadPort)->code}}</td>

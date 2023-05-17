@@ -4,6 +4,7 @@ namespace App\Exports;
 use App\Models\Quotations\Quotation;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Models\Voyages\VoyagePorts;
 
 class BookingExport implements FromCollection,WithHeadings
 {
@@ -18,6 +19,9 @@ class BookingExport implements FromCollection,WithHeadings
             "CONSIGNEE",
             "Vessel",
             "VOYAGE",
+            "LEG",
+            "ETA",
+            "Shipment Type",
             "Main Line",
             "Vessel Operator",
             "PLACE OF Acceptence",
@@ -36,7 +40,7 @@ class BookingExport implements FromCollection,WithHeadings
             "BOOKING STATUS",
             "Bldraft Status",
             "Assigned",
-            "UnAssigned"
+            "UnAssigned",
         ];
     }
     
@@ -78,6 +82,9 @@ class BookingExport implements FromCollection,WithHeadings
                 }else{
                     $bookingStatus = "Draft";
                 }
+                $shipping_status = optional($booking->quotation)->shipment_type;
+                $loadPort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+                $dischargePort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
                 $tempCollection = collect([
                     'quotation_ref_no' => optional($booking->quotation)->ref_no,
                     'ref_no' => $booking->ref_no,
@@ -86,6 +93,9 @@ class BookingExport implements FromCollection,WithHeadings
                     'consignee_name' => optional($booking->consignee)->name,
                     'vessel' => optional($booking->voyage)->vessel->name,
                     'voyage_id' => optional($booking->voyage)->voyage_no,
+                    'leg' => optional($booking->voyage->leg)->name,
+                    'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
+                    'shipping_status' => $shipping_status,
                     'main_line' => optional($booking->principal)->name,
                     'operator' => optional($booking->operator)->name,
                     'placeOfAcceptence' => optional($booking->placeOfAcceptence)->name,
