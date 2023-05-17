@@ -15,7 +15,7 @@ class PDFController extends Controller
     {
         $blDraft = BlDraft::where('id',$request->bldraft)->with('blDetails')->first();
         $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
-        
+        //dd($etdvoayege);
         // Get the path to the PDF form template
         $templatePath = public_path('bl_template.pdf');
 
@@ -43,19 +43,19 @@ class PDFController extends Controller
         $pdf->SetXY(5, 35);   // shipper
         $pdf->MultiCell(100, 3, optional($blDraft->customer)->name, 0, 'L');
 
-        $pdf->SetXY(5, 45);   // shipper Details
+        $pdf->SetXY(5, 38);   // shipper Details
         $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_shipper_details)), 0, 'L');
 
         $pdf->SetXY(5, 61);   // consignee
         $pdf->MultiCell(100, 3, optional($blDraft->customerConsignee)->name, 0, 'L');
 
-        $pdf->SetXY(5, 71);   // consignee Details
+        $pdf->SetXY(5, 64);   // consignee Details
         $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_consignee_details)), 0, 'L');
 
         $pdf->SetXY(5, 85);   // notify
         $pdf->MultiCell(100, 3, optional($blDraft->customerNotify)->name, 0, 'L');
 
-        $pdf->SetXY(5, 95);   // notify Details
+        $pdf->SetXY(5, 88);   // notify Details
         $pdf->MultiCell(100, 3, str_replace('<br />', '', nl2br($blDraft->customer_notifiy_details)), 0, 'L');
 
         $pdf->SetXY(114, 50);   // bl no 
@@ -73,6 +73,9 @@ class PDFController extends Controller
         $pdf->SetXY(140, 82);   // port of discharge
         $pdf->MultiCell(100, 3, optional($blDraft->dischargePort)->name, 0, 'L');
         
+        $pdf->SetXY(140, 88);   // place of Delivery 
+        $pdf->MultiCell(100, 3, optional($blDraft->booking->quotation)->placeOfDelivery->name, 0, 'L');
+
         // table
         $pdf->SetXY(60, 130);   // Description 
         $pdf->MultiCell(150, 3, str_replace('<br />', '', nl2br($blDraft->descripions)), 0, 'L'); // Description 
@@ -96,7 +99,7 @@ class PDFController extends Controller
                 $pdf->SetXY(5, 200+$i);   // container no 
                 $pdf->cell(0, 0, optional($bldetails->container)->code, 0, 'L');
     
-                $pdf->SetXY(30, 200+$i);   // seal no 
+                $pdf->SetXY(26, 200+$i);   // seal no 
                 $pdf->cell(0, 0, $bldetails->seal_no, 0, 'L');
                 
                 $pdf->SetXY(60, 200+$i);   // packs no & type 
@@ -135,6 +138,17 @@ class PDFController extends Controller
             $pdf->cell(0, 0, 'Total  '  .$measurement, 0, 'L');
         }
 
+        $pdf->SetXY(162, 245);   // place
+        $pdf->cell(0, 0,  optional($blDraft->booking->agent)->city, 0, 'L');
+
+        $pdf->SetXY(180, 245);   // date of issue
+        $pdf->cell(0, 0, $etdvoayege->etd, 0, 'L');
+
+        $pdf->SetXY(120, 245);   // date shipping on board
+        $pdf->cell(0, 0, $etdvoayege->etd, 0, 'L');
+
+        $pdf->SetXY(132, 249);   // freight charges 
+        $pdf->cell(0, 0, $blDraft->payment_kind, 0, 'L');
         // Output the PDF as a string
         $pdfContent = $pdf->Output('filled_form.pdf', 'S', 'UTF-8');
         header('Content-Type: application/pdf; charset=utf-8');

@@ -276,7 +276,7 @@
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                 <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled style="background-color :#fff" > 
-                                    @if(optional($booking->quotation)->ofr != 0)
+                                    @if(optional($booking->quotation)->payment_kind = "Prepaid")
                                     <option value="Prepaid" @isset($blDraft){{"Prepaid" == $blDraft->payment_kind?? "selected"}} @endisset>Prepaid </option>
                                     @else
                                     <option value="Collect" @isset($blDraft){{"Collect" == $blDraft->payment_kind?? "selected"}} @endisset>Collect</option>

@@ -29,11 +29,17 @@
                         <tr>
 
                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
-                            <th class="text-center  underline" style="font-size: 24px !important;">IMPORT INVOICE</th>
-                            @elseif($invoice->invoice_status == "draft")
-                            <th class="text-center  underline" style="font-size: 24px !important;">PROFORMA INVOICE</th>
+                                @if($invoice->invoice_status == "draft")
+                                <th class="text-center  underline" style="font-size: 24px !important;">IMPORT PROFORMA INVOICE</th>
+                                @else
+                                <th class="text-center  underline" style="font-size: 24px !important;">IMPORT INVOICE</th>
+                                @endif
                             @else
-                            <th class="text-center  underline" style="font-size: 24px !important;">EXPORT INVOICE</th>
+                                @if($invoice->invoice_status == "draft")
+                                <th class="text-center  underline" style="font-size: 24px !important;">EXPORT PROFORMA INVOICE</th>
+                                @else
+                                <th class="text-center  underline" style="font-size: 24px !important;">EXPORT INVOICE</th>
+                                @endif
                             @endif
                         </tr>
                     </thead>
