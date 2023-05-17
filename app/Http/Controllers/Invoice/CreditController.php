@@ -67,6 +67,7 @@ class CreditController extends Controller
             'notes'=>$request->notes,
             'total_amount'=>$total_amount,
             'currency'=>$request->currency,
+            'bl_no'=>$request->bl_no,
         ]);
         if(request('credit_no') != null){
             $credit->credit_no = request('credit_no');
