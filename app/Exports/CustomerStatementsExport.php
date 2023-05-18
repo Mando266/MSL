@@ -59,7 +59,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 }
                     $blanceEgp = $totalreceipt - $totalegp;
                     $blanceUSD = $totalreceipt - $totalusd;
-                    dd($blanceEgp,$blanceUSD);
+                    // dd($blanceEgp,$blanceUSD);
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
                         $tempCollection = collect([
