@@ -20,6 +20,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             "Receipt No",
             "Receipt Amount USD",
             "Receipt Amount EGP",
+            "Tax Hold USD",
+            "Tax Hold EGP",
             "Balance USD",
             "Balance EGP",
             "Vessel / Voyage",
@@ -40,7 +42,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             $total_receipt_amount_egp = 0;
             $total_balance_usd = 0;
             $total_balance_egp = 0;
+            $total_tax_hold_usd = 0;
+            $total_tax_hold_egp = 0;
             foreach($customer->invoices as $invoice){
+                $tax_hold_usd = 0;
+                $tax_hold_egp = 0;
                 $totalusd = null;
                 $totalegp = null;
                 $receipts = null;
@@ -57,9 +63,17 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
                     $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
                 }
-                    $blanceEgp = $totalreceipt - $totalegp;
-                    $blanceUSD = $totalreceipt - $totalusd;
-                    // dd($blanceEgp,$blanceUSD);
+                if($invoice->add_egp != 'onlyegp'){
+                    $tax_hold_usd = $totalusd * ($invoice->tax_discount/100);
+                    $total_tax_hold_usd += $tax_hold_usd;
+                }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                    $tax_hold_egp = $totalusd * ($invoice->tax_discount/100);
+                    $total_tax_hold_egp += $tax_hold_egp;
+                }
+                    $blanceUSD = ($totalreceipt + $tax_hold_usd) - $totalusd;
+                    $blanceEgp = ($totalreceipt + $tax_hold_egp) - $totalegp;
+                    // dump($blanceUSD,$blanceEgp);
+                    
                     //calculating total line for each customer
                     if($invoice->add_egp != 'onlyegp'){
                         $total_invoice_amount += $totalusd;
@@ -89,6 +103,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                             'receipts' => $receipt->receipt_no,
                             'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
                             'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
+                            'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
+                            'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
                             'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : '0',
                             'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : '0',
                             'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
@@ -109,6 +125,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         'receipts' => '',
                         'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
                         'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
+                        'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
+                        'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
                         'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : '0',
                         'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : '0',
                         'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
@@ -137,6 +155,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     'receipts' => '',
                     'receipt_amount_usd' => '0',
                     'receipt_amount_egp' => '0',
+                    'tax_hold_usd' => '0',
+                    'tax_hold_egp' => '0',
                     'balance_usd' =>  '0',
                     'balance_egp' =>  '0',
                     'vessel-voyage' => '',
@@ -163,6 +183,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     'receipts' => '',
                     'receipt_amount_usd' => '0',
                     'receipt_amount_egp' => '0',
+                    'tax_hold_usd' => '0',
+                    'tax_hold_egp' => '0',
                     'balance_usd' =>  '0',
                     'balance_egp' =>  '0',
                     'vessel-voyage' => '',
@@ -184,6 +206,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 'receipts' => '',
                 'receipt_amount_usd' => $total_receipt_amount_usd == 0 ? '0':$total_receipt_amount_usd,
                 'receipt_amount_egp' => $total_receipt_amount_egp == 0 ? '0':$total_receipt_amount_egp,
+                'tax_hold_usd' => $total_tax_hold_usd == 0 ? '0':$total_tax_hold_usd,
+                'tax_hold_egp' => $total_tax_hold_egp == 0 ? '0':$total_tax_hold_egp,
                 'balance_usd' =>  $total_balance_usd == 0 ? '0':$total_balance_usd,
                 'balance_egp' =>  $total_balance_egp == 0 ? '0':$total_balance_egp,
                 'vessel-voyage' => '',
