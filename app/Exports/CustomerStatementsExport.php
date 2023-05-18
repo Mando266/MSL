@@ -47,6 +47,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             foreach($customer->invoices as $invoice){
                 $tax_hold_usd = 0;
                 $tax_hold_egp = 0;
+                $matching_usd = 0;
+                $matching_egp = 0;
                 $totalusd = null;
                 $totalegp = null;
                 $receipts = null;
@@ -70,6 +72,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     $tax_hold_egp = $totalusd * ($invoice->tax_discount/100);
                     $total_tax_hold_egp += $tax_hold_egp;
                 }
+                if($invoice->add_egp != 'onlyegp'){
+                    $matching_usd = $invoice->matching;
+                }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                    $matching_egp = $invoice->matching;
+                }
                     $blanceUSD = ($totalreceipt + $tax_hold_usd) - $totalusd;
                     $blanceEgp = ($totalreceipt + $tax_hold_egp) - $totalegp;
                     // dump($blanceUSD,$blanceEgp);
@@ -85,13 +92,16 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
                         $total_receipt_amount_egp += $totalreceipt;
                     }
-                    if($invoice->add_egp != 'onlyegp'){
-                        $total_balance_usd += $blanceUSD;
-                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
-                        $total_balance_egp += $blanceEgp;
-                    }
+                    
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
+                        if($invoice->add_egp != 'onlyegp'){
+                            $matching_usd = $receipt->matching;
+                            $blanceUSD += $matching_usd;
+                        }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                            $matching_egp = $receipt->matching;
+                            $blanceEgp += $matching_egp;
+                        }
                         $tempCollection = collect([
                             'customer' => $customer->name,
                             'type' => optional($invoice)->type,
@@ -134,6 +144,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     ]);
                     
                     $exportinvoices->add($tempCollection);
+                }
+                if($invoice->add_egp != 'onlyegp'){
+                    $total_balance_usd += $blanceUSD;
+                }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                    $total_balance_egp += $blanceEgp;
                 }
                     
             }
