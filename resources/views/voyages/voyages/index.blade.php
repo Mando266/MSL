@@ -125,9 +125,19 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-                                            <td>
-                                                {{ $item->bldrafts->count() }}
+                                            @if($item->bldrafts->count()  == 1 )
+                                            <td> 
+                                                @foreach($item->bldrafts as $bldraft)
+                                                <table style="border: hidden;">
+                                                    <td>{{ optional($bldraft)->ref_no }}</td>
+                                                </table>
+                                                @endforeach
                                             </td>
+                                            @else
+                                            <td class="container-count" data-id="{{ $item->id }}">
+                                                {{ $item->bldrafts->count() }}
+                                             </td>  
+                                             @endif  
                                             <td class="text-center">
                                                 <ul class="table-controls"> 
                                                 @permission('Voyages-Edit')
@@ -184,3 +194,41 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+    $(document).on('click', '.container-count', function() {
+        var blDraftId = $(this).data('id');
+        $.ajax({
+            url: '/api/bldrafts/' + blDraftId + '/containers',
+            method: 'GET',
+            success: function(data) {
+        console.log(data)
+                var blNo = data.bl_no;
+                var containers = data.containers;
+                var containerList = '';
+    
+                // Create the HTML for the container list
+                for (var i = 0; i < containers.length; i++) {
+                    containerList += '<h6>' + containers[i] + '</h6>';
+                }
+    
+                // Create the HTML for the modal body
+                var modalBody = '<h5 style="color:#1b55e2;">BLNO: ' + blNo + '</h5><ul>' + containerList + '</ul>';
+    
+                // Set the modal body and show the modal
+                $('#container-modal .modal-body').html(modalBody);
+                $('#container-modal').modal('show');
+            },
+            error: function() {
+                alert('Error fetching containers');
+            }
+        });
+    });
+    </script>
+    <style>
+    .container-count:hover {
+      cursor: pointer;
+      background-color: #dddddd96;
+    }
+    </style>
+@endpush
