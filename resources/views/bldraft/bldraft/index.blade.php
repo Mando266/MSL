@@ -122,6 +122,7 @@
                                         <th>Equipment Type</th>
                                         <th>containers</th>
                                         <th>voyage vessel</th>
+                                        <th>leg</th>
                                         <th>Bl Draft Creation</th>
                                         <th>Invoices</th>
                                         <th>BL Status</th>
@@ -160,6 +161,7 @@
                                              </td>  
                                              @endif                                           
                                             <td>{{optional($item->voyage)->vessel->name}}  {{optional($item->voyage)->voyage_no}}</td>
+                                            <td>{{optional($item->voyage->leg)->name}}</td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td>
                                                 @php
