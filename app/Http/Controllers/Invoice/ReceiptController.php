@@ -15,7 +15,7 @@ use App\Setting;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use setasign\Fpdi\PdfParser\Type\PdfNull;
 
 class ReceiptController extends Controller
 {
@@ -136,11 +136,19 @@ class ReceiptController extends Controller
     public function store(Request $request)
     {
 
-        if ($request->input('bank_transfer') != Null || $request->input('bank_deposit') != Null){
+        if ($request->input('bank_transfer') != Null){
             $request->validate([
                 'bank_id' => ['required'],
             ],[
-                'bank_id.required'=>'Please Choose Bank Account',
+                'bank_id.required'=>'Please Choose Bank Account', 
+            ]);
+        }
+        
+        if ($request->input('bank_deposit') != Null){
+            $request->validate([
+                'bank_transfer_id' => ['required'],
+            ],[
+                'bank_transfer_id.required'=>'Please Choose Bank Account',
                 
             ]);
         }
@@ -148,8 +156,10 @@ class ReceiptController extends Controller
 
             $request->validate([
                 'cheak_no' => ['required'],
+                'bank_cheque_id' => ['required'],
             ],[
                 'cheak_no.required'=>'Please Enter Cheak No',
+                'bank_cheque_id.required'=>'Please Choose Bank Account',
             ]);
         }
 
@@ -233,6 +243,10 @@ class ReceiptController extends Controller
             'notes'=>$request->notes,
             'paid'=>($paid - $request->matching),
             'user_id'=>Auth::user()->id,
+            'bank_transfer_id'=>$request->bank_transfer_id,
+            'bank_cheque_id'=>$request->bank_cheque_id,
+            'bank_id'=>$request->bank_id,
+
         ]);
 
         if(request('receipt_no') != null){
