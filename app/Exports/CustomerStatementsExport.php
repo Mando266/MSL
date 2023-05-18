@@ -60,6 +60,22 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     $blanceEgp = $totalreceipt - $totalegp;
                     $blanceUSD = $totalreceipt - $totalusd;
                     // dd($blanceEgp,$blanceUSD);
+                    //calculating total line for each customer
+                    if($invoice->add_egp != 'onlyegp'){
+                        $total_invoice_amount += $totalusd;
+                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                        $total_invoice_amount_egp += $totalegp;
+                    }
+                    if($invoice->add_egp != 'onlyegp'){
+                        $total_receipt_amount_usd += $totalreceipt;
+                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                        $total_receipt_amount_egp += $totalreceipt;
+                    }
+                    if($invoice->add_egp != 'onlyegp'){
+                        $total_balance_usd += $blanceUSD;
+                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                        $total_balance_egp += $blanceEgp;
+                    }
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
                         $tempCollection = collect([
@@ -73,7 +89,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                             'receipts' => $receipt->receipt_no,
                             'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
                             'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
-                            'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0) ?? '0' : '0',
+                            'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : '0',
                             'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : '0',
                             'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
                             'created_at' => $receipt->created_at,
@@ -93,7 +109,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         'receipts' => '',
                         'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
                         'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
-                        'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0) ?? '0' : '0',
+                        'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : '0',
                         'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : '0',
                         'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
                         'created_at' => ''
@@ -105,6 +121,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             }
 
             foreach($customer->creditNotes as $creditNote){
+                if($creditNote->currency == "credit_usd"){
+                    $total_invoice_amount += optional($creditNote)->total_amount;
+                }elseif($creditNote->currency == "credit_egp"){
+                    $total_invoice_amount_egp += optional($creditNote)->total_amount;
+                }
                 $tempCollection = collect([
                     'customer' => $customer->name,
                     'type' => "Credit Note",
@@ -126,6 +147,11 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
             }
 
             foreach($customer->refunds as $refund){
+                if($refund->status == "refund_usd"){
+                    $total_invoice_amount -= optional($refund)->paid;
+                }elseif($refund->status == "refund_egp"){
+                    $total_invoice_amount_egp -= optional($refund)->paid;
+                }
                 $tempCollection = collect([
                     'customer' => $customer->name,
                     'type' => "Refund",
@@ -145,6 +171,26 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 
                 $exportinvoices->add($tempCollection);
             }
+
+            //total calculations
+            $tempCollection = collect([
+                'customer' => '',
+                'type' =>  '',
+                'invoice_no' => '',
+                'date' => 'Total',
+                'invoice_amount' => $total_invoice_amount == 0 ? '0':$total_invoice_amount,
+                'invoice_amount_egp' => $total_invoice_amount_egp == 0 ? '0':$total_invoice_amount_egp,
+                'bl no' => '',
+                'receipts' => '',
+                'receipt_amount_usd' => $total_receipt_amount_usd == 0 ? '0':$total_receipt_amount_usd,
+                'receipt_amount_egp' => $total_receipt_amount_egp == 0 ? '0':$total_receipt_amount_egp,
+                'balance_usd' =>  $total_balance_usd == 0 ? '0':$total_balance_usd,
+                'balance_egp' =>  $total_balance_egp == 0 ? '0':$total_balance_egp,
+                'vessel-voyage' => '',
+                'created_at' => '',
+            ]);
+            
+            $exportinvoices->add($tempCollection);
             
         }
 
