@@ -58,7 +58,6 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
                         $receipts .= $receipt->receipt_no . "\n";
-                        $totalreceipt += $receipt->paid;
                     }   
                 }
                 foreach($invoice->chargeDesc as $invoiceDesc ){
@@ -77,8 +76,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
                     $matching_egp = $invoice->matching;
                 }
-                    $blanceUSD = ($totalreceipt + $tax_hold_usd) - $totalusd;
-                    $blanceEgp = ($totalreceipt + $tax_hold_egp) - $totalegp;
+                    
                     // dump($blanceUSD,$blanceEgp);
                     
                     //calculating total line for each customer
@@ -87,32 +85,31 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
                         $total_invoice_amount_egp += $totalegp;
                     }
-                    if($invoice->add_egp != 'onlyegp'){
-                        $total_receipt_amount_usd += $totalreceipt;
-                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
-                        $total_receipt_amount_egp += $totalreceipt;
-                    }
+                    
                     
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
+                        $totalreceipt += $receipt->paid + $receipt->matching;
+                        $blanceUSD = ($totalreceipt + $tax_hold_usd) - $receipt->total;
+                        $blanceEgp = ($totalreceipt + $tax_hold_egp) - $receipt->total;
+                        if(optional($invoice)->invoice_no == '')
                         if($invoice->add_egp != 'onlyegp'){
-                            $matching_usd = $receipt->matching;
-                            $blanceUSD += $matching_usd;
+                            $total_receipt_amount_usd += $totalreceipt;
                         }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
-                            $matching_egp = $receipt->matching;
-                            $blanceEgp += $matching_egp;
+                            $total_receipt_amount_egp += $totalreceipt;
                         }
+                        
                         $tempCollection = collect([
                             'customer' => $customer->name,
                             'type' => optional($invoice)->type,
                             'invoice_no' => optional($invoice)->invoice_no,
                             'date' => optional($invoice)->date,
-                            'invoice_amount' => $invoice->add_egp != 'onlyegp' ? $totalusd : '0',
-                            'invoice_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalegp : '0',
+                            'invoice_amount' => $invoice->add_egp != 'onlyegp' ? $receipt->total : '0',
+                            'invoice_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $receipt->total : '0',
                             'bl no' => $invoice->bldraft_id == 0 ?  'Customize' : optional($invoice->bldraft)->ref_no,
                             'receipts' => $receipt->receipt_no,
-                            'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
-                            'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
+                            'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? ($receipt->paid == 0? $receipt->matching : $receipt->paid): '0',
+                            'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($receipt->paid == 0? $receipt->matching : $receipt->paid):'0',
                             'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
                             'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
                             'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : '0',
