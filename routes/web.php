@@ -128,8 +128,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
         Route::get('selectGateOut/{booking}',[BookingController::class,'selectGateOut'])->name('booking.selectGateOut');
         Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
+        Route::get('deliveryOrder/{booking}',[BookingController::class,'deliveryOrder'])->name('booking.deliveryOrder');
         Route::get('showGateIn/{booking}',[BookingController::class,'showGateIn'])->name('booking.showGateIn');
+        Route::get('showGateInImport/{booking}',[BookingController::class,'showGateInImport'])->name('booking.showGateInImport');
         Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
+        Route::get('showGateOutImport/{booking}',[BookingController::class,'showGateOutImport'])->name('booking.showGateOutImport');
         Route::get('referManifest',[BookingController::class,'referManifest'])->name('booking.referManifest');
     });
     /*

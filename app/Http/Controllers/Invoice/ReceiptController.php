@@ -136,7 +136,7 @@ class ReceiptController extends Controller
     public function store(Request $request)
     {
 
-        if ($request->input('bank_transfer') != Null){
+        if ($request->input('bank_deposit') != Null){
             $request->validate([
                 'bank_id' => ['required'],
             ],[
@@ -144,7 +144,7 @@ class ReceiptController extends Controller
             ]);
         }
         
-        if ($request->input('bank_deposit') != Null){
+        if ($request->input('bank_transfer') != Null){
             $request->validate([
                 'bank_transfer_id' => ['required'],
             ],[

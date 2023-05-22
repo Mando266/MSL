@@ -106,7 +106,7 @@
                             <td class="col-md-4 tableStyle text-right underline" ></td>
                         </tr>
 
-                        <tr>
+                        {{-- <tr>
                             @if(optional($booking->principal)->code == 'PLS')
                             <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}} SOC</td>
                             @elseif(optional($booking->principal)->code == 'MAS')
@@ -116,7 +116,7 @@
                             @endif
                             <td class="col-md-4 tableStyle text-center">Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
                             <td class="col-md-4 tableStyle text-right">Return Location : {{optional($booking->placeOfReturn)->code}}</td>
-                        </tr>
+                        </tr> --}}
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle" >

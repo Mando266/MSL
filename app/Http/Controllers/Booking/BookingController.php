@@ -276,6 +276,20 @@ class BookingController extends Controller
             'secondVoyagePort'=>$secondVoyagePort
         ]);
     }
+
+    public function deliveryOrder($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        
+        return view('booking.booking.deliveryOrder',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
+
     public function showGateIn($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
@@ -283,6 +297,19 @@ class BookingController extends Controller
         $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
         
         return view('booking.booking.showGateIn',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
+
+    public function showGateInImport($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        //dd($booking);
+        return view('booking.booking.showGateInImport',[
             'booking'=>$booking,
             'firstVoyagePort'=>$firstVoyagePort,
             'secondVoyagePort'=>$secondVoyagePort

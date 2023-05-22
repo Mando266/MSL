@@ -42,4 +42,12 @@ class Receipt extends Model implements PermissionSeederContract
     public function Bank(){
         return $this->belongsTo(Bank::class,'bank_id','id');
     }
+
+    public function Banktransfer(){
+        return $this->belongsTo(Bank::class,'bank_transfer_id','id');
+    }
+
+    public function cheque(){
+        return $this->belongsTo(Bank::class,'bank_cheque_id','id');
+    }
 }

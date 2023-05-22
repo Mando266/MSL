@@ -242,9 +242,15 @@
                                                     <ul class="table-controls">
                                                     @if($item->booking_confirm == 1)
                                                         <li>
-                                                            <a href="{{route('booking.showShippingOrder',['booking'=>$item->id])}}" target="_blank">
-                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
-                                                            </a>
+                                                            @if(optional($item->quotation)->shipment_type == "Import")
+                                                                <a href="{{route('booking.deliveryOrder',['booking'=>$item->id])}}" target="_blank">
+                                                                    <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                                </a>
+                                                                @else
+                                                                <a href="{{route('booking.showShippingOrder',['booking'=>$item->id])}}" target="_blank">
+                                                                    <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                                </a>
+                                                            @endif
                                                         </li>
                                                     @endif
                                                     </ul>
@@ -255,9 +261,15 @@
                                                     <ul class="table-controls">
                                                     @if($item->booking_confirm == 1)
                                                         <li>
+                                                            @if(optional($item->quotation)->shipment_type == "Import")
+                                                            <a href="{{route('booking.showGateInImport',['booking'=>$item->id])}}" target="_blank">
+                                                                <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
+                                                            </a>
+                                                            @else
                                                             <a href="{{route('booking.showGateIn',['booking'=>$item->id])}}" target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
                                                             </a>
+                                                            @endif
                                                         </li>
                                                     @endif
                                                     </ul>

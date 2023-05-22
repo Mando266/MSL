@@ -246,10 +246,10 @@
                         <div class="form-group col-md-4">
                                 <label for="status">Bl Payment</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
-                                @if(optional($bldraft->booking->quotation)->payment_kind = "Prepaid")
-                                    <option value="Prepaid" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
-                                @else
+                                @if(optional($bldraft->booking->quotation)->payment_kind == "Collect")
                                     <option value="Collect" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Collect"? 'selected':''}}>Collect</option>
+                                @else
+                                    <option value="Prepaid" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
                                 @endif
                                 </select>
                                 @error('bl_kind')
