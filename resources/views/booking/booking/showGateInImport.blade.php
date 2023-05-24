@@ -56,7 +56,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->dischargePort)->name}}</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{request()->input('port_id')}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>
@@ -74,7 +74,7 @@
                             @endif
                         </tr>
                         <tr>
-                        <td class=" tableStyle text-right underline" colspan="2">برجاء من سيادتكم بالموافقة على دخول وتعتيق الحاويات أدناه حتي يوم {{$booking->quotation->validity_to}}</td>
+                        <td class=" tableStyle text-right underline" colspan="2">برجاء من سيادتكم بالموافقة على دخول وتعتيق الحاويات أدناه حتي يوم </td>
                         </tr>
                         <tr>
                             <td class=" tableStyle text-right underline" colspan="2"></td>
@@ -84,8 +84,8 @@
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->customer)->name}} <br>
-                            {{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->consignee)->name}} <br>
+                            {{optional($booking->consignee)->address}} &nbsp {{optional($booking->consignee->country)->name}} &nbsp {{optional($booking->consignee)->landline}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         <tr>

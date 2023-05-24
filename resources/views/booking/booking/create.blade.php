@@ -75,6 +75,7 @@
                                 @enderror
                             </div>
                             @else
+                            <input type="hidden" name="is_transhipment" value="0">
                             <div class="form-group col-md-2">
                                 <label for="status">Booking Status<span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}" required>

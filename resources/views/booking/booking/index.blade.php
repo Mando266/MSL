@@ -240,7 +240,7 @@
                                             <td class="text-center">
                                                 @permission('Booking-Show')
                                                     <ul class="table-controls">
-                                                    @if($item->booking_confirm == 1)
+                                                    @if($item->booking_confirm == 1 && $item->is_transhipment == 0)
                                                         <li>
                                                             @if(optional($item->quotation)->shipment_type == "Import")
                                                                 <a href="{{route('booking.deliveryOrder',['booking'=>$item->id])}}" target="_blank">
@@ -259,10 +259,10 @@
                                             <td class="text-center">
                                                 @permission('Booking-Show')
                                                     <ul class="table-controls">
-                                                    @if($item->booking_confirm == 1)
+                                                    @if($item->booking_confirm == 1  && $item->is_transhipment == 0)
                                                         <li>
                                                             @if(optional($item->quotation)->shipment_type == "Import")
-                                                            <a href="{{route('booking.showGateInImport',['booking'=>$item->id])}}" target="_blank">
+                                                            <a href="{{route('booking.selectGateInImport',['booking'=>$item->id])}}" target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
                                                             </a>
                                                             @else
@@ -275,10 +275,11 @@
                                                     </ul>
                                                 @endpermission
                                             </td>
+
                                             <td class="text-center">
                                                 @permission('Booking-Show')
                                                     <ul class="table-controls">
-                                                    @if($item->booking_confirm == 1)
+                                                    @if($item->booking_confirm == 1  && $item->is_transhipment == 0)
                                                         <li>
                                                             <a href="{{route('booking.selectGateOut',['booking'=>$item->id])}}" target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
@@ -305,6 +306,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                    @if($item->is_transhipment == 0)
                                                     @permission('Booking-Show')
                                                     <li>
                                                         <a href="{{route('booking.show',['booking'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
@@ -312,7 +314,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission 
-
+                                                    @endif
                                                     {{-- @if($item->has_bl == 0)
                                                     @permission('Booking-Delete')
                                                     <li>

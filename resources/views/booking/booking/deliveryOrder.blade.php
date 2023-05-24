@@ -56,7 +56,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->dischargePort)->name}}</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfDelivery)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>
@@ -75,7 +75,7 @@
                         </tr> --}}
                    
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->customer)->name}} <br>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->consignee)->name}} <br>
                             </td>
                             <td class="col-md-3 tableStyle text-right underline" >برجاء تسليم السادة</td>
                         </tr>
@@ -88,7 +88,7 @@
                             <td class="col-md-3 tableStyle text-right underline" >البضاعة المذكوره أدناه والواردة علي </td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($firstVoyagePort)->eta}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($firstVoyagePortImport)->eta}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >تاريخ الوصول</td>
                         </tr>
                         <tr>
@@ -96,15 +96,18 @@
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->ofr}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->payment_kind}} </td>
                             <td class="col-md-3 tableStyle text-right underline" >النولون</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->import_detention}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->import_detention}} &nbsp; Days</td>
                             <td class="col-md-3 tableStyle text-right underline" >السماح</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking)->commodity_description}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">
+                                <textarea class="tableStyle" name="maindesc"  style="overflow: hidden;font-size: 16px;border-style: hidden; height: 285px; width: 900px;resize: none; background-color: white;" cols="30" rows="10" readonly>
+                                    {!!  optional($booking->bldraft)->descripions  !!}
+                                    </textarea></td>
                             <td class="col-md-3 tableStyle text-right underline" >وصف البضاعه</td>
                         </tr>
                     </tbody>
@@ -208,6 +211,12 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    let d = document.getElementsByName("maindesc")[0].value
+    document.getElementsByName("maindesc")[0].value = d.trim()
+</script>
+@endpush
 @push('styles')
 <style>
     @media print {
@@ -237,3 +246,4 @@
         font-weight: bolder !important;
     }
 </style>
+@endpush
