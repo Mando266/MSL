@@ -61,7 +61,7 @@
                                 {{ optional($blDraft->loadPort)->name }}
                                 </td>
                                 <td class="tableStyle" style="border-style: hidden;">Transhipment Port </br>
-                                    &nbsp
+                                    {{ optional(optional($blDraft->booking)->transhipmentPort)->name }}
                                 </td>
                                 <td class="tableStyle" style="border-style: hidden;">Port of Discharge </br>
                                 {{ optional($blDraft->dischargePort)->name }}
@@ -160,7 +160,7 @@
                                     {{ optional($blDraft->loadPort)->name }}
                                     </td>
                                     <td class="tableStyle" style="border-style: hidden;">Transhipment Port </br>
-                                        &nbsp
+                                        {{ optional(optional($blDraft->booking)->transhipmentPort)->name }}
                                     </td>
                                     <td class="tableStyle" style="border-style: hidden;">Port of Discharge </br>
                                     {{ optional($blDraft->dischargePort)->name }}

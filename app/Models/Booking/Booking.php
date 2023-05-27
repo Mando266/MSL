@@ -98,6 +98,10 @@ class   Booking extends Model implements PermissionSeederContract
     public function operator(){
         return $this->belongsTo(Lines::class,'vessel_name','id');
     }
+
+    public function transhipmentPort(){
+        return $this->belongsTo(Ports::class,'transhipment_port','id');
+    }
     public function createOrUpdateContainerDetails($inputs)
     {
         $has_gate_in = 0;

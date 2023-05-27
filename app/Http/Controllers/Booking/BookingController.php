@@ -210,6 +210,8 @@ class BookingController extends Controller
                 'vessel_name'=>$request->input('vessel_name'), 
                 'customer_consignee_id'=>$request->input('customer_consignee_id'),
                 'is_transhipment'=>$request->input('is_transhipment'),
+                'transhipment_port'=>$request->input('transhipment_port'),
+                'acid'=>$request->input('acid'),
             ]);
             $has_gate_in = 0;
         foreach($request->input('containerDetails',[]) as $details){
