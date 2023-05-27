@@ -95,7 +95,17 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
+                            <label for="tax">QTY</label>
+                        <input type="text" class="form-control" id="qty" name="qty" value="{{old('qty',$truckergate->qty)}}"
+                                placeholder="QTY" autocomplete="off">
+                            @error('qty')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-3">
                             <label for="tax">Gross Premium</label>
                             <input type="text" class="form-control" id="gross_premium" name="gross_premium" value="{{old('gross_premium',$truckergate->gross_premium)}}"
                                 placeholder="Gross Premium" autocomplete="off">
@@ -105,7 +115,7 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="tax">Net Contribution</label>
                             <input type="text" class="form-control" id="net_contribution" name="net_contribution" value="{{old('net_contribution',$truckergate->net_contribution)}}"
                                 placeholder="Net Contribution" autocomplete="off">
@@ -115,7 +125,7 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="tax">Shipment</label>
                             <select class="form-control" id="shipment" data-live-search="true" name="shipment" data-size="10">
                                 <option value="1" {{ old('shipment',$truckergate->shipment) == "1" ? 'selected':'' }}>Export</option>
