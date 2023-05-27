@@ -396,6 +396,7 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            @if($quotation->id != 0)
                             <div class="form-group col-md-4">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
@@ -440,6 +441,67 @@
                                 </div>
                                 @enderror
                             </div>
+                            @else
+                            <div class="form-group col-md-3">
+                                <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select..</option>
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                    @endforeach
+                                </select>
+                                @error('voyage_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="voyage_id_second">Second Vessel / Voyage</label>
+                                <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select..</option>
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',$booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                    @endforeach
+                                </select>
+                                @error('voyage_id_second')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Transhipment">Transhipment Port</label>
+                                <select class="selectpicker form-control" id="transhipment_port" data-live-search="true" name="transhipment_port" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select...</option>
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('transhipment_port',$booking->transhipment_port) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('transhipment_port')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
+                                <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
+                                 title="{{trans('forms.select')}}" disabled>
+                                    @foreach ($terminals as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('terminal_id',$booking->terminal_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('terminal_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            @endif
                         </div>
 
                         <div class="form-row">
@@ -490,7 +552,17 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
+                                <label for="acid">ACID</label>
+                                <input type="text" class="form-control" id="acid" name="acid" value="{{old('acid',$booking->acid)}}"
+                                    placeholder="ACID" autocomplete="off">
+                                @error('acid')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="tariff_service">Tariff Service</label>
                                 @if($booking->quotation_id == null)
                                 <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$booking->tariff_service)}}"
@@ -505,7 +577,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_code">Commodity Code</label>
                                 <input type="text" class="form-control" id="commodity_code" name="commodity_code" value="{{old('commodity_code',$booking->commodity_code)}}"
                                     placeholder="Commodity Code" autocomplete="off">
@@ -515,7 +587,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_description">Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_description" name="commodity_description" value="{{old('commodity_description',$booking->commodity_description)}}"
                                     placeholder="Commodity Description" autocomplete="off">
@@ -527,10 +599,12 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            @if($quotation->id != 0)
                             <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
                                 <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
                             </div>
+                            @endif
                             <div class="form-group col-md-5">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes" 

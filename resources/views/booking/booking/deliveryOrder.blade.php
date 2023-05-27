@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.bldraft')
 @section('content')
 <div class="layout-px-spacing" style="background-color: #fff;">
     <div class="row layout-top-spacing">
@@ -107,6 +107,11 @@
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">
                                 {{optional(optional($booking->voyage->voyagePorts)->where('port_from_name',$booking->discharge_port_id)->first())->road_no}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >رقم الطريق</td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">
+                                {{optional($booking)->acid}}</td>
+                            <td class="col-md-3 tableStyle text-right underline" >ACID</td>
                         </tr>
                     </tbody>
                 </table>
