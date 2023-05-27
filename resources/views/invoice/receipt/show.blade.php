@@ -78,13 +78,13 @@
                     <div class="form-group col-md-10  text-right">
                         <h3> <span style="font-size:22px;">                                     
                         @if($receipt->bank_transfer != null) 
-                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->bank)->name}}<br> 
+                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->Banktransfer)->name}}<br> 
                         @endif
                         @if($receipt->bank_deposit != null)
                             {{$receipt->bank_deposit}}  Bank Deposit {{optional($receipt->bank)->name}}<br> 
                         @endif 
                         @if($receipt->bank_check != null)
-                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}}<br> 
+                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}} Bank Account {{optional($receipt->cheque)->name}}<br> 
                         @endif
                         @if($receipt->bank_cash != null)
                             {{$receipt->bank_cash}}  Cash <br>

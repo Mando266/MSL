@@ -16,23 +16,7 @@
                 <div class="widget-content widget-content-area">
                     <form id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                        @if($quotation->id == 0)
-
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                    <label for="status">Is Transhipment</label>
-                                    <select class="selectpicker form-control" data-live-search="true" name="is_transhipment" title="{{trans('forms.select')}}">
-                                        <option value="1">Yes</option>
-                                        <option value="0">NO</option>
-                                    </select>
-                                    @error('is_transhipment')
-                                    <div style="color:red;">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
-                            </div>
-                        </div>
-                        @endif
+            
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
                             <div class="form-group col-md-4">
@@ -76,6 +60,22 @@
                                 </div>
                                 @enderror
                             </div> 
+                            @if(request()->input('quotation_id') == "draft")
+
+                            <div class="form-group col-md-2">
+                                <label for="status">Is Transhipment</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="is_transhipment" title="{{trans('forms.select')}}">
+                                    <option value="1">Yes</option>
+                                    <option value="0">NO</option>
+                                </select>
+                                @error('is_transhipment')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            @else
+                            <input type="hidden" name="is_transhipment" value="0">
                             <div class="form-group col-md-2">
                                 <label for="status">Booking Status<span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}" required>
@@ -88,6 +88,7 @@
                                 </div>
                                 @enderror
                             </div>
+                            @endif
                             <div class="form-group col-md-4" style="padding-top: 30px;">
                                 <div class="form-check">
                                 <input type="checkbox" id="soc" name="soc" value="1"  onclick="return false;" readonly {{$quotation->soc == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>
@@ -463,10 +464,12 @@
                             </div>
                         </div>
                         <div class="form-row">
+                           @if(request()->input('quotation_id') != "draft") 
                             <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
                                 <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
                             </div>
+                            @endif
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
@@ -494,11 +497,11 @@
                                 </div>
                                 @enderror
                             </div>
-                            @if(optional($quotation)->shipment_type == "Import")
+                            @if(optional($quotation)->shipment_type == "Import" || request()->input('quotation_id') == "draft")
                             <div class="form-group col-md-3">
                                 <label>Ref No</label>
-                                <input type="text" class="form-control"  style="background-color:#fff" name="ref_no">
-                            </div>
+                                <input type="text" class="form-control"  style="background-color:#fff" name="ref_no" required>
+                            </div>                            
                             @endif
                             
                         </div>

@@ -91,9 +91,12 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle" >Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
-                            <td class="tableStyle" >Return Location : {{optional($booking->placeOfReturn)->code}}</td>
-                            <td class="tableStyle" >Container Operator : {{optional($booking->principal)->code}}</td>
+                            <td class="tableStyle" >Pick Up Location : @foreach($booking->bookingContainerDetails->unique('activity_location_id') as $bookingContainerDetail)
+                               - {{ optional($bookingContainerDetail->activityLocation)->pick_up_location }}
+                            @endforeach
+                            </td>
+                            <td class="tableStyle" >Return Location : {{optional($booking->placeOfReturn)->name}}</td>
+                            <td class="tableStyle" >Container Operator : {{optional($booking->principal)->name}}</td>
 
                         </tr>
                     </tbody>

@@ -73,54 +73,84 @@
                             </div>
 
                         <h4 style="color:#1b55e2">Payment Methods<h4>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label>Receipt No</label>
-                                    <input type="text" class="form-control"  style="background-color:#fff" name="receipt_no">
-                                </div>
-                            </div>
 
                             <div class="form-row">
-                                <div class="col-md-3 form-group">
+                                <div class="form-group col-md-4">
+                                    <label>Receipt No</label>
+                                    <input type="text" class="form-control"  placeholder="Receipt No" style="background-color:#fff" name="receipt_no" autocomplete="off" placeholder="Receipt No">
+                                </div>
+
+                                <div class="col-md-4 form-group">
                                     <label>Cash</label>
-                                        <input type="text" class="form-control" name="bank_cash" value="{{old('bank_cash',request()->input('bank_cash'))}}">
+                                        <input type="text" class="form-control" placeholder="Cash"  name="bank_cash" value="{{old('bank_cash',request()->input('bank_cash'))}}" autocomplete="off">
                                 </div>
                              
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-4 form-group">
                                     <label>Matching</label>
-                                        <input type="text" class="form-control" name="matching" value="{{old('matching',request()->input('matching'))}}">
+                                        <input type="text" class="form-control" name="matching"  placeholder="Matching"  value="{{old('matching',request()->input('matching'))}}" autocomplete="off">
                                 </div>
-                           
+                            </div>
+                            <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label>Cheque Amount</label>
-                                    <input type="text" class="form-control" name="bank_check" value="{{old('bank_check',request()->input('bank_check'))}}">
+                                    <input type="text" class="form-control" placeholder="Cheque Amount" name="bank_check" value="{{old('bank_check',request()->input('bank_check'))}}" autocomplete="off">
                                 </div>
 
                                 <div class="form-group col-md-3" >
                                     <label>Cheque NO</label>
-                                    <input type="text" class="form-control" placeholder="Cheque NO" name="cheak_no" autocomplete="off"  style="background-color:#fff">
+                                    <input type="text" class="form-control" placeholder="Cheque NO" name="cheak_no" autocomplete="off"  style="background-color:#fff" autocomplete="off" >
                                     @error('cheak_no')
                                     <div style="color: red; font-size:14px;">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="bank_cheque_id">Bank Account <span class="text-warning"></span></label>
+                                    <select class="selectpicker form-control" id="bank_cheque_id" data-live-search="true" name="bank_cheque_id" data-size="10"
+                                     title="{{trans('forms.select')}}">
+                                        @foreach ($banks as $bank)
+                                            <option value="{{$bank->id}}" {{$bank->id == old('bank_cheque_id',request()->input('bank_cheque_id')) ? 'selected':''}}>Name: {{$bank->name}} &nbsp; Account No: {{$bank->account_no}}&nbsp; Iban: {{$bank->iban}} &nbsp; Currency: {{$bank->currancy}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bank_cheque_id')
+                                    <div style="color: red; font-size:14px;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
+
+                        <div class="form-row">
+                            <div class="col-md-3 form-group">
+                                <label> Bank Transfer </label>
+                                    <input type="text" class="form-control" name="bank_transfer" value="{{old('bank_transfer',request()->input('bank_transfer'))}}">
+                            </div>
+                            <div class="form-group col-md-9">
+                                <label for="bank_transfer_id">Bank Account <span class="text-warning"></span></label>
+                                <select class="selectpicker form-control" id="bank_transfer_id" data-live-search="true" name="bank_transfer_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($banks as $bank)
+                                        <option value="{{$bank->id}}" {{$bank->id == old('bank_transfer_id',request()->input('bank_transfer_id')) ? 'selected':''}}>Name: {{$bank->name}} &nbsp; Account No: {{$bank->account_no}}&nbsp; Iban: {{$bank->iban}} &nbsp; Currency: {{$bank->currancy}}</option>
+                                    @endforeach
+                                </select>
+                                @error('bank_transfer_id')
+                                <div style="color: red; font-size:14px;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="form-row">
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                             <input type="hidden" name="invoice_id" value="{{request()->input('invoice_id')}}">
                           
-                            <div class="col-md-2 form-group">
+                            <div class="col-md-3 form-group">
                                 <label> Bank Deposit </label>
                                 <input type="text" class="form-control" name="bank_deposit" value="{{old('bank_deposit',request()->input('bank_deposit'))}}">
                             </div>
-                        
-                            <div class="col-md-2 form-group">
-                                <label> Bank Transfer </label>
-                                    <input type="text" class="form-control" name="bank_transfer" value="{{old('bank_transfer',request()->input('bank_transfer'))}}">
-                            </div>
-
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-9">
                                 <label for="bank_id">Bank Account <span class="text-warning"></span></label>
                                 <select class="selectpicker form-control" id="bank_id" data-live-search="true" name="bank_id" data-size="10"
                                  title="{{trans('forms.select')}}">

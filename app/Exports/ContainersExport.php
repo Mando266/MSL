@@ -18,6 +18,7 @@ class ContainersExport implements FromCollection,WithHeadings
             "MAX PAYLOAD",
             "PRODUCTION YEAR",
             "LESSOR/SELLER REFRENCE",
+            "Transhipment OR Not"
         ];
     }
     
@@ -28,6 +29,12 @@ class ContainersExport implements FromCollection,WithHeadings
         $containers = session('containers');
         $exportContainers = collect();
         foreach($containers  ?? [] as $container){
+            if($container->is_transhipment == 0){
+                $transhipment = 'No';
+
+            }else{
+                $transhipment = 'Yes';
+            }
                 $tempCollection = collect([
                     'code' => $container->code,
                     'iso' => $container->iso,
@@ -37,6 +44,7 @@ class ContainersExport implements FromCollection,WithHeadings
                     'max_payload'=> $container->max_payload,
                     'prod_year'=> $container->production_year,
                     'lessor'=> $container->description,
+                    'is_transhipment'=>$transhipment,
                 ]);
                 $exportContainers->add($tempCollection);
         }

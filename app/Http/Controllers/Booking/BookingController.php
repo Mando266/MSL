@@ -273,9 +273,25 @@ class BookingController extends Controller
         return view('booking.booking.showShippingOrder',[
             'booking'=>$booking,
             'firstVoyagePort'=>$firstVoyagePort,
-            'secondVoyagePort'=>$secondVoyagePort
+            'secondVoyagePort'=>$secondVoyagePort,
         ]);
     }
+
+    public function deliveryOrder($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $firstVoyagePortImport = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+
+        return view('booking.booking.deliveryOrder',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort,
+            'firstVoyagePortImport'=>$firstVoyagePortImport,
+        ]);
+    }
+
     public function showGateIn($id)
     {
         $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
@@ -286,6 +302,30 @@ class BookingController extends Controller
             'booking'=>$booking,
             'firstVoyagePort'=>$firstVoyagePort,
             'secondVoyagePort'=>$secondVoyagePort
+        ]);
+    }
+    public function selectGateInImport($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            return view('booking.booking.selectGateInImport',[
+                'booking'=>$booking,
+                'ports'=>$ports,
+            ]);
+    }
+    public function showGateInImport($id)
+    {
+        $booking = Booking::with('bookingContainerDetails.containerType','bookingContainerDetails.container','voyage.vessel','secondvoyage.vessel')->find($id);
+        $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
+        //dd($booking);
+        $firstVoyagePortImport = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+
+        return view('booking.booking.showGateInImport',[
+            'booking'=>$booking,
+            'firstVoyagePort'=>$firstVoyagePort,
+            'secondVoyagePort'=>$secondVoyagePort,
+            'firstVoyagePortImport'=>$firstVoyagePortImport,
         ]);
     }
     // booking.showGateOut',['booking'=>$item->id]
@@ -342,11 +382,13 @@ class BookingController extends Controller
         }])->with('voyage.vessel','secondvoyage.vessel')->find($id);
         $firstVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->loadPort)->id)->first();
         $secondVoyagePort = VoyagePorts::where('voyage_id',$booking->voyage_id_second)->where('port_from_name',optional($booking->loadPort)->id)->first();
-        
+        $firstVoyagePortImport = VoyagePorts::where('voyage_id',$booking->voyage_id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+
         return view('booking.booking.showGateOut',[
             'booking'=>$booking,
             'firstVoyagePort'=>$firstVoyagePort,
-            'secondVoyagePort'=>$secondVoyagePort
+            'secondVoyagePort'=>$secondVoyagePort,
+            'firstVoyagePortImport'=>$firstVoyagePortImport
         ]);
     }
     public function show($id)
@@ -405,7 +447,8 @@ class BookingController extends Controller
         // $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         $activityLocations = Ports::where('company_id',Auth::user()->company_id)->get();
         $line = Lines::where('company_id',Auth::user()->company_id)->get();
-        
+        $transhipmentContainers = Containers::where('company_id',Auth::user()->company_id)->where('is_transhipment',1)->get();
+
         return view('booking.booking.edit',[
             'quotationRate'=>$quotationRate,
             'booking_details'=>$booking_details,
@@ -425,7 +468,7 @@ class BookingController extends Controller
             'quotation'=>$quotation,
             'activityLocations'=>$activityLocations,
             'line'=>$line,
-
+            'transhipmentContainers'=>$transhipmentContainers,
         ]);
     }
 

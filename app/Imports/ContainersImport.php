@@ -47,6 +47,7 @@ class ContainersImport implements ToModel,WithHeadingRow
                 'max_payload' => $row['max_payload'],
                 'container_ownership_id' => $row['container_ownership_id'],
                 'production_year' => $row['production_year'],
+                'is_transhipment' => $row['is_transhipment'],
             ]);
             $ImportContainers->company_id = $user->company_id;
             $ImportContainers->save();

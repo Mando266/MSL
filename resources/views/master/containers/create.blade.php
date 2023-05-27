@@ -21,22 +21,21 @@
                         @if(session('alert'))
                             <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
                         @endif
+     
                         <div class="form-row">
-                                <div class="form-group col-md-4">
-                                        <label for="status">Is Transhipment</label>
-                                        <select class="selectpicker form-control" data-live-search="true" name="is_transhipment" title="{{trans('forms.select')}}">
-                                            <option value="1">Yes</option>
-                                            <option value="0" selected>NO</option>
-                                        </select>
-                                        @error('is_transhipment')
-                                        <div style="color:red;">
-                                            {{$message}}
-                                        </div>
-                                        @enderror
+                            <div class="form-group col-md-3">
+                                <label for="status">Is Transhipment</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="is_transhipment" title="{{trans('forms.select')}}">
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected>NO</option>
+                                </select>
+                                @error('is_transhipment')
+                                <div style="color:red;">
+                                    {{$message}}
                                 </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="countryInput">Container Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_type_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -50,7 +49,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="codeInput">Container Number</label>
                                 <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
                                     placeholder="Container Number" autocomplete="off">
@@ -60,7 +59,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="countryInput"> Container Ownership </label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
