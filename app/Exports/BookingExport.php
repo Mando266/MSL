@@ -56,7 +56,7 @@ class BookingExport implements FromCollection,WithHeadings
             $unassigned = 0;
             $bldraftStatus = '';
             $bookingStatus = '';
-
+            $shipping_status = '';
             if($booking->has_bl == 0){
                 $bldraftStatus = 'unissued';
             }elseif(optional($booking->bldraft)->bl_status == 1){
@@ -82,7 +82,15 @@ class BookingExport implements FromCollection,WithHeadings
                 }else{
                     $bookingStatus = "Draft";
                 }
-                $shipping_status = optional($booking->quotation)->shipment_type;
+
+                if($booking->is_transhipment == 1 && $booking->quotation_id == 0){
+                    $shipping_status = 'Transhipment';
+                }elseif($booking->is_transhipment == 0 && $booking->quotation_id == 0){
+                    $shipping_status = 'Draft';
+                }else{
+                    $shipping_status = optional($booking->quotation)->shipment_type;
+                }
+                
                 $loadPort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->loadPort)->id)->first();
                 $dischargePort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
                 $tempCollection = collect([

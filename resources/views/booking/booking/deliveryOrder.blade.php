@@ -103,13 +103,11 @@
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->import_detention}} &nbsp; Days</td>
                             <td class="col-md-3 tableStyle text-right underline" >السماح</td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">
-                                <textarea class="tableStyle" name="maindesc"  style="overflow: hidden;font-size: 16px;border-style: hidden; height: 285px; width: 900px;resize: none; background-color: white;" cols="30" rows="10" readonly>
-                                    {!!  optional($booking->bldraft)->descripions  !!}
-                                    </textarea></td>
+                                </td>
                             <td class="col-md-3 tableStyle text-right underline" >وصف البضاعه</td>
-                        </tr>
+                        </tr> --}}
                     </tbody>
                 </table>
                 <div class="row">
@@ -123,10 +121,10 @@
                 Container No.
             </td>
             <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                Size
+                Size / Type
             </td>
-            <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                Type
+            <td class="col-md-4 tableStyle underline" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+                Description
             </td>
             <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                 Seal
@@ -135,51 +133,43 @@
                 Weight KG 
             </td>
         </tr>
-        @foreach($booking->bookingContainerDetails as $detail)
-        @if($detail->qty == 1)
+        <tr>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden;  border-right-style: hidden; font-size: 14px; padding: .75rem;">
+                
+            </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+            
+            </td>
+                <td class="col-md-4 tableStyle"  rowspan="{{ $booking->bookingContainerDetails ->count()+ 1 }}" style="border: 1px solid #000;  border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
+                    <textarea class="tableStyle" name="maindesc"  style="overflow: hidden;font-size: 16px;border-style: hidden; height: 285px; width: 500px;resize: none; background-color: white;" cols="30" rows="10" readonly>
+                        {!!  optional($booking->bldraft)->descripions  !!}
+                    </textarea>
+                </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
+               
+            </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+                
+            </td>
+        </tr>
+        @foreach(optional($booking->bldraft)->blDetails as $detail)
         <tr>
 
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
                 {{optional($detail->container)->code}}
             </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-            {{substr(optional($detail->containerType)->name, 0, 2)}}
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+            {{substr(optional($booking->bldraft->equipmentsType)->name, 0, 2)}} / {{optional($booking->bldraft->equipmentsType)->code}}
             </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                {{optional($detail->containerType)->code}}
-            </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                 {{$detail->seal_no}}
             </td>
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                {{$detail->weight}}
+                {{$detail->gross_weight}}
             </td>
             </tr>
 
-            @elseif($detail->container == 000 )
-                @for($i=0 ; $i <$detail->qty ; $i++)
-                <tr>
-
-                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
-                {{optional($detail->container)->code}}
-                </td>
-                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-            {{substr(optional($detail->containerType)->name, 0, 2)}}
-            </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                {{optional($detail->containerType)->code}}
-            </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                {{$detail->seal_no}}
-            </td>
-            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-            {{$detail->weight}}
-            </td>
-                <!-- {{$detail->qty}}  Containers -->
-  
-        </tr>
-        @endfor
-        @endif
+            
         @endforeach
     </tbody>
 </table>
