@@ -56,8 +56,8 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfDelivery)->pick_up_location}}</td>
-                            <td class="col-md-3 tableStyle text-right underline" >السادة</td>
+                            <td class="col-md-9 tableStyle text-right underline" >مدير مصلحة الجمارك </td>
+                            <td class="col-md-3 tableStyle text-right underline" >/إلي السيد</td>
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle text-right underline" ></td>
