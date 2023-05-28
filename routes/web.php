@@ -3,6 +3,7 @@
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\BlDraft\PDFController;
 use App\Http\Controllers\Booking\BookingController;
+use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
 use App\Http\Controllers\Invoice\RefundController;
@@ -103,7 +104,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('invoiceBreakdown', 'ImportExportController@invoiceBreakdown')->name('export.invoice.breakdown');
     Route::get('receiptExport', 'ImportExportController@receiptExport')->name('export.receipt');
-
     Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name('export.statements');
 
     /*
@@ -135,6 +135,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
         Route::get('showGateOutImport/{booking}',[BookingController::class,'showGateOutImport'])->name('booking.showGateOutImport');
         Route::get('referManifest',[BookingController::class,'referManifest'])->name('booking.referManifest');
+        Route::get('selectBooking',[BookingController::class,'selectBooking'])->name('booking.selectBooking');
+        Route::post('importBooking', [ImportExportController::class,'importBooking'])->name('importBooking');
     });
     /*
     |-------------------------------------------

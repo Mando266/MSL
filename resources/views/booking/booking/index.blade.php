@@ -17,6 +17,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
+                            <a href="{{route('booking.selectBooking')}}" class="btn btn-primary">Import Booking Containers</a>
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
                             <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a> 
                             <!-- <a class="btn btn-info" href="{{ route('booking.referManifest') }}">Reefer Manifest</a>  -->
