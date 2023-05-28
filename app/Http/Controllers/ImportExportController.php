@@ -21,6 +21,7 @@ use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
 use App\Exports\InvoiceListExport;
 use App\Exports\ReceiptExport;
+use App\Imports\BookingImport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport; 
 use Maatwebsite\Excel\Facades\Excel;
@@ -34,6 +35,14 @@ class ImportExportController extends Controller
     public function import() 
     {
         Excel::import(new MovementsImport,request()->file('file'));
+        return back();
+    }
+    public function importBooking() 
+    {
+        $booking_id = request()->booking_id;
+        Excel::import(new BookingImport(function($import) use ($booking_id) {
+            $import->setExtraParameter($booking_id);
+        }), request()->file('file'));
         return back();
     }
     public function overwrite() 

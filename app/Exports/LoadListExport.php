@@ -58,7 +58,7 @@ class LoadListExport implements FromCollection,WithHeadings
                     }else{
                         $containerNo = optional($bookingContainerDetail->container)->code;
                     }
-  
+                    
                     $tempCollection = collect([
                         'no' => $count,
                         'ref_no' => $booking->ref_no,
