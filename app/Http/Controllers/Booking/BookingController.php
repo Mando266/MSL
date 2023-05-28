@@ -57,6 +57,13 @@ class BookingController extends Controller
             'containers'=>$containers,
         ]); 
     }
+    public function selectBooking()
+    {
+        $bookings  = Booking::where('company_id',Auth::user()->company_id)->get();
+        return view('booking.booking.selectBooking',[
+            'bookings'=>$bookings,
+        ]);
+    }
     public function selectQuotation()
     {
         $quotation  = Quotation::where('company_id',Auth::user()->company_id)->where('status','approved')->with('customer','equipmentsType')->get();
