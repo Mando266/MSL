@@ -604,6 +604,29 @@
                                 <label>Shipment Status</label>
                                 <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
                             </div>
+                            @else
+                            <div class="form-group col-md-4">
+                                <label>Shipment Status</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
+                                   <option value="Import" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Import"? 'selected':''}}>Import</option>
+                                   <option value="Export" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Export"? 'selected':''}}>Export</option>
+                                </select>
+                            </div>
+                            @endif
+
+                            @if($quotation->id != 0)
+                            <div class="form-group col-md-4">
+                                <label>Booking Status</label>
+                                <input type="text" class="form-control" name="booking_type" value="{{$quotation->quotation_type}}" readonly>
+                            </div>
+                            @else
+                            <div class="form-group col-md-4">
+                                <label>Booking Status</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required> 
+                                   <option value="Empty" {{$booking->id == old('booking_type') ||  $booking->booking_type == "Empty"? 'selected':''}}>Empty</option>
+                                   <option value="Full" {{$booking->id == old('booking_type') ||  $booking->booking_type == "Full"? 'selected':''}}>Full</option>
+                                </select>
+                            </div>
                             @endif
                             <div class="form-group col-md-5">
                                 <label for="details">Notes</label>
