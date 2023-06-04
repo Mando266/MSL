@@ -387,6 +387,7 @@ class InvoiceController extends Controller
                 'date'=>$request->date,
                 'rate'=>$request->exchange_rate,
                 'add_egp'=>$request->add_egp,
+                'vat'=>$request->vat,
                 'invoice_kind'=>'',
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
@@ -407,6 +408,7 @@ class InvoiceController extends Controller
                 'invoice_no'=>'',
                 'date'=>$request->date,
                 'rate'=>$request->exchange_rate,
+                'vat'=>$request->vat,
                 'add_egp'=>$request->add_egp,
                 'invoice_kind'=>$blkind,
                 'type'=>'invoice',
@@ -463,6 +465,7 @@ class InvoiceController extends Controller
                 'total_amount'=>$chargeDesc['total'],
                 'total_egy'=>$chargeDesc['egy_amount'],
                 'enabled'=>$chargeDesc['enabled'],
+                'add_vat'=>$chargeDesc['add_vat'],
             ]);
         }
  
@@ -490,12 +493,26 @@ class InvoiceController extends Controller
             $firstVoyagePort = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
             ->where('port_from_name',optional($invoice->bldraft->booking->loadPort)->id)->first();
         }
+        $vat = $invoice->vat;
+        $vat = $vat / 100;
         $total = 0;
         $total_eg = 0;
+        $total_after_vat = 0;
+        $total_before_vat = 0;
+        $total_eg_after_vat = 0;
+        $total_eg_before_vat = 0;
 
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
+            if($chargeDesc->add_vat == 1){
+                $total_after_vat += ($vat * $chargeDesc->total_amount);
+                $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
+            }
+        }
+        $total_before_vat = $total;
+        if($total_after_vat != 0){
+            $total = $total + $total_after_vat;
         }
         $exp = explode('.', $total);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
@@ -506,6 +523,10 @@ class InvoiceController extends Controller
             $USD =  ucfirst($f->format($exp[0]));
         }
 
+        $total_eg_before_vat = $total_eg;
+        if($total_eg_after_vat != 0){
+            $total_eg = $total_eg + $total_eg_after_vat;
+        }
         $exp = explode('.', $total_eg);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
         if(count($exp) >1){
@@ -531,7 +552,7 @@ class InvoiceController extends Controller
         }else{
             $gross_weight = 0;
             $amount = 0;
-            $vat = 0;
+            
             if($invoice->bldraft_id != 0){
                 foreach($invoice->bldraft->blDetails as $bldetail){
                     $gross_weight += $bldetail->gross_weight;
@@ -554,7 +575,6 @@ class InvoiceController extends Controller
             
             foreach($invoice->chargeDesc as $charge){
                 $amount = $amount + ( (float)$charge->size_small);
-                $vat = $vat +  (((float)$charge->size_small) * 0);
             }
             
 
@@ -564,11 +584,14 @@ class InvoiceController extends Controller
                 'total'=>$total,
                 'total_eg'=>$total_eg,
                 'amount'=>$amount,
-                'vat'=>$vat,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
+                'total_after_vat'=>$total_after_vat,
+                'total_before_vat'=>$total_before_vat,
+                'total_eg_after_vat'=>$total_eg_after_vat,
+                'total_eg_before_vat'=>$total_eg_before_vat,
                 'triffDetails'=>$triffDetails,
             ]);
         }
