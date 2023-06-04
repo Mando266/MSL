@@ -81,7 +81,7 @@
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
                                     @if(optional($bldraft)->voyage_id != null)
-                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -175,6 +175,16 @@
                                 </div>
                                 @endif
                             </div> 
+                            <div class="form-row">
+                                <div class="form-group col-md-3" >
+                                    <label>Total USD</label>
+                                        <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                </div>
+                                <div class="form-group col-md-3" >
+                                    <label>Total EGP</label>
+                                        <input type="text" class="form-control" id="total_egp"  value="{{$total_eg}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
                                     <label> Notes </label>
@@ -315,6 +325,7 @@
     $(document).on('input', 'input[name="rate"]', function() {
         var exchange = $(this).val();
         var qty = $('input[name="qty"]').val();
+        var totEgp = 0;
         $('#charges tbody tr').each(function() {
             var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
             var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
@@ -324,8 +335,11 @@
             var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
             var exchangeRate = exchange === 'eta' ? eta : etd;
             var egpAmount = totalAmount * exchangeRate;
+            totEgp = totEgp + parseFloat(egpAmount);
             $(this).find('input[name$="[total_egy]"]').val(egpAmount);
         });
+        $('input[id="total_egp"]').val(totEgp);
+
     });
     $('body').on('change', 'input[name$="[enabled]"]', function() {
     var row = $(this).closest('tr');
@@ -346,6 +360,17 @@
     var exchangeRate = exchange === 'eta' ? eta : etd;
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
+    // update total_egp and usd to calculate all rows 
+    var totEgp = 0;
+    var totUsd = 0;
+    $('#charges tbody tr').each(function() {
+        var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+        var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+        totEgp = totEgp + parseFloat(egpAmount);
+        totUsd = totUsd + parseFloat(usdAmount);
+    });
+    $('input[id="total_egp"]').val(totEgp);
+    $('input[id="total_usd"]').val(totUsd);
 });
 
 $('body').on('input', 'input[name$="[size_small]"]', function() {
@@ -372,6 +397,18 @@ $('body').on('input', 'input[name$="[size_small]"]', function() {
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
 
+    // update total_egp and usd to calculate all rows 
+    var totEgp = 0;
+    var totUsd = 0;
+    $('#charges tbody tr').each(function() {
+        var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+        var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+        totEgp = totEgp + parseFloat(egpAmount);
+        totUsd = totUsd + parseFloat(usdAmount);
+    });
+    $('input[id="total_egp"]').val(totEgp);
+    $('input[id="total_usd"]').val(totUsd);
+
 });
 </script>
 <script>
@@ -385,6 +422,18 @@ function removeItem( item )
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
     $(this).closest("tr").remove();
+    // update total_egp and usd to calculate all rows 
+    var totEgp = 0;
+    var totUsd = 0;
+    $('#charges tbody tr').each(function() {
+        var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+        var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+        totEgp = totEgp + parseFloat(egpAmount);
+        totUsd = totUsd + parseFloat(usdAmount);
+    });
+    $('input[id="total_egp"]').val(totEgp);
+    $('input[id="total_usd"]').val(totUsd);
+
     });
 
      var counter  = '<?= isset($key)? ++$key : 0 ?>';

@@ -77,6 +77,7 @@
                                         <th>terminal name</th>
                                         <th>road no</th>
                                         <th>Bl Engaged</th>
+                                        <th>Transhipment Bl Engaged</th>
                                         <th class='text-center'></th>
                                         <th class='text-center'>Add Port</th>
                                         <th class='text-center'></th>
@@ -136,8 +137,22 @@
                                             @else
                                             <td class="container-count" data-id="{{ $item->id }}">
                                                 {{ $item->bldrafts->count() }}
-                                             </td>  
-                                             @endif  
+                                             </td> 
+                                            @endif 
+                                            @if($item->transhipmentBldrafts->count()  == 1 )
+                                            <td> 
+                                                @foreach($item->transhipmentBldrafts as $bldraft)
+                                                <table style="border: hidden;">
+                                                    <td>{{ optional($bldraft)->ref_no }}</td>
+                                                </table>
+                                                @endforeach
+                                            </td>
+                                            @else
+                                             <td class="container-count" data-id="{{ $item->id }}">
+                                                {{ $item->transhipmentBldrafts->count() }}
+                                             </td> 
+                                            @endif
+                                              
                                             <td class="text-center">
                                                 <ul class="table-controls"> 
                                                 @permission('Voyages-Edit')

@@ -88,7 +88,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
                     'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
-                    'bl no' => optional($invoice->bldraft)->ref_no,
+                    'bl no' => optional($invoice->bldraft)->ref_no ?? "Customize",
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional($VoyagePort)->eta,
@@ -102,8 +102,8 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'charge_desc' => $desc->charge_description,
                     'qty' => $invoice->qty,
                     'amount_usd' => $desc->size_small,
-                    'total usd' => $totalusd,
-                    'total egp' => $totalegp,
+                    'total usd' => $desc->total_amount,
+                    'total egp' => $desc->total_egy,
                     'Curency' =>$Curency,
                 ]);
                 

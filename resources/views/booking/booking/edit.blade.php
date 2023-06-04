@@ -403,7 +403,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -418,7 +418,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',$booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',$booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -448,7 +448,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -463,7 +463,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',$booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',$booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -605,13 +605,13 @@
                                 <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
                                    <option value="Import" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Import"? 'selected':''}}>Import</option>
                                    <option value="Export" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Export"? 'selected':''}}>Export</option>
                                 </select>
-                            </div>
+                            </div> --}}
                             @endif
 
                             @if($quotation->id != 0)
@@ -723,7 +723,8 @@
                                         <select class="selectpicker form-control" id="containerDetailsID" name="containerDetails[{{ $key }}][container_id]" data-live-search="true"  data-size="10"
                                                 title="{{trans('forms.select')}}">
                                                 <option value="000" selected>Select</option>
-                                            @if($quotation->id == 0)
+
+                                                @if($booking->is_transhipment === 1)
                                                 @foreach ($transhipmentContainers as $transhipmentContainer)
                                                     <option value="{{$transhipmentContainer->id}}" {{$transhipmentContainer->id == old('container_id',$transhipmentContainer->container_id) ? 'selected':''}}>{{$transhipmentContainer->code}}</option>
                                                 @endforeach
@@ -746,10 +747,15 @@
                                     <td class="containerDetailsID">
                                         <select class="selectpicker form-control" id="containerDetailsID" name="containerDetails[{{ $key }}][container_id]" data-live-search="true"  data-size="10"
                                                 title="{{trans('forms.select')}}" disabled>
-                                                <option value="000" selected>Select</option>
+                                                @if($booking->is_transhipment === 1)
+                                                @foreach ($transhipmentContainers as $container)
+                                                    <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
+                                                @endforeach
+                                                @else
                                                 @foreach ($oldcontainers as $container)
                                                     <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
                                                 @endforeach
+                                                @endif
                                         </select>
                                     </td>
                                     @endif

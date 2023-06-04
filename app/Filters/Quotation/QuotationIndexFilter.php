@@ -19,5 +19,7 @@ class QuotationIndexFilter extends AbstractFilter{
         'principal_name'=>PrincipalFilter::class,
         'booking_confirm'=>BookingConfirmFilter::class,
         'container_id'=>ContainerFilter::class,
+        'is_transhipment'=>TranshipmentFilter::class,
+        'booking_type'=>BookingTypeFilter::class,
     ];
 }

@@ -39,10 +39,7 @@ class ImportExportController extends Controller
     }
     public function importBooking() 
     {
-        $booking_id = request()->booking_id;
-        Excel::import(new BookingImport(function($import) use ($booking_id) {
-            $import->setExtraParameter($booking_id);
-        }), request()->file('file'));
+        Excel::import(new BookingImport,request()->file('file'));
         return back();
     }
     public function overwrite() 
@@ -104,7 +101,7 @@ class ImportExportController extends Controller
     
     public function loadlistBl() 
     {
-        return Excel::download(new BLLoadListExport, 'BLLoadlist.xlsx');
+        return Excel::download(new BLLoadListExport, 'BLloadList.xlsx');
     }
         
     public function invoiceList() 

@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Booking\Booking;
 use App\Models\Booking\BookingContainerDetails;
 use Illuminate\Support\Facades\Session;
 use App\Models\Master\Containers;
@@ -14,12 +15,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class BookingImport implements ToModel,WithHeadingRow
 {
-    private $booking_id;
-
-    public function setExtraParameter($booking_id)
-    {
-        $this->booking_id = $booking_id;
-    }
     /**
     * @param array $row
     *
@@ -34,11 +29,11 @@ class BookingImport implements ToModel,WithHeadingRow
             return null;
 
         $containerId = $row['container_id'];
-        $booking_id = $this->booking_id;
+        $row['booking_id'] = Booking::where('company_id',Auth::user()->company_id)->where('ref_no',$row['booking_id'])->pluck('id')->first();
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         $row['activity_location'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['activity_location'])->pluck('id')->first();
         $row['container_type'] = ContainersTypes::where('company_id',Auth::user()->company_id)->where('name',$row['container_type'])->pluck('id')->first();
-        $containerDuplicate = BookingContainerDetails::where('booking_id',$booking_id)->where('container_id',$row['container_id'])->count();
+        $containerDuplicate = BookingContainerDetails::where('booking_id',$row['booking_id'])->where('container_id',$row['container_id'])->count();
         // Validation
         if(!$row['container_id']){
             return session()->flash('message',"This container Number: {$containerId} Not found and containers before this container imported successfully");
@@ -46,10 +41,13 @@ class BookingImport implements ToModel,WithHeadingRow
         if($containerDuplicate > 0 ){
             return Session::flash('message', "This Container Number: {$containerId} Already in this booking and containers before this container imported successfully");
         }
+        if($row['booking_id'] == null){
+            return Session::flash('message', "You must enter booking No");
+        }
         
         
         $bookingDetail = BookingContainerDetails::create([
-            'booking_id' => $booking_id,
+            'booking_id' => $row['booking_id'],
             'seal_no' => $row['seal_no'],
             'qty' => $row['qty'],
             'activity_location_id' => $row['activity_location'],

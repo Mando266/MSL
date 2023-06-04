@@ -11,6 +11,7 @@ use App\Models\Master\Vessels;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Models\Voyages\Voyages;
 
 class MovementsExportAll implements FromCollection,WithHeadings
 {
@@ -58,6 +59,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->container_status = ContainerStatus::where('id',$movement->container_status)->pluck('name')->first();
             $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first();
             $movement->booking_agent_id = Agents::where('id',$movement->booking_agent_id)->pluck('name')->first();
+            $movement->voyage_id = Voyages::where('id',$movement->voyage_id)->pluck('voyage_no')->first();
             $movement->import_agent = Agents::where('id',$movement->import_agent)->pluck('name')->first();
             $movement->description = optional($movement->container)->description;
             $movement->containersOwner = optional($movement->container->containersOwner)->name;

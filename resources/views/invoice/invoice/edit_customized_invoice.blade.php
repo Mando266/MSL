@@ -106,7 +106,7 @@
                                 <select class="selectpicker form-control" id="voyage_id" name="voyage_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$invoice->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$invoice->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                     @error('voyage_id')
@@ -186,6 +186,10 @@
                                     <label>QTY<span class="text-warning"> * (Required.) </span></label>
                                         <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" value="{{old('qty',$invoice->qty)}}" style="background-color:#fff" required>
                                 </div>
+                                <div class="form-group col-md-2" >
+                                    <label>Bl No</label>
+                                        <input type="text" class="form-control"  autocomplete="off" value="Customize" style="background-color:#fff" readonly>
+                                </div>
                                 <!-- <div class="col-md-3 form-group">
                                     <div style="padding: 30px;">
                                         <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
@@ -240,6 +244,16 @@
                                     </select>
                                 </div>
                             </div> 
+                            <div class="form-row">
+                                <div class="form-group col-md-3" >
+                                    <label>Total USD</label>
+                                        <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                </div>
+                                <div class="form-group col-md-3" >
+                                    <label>Total EGP</label>
+                                        <input type="text" class="form-control" id="total_egp"  value="{{$total_eg}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
                                     <label> Notes </label>
@@ -372,6 +386,8 @@
 <script>
     $(document).on('input', 'input[name="qty"]', function() {
         var qty = $(this).val();
+        var totEgp = 0;
+        var totUsd = 0;
         $('#charges tbody tr').each(function() {
             var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
             var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
@@ -382,7 +398,36 @@
 
             var egpAmount = totalAmount * exchangeRate;
             $(this).find('input[name$="[total_egy]"]').val(egpAmount);
+
+            // update total_egp and usd to calculate all rows 
+            
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totEgp = totEgp + parseFloat(egpAmount);
+            totUsd = totUsd + parseFloat(usdAmount);
         });
+        var debitTable = $('#containerDepit');
+
+        if (debitTable.length == 0) {
+        $('input[id="total_egp"]').val(totEgp);
+        $('input[id="total_usd"]').val(totUsd);
+        }
+        // update total_egp and usd to calculate all rows for Debit !!!!!!!!!!!!!!!!!!
+        if (debitTable.length > 0) {
+            var totUsd = 0;
+            $('#containerDepit tbody tr').each(function() {
+            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
+            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
+            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
+            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
+            
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+            $('input[id="total_egp"]').val(0);
+            $('input[id="total_usd"]').val(totUsd);
+            
+        }
+        
     });
     $(document).on('input', 'input[name="customize_exchange_rate"]', function() {
         var qty = $('input[name="qty"]').val();
@@ -397,7 +442,15 @@
 
             var egpAmount = totalAmount * exchangeRate;
             $(this).find('input[name$="[total_egy]"]').val(egpAmount);
+            // update total_egp and usd to calculate all rows 
+            var totEgp = 0;
+            var totUsd = 0;
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totEgp = totEgp + parseFloat(egpAmount);
+            totUsd = totUsd + parseFloat(usdAmount);
         });
+        $('input[id="total_egp"]').val(totEgp);
+        $('input[id="total_usd"]').val(totUsd);
     });
     $('body').on('input', 'input[name$="[size_small]"]', function() {
     // Get the current row
@@ -422,6 +475,29 @@
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
 
+    // update total_egp and usd to calculate all rows 
+    var totEgp = 0;
+    var totUsd = 0;
+    var debitTable = $('#containerDepit');
+    if (debitTable.length > 0) {
+        $('#containerDepit tbody tr').each(function() {
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+        $('input[id="total_egp"]').val(0);
+        $('input[id="total_usd"]').val(totUsd);
+    }else{
+        $('#charges tbody tr').each(function() {
+            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totEgp = totEgp + parseFloat(egpAmount);
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+        $('input[id="total_egp"]').val(totEgp);
+        $('input[id="total_usd"]').val(totUsd);
+    }
+    
+
 });
 $('body').on('change', 'input[name$="[enabled]"]', function() {
     var row = $(this).closest('tr');
@@ -440,6 +516,29 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
 
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
+
+    // update total_egp and usd to calculate all rows 
+    var totEgp = 0;
+    var totUsd = 0;
+    var debitTable = $('#containerDepit');
+    if (debitTable.length > 0) {
+        $('#containerDepit tbody tr').each(function() {
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+        $('input[id="total_egp"]').val(0);
+        $('input[id="total_usd"]').val(totUsd);
+    }else{
+        $('#charges tbody tr').each(function() {
+            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totEgp = totEgp + parseFloat(egpAmount);
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+        $('input[id="total_egp"]').val(totEgp);
+        $('input[id="total_usd"]').val(totUsd);
+    }
+    
 });
 </script>
 <script>
@@ -470,7 +569,20 @@ function removeItem(item){
 }
 $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
-    $(this).closest("tr").remove();
+        $(this).closest("tr").remove();
+
+        // update total_egp and usd to calculate all rows 
+        var totEgp = 0;
+        var totUsd = 0;
+        $('#charges tbody tr').each(function() {
+            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
+            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
+            totEgp = totEgp + parseFloat(egpAmount);
+            totUsd = totUsd + parseFloat(usdAmount);
+        });
+        $('input[id="total_egp"]').val(totEgp);
+        $('input[id="total_usd"]').val(totUsd);
+
     });
     var counter  = '<?= isset($key)? ++$key : 0 ?>';
 

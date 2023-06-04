@@ -17,10 +17,13 @@ class LoadListExport implements FromCollection,WithHeadings
         "Booking No",
         "Frist Vessel",
         "Frist VOYAGE",
+        "LEG",
         "Second Vessel",
         "Second VOYAGE",
+        "LEG",
         "Load Port",
         "Final Dest",
+        "Transhipment Port",
         "Line", 
         "Pick Up Location", 
         "Place Of Return",
@@ -36,6 +39,7 @@ class LoadListExport implements FromCollection,WithHeadings
         "Freight Forwarder",
         "Description",
         "BOOKING STATUS",
+        "BOOKING Type",
         ];
     }
     
@@ -66,14 +70,16 @@ class LoadListExport implements FromCollection,WithHeadings
                         'ref_no' => $booking->ref_no,
                         'first_vessel' => optional($booking->voyage)->vessel->name,
                         'voyage_id' => optional($booking->voyage)->voyage_no,
+                        'leg' => optional(optional($booking->voyage)->leg)->name,
                         'second_vessel' => optional(optional($booking->secondvoyage)->vessel)->name,
-                        'voyage_id_second' => optional($booking->secondvoyage)->voyage_no,          
+                        'voyage_id_second' => optional($booking->secondvoyage)->voyage_no, 
+                        'leg_2' => optional(optional($booking->secondvoyage)->leg)->name,
                         'Load Port' => optional($booking->loadPort)->code,
                         'Final Dest' => optional($booking->dischargePort)->code,
+                        'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
                         'line' => optional($booking->principal)->code,
                         'pickUpLocation' =>optional($booking->pickUpLocation)->name,
                         'placeOfReturn' =>optional($booking->placeOfReturn)->name,   
-                        'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
                         'Container No' => $containerNo,
                         'Container Type' => optional($bookingContainerDetail->containerType)->name,
                         'Seal No' => optional($bookingContainerDetail)->seal_no,
@@ -86,6 +92,7 @@ class LoadListExport implements FromCollection,WithHeadings
                         'Forwarder' => optional($booking->forwarder)->name,
                         'Description' => optional($booking)->commodity_description,
                         'booking_confirm' => $booking->booking_confirm,
+                        'booking_type' => optional($booking)->booking_type,
                     ]);
             $exportBookings->add($tempCollection);
 
@@ -96,10 +103,15 @@ class LoadListExport implements FromCollection,WithHeadings
                         $tempCollection = collect([
                             'no' => $count,
                             'ref_no' => $booking->ref_no,
-                            'Vessel' => optional($booking->voyage)->vessel->name,
-                            'voyage No' => optional($booking->voyage)->voyage_no,
+                            'first_vessel' => optional($booking->voyage)->vessel->name,
+                            'voyage_id' => optional($booking->voyage)->voyage_no,
+                            'leg' => optional(optional($booking->voyage)->leg)->name,
+                            'second_vessel' => optional(optional($booking->secondvoyage)->vessel)->name,
+                            'voyage_id_second' => optional($booking->secondvoyage)->voyage_no, 
+                            'leg_2' => optional(optional($booking->secondvoyage)->leg)->name,
                             'Load Port' => optional($booking->loadPort)->code,
                             'Final Dest' => optional($booking->dischargePort)->code,
+                            'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
                             'line' => optional($booking->principal)->code,
                             'pickUpLocation' =>optional($booking->pickUpLocation)->name,
                             'placeOfReturn' =>optional($booking->placeOfReturn)->name,        
@@ -115,6 +127,7 @@ class LoadListExport implements FromCollection,WithHeadings
                             'Forwarder' => optional($booking->forwarder)->name,
                             'Description' => optional($booking)->commodity_description,
                             'booking_confirm' => $booking->booking_confirm,
+                            'booking_type' => optional($booking)->booking_type,
                         ]);
                         $exportBookings->add($tempCollection);
                     }

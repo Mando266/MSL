@@ -258,8 +258,11 @@ class BookingController extends Controller
             $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
             $setting->booking_ref_no += 1;
             $setting->save();
-        }elseif(optional($quotation)->shipment_type == "Import"){
+        }elseif(optional($booking)->shipment_type == "Import"){
             $booking->ref_no = $request->input('ref_no');
+            $setting = Setting::find(1);
+            $booking->deleviry_no = $setting->delivery_no += 1;
+            $setting->save();
         }else{
             $booking->ref_no = $request->input('ref_no');
         }

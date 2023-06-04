@@ -336,7 +336,7 @@
                                  title="{{trans('forms.select')}}" required>
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -352,7 +352,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -383,7 +383,7 @@
                                  title="{{trans('forms.select')}}" required>
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -399,7 +399,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -528,13 +528,13 @@
                                 <input type="text" class="form-control"  name ="shipment_type" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label>Shipment Status <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
                                     <option value="Import">Import</option>
                                     <option value="Export">Export</option>
                                 </select>
-                            </div>
+                            </div> --}}
                             @endif
                             @if($quotation->id != 0)
                             <div class="form-group col-md-6">

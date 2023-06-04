@@ -133,12 +133,33 @@ class InvoiceController extends Controller
         $qty = $bldraft->blDetails->count();
         
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-        $triffDetails = LocalPortTriff::where('port_id',$bldraft->load_port_id)->where('validity_to','>=',Carbon::now()->format("Y-m-d"))
-        ->with(["triffPriceDetailes" => function($q) use($bldraft){
-            $q->where("equipment_type_id", optional($bldraft->equipmentsType)->id);
-            $q->orwhere('equipment_type_id','100');
-        }])->first();
-        
+  
+        if(optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export"){   
+
+            $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
+            ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
+            ->with(["triffPriceDetailes" => function($q) use($bldraft) {
+                $q->where("is_import_or_export", 1)
+                ->where(function($query) use($bldraft) {
+                    $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
+                    ->orWhere('equipment_type_id', '100');
+                });
+            }]) 
+            ->first();
+        }else{
+
+            $triffDetails = LocalPortTriff::where('port_id', $bldraft->discharge_port_id)
+                ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
+                ->with(["triffPriceDetailes" => function($q) use($bldraft) {
+                    $q->where("is_import_or_export", 0)
+                    ->where(function($query) use($bldraft) {
+                        $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
+                        ->orWhere('equipment_type_id', '100');
+                    });
+            }])
+            ->first();
+        }
+
         return view('invoice.invoice.create_invoice',[
             'bldrafts'=>$bldrafts,
             'qty'=>$qty,
@@ -296,7 +317,7 @@ class InvoiceController extends Controller
                     'invoice_id'=>$invoice->id,
                     'charge_description'=>$chargeDesc['charge_description'],
                     'size_small'=>$chargeDesc['size_small'],
-                    'total_amount'=>$request->input('qty') * $chargeDesc['size_small'],
+                    'total_amount'=>$chargeDesc['total_amount'],
                     'enabled'=>$chargeDesc['enabled'],
                 ]);
             }
@@ -574,6 +595,13 @@ class InvoiceController extends Controller
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
             $bookings  = Booking::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
             $invoice_details = InvoiceChargeDesc::where('invoice_id',$invoice->id)->with('invoice')->get();
+            $total = 0;
+            $total_eg = 0;
+
+            foreach($invoice->chargeDesc as $chargeDesc){
+                $total += $chargeDesc->total_amount;
+                $total_eg += $chargeDesc->total_egy;
+            }
 
             return view('invoice.invoice.edit_customized_invoice',[
                 'shippers'=>$shippers,
@@ -586,18 +614,28 @@ class InvoiceController extends Controller
                 'bldraft'=>$bldraft,
                 'voyages'=>$voyages,
                 'invoice_details'=>$invoice_details,
+                'total'=>$total,
+                'total_eg'=>$total_eg,
             ]);
         }
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $qty = $bldraft->blDetails->count();
         $invoice_details = InvoiceChargeDesc::where('invoice_id',$invoice->id)->with('invoice')->get();
+        $total = 0;
+        $total_eg = 0;
 
+        foreach($invoice->chargeDesc as $chargeDesc){
+            $total += $chargeDesc->total_amount;
+            $total_eg += $chargeDesc->total_egy;
+        }
         return view('invoice.invoice.edit',[
             'invoice'=>$invoice,
             'bldraft'=>$bldraft,
             'qty'=>$qty,
             'voyages'=>$voyages,
             'invoice_details'=>$invoice_details,
+            'total'=>$total,
+            'total_eg'=>$total_eg,
         ]);
     }
     public function update(Request $request, Invoice $invoice)

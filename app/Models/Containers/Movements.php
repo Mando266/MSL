@@ -11,6 +11,7 @@ use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Containers;
 use App\Models\Master\Vessels;
+use App\Models\Voyages\Voyages;
 
 class Movements extends Model implements PermissionSeederContract
 {
@@ -61,6 +62,9 @@ class Movements extends Model implements PermissionSeederContract
     }
     public function vessels(){
         return $this->belongsTo(Vessels::class,'vessel_id','id');
+    }
+    public function voyage(){
+        return $this->belongsTo(Voyages::class,'voyage_id','id');
     }
     public function bookingAgent(){
         return $this->belongsTo(Agents::class,'booking_agent_id','id');
