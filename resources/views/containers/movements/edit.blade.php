@@ -116,7 +116,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',$movement->voyage_id) ? 'selected':''}}>{{$item->voyage_no}}</option>    
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$movement->voyage_id) ? 'selected':''}}>{{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>    
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -262,7 +262,7 @@
                             let voyages = data.voyages || '';
                             let list2 = [];
                             for(let i = 0 ; i < voyages.length; i++){
-                                list2.push(`<option value='${voyages[i].voyage_no}'>${voyages[i].voyage_no} </option>`);
+                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no} </option>`);
                             }
                     let voyageno = $('#voyage');
                     voyageno.html(list2.join(''));

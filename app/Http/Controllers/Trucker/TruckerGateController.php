@@ -18,7 +18,7 @@ class TruckerGateController extends Controller
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
             $truckerGates = TruckerGates::where('company_id',Auth::user()
-            ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->paginate(30);
+            ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->orderBy('id','desc')->paginate(30);
             // dd($truckerGates);
             $exportTruckerGate = TruckerGates::where('company_id',Auth::user()
             ->company_id)->with('booking.bookingContainerDetails')->filter(new TruckerIndexFilter(request()))->get();
@@ -42,7 +42,7 @@ class TruckerGateController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
-            $booking = Booking::where('booking_confirm',1)->get();
+            $booking = Booking::where('company_id',Auth::user()->company_id)->where('booking_confirm','!=',0)->get();
             $truckers = Trucker::get();
             return view('trucker.truckergate.create',[
                 'booking'=>$booking,
@@ -55,8 +55,9 @@ class TruckerGateController extends Controller
         $this->authorize(__FUNCTION__,TruckerGates::class);
         $user = Auth::user();
         $BookingDublicate  = TruckerGates::where('company_id',$user->company_id)->where('booking_id',$request->booking_id)->first();
+        //dd($BookingDublicate);
         if($BookingDublicate != null){
-            return back()->with('alert','This Booking No Already Exists');
+            return back()->with('error','This Booking No Already Exists');
         }
 
         $certificate_type = 'PL-100-61-6004-2023-84/';
@@ -77,7 +78,7 @@ class TruckerGateController extends Controller
     public function edit(TruckerGates $truckergate)
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
-        $booking = Booking::where('company_id',Auth::user()->company_id)->where('booking_confirm',1)->get();
+        $booking = Booking::where('company_id',Auth::user()->company_id)->where('booking_confirm','!=',0)->get();
         $truckers = Trucker::where('company_id',Auth::user()->company_id)->get();
         return view('trucker.truckergate.edit',[
             'booking'=>$booking,

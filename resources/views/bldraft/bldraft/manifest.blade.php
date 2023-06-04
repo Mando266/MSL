@@ -48,9 +48,20 @@
                                 <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                     <tbody>
                                         <tr>
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="5">EXPORT CARGO MANIFEST</br></br>
-                                            <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
-                                            
+                                            @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
+                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
+                                            @elseif($blDraft->booking->quotation->shipment_typ == "Import")
+                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">IMport SERVICE MANIFEST</br></br>
+                                            @else
+                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
+                                            @endif   
+                                            @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
+                                                <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
+                                                </br>
+                                                <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
+                                            @else
+                                                <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
+                                            @endif
                                             </td>
                                         </tr>
                                         </tbody>
@@ -161,10 +172,21 @@
                             <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                 <tbody>
                                     <tr>
-                                        <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
-                                        <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
-                                        
-                                        </td>
+                                        @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
+                                        @elseif($blDraft->booking->quotation->shipment_typ == "Import")
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">IMport SERVICE MANIFEST</br></br>
+                                        @else
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
+                                        @endif   
+                                        @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
+                                            <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
+                                        </br>
+                                            <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
+                                        @else
+                                            <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
+                                        @endif
+                                    </td>
                                         </tbody>
                             </table>
                         </div>

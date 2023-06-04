@@ -15,14 +15,27 @@
                     </div>
                     @permission('Booking-Create')
                         <div class="row">
+                            @if(Session::has('message'))
+                            <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
+                            @endif
+                        </br>
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
-                            <a href="{{route('booking.selectBooking')}}" class="btn btn-primary">Import Booking Containers</a>
+                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>                            
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
                             <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a> 
-                            <!-- <a class="btn btn-info" href="{{ route('booking.referManifest') }}">Reefer Manifest</a>  -->
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right mb-6">
+                            <form action="{{route('importBooking')}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+    
+                                    {{ csrf_field() }}
+                                        <input type="file" name="file" >
+                                        <button  id="buttonSubmit" class="btn btn-success mt-3" >Import Booking Container</button>
+                                    </form>
+                                </div>
+                            </div>
                     @endpermission
 </br>
                     <form>
@@ -80,7 +93,7 @@
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -118,8 +131,24 @@
                                 <select class="selectpicker form-control" id="Container" data-live-search="true" name="container_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($containers as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('container_id',request()->input('container_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="transhipment">Is Transhipment</label>
+                                <select class="selectpicker form-control" id="is_transhipment" data-live-search="true" name="is_transhipment" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    <option value="1" {{"1" == old('is_transhipment',request()->input('is_transhipment')) ? 'selected':''}}>Yes</option>
+                                    <option value="0" {{"0" == old('is_transhipment',request()->input('is_transhipment')) ? 'selected':''}}>No</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="booking_type">Booking Type</label>
+                                <select class="selectpicker form-control" id="booking_type" data-live-search="true" name="booking_type" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    <option value="Import" {{"Import" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Import</option>
+                                    <option value="Export" {{"Export" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Export</option>
                                 </select>
                             </div>
                         </div>
@@ -141,6 +170,7 @@
                                         <th>Booking ref no</th>
                                         <th>Shipper</th>
                                         <th>Forwarder</th>
+                                        <th>Consignee</th>
                                         <th>vessel</th>
                                         <th>voyage</th>
                                         <th>leg</th>
@@ -187,6 +217,7 @@
                                             <td>{{$item->ref_no}}</td>
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
+                                            <td>{{optional($item->consignee)->name}}</td>
                                             <td>{{optional($item->voyage)->vessel->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{optional($item->voyage->leg)->name}}</td>

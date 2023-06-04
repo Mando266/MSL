@@ -219,6 +219,7 @@ class BookingController extends Controller
                 'is_transhipment'=>$request->input('is_transhipment'),
                 'transhipment_port'=>$request->input('transhipment_port'),
                 'acid'=>$request->input('acid'),
+                'shipment_type'=>$request->input('shipment_type'),
             ]);
             $has_gate_in = 0;
         foreach($request->input('containerDetails',[]) as $details){
@@ -257,8 +258,11 @@ class BookingController extends Controller
             $booking->ref_no = 'TK'. $booking->loadPort->code . substr($booking->dischargePort->code , -3) .sprintf('%06u', $setting->booking_ref_no);
             $setting->booking_ref_no += 1;
             $setting->save();
-        }elseif(optional($quotation)->shipment_type == "Import"){
+        }elseif(optional($booking)->shipment_type == "Import"){
             $booking->ref_no = $request->input('ref_no');
+            $setting = Setting::find(1);
+            $booking->deleviry_no = $setting->delivery_no += 1;
+            $setting->save();
         }else{
             $booking->ref_no = $request->input('ref_no');
         }

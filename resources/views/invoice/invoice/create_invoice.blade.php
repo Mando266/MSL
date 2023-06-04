@@ -70,7 +70,7 @@
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
                                         @if(optional($bldraft)->voyage_id != null)
-                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -168,7 +168,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">Charge Description</th>
-                                        <th class="text-center">USD Amount</th>
+                                        <th class="text-center">Amount</th>
                                         <th class="text-center">VAT</th>
                                         <th class="text-center">Multiply QTY</th>
                                         <th class="text-center">TOTAL USD</th>

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Models\Voyages\Voyages;
+use App\Models\Voyages\Legs;
 
 
 class MovementsImport implements ToModel,WithHeadingRow
@@ -35,13 +37,22 @@ class MovementsImport implements ToModel,WithHeadingRow
 
         $containerId = $row['container_id'];
         $containertype = $row['container_type_id'];
+        $voyage = $row['voyage_id'];
+        $leg = $row['leg'];
 
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
+        $row['leg'] = Legs::where('name',$row['leg'])->pluck('id')->first();
+        $row['voyage_id'] = Voyages::where('company_id',Auth::user()->company_id)->where('voyage_no',$row['voyage_id'])->where('leg_id',$row['leg'])->pluck('id')->first();
         
         // Validation
         if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
             return Session::flash('message', "This Container Number: {$containerId} Must have Movement Code and Activity location and Movement Date");
         }
+        if(!$row['voyage_id']){
+            
+            return session()->flash('message',"This Voyage Number: {$voyage} or leg: {$leg} Not found");
+        }
+
         if(!$row['container_id']){
             
             return session()->flash('message',"This container Number: {$containerId} Not found ");

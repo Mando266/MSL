@@ -53,7 +53,7 @@
                                 <label for="ffw_id">Forwarder Customer</label>
                                 <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ffw as $item)
+                                    @foreach ($ffw as $item) 
                                             <option value="{{$item->id}}" {{$item->id == old('ffw_id',request()->input('ffw_id')) ? 'selected':''}}>{{$item->name}} </option>
                                     @endforeach
                                 </select>
@@ -88,7 +88,7 @@
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
                             </select>
                             @error('voyage_id')

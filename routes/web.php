@@ -89,7 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
     Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
-    Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate');
+    Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate'); 
     Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('loadlistBl', 'ImportExportController@loadlistBl')->name('export.BLloadList');
     Route::get('Bllist', 'ImportExportController@Bllist')->name('export.BLExport');

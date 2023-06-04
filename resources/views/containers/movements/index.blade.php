@@ -235,7 +235,7 @@
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
                                             <td>{{$item->bl_no}}</td>
-                                            <td>{{{optional($item->vessels)->name}}} {{$item->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{$item->port_location_id}}</td>
                                             <td>{{$item->pol_id}}</td>
                                             <td>{{$item->pod_id}}</td>

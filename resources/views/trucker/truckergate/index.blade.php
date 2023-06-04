@@ -96,9 +96,9 @@
                                             <td>{{optional($item->trucker)->company_name}}</td>
                                             <td>{{$item->valid_to}}</td>
                                             <td>{{$item->issue_date}}</td>
-                                            <td>{{ $qty }}</td>
-                                            <td>{{$item->gross_premium * $qty}}</td>
-                                            <td>{{$item->net_contribution * $qty}}</td>
+                                            <td>{{ $item->qty }}</td>
+                                            <td>{{$item->gross_premium * $item->qty}}</td>
+                                            <td>{{$item->net_contribution * $item->qty}}</td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

@@ -160,9 +160,9 @@
                                  <option value="">Select</option>
                                     @foreach ($voyages as $item)
                                         @if(isset($movement))
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') || $item->voyage_no == $movement->voyage_id ? 'selected':''}}>{{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') || $item->voyage_no == $movement->voyage_id ? 'selected':''}}>{{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                         @else
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>    
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>    
                                         @endif
                                     @endforeach
                                 </select>
@@ -368,23 +368,23 @@
 </script> -->
 
 <script>
-         $(function(){
-                    let vessel = $('#vessel_id');
-                    $('#vessel_id').on('change',function(e){
-                        let value = e.target.value;
-                        let response =    $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data){
-                            let voyages = data.voyages || '';
-                            let list2 = [];
-                            for(let i = 0 ; i < voyages.length; i++){
-                                list2.push(`<option value='${voyages[i].voyage_no}'>${voyages[i].voyage_no} </option>`);
-                            }
-                    let voyageno = $('#voyage');
-                    voyageno.html(list2.join(''));
-                        });
-                    });
-                });
-</script>
-
+    $(function() {
+        let vessel = $('#vessel_id');
+        $('#vessel_id').on('change', function(e) {
+            let value = e.target.value;
+            let response = $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data) {
+                let voyages = data.voyages || '';
+                let list2 = [];
+                for (let i = 0; i < voyages.length; i++) {
+                    list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no}</option>`);
+                }
+                let voyageno = $('#voyage');
+                voyageno.html(list2.join(''));
+            });
+        });
+    });
+    </script>
+    
 <script>
 
 document.getElementById('submit').onclick = function() {

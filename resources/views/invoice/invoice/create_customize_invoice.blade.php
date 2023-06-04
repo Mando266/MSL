@@ -94,7 +94,7 @@
                                 <select class="selectpicker form-control" id="voyage_id" name="voyage_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                         </select>
                                     @error('voyage_id')
@@ -233,7 +233,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Charge Description</th>
-                                    <th class="text-center">USD Amount</th>
+                                    <th class="text-center">Amount</th>
                                     <th class="text-center">VAT</th>
                                     <th class="text-center">Multiply QTY</th>
                                     <th class="text-center">TOTAL USD</th>
@@ -254,7 +254,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -359,7 +358,7 @@ $(document).ready(function(){
        var tr = '<tr>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" ></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" ></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT" value="0" disabled></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][vat]" class="form-control" autocomplete="off" placeholder="VAT" value="0" ></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" disabled></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled></td>'+

@@ -31,7 +31,7 @@
                                 <td style="height: 45px;"></td>
                             </tr>
                                 <tr>
-                                    <th class="text-center thstyle underline">اذن تسليم</th>
+                                <th class="text-center thstyle">اذن تسليم رقم {{$booking->deleviry_no}}</th>
                                 </tr>
                             </tbody>
                         </table>
@@ -340,9 +340,7 @@
                                     </div>
                                     <table class="col-md-12 tableStyle" >
                                         <tbody>
-                                            <tr>
-                                                <td class="col-md-12 tableStyle text-right underline" >فترة السماح :- {{optional($booking->quotation)->import_detention}} أيام</td>
-                                            </tr>
+                                          
                                             <tr>
                                                 <td class="col-md-12 tableStyle text-right underline" >ملاحظات اذن التسليم
                                                     شركة ميدل أيست غير مسئولة عن الوزن والمقاس المبين بعالية والبضاعة تم تعبئتها  وتفريغها تحت مسئولية الشاحن والمستلم 

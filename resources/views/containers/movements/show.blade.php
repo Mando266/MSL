@@ -238,7 +238,7 @@ if(request()->input('container_id') != null){
                                             <td>{{$items->port_location_id}}</td>
                                             <td>{{$items->pol_id}}</td>
                                             <td>{{$items->pod_id}}</td>
-                                            <td>{{{optional($item->vessels)->name}}} {{$items->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{$items->booking_no}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
@@ -281,7 +281,7 @@ if(request()->input('container_id') != null){
                                             <td>{{$item->port_location_id}}</td>
                                             <td>{{$item->pol_id}}</td>
                                             <td>{{$item->pod_id}}</td>
-                                            <td>{{{optional($item->vessels)->name}}} {{$item->voyage_id}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{$item->booking_no}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->free_time}}</td>

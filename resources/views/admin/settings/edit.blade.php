@@ -42,6 +42,10 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-3" >
+                                <label>Deleviry Order NO</label>
+                                    <input type="text" class="form-control" placeholder="Deleviry Order NO" autocomplete="off" value="{{old('delivery_no',$setting->delivery_no )}}" style="background-color:#fff" name="delivery_no">
+                            </div>
+                            <div class="form-group col-md-3" >
                                 <label>Booking REf NO</label>
                                     <input type="text" class="form-control" placeholder="Booking REf NO" autocomplete="off" value="{{old('booking_ref_no',$setting->booking_ref_no )}}" style="background-color:#fff" name="booking_ref_no">
                             </div>
@@ -54,7 +58,12 @@
                                     <input type="text" class="form-control" placeholder="Credit Note No" autocomplete="off" value="{{old('credit_no',$setting->credit_no )}}" style="background-color:#fff" name="credit_no">
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group col-md-3" >
+                                <label>Refund NO</label>
+                                    <input type="text" class="form-control" placeholder="Refund NO" autocomplete="off" value="{{old('refund_no',$setting->refund_no )}}" style="background-color:#fff" name="refund_no">
+                            </div>
+                        </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>

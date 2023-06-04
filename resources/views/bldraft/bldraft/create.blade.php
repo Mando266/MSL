@@ -210,7 +210,7 @@
                                 title="{{trans('forms.select')}}" disabled>
                                 @foreach ($voyages as $item)
                                     @if($booking->voyage_id != null)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endif
                                 @endforeach
                             </select>

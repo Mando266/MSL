@@ -49,10 +49,10 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $now }} </span> : تاريخ الطباعه<h3>
+                        <h3> <span style="font-size:22px;">{{ $now->format('Y-m-d')  }} </span> : تاريخ الطباعه<h3>
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $receipt->created_at }} </span> : تاريخ الانشاء<h3>
+                        <h3> <span style="font-size:22px;">{{ $receipt->created_at->format('Y-m-d')  }} </span> : تاريخ الانشاء<h3>
                     </div>
                 </div>
                 @if(optional($receipt->invoice)->add_egp == 'onlyegp')

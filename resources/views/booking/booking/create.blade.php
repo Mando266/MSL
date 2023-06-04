@@ -336,7 +336,7 @@
                                  title="{{trans('forms.select')}}" required>
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -352,7 +352,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -383,7 +383,7 @@
                                  title="{{trans('forms.select')}}" required>
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -399,7 +399,7 @@
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select..</option>
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -523,11 +523,41 @@
                         </div>
                         <div class="form-row">
                            @if(request()->input('quotation_id') != "draft") 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Shipment Status</label>
-                                <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
+                                <input type="text" class="form-control"  name ="shipment_type" value="{{$quotation->shipment_type}}" readonly>
+                            </div>
+                            @else
+                            {{-- <div class="form-group col-md-4">
+                                <label>Shipment Status <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
+                                    <option value="Import">Import</option>
+                                    <option value="Export">Export</option>
+                                </select>
+                            </div> --}}
+                            @endif
+                            @if($quotation->id != 0)
+                            <div class="form-group col-md-6">
+                                <label>Booking Status </label>
+                                <input type="text" class="form-control" name="booking_type" value="{{$quotation->quotation_type}}" readonly>
+                            </div>
+                            @else
+                            <div class="form-group col-md-4">
+                                <label>Booking Status <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required> 
+                                   <option value="Empty">Empty</option>
+                                   <option value="Full">Full</option>
+                                </select>
                             </div>
                             @endif
+                            @if(optional($quotation)->shipment_type == "Import" || request()->input('quotation_id') == "draft")
+                            <div class="form-group col-md-4">
+                                <label>Ref No</label>
+                                <input type="text" class="form-control"  style="background-color:#fff" name="ref_no" placeholder="Ref No"   required>
+                            </div>                            
+                            @endif
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
@@ -555,13 +585,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            @if(optional($quotation)->shipment_type == "Import" || request()->input('quotation_id') == "draft")
-                            <div class="form-group col-md-3">
-                                <label>Ref No</label>
-                                <input type="text" class="form-control"  style="background-color:#fff" name="ref_no" required>
-                            </div>                            
-                            @endif
-                            
+                        
                         </div>
 
                         <h4>Container Details</h4>
