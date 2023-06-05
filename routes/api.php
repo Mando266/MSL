@@ -5,6 +5,7 @@ use App\Http\Controllers\API\BlDraftController;
 use App\Http\Controllers\API\CompanyDataController;
 use App\Http\Controllers\API\CountriesController;
 use App\Http\Controllers\API\PriceController;
+use App\Http\Controllers\API\StorageContainersController;
 use App\Models\Master\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,3 +47,4 @@ Route::get('booking/activityContainers/{id}/{company_id}/{equipment_id}', [Count
 Route::get('master/invoices/{id}', [CompanyDataController::class, 'blinvoice']);
 Route::get('master/invoicesCustomers/{id}', [CompanyDataController::class, 'customerInvoice']);
 Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'containers']);
+Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
