@@ -324,7 +324,7 @@
                                         
                                             <td class="text-center">
                                                  <ul class="table-controls">
-                                                 @if($item->certificat == !null)
+                                                    @if($item->certificat == !null)
                                                     <li>
                                                         <a href='{{asset($item->certificat)}}' target="_blank">
                                                             <i class="fas fa-file-pdf text-primary" style='font-size:large;'></i>
