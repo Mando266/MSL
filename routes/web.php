@@ -9,6 +9,7 @@ use App\Http\Controllers\Invoice\ReceiptController;
 use App\Http\Controllers\Invoice\RefundController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
+use App\Http\Controllers\Storage\StorageController;
 use App\Http\Controllers\Trucker\TruckerGateController;
 use App\Http\Controllers\Update\RefreshController;
 use App\Models\ViewModel\RootMenuNode;
@@ -194,6 +195,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/update/manual',[RefreshController::class,'updateContainers'])->name('containerRefresh');
     Route::get('/update/quotation',[RefreshController::class,'updateQuotation'])->name('updateQuotation');
     Route::get('/update/booking/containers/{id?}',[RefreshController::class,'updateBookingContainers'])->name('bookingContainersRefresh');
+    /*
+    |-------------------------------------------
+    | Storage routes
+    |--------------------------------------------
+    */
+    Route::prefix('storage')->namespace('Storage')->group(function () {
+        Route::get('storage',[StorageController::class,'index'])->name('storage.index');
+    });
 });
 Auth::routes(['register' => false]);
 
