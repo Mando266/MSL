@@ -3,6 +3,7 @@
 namespace App\Models\Bl;
 
 use App\Models\Booking\Booking;
+use App\Models\Containers\Movements;
 use App\Models\Invoice\Invoice;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Customers;
@@ -75,6 +76,11 @@ class BlDraft extends Model implements PermissionSeederContract
     public function invoices()
     {
         return $this->hasMany(Invoice::class ,'bldraft_id','id');
+    }
+
+    public function movements()
+    {
+        return $this->hasMany(Movements::class ,'bl_no','ref_no');
     }
 
     public function UpdateBlDetails($inputs)
