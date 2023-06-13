@@ -32,7 +32,7 @@ class BookingImport implements ToModel,WithHeadingRow
         $row['booking_id'] = Booking::where('company_id',Auth::user()->company_id)->where('ref_no',$row['booking_id'])->pluck('id')->first();
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         $row['activity_location'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['activity_location'])->pluck('id')->first();
-        $row['container_type'] = ContainersTypes::where('company_id',Auth::user()->company_id)->where('name',$row['container_type'])->pluck('id')->first();
+        $row['container_type'] = ContainersTypes::where('name',$row['container_type'])->pluck('id')->first();
         $containerDuplicate = BookingContainerDetails::where('booking_id',$row['booking_id'])->where('container_id',$row['container_id'])->count();
         // Validation
         if(!$row['container_id']){

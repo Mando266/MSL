@@ -17,9 +17,7 @@ class ReceiptExport implements FromCollection,WithHeadings
             "Payment Methods",
             "Total",
             "Paid",
-            "Notes",
-            "User",
-            "created_at",
+            "User" ,
         ];
     }
     
@@ -58,9 +56,7 @@ class ReceiptExport implements FromCollection,WithHeadings
                     'Payment Methods'=> $PaymentMethods,
                     'Total'=> $receipt->total,
                     'Paid'=> $receipt->paid,
-                    'Notes'=> $receipt->notes,
                     'User'=> optional($receipt->user)->name,
-                    'created_at'=> $receipt->created_at,
                 ]);
                 $receiptexport->add($tempCollection);
         }

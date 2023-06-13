@@ -92,7 +92,7 @@
                             <select class="selectpicker form-control" id="voyage_id" name="voyage_id" data-live-search="true" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} {{optional($item->vessel)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} {{optional($item->vessel)->name }} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
                             </select> 
                         </div>

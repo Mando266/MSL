@@ -49,10 +49,10 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $now->format('Y-m-d')  }} </span> : تاريخ الطباعه<h3>
+                        <h3> <span style="font-size:22px;">{{ $now }} </span> : تاريخ الطباعه<h3>
                     </div>
                     <div class="form-group col-md-6  text-right">
-                        <h3> <span style="font-size:22px;">{{ $receipt->created_at->format('Y-m-d')  }} </span> : تاريخ الانشاء<h3>
+                        <h3> <span style="font-size:22px;">{{ $receipt->created_at }} </span> : تاريخ الانشاء<h3>
                     </div>
                 </div>
                 @if(optional($receipt->invoice)->add_egp == 'onlyegp')
@@ -78,13 +78,13 @@
                     <div class="form-group col-md-10  text-right">
                         <h3> <span style="font-size:22px;">                                     
                         @if($receipt->bank_transfer != null) 
-                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->Banktransfer)->name}}<br> 
+                            {{$receipt->bank_transfer}} Bank Transfer {{optional($receipt->bank)->name}}<br> 
                         @endif
                         @if($receipt->bank_deposit != null)
                             {{$receipt->bank_deposit}}  Bank Deposit {{optional($receipt->bank)->name}}<br> 
                         @endif 
                         @if($receipt->bank_check != null)
-                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}} Bank Account {{optional($receipt->cheque)->name}}<br> 
+                            {{$receipt->bank_check}}  Bank Cheque  {{optional($receipt)->cheak_no}}<br> 
                         @endif
                         @if($receipt->bank_cash != null)
                             {{$receipt->bank_cash}}  Cash <br>

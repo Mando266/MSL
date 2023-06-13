@@ -200,7 +200,7 @@
                                         <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_no" value="0" >
+                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_no" value="0" checked>
                                         <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
                                     </div>
                                 </td>
@@ -223,17 +223,20 @@
                                     placeholder="Total" autocomplete="off" disabled style="background-color: white;">
                                 </td>
                                 @endif
+                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
                                 @if($detail->unit == "Container")
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * $qty * optional($bldraft->voyage)->exchange_rate }}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
+                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
                                 </td>
                                 @elseif($detail->unit == "Document")
                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;">
+                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
                                 </td>
                                 @endif
+                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
+
                                     <td style="width:85px;">
-                                        <button type="button" class="btn btn-danger remove" ><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
                                     </td>
                             </tr>
                             @endforeach
@@ -323,6 +326,7 @@
             $(this).find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
         });
     });
+
     $('body').on('change', 'input[name$="[enabled]"]', function() {
         var row = $(this).closest('tr');
         var sizeSmall = row.find('input[name$="[size_small]"]').val();
@@ -431,8 +435,8 @@ $(document).ready(function(){
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1"><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total" required></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount"></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>'+
+           '<td><input type="text" name="invoiceChargeDesc['+counter+'][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT"></td>'+
            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
        '</tr>';

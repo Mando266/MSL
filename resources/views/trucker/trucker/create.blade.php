@@ -19,39 +19,39 @@
                 <form id="createForm" action="{{route('trucker.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf 
 
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="nameInput">Company Name <span class="text-warning"> * (Required.) </span></label>
-                        <input type="text" class="form-control" id="nameInput" name="company_name" value="{{old('company_name')}}"
-                                placeholder="Company Name " autocomplete="off" autofocus>
-                            @error('name')
-                            <div style="color: red;">
-                                {{$message}}
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="nameInput">Company Name <span class="text-warning"> * (Required.) </span></label>
+                            <input type="text" class="form-control" id="nameInput" name="company_name" value="{{old('company_name')}}"
+                                 placeholder="Company Name " autocomplete="off" autofocus>
+                                @error('name')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="contactInput">Contact Person</label>
-                            <input type="text" class="form-control" id="contact_personInput" name="contact_person" value="{{old('contact_person')}}"
-                                placeholder="Contact Person" autocomplete="off">
-                            @error('contact_person')
-                            <div style="color: red;">
-                                {{$message}}
+                            <div class="form-group col-md-4">
+                                <label for="contactInput">Contact Person</label>
+                                <input type="text" class="form-control" id="contact_personInput" name="contact_person" value="{{old('contact_person')}}"
+                                    placeholder="Contact Person" autocomplete="off">
+                                @error('contact_person')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="mobileInput">Mobile</label>
-                            <input type="text" class="form-control" id="mobileInput" name="mobile" value="{{old('mobile')}}"
-                                placeholder="Mobile" autocomplete="off">
-                            @error('mobile')
-                            <div style="color: red;">
-                                {{$message}}
+                            <div class="form-group col-md-4">
+                                <label for="mobileInput">Mobile</label>
+                                <input type="text" class="form-control" id="mobileInput" name="mobile" value="{{old('mobile')}}"
+                                    placeholder="Mobile" autocomplete="off">
+                                @error('mobile')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
                         </div>
-                    </div>
-
+  
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="phoneInput">Phone</label>

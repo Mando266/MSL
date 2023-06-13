@@ -16,10 +16,12 @@ class QuotationIndexFilter extends AbstractFilter{
         'load_port_id'=>POLFilter::class,
         'discharge_port_id'=>PODFilter::class,
         'voyage_id'=>VoyageFilter::class,
+        'voyage_id_second'=>SecondVoyageFilter::class,
         'principal_name'=>PrincipalFilter::class,
         'booking_confirm'=>BookingConfirmFilter::class,
         'container_id'=>ContainerFilter::class,
         'is_transhipment'=>TranshipmentFilter::class,
         'booking_type'=>BookingTypeFilter::class,
+        'voyage_id_both'=>BothVoyageFilter::class,
     ];
 }

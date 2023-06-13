@@ -180,7 +180,7 @@
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$booking->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
                                 @endforeach
                             </select>
                             @error('voyage_id')
@@ -245,11 +245,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                                 <label for="status">Bl Payment</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
-                                @if(optional($bldraft->booking->quotation)->payment_kind == "Collect")
-                                    <option value="Collect" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Collect"? 'selected':''}}>Collect</option>
-                                @else
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled>
+                                @if(optional($bldraft->booking->quotation)->ofr != 0)
                                     <option value="Prepaid" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
+                                @else
+                                    <option value="Collect" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Collect"? 'selected':''}}>Collect</option>
                                 @endif
                                 </select>
                                 @error('bl_kind')

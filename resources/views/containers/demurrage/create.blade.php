@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10" required>
+                                    <select class="selectpicker form-control" id="port" data-live-search="true" name="port_id" data-size="10" required>
                                         <option value="">Select...</option>
                                             @foreach ($ports as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -132,9 +132,10 @@
                                 <div class="form-group col-md-4">
                                     <label for="is_storge">Detention OR Storage</label>
                                     <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                             <option value="Detention">Detention</option>
                                             <option value="Storage">Storage</option>
+                                            <option value="power charges">power charges</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">
@@ -146,7 +147,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-8">
                                     <label for="containersTypesInput">Trminal <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10" required>
+                                    <select class="selectpicker form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10" required>
                                         <option value="">Select...</option>
                                         @foreach ($terminals as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -247,6 +248,7 @@
                         }
                 let port = $('#port');
                 port.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
                 });
             });
         });
@@ -264,6 +266,7 @@
                         }
                 let terminal = $('#terminal');
                 terminal.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
                 });
             });
         });
