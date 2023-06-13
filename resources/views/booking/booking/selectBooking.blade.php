@@ -16,16 +16,31 @@
                 <div class="widget-content widget-content-area">
                     @if(Session::has('message'))
                         <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
-                    @endif
+                        @endif
                     <form action="{{route('importBooking')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-
+                        <div class="form-row">
+                            {{-- <div class="form-group col-md-6">
+                                <label for="booking_id">Select Booking</label>
+                                <select class="selectpicker form-control" id="booking_id" name="booking_id" required data-live-search="true" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($bookings as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_id') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @endforeach
+                                </select>
+                                @error('booking_id')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div> --}}
                             <div class="col-md-12 text-center mb-6">
                                 {{ csrf_field() }}
                                     <input type="file" name="file" >
                                     <button  id="buttonSubmit" class="btn btn-success  mt-3" >Import</button>
                             </div>
                                
+                        </div>
                     </form>
                 </div>
             </div>

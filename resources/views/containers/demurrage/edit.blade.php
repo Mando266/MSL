@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="port">Port <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="form-control" id="port" data-live-search="true" name="port_id" data-size="10"
+                                    <select class="selectpicker form-control" id="port" data-live-search="true" name="port_id" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                             <option value="">Select...</option>
                                             @foreach ($ports as $item)
@@ -132,9 +132,10 @@
                                 <div class="form-group col-md-4">
                                     <label for="is_storge">Detention OR Storage</label>
                                     <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus>
-                                            <option value="Detention" {{$demurrage->is_storge == "Detention"? 'selected':''}}>Detention</option>
-                                            <option value="Storage" {{$demurrage->is_storge == "Storage"? 'selected':''}}>Storage</option>
+                                    title="{{trans('forms.select')}}" autofocus required>
+                                            <option value="Detention" {{ old('is_storge',$demurrage->is_storge) == "Detention" ? 'selected':'' }}>Detention</option>
+                                            <option value="Storage" {{ old('is_storge',$demurrage->is_storge) == "Storage" ? 'selected':'' }}>Storage</option>
+                                            <option value="power charges" {{ old('is_storge',$demurrage->is_storge) == "power charges" ? 'selected':'' }}>power charges</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">
@@ -146,7 +147,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-8">
                                     <label for="containersTypesInput">Terminals</label>
-                                    <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
+                                    <select class="selectpicker form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
                                     title="{{trans('forms.select')}}" autofocus>
                                         @foreach ($terminals as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('terminal_id',$demurrage->terminal_id) ? 'selected':''}}>{{$item->name}} {{$item->code}}</option>
@@ -260,6 +261,7 @@ function removeItem( item )
                         }
                 let port = $('#port');
                 port.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
                 });
             });
         });
@@ -277,6 +279,7 @@ function removeItem( item )
                         }
                 let terminal = $('#terminal');
                 terminal.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
                 });
             });
         });

@@ -201,7 +201,9 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('storage')->namespace('Storage')->group(function () {
-        Route::get('storage',[StorageController::class,'index'])->name('storage.index');
+        Route::resource('storage','StorageController');
+
+        // Route::get('storage',[StorageController::class,'index'])->name('storage.index');
     });
 });
 Auth::routes(['register' => false]);

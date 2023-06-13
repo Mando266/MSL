@@ -85,7 +85,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
                     'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
-                    'bl no' => optional($invoice->bldraft)->ref_no ?? "Customize",
+                    'bl no' => optional($invoice->bldraft)->ref_no,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional($VoyagePort)->eta,

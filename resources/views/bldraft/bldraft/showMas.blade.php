@@ -56,12 +56,11 @@
                                 <th class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
                                 <div class="col-md-12 text-center">
-                                    @if(optional($blDraft->loadPort)->code == "EGDAM")
-                                    <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
-                                        @else
-                                    <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
-
-                                    @endif
+                                    {{-- @if(optional($blDraft->loadPort)->code == "EGEDK") --}}
+                                        <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                        {{-- @else
+                                        <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
+                                    @endif --}}
                                 </div>
                                 </th>
                             </tr>

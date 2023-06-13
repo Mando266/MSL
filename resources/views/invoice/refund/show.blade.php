@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
-                        <h3> <span style="font-size:22px;">{{ $now->format('Y-m-d') }} </span> :  التاريخ<h3>
+                        <h3> <span style="font-size:22px;">{{ $now }} </span> :  التاريخ<h3>
                     </div>
                 </div>
                 @if($receipt->status == 'refund_egp')

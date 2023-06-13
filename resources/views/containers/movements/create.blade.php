@@ -368,23 +368,23 @@
 </script> -->
 
 <script>
-    $(function() {
-        let vessel = $('#vessel_id');
-        $('#vessel_id').on('change', function(e) {
-            let value = e.target.value;
-            let response = $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data) {
-                let voyages = data.voyages || '';
-                let list2 = [];
-                for (let i = 0; i < voyages.length; i++) {
-                    list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no}</option>`);
-                }
-                let voyageno = $('#voyage');
-                voyageno.html(list2.join(''));
-            });
-        });
-    });
-    </script>
-    
+         $(function(){
+                    let vessel = $('#vessel_id');
+                    $('#vessel_id').on('change',function(e){
+                        let value = e.target.value;
+                        let response =    $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data){
+                            let voyages = data.voyages || '';
+                            let list2 = [];
+                            for(let i = 0 ; i < voyages.length; i++){
+                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no}</option>`);
+                            }
+                    let voyageno = $('#voyage');
+                    voyageno.html(list2.join(''));
+                        });
+                    });
+                });
+</script>
+
 <script>
 
 document.getElementById('submit').onclick = function() {

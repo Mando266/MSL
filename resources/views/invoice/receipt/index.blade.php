@@ -98,13 +98,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($receipts as $receipt)
+                                    @forelse ($receipts as $receipt)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($receipts,$loop)}}</td>
                                             <td>{{$receipt->receipt_no}}</td>
                                             <td>{{optional($receipt->invoice)->invoice_no}}</td>
                                             <td>{{optional($receipt->bldraft)->ref_no}}</td>
-                                            <td>{{optional(optional($receipt->invoice)->customerShipperOrFfw)->name}}</td>
+                                            <td>{{optional($receipt->invoice->customerShipperOrFfw)->name}}</td>
                                             <td>
                                                 @if($receipt->bank_transfer != null)
                                                     Bank Transfer {{$receipt->bank_transfer}}<br>
@@ -143,8 +143,11 @@
                                                 </ul>
                                             </td>
                                         </tr>
-                                    
-                                    @endforeach
+                                    @empty
+                                        <tr class="text-center">
+                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
+                                        </tr>
+                                    @endforelse
 
                                 </tbody>
 

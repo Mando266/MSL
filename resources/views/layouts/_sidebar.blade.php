@@ -425,6 +425,11 @@
                                 @endpermission
                                 @permission('Invoice-List')
                                 <li>
+                                    <a href="{{route('storage.index')}}">Storage Calculation</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-List')
+                                <li>
                                     <a href="{{route('receipt.index')}}">Receipt Gates</a>
                                 </li>
                                 @endpermission

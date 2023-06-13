@@ -51,6 +51,7 @@
                                     title="{{trans('forms.select')}}" autofocus>
                                             <option value="Detention">Detention</option>
                                             <option value="Storage">Storage</option>
+                                            <option value="power charges">power charges</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">

@@ -43,15 +43,7 @@ class Voyages extends Model implements PermissionSeederContract
     }
     public function bldrafts()
     {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',0);
-        });;
-    }
-    public function transhipmentBldrafts()
-    {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',1);
-        });;
+        return $this->hasMany(BlDraft::class ,'voyage_id','id');
     }
     public function createOrUpdatevoyageport($inputs)
     {

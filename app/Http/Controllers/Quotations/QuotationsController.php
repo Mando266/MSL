@@ -8,13 +8,17 @@ use App\Models\Master\ContainersTypes;
 use App\Models\Master\Currency;
 use App\Models\Master\Customers;
 use App\Models\Master\Ports;
+use App\User as AppUser;
 use App\Models\Master\Country;
 use App\Models\Master\Agents;
 use App\Filters\Quotation\QuotationIndexFilter;
 use App\Models\Master\Lines;
 use App\Models\Quotations\QuotationLoad;
+use App\Quotations\QuotationLoad as QuotationsQuotationLoad;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
 class QuotationsController extends Controller
@@ -198,8 +202,6 @@ class QuotationsController extends Controller
                 'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
-                'quotation_type'=> $request->input('quotation_type'),
-
             ]);
             $refNo .=$quotations->id;
             $quotations->ref_no = $refNo;
@@ -241,7 +243,6 @@ class QuotationsController extends Controller
                 'payment_kind'=> $request->input('payment_kind'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
-                'quotation_type'=> $request->input('quotation_type'),
             ]);
             $refNo .=$quotations->id;
             $quotations->ref_no = $refNo;
@@ -377,7 +378,7 @@ class QuotationsController extends Controller
             'oog_dimensions'=>$request->oog_dimensions,
             'power_charges'=>$request->power_charges,
             'payment_kind'=> $request->payment_kind,
-            'quotation_type'=>$request->quotation_type,
+
         ];
         if($user->is_super_admin){
             if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){

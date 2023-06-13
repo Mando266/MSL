@@ -17,16 +17,13 @@
                     <form id="createForm" action="{{route('bldraft.create')}}" method="get">
                             @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-7">
                                 <label for="Booking">Booking</label>
                                 <select class="selectpicker form-control" id="Booking" name="booking_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($booking as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('booking_id') ? 'selected':''}}>{{$item->ref_no}} - {{optional($item->customer)->name}}</option>
                                     @endforeach
-                                    @foreach ($transhipments as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('booking_id') ? 'selected':''}}>{{$item->ref_no}} - {{optional($item->customer)->name}}</option>
-                                @endforeach
                                 </select>
                                 @error('booking_id')
                                 <div style="color:red;">

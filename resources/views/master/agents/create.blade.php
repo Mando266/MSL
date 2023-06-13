@@ -18,9 +18,6 @@
                 <div class="widget-content widget-content-area">
                 <form id="createForm" action="{{route('agents.store')}}" method="POST">
                         @csrf
-                        @if(session('alert'))
-                            <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
-                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="nameInput"> Name *</label>
