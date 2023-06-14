@@ -15,9 +15,6 @@
                     </div> 
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            {{-- @permission('Refund-List')
-                            <a href="{{route('export.receipt')}}" class="btn btn-warning">Export</a>
-                            @endpermission --}}
                             @permission('Invoice-Create')
                             <a href="{{route('creditNote.create')}}" class="btn btn-primary">New Credit Note</a>
                             @endpermission
@@ -56,6 +53,8 @@
                                         <th>Customer Name</th>
                                         <th>Total Amount</th>
                                         <th>Currency</th>
+                                        <th></th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,6 +69,17 @@
                                             @else
                                             <td>USD</td>    
                                             @endif
+                                            <td class="text-center">
+                                                <ul class="table-controls">                                                
+                                                @permission('Invoice-Show')
+                                                <li>
+                                                    <a href="{{route('creditNote.show',['creditNote'=>$creditNote->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                        <i class="far fa-eye text-primary"></i>
+                                                    </a>
+                                                </li>
+                                                @endpermission
+                                                </ul>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr class="text-center">

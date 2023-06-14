@@ -17,12 +17,12 @@
                     <form id="createForm" action="{{route('booking.showGateInImport',['booking'=>$booking->id,'port_id'=>request()->input('port_id')])}}" method="get">
                             @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-8">
+                            <div class="form-group col-md-6">
                                 <label for="activity_location_id">Select Gate In</label>
                                 <select class="selectpicker form-control" id="activity_location_id" name="port_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                        <option value="{{$item->name}}">{{$item->pick_up_location}}</option>
                                     @endforeach
                                 </select>
                                 @error('activity_location_id')
