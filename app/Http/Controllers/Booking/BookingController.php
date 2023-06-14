@@ -165,6 +165,14 @@ class BookingController extends Controller
                     return redirect()->back()->with('error','Container Numbers Must be unique')->withInput($request->input());
                 }
             }
+
+            $user = Auth::user();
+            
+            $ReferanceNumber  = Booking::where('company_id',$user->company_id)->where('ref_no',$request->ref_no)->first();
+            //dd($BookingDublicate);
+            if($ReferanceNumber != null){
+                return back()->with('error','This Booking No Already Exists');
+            }
             
             // Validate Expiration Date
             // $quotation = Quotation::find($request->quotation_id);
@@ -523,7 +531,7 @@ class BookingController extends Controller
         if($ReferanceNumber > 0){
             return back()->with('error','The Booking Refrance Number Already Exists');
         }
-
+ 
         $this->authorize(__FUNCTION__,Booking::class);
         $inputs = request()->all();
         unset($inputs['containerDetails'],$inputs['_token'],$inputs['removed']);
