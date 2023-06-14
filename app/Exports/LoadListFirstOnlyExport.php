@@ -47,7 +47,6 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
         $count = 0;
         foreach($bookings ?? []  as $booking){
             foreach($booking->bookingContainerDetails as $bookingContainerDetail){
-                $count ++;
                 if($booking->bookingContainerDetails->count() > 0){
                     if($booking->booking_confirm == 1){
                         $booking->booking_confirm = "Confirm";
@@ -55,6 +54,7 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                         $booking->booking_confirm = "Draft";
                     }
                 if($bookingContainerDetail->qty == 1){
+                    $count ++;
                     if(optional($bookingContainerDetail->container)->code == null){
                         $containerNo = "Dummy";
                     }else{
@@ -86,7 +86,7 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                         'Description' => optional($booking)->commodity_description,
                         'booking_confirm' => $booking->booking_confirm,
                     ]);
-            $exportBookings->add($tempCollection);
+                    $exportBookings->add($tempCollection);
 
                 }elseif($bookingContainerDetail->container == 000 || $bookingContainerDetail->container == Null){
                     $cargoWeight = optional($bookingContainerDetail)->weight / optional($bookingContainerDetail)->qty;
@@ -95,10 +95,12 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                         $tempCollection = collect([
                             'no' => $count,
                             'ref_no' => $booking->ref_no,
-                            'Vessel' => optional($booking->voyage)->vessel->name,
-                            'voyage No' => optional($booking->voyage)->voyage_no,
+                            'first_vessel' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional($booking->voyage)->vessel->name ) : ( optional(optional($booking->secondvoyage)->vessel)->name ) ,
+                            'voyage_id' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional($booking->voyage)->voyage_no ) : ( optional($booking->secondvoyage)->voyage_no ),
+                            'leg' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional(optional($booking->voyage)->leg)->name ) : ( optional(optional($booking->secondvoyage)->leg)->name ),
                             'Load Port' => optional($booking->loadPort)->code,
                             'Final Dest' => optional($booking->dischargePort)->code,
+                            'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
                             'line' => optional($booking->principal)->code,
                             'pickUpLocation' =>optional($booking->pickUpLocation)->name,
                             'placeOfReturn' =>optional($booking->placeOfReturn)->name,        
