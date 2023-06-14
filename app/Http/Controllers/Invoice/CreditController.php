@@ -11,10 +11,11 @@ use App\Models\Invoice\CreditNoteDesc;
 use App\Models\Master\Customers;
 use Illuminate\Support\Facades\Auth;
 use App\Setting;
+use Carbon\Carbon;
 
 class CreditController extends Controller
 {
-    
+     
     public function index()
     {
         $creditNotes = CreditNote::filter(new CreditIndexFilter(request()))->orderBy('id','desc')->paginate(30);
@@ -91,15 +92,28 @@ class CreditController extends Controller
   
     public function show($id)
     {
-        //
+        $this->authorize(__FUNCTION__,CreditNote::class);
+
+        $creditNote = CreditNote::find($id);
+        $now = Carbon::now();
+
+        $exp = explode('.', $creditNote->total_amount);
+        $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
+        if(count($exp) >1){
+            $total =  ucfirst($f->format($exp[0])) . ' and ' . ucfirst($f->format($exp[1]));
+
+        }else{
+            $total =  ucfirst($f->format($exp[0]));
+        }
+
+        return view('invoice.creditNote.show',[
+            'creditNote'=>$creditNote,
+            'now'=>$now,
+            'total'=>$total,
+
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
