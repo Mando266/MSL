@@ -48,9 +48,9 @@
                                     <select class="selectpicker form-control" data-live-search="true" name="service" data-size="10" id="service"
                                         title="{{trans('forms.select')}}" required>
                                         <option value="power charges" {{ "power charges" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Power Charges</option>
-                                        {{-- <option value="Export Empty" {{ "Export Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Empty</option> --}}
+                                        <option value="Export Empty" {{ "Export Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Empty</option>
                                         <option value="Export Full" {{ "Export Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Full</option>
-                                        {{-- <option value="Import Empty" {{ "Import Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Empty</option> --}}
+                                        <option value="Import Empty" {{ "Import Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Empty</option>
                                         <option value="Import Full" {{ "Import Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Full</option>
                                     </select>
                             </div> 
@@ -169,7 +169,7 @@
                         let containers = data.containers || '';
                         let list2 = [`<option value='all'>All</option>`];
                         for(let i = 0 ; i < containers.length; i++){
-                            list2.push(`<option value='${containers[i].code}'>${containers[i].code} </option>`);
+                            list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`);
                         }
                 let container = $('#port');
                 container.html(list2.join(''));

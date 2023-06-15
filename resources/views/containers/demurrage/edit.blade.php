@@ -134,8 +134,9 @@
                                     <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
                                     title="{{trans('forms.select')}}" autofocus required>
                                             <option value="Detention" {{ old('is_storge',$demurrage->is_storge) == "Detention" ? 'selected':'' }}>Detention</option>
-                                            <option value="Storage" {{ old('is_storge',$demurrage->is_storge) == "Storage" ? 'selected':'' }}>Storage</option>
+                                            <option value="Export" {{ old('is_storge',$demurrage->is_storge) == "Export" ? 'selected':'' }}>Export</option>
                                             <option value="power charges" {{ old('is_storge',$demurrage->is_storge) == "power charges" ? 'selected':'' }}>power charges</option>
+                                            <option value="Import" {{ old('is_storge',$demurrage->is_storge) == "Import" ? 'selected':'' }}>Import</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">
