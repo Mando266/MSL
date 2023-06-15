@@ -158,6 +158,7 @@ class BlDraftController extends Controller
             }
         }
         $user = Auth::user();
+
         if(isset($request->blDraft_id)){
             // Childs of Splitted BL Logic Here
             $ischild = 1;

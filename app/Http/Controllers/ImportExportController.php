@@ -20,7 +20,6 @@ use App\Exports\QuotationExport;
 use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
 use App\Exports\InvoiceListExport;
-use App\Exports\LoadListFirstOnlyExport;
 use App\Exports\ReceiptExport;
 use App\Imports\BookingImport;
 use App\Imports\MovementsImport;
@@ -84,11 +83,7 @@ class ImportExportController extends Controller
     }
     public function loadlistBooking() 
     {
-        if(request()->input('first_voyage_id')){
-            return Excel::download(new LoadListFirstOnlyExport, 'Loadlist.xlsx');
-        }else{
-            return Excel::download(new LoadListExport, 'Loadlist.xlsx');
-        }
+        return Excel::download(new LoadListExport, 'Loadlist.xlsx');
     }
     
     public function exportVoyages() 
