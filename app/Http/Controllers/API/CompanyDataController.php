@@ -16,10 +16,17 @@ class CompanyDataController extends Controller
 {
     public function getVesselVoyages($id)
     {
-        $voyages = Voyages::where('vessel_id',$id)->select('voyage_no')->get();
-        
+        $voyages = Voyages::where('vessel_id',$id)->get();
+        foreach ($voyages as $voyage) {
+            $rowData = [
+                'id' => $voyage->id,
+                'voyage_no' => $voyage->voyage_no,
+                'leg' => optional($voyage->leg)->name,
+                ];
+            $data[] = $rowData;
+        }
         return Response::json([
-            'voyages' => $voyages,
+            'voyages' => $data,
         ],200);
     }
     
