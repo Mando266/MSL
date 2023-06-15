@@ -70,6 +70,8 @@ class DemurageController extends Controller
             'validity_to'=> $request->input('validity_to'),
             'currency'=> $request->input('currency'),
             'bound_id'=> $request->input('bound_id'),
+            'is_storge' => $request->is_storge,
+            'container_status' => $request->container_status,
             'tariff_id'=> $request->input('tariff_id'),
             'company_id'=>$user->company_id,
         ]);
