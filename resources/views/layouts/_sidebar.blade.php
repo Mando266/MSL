@@ -317,6 +317,11 @@
                                         <a href="{{route('detention.view')}}"> Dentention Calculation </a>
                                     </li>
                                 @endpermission
+                                @permission('Invoice-List')
+                                    <li>
+                                        <a href="{{route('storage.index')}}">Storage Calculation</a>
+                                    </li>
+                                @endpermission
                         </ul>
             </li>
             @endpermission
@@ -421,11 +426,6 @@
                                 @permission('Invoice-List')
                                 <li>
                                     <a href="{{route('invoice.index')}}">Invoice Gates</a>
-                                </li>
-                                @endpermission
-                                @permission('Invoice-List')
-                                <li>
-                                    <a href="{{route('storage.index')}}">Storage Calculation</a>
                                 </li>
                                 @endpermission
                                 @permission('Invoice-List')
