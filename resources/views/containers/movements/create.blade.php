@@ -155,7 +155,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                             <label for="">Voyage No</label>
-                                <select class="form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
+                                <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                  <option value="">Select</option>
                                     @foreach ($voyages as $item)
@@ -376,10 +376,11 @@
                             let voyages = data.voyages || '';
                             let list2 = [];
                             for(let i = 0 ; i < voyages.length; i++){
-                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no}</option>`);
+                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no} - ${voyages[i].leg}</option>`);
                             }
                     let voyageno = $('#voyage');
                     voyageno.html(list2.join(''));
+                    $('.selectpicker').selectpicker('refresh');
                         });
                     });
                 });
