@@ -44,6 +44,8 @@ class BookingExport implements FromCollection,WithHeadings
             "Bldraft Status",
             "Assigned",
             "UnAssigned",
+            "BOOKING Type",
+            "Payment Kind",
         ];
     }
     
@@ -129,6 +131,8 @@ class BookingExport implements FromCollection,WithHeadings
                     'bl_status'=>$bldraftStatus,
                     'assigned' => $assigned,
                     'unassigned' => $unassigned,
+                    'booking_type' => optional(optional($booking)->quotation)->quotation_type,
+                    'payment_kind'=>optional(optional($booking)->quotation)->payment_kind,
                 ]);
                 $exportBookings->add($tempCollection);
         }

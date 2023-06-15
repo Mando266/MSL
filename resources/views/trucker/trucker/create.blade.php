@@ -23,7 +23,7 @@
                             <div class="form-group col-md-4">
                                 <label for="nameInput">Company Name <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="nameInput" name="company_name" value="{{old('company_name')}}"
-                                 placeholder="Company Name " autocomplete="off" autofocus>
+                                 placeholder="Company Name " autocomplete="off" autofocus required>
                                 @error('name')
                                 <div style="color: red;">
                                     {{$message}}
@@ -118,9 +118,9 @@
                     <table id="delegatedPerson" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Degattion From</th>
-                                    <th>Degattion To</th>
+                                    <th>Name<span class="text-warning"> * (Required) </span></th>
+                                    <th>Degattion From<span class="text-warning"> * (Required) </span></th>
+                                    <th>Degattion To<span class="text-warning"> * (Required) </span></th>
                                     <th>Id Number</th>
                                     <th>Mobile</th>
                                     <th>
@@ -134,10 +134,10 @@
                                     <input type="text" id="name" name="delegatedPerson[0][name]" class="form-control"  autocomplete="off" placeholder="Name" required>
                                 </td>
                                 <td>  
-                                    <input type="date" id="degattion_from" name="delegatedPerson[0][degattion_from]" class="form-control"  autocomplete="off" placeholder="Degattion From">
+                                    <input type="date" id="degattion_from" name="delegatedPerson[0][degattion_from]" class="form-control"  autocomplete="off" placeholder="Degattion From" required>
                                 </td>
                                 <td>  
-                                    <input type="date" id="degattion_to" name="delegatedPerson[0][degattion_to]" class="form-control"  autocomplete="off" placeholder="Degattion To">
+                                    <input type="date" id="degattion_to" name="delegatedPerson[0][degattion_to]" class="form-control"  autocomplete="off" placeholder="Degattion To" required>
                                 </td>
                                 <td>  
                                     <input type="text" id="id_number" name="delegatedPerson[0][id_number]" class="form-control"  autocomplete="off" placeholder="Id Number">

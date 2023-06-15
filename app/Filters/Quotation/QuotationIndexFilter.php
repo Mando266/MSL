@@ -23,5 +23,6 @@ class QuotationIndexFilter extends AbstractFilter{
         'is_transhipment'=>TranshipmentFilter::class,
         'booking_type'=>BookingTypeFilter::class,
         'voyage_id_both'=>BothVoyageFilter::class,
+        'quotation_id'=>QuotationFilter::class,
     ];
 }
