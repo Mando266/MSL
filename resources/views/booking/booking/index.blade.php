@@ -41,6 +41,16 @@
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
+                                <label for="ref_no">Quotation Ref No</label>
+                                <select class="selectpicker form-control"  name="quotation_id" data-live-search="true" data-size="10"
+                                    title="{{trans('forms.select')}}">
+                                    @foreach ($quotation as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('quotation_id',request()->input('quotation_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
                                 <label for="Refrance">BOOKING REF NO</label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -59,6 +69,7 @@
                                         @endforeach
                                     </select>
                             </div>
+
                             <div class="form-group col-md-3">
                                     <label for="ffw_id">Fright Forwarder</label>
                                     <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
@@ -68,6 +79,8 @@
                                         @endforeach
                                     </select>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="POL">POL</label>
                                 <select class="selectpicker form-control" id="POL" data-live-search="true" name="load_port_id" data-size="10"
@@ -77,8 +90,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="place_of_delivery_id">POD</label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
@@ -116,7 +127,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
 
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="Principal">Principal Name  </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
@@ -131,9 +144,6 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="status">Booking Status </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}">
@@ -159,6 +169,8 @@
                                     <option value="0" {{"0" == old('is_transhipment',request()->input('is_transhipment')) ? 'selected':''}}>No</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="booking_type">Booking Type</label>
                                 <select class="selectpicker form-control" id="booking_type" data-live-search="true" name="booking_type" data-size="10"
@@ -167,8 +179,6 @@
                                     <option value="Export" {{"Export" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Export</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="voyage_id_both">First And Second Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"

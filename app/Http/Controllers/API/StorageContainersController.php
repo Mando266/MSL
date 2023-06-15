@@ -48,8 +48,20 @@ class StorageContainersController extends Controller
         $triffs = Demurrage::where('company_id',$company_id)->where('validity_to','>=',$now)
                     ->where('is_storge',$is_torage)->where('container_status',$status)->get();
 
+        $data = [];
+        foreach ($triffs as $triff) {
+            $rowData = [
+                'id' => $triff->id,
+                'is_storge' => $triff->is_storge,
+                'bound' => optional($triff->bound)->name,
+                'portsCode' => optional($triff->ports)->code,
+                'containersTypeName' => optional($triff->containersType)->name
+            ];
+            $data[] = $rowData;
+        }
+                
         return Response::json([
-            'triffs' => $triffs
+            'triffs' => $data
         ],200);
     }
 }

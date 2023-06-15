@@ -92,8 +92,6 @@ class CreditController extends Controller
   
     public function show($id)
     {
-        $this->authorize(__FUNCTION__,CreditNote::class);
-
         $creditNote = CreditNote::find($id);
         $now = Carbon::now();
 

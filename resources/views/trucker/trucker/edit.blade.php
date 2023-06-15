@@ -23,7 +23,7 @@
                         <div class="form-group col-md-4">
                             <label for="nameInput">Company Name <span class="text-warning"> * (Required.) </span></label>
                         <input type="text" class="form-control" id="nameInput" name="company_name" value="{{old('company_name',$trucker->company_name)}}"
-                                placeholder="Company Name " autocomplete="off" autofocus>
+                                placeholder="Company Name " autocomplete="off" autofocus required>
                             @error('name')
                             <div style="color: red;">
                                 {{$message}}
@@ -118,9 +118,9 @@
                     <table id="delegatedPerson" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Degattion From</th>
-                                        <th>Degattion To</th>
+                                        <th>Name <span class="text-warning"> * (Required) </span></th>
+                                        <th>Degattion From <span class="text-warning"> * (Required) </span></th>
+                                        <th>Degattion To <span class="text-warning"> * (Required) </span></th>
                                         <th>Id Number</th>
                                         <th>Mobile</th>  
                                         <th><a id="add"> Add <i class="fas fa-plus"></i></a> </th>

@@ -48,20 +48,20 @@
                                     <select class="selectpicker form-control" data-live-search="true" name="service" data-size="10" id="service"
                                         title="{{trans('forms.select')}}" required>
                                         <option value="power charges" {{ "power charges" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Power Charges</option>
-                                        <option value="Export Empty" {{ "Export Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Empty</option>
-                                        <option value="Export Full" {{ "Export Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Full</option>
-                                        <option value="Import Empty" {{ "Import Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Empty</option>
-                                        <option value="Import Full" {{ "Import Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Full</option>
+                                        <option value="Export Empty"  {{ "Export Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Empty</option>
+                                        <option value="Export Full"   {{ "Export Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Export Full</option>
+                                        <option value="Import Empty"  {{ "Import Empty" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Empty</option>
+                                        <option value="Import Full"   {{ "Import Full" == old('service',isset($input) ? $input['service'] : '') ? 'selected' : ''}}>Import Full</option>
                                     </select>
                             </div> 
                         </div> 
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="countryInput">Select Triff</label>
-                                    <select class="selectpicker form-control" id="Triff_id" data-live-search="true" name="Triff_id" data-size="10"
+                                    <select class="selectpicker form-control" id="triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                         title="{{trans('forms.select')}}" required>
                                         @foreach ($demurrages as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('Triff_id',isset($input) ? $input['Triff_id'] : '') ? 'selected':''}}>{{$item->is_storge}} {{{optional($item->bound)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->containersType)->name}}} </option>
+                                            <option></option>
                                         @endforeach
                                     </select>
                             </div>
@@ -177,6 +177,25 @@
                 });
             });
         });
+
+        $(function() {
+            let service = $('#service');
+            let company_id = "{{optional(Auth::user())->company->id}}";
+            service.on('change', function(e) {
+                let value = e.target.value;
+                $.get(`/api/storage/triffs/${service.val()}/${company_id}`).then(function(data) {
+                let triffs = data.triffs || '';
+                let list2 = [];
+                for (let i = 0; i < triffs.length; i++) {
+                    list2.push(`<option value="${triffs[i].id}">${triffs[i].is_storge} ${triffs[i].bound} ${triffs[i].portsCode} ${triffs[i].containersTypeName}</option>`);
+                }
+                let triff = $('#triff_id');
+                triff.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
+                });
+            });
+        });
+        
         $(function(){
             let service = $('#service');
             $('#service').on('change',function(e){
