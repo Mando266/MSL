@@ -134,8 +134,9 @@
                                     <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
                                     title="{{trans('forms.select')}}" required>
                                             <option value="Detention">Detention</option>
-                                            <option value="Storage">Storage</option>
+                                            <option value="Export">Export</option>
                                             <option value="power charges">power charges</option>
+                                            <option value="Import">Import</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">

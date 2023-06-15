@@ -53,86 +53,237 @@ class StorageController extends Controller
         $triff = Demurrage::where('id', $request->Triff_id)->with('periods')->first();
         
         $containerCalc = collect();
-
-        if($request->container_code == "all"){
-            // Getting All containers for this Bl 
-            $mov = Movements::where('bl_no', $request->bl_no)->where('company_id',Auth::user()->company_id)->distinct()->get()->pluck('container_id')->toarray();
-            $containers = Containers::whereIn('id',$mov)->get();
-            // Searching in container movements For the begining movement to the end move to get the difference in days 
-            $fromMoveId = $request->from == 'RCVS' ? 3 : 5;
-            $grandTotal = 0;
-            foreach($containers as $container){
-                $periodCalc = collect();
-                // Calculation of each Container
-                $containerTotal = 0;
-                $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
-                                        ->where('bl_no', $request->bl_no)->first();
-                if($request->date == null){
-                    $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
+        if(count(request()->container_code) == 1){
+            if(request()->container_code[0] == "all"){
+                // Getting All containers for this Bl 
+                $mov = Movements::where('bl_no', $request->bl_no)->where('company_id',Auth::user()->company_id)->distinct()->get()->pluck('container_id')->toarray();
+                $containers = Containers::whereIn('id',$mov)->get();
+                // Searching in container movements For the begining movement to the end move to get the difference in days 
+                $fromMoveId = $request->from == 'RCVS' ? 3 : 5;
+                $grandTotal = 0;
+                foreach($containers as $container){
+                    $periodCalc = collect();
+                    // Calculation of each Container
+                    $containerTotal = 0;
+                    $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
                                             ->where('bl_no', $request->bl_no)->first();
-                }else{
-                    $toMovement = $request->date;
-                }
-                if($toMovement != null){
-                    if(optional($toMovement)->movement_date != null){
-                        $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                    if($request->date == null){
+                        $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
+                                                ->where('bl_no', $request->bl_no)->first();
                     }else{
-                        $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                        $toMovement = $request->date;
                     }
-                }else{
-                    // if there is no till movement
-                    $now = Carbon::now()->format('Y-m-d');
-                    $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
-                }
-                    $daysCount ++;
-                    $tempDaysCount = $daysCount;
-                    // Calculation of each period
-                    foreach($triff->periods as $period){
-                        if($tempDaysCount != 0){
-                            if($period->number_off_dayes < $tempDaysCount){
-                                // remaining days more than period days
-                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
-                                $periodtotal = $period->rate * $period->number_off_dayes;
-                                $containerTotal = $containerTotal + $periodtotal;
-                                $tempCollection = collect([
-                                    'name' => $period->period,
-                                    'days' => $period->number_off_dayes,
-                                    'rate' => $period->rate,
-                                    'total' => $periodtotal,
-                                ]);
-                                // Adding period
-                                $periodCalc->add($tempCollection);
-                            }else{
-                                // remaining days less than period days
-                                $periodtotal = $period->rate * $tempDaysCount;
-                                $containerTotal = $containerTotal + $periodtotal;
-                                $tempCollection = collect([
-                                    'name' => $period->period,
-                                    'days' => $tempDaysCount,
-                                    'rate' => $period->rate,
-                                    'total' => $periodtotal,
-                                ]);
-                                // Adding period
-                                $periodCalc->add($tempCollection);
-                                $tempDaysCount = 0;
-                            }
+                    if($toMovement != null){
+                        if(optional($toMovement)->movement_date != null){
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                        }else{
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
                         }
-                        
+                    }else{
+                        // if there is no till movement
+                        $now = Carbon::now()->format('Y-m-d');
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
                     }
-                
-                // Adding Container with periods
-                $grandTotal = $grandTotal + $containerTotal;
-                $tempCollection = collect([
-                    'container_no' => $container->code,
-                    'from' => $fromMovement->movement_date,
-                    'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
-                    'total' => $containerTotal,
-                    'periods' => $periodCalc,
-                ]);
-                $containerCalc->add($tempCollection);
+                        $daysCount ++;
+                        $tempDaysCount = $daysCount;
+                        // Calculation of each period
+                        foreach($triff->periods as $period){
+                            if($tempDaysCount != 0){
+                                if($period->number_off_dayes < $tempDaysCount){
+                                    // remaining days more than period days
+                                    $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                    $periodtotal = $period->rate * $period->number_off_dayes;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $period->number_off_dayes,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                }else{
+                                    // remaining days less than period days
+                                    $periodtotal = $period->rate * $tempDaysCount;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $tempDaysCount,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                    $tempDaysCount = 0;
+                                }
+                            }
+                            
+                        }
+                    
+                    // Adding Container with periods
+                    $grandTotal = $grandTotal + $containerTotal;
+                    $tempCollection = collect([
+                        'container_no' => $container->code,
+                        'from' => $fromMovement->movement_date,
+                        'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'total' => $containerTotal,
+                        'periods' => $periodCalc,
+                    ]);
+                    $containerCalc->add($tempCollection);
+                }
+            }else{
+                $containers = Containers::whereIn('id',request()->container_code)->get();
+                // Searching in container movements For the begining movement to the end move to get the difference in days 
+                $fromMoveId = $request->from == 'RCVS' ? 3 : 5;
+                $grandTotal = 0;
+                foreach($containers as $container){
+                    $periodCalc = collect();
+                    // Calculation of each Container
+                    $containerTotal = 0;
+                    $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
+                                            ->where('bl_no', $request->bl_no)->first();
+                    if($request->date == null){
+                        $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
+                                                ->where('bl_no', $request->bl_no)->first();
+                    }else{
+                        $toMovement = $request->date;
+                    }
+                    if($toMovement != null){
+                        if(optional($toMovement)->movement_date != null){
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                        }else{
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                        }
+                    }else{
+                        // if there is no till movement
+                        $now = Carbon::now()->format('Y-m-d');
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
+                    }
+                        $daysCount ++;
+                        $tempDaysCount = $daysCount;
+                        // Calculation of each period
+                        foreach($triff->periods as $period){
+                            if($tempDaysCount != 0){
+                                if($period->number_off_dayes < $tempDaysCount){
+                                    // remaining days more than period days
+                                    $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                    $periodtotal = $period->rate * $period->number_off_dayes;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $period->number_off_dayes,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                }else{
+                                    // remaining days less than period days
+                                    $periodtotal = $period->rate * $tempDaysCount;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $tempDaysCount,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                    $tempDaysCount = 0;
+                                }
+                            }
+                            
+                        }
+                    
+                    // Adding Container with periods
+                    $grandTotal = $grandTotal + $containerTotal;
+                    $tempCollection = collect([
+                        'container_no' => $container->code,
+                        'from' => $fromMovement->movement_date,
+                        'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'total' => $containerTotal,
+                        'periods' => $periodCalc,
+                    ]);
+                    $containerCalc->add($tempCollection);
+                }
             }
         }else{
-            
+            if(count(request()->container_code) > 0 ){
+                $containers = Containers::whereIn('id',request()->container_code)->get();
+                 // Searching in container movements For the begining movement to the end move to get the difference in days 
+                $fromMoveId = $request->from == 'RCVS' ? 3 : 5;
+                $grandTotal = 0;
+                foreach($containers as $container){
+                    $periodCalc = collect();
+                    // Calculation of each Container
+                    $containerTotal = 0;
+                    $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
+                                            ->where('bl_no', $request->bl_no)->first();
+                    if($request->date == null){
+                        $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
+                                                ->where('bl_no', $request->bl_no)->first();
+                    }else{
+                        $toMovement = $request->date;
+                    }
+                    if($toMovement != null){
+                        if(optional($toMovement)->movement_date != null){
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                        }else{
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                        }
+                    }else{
+                        // if there is no till movement
+                        $now = Carbon::now()->format('Y-m-d');
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
+                    }
+                        $daysCount ++;
+                        $tempDaysCount = $daysCount;
+                        // Calculation of each period
+                        foreach($triff->periods as $period){
+                            if($tempDaysCount != 0){
+                                if($period->number_off_dayes < $tempDaysCount){
+                                    // remaining days more than period days
+                                    $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                    $periodtotal = $period->rate * $period->number_off_dayes;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $period->number_off_dayes,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                }else{
+                                    // remaining days less than period days
+                                    $periodtotal = $period->rate * $tempDaysCount;
+                                    $containerTotal = $containerTotal + $periodtotal;
+                                    $tempCollection = collect([
+                                        'name' => $period->period,
+                                        'days' => $tempDaysCount,
+                                        'rate' => $period->rate,
+                                        'total' => $periodtotal,
+                                    ]);
+                                    // Adding period
+                                    $periodCalc->add($tempCollection);
+                                    $tempDaysCount = 0;
+                                }
+                            }
+                            
+                        }
+                    
+                    // Adding Container with periods
+                    $grandTotal = $grandTotal + $containerTotal;
+                    $tempCollection = collect([
+                        'container_no' => $container->code,
+                        'from' => $fromMovement->movement_date,
+                        'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'total' => $containerTotal,
+                        'periods' => $periodCalc,
+                    ]);
+                    $containerCalc->add($tempCollection);
+                }
+            }
         }
                 $calculation = collect([
                     'grandTotal' => $grandTotal,
