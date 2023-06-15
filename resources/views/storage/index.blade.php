@@ -60,9 +60,6 @@
                                 <label for="countryInput">Select Triff</label>
                                     <select class="selectpicker form-control" id="triff_id" data-live-search="true" name="Triff_id" data-size="10"
                                         title="{{trans('forms.select')}}" required>
-                                        @foreach ($demurrages as $item)
-                                            <option></option>
-                                        @endforeach
                                     </select>
                             </div>
                             <div class="form-group col-md-3">
@@ -195,7 +192,7 @@
                 });
             });
         });
-        
+
         $(function(){
             let service = $('#service');
             $('#service').on('change',function(e){
