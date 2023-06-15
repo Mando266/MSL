@@ -48,3 +48,4 @@ Route::get('master/invoices/{id}', [CompanyDataController::class, 'blinvoice']);
 Route::get('master/invoicesCustomers/{id}', [CompanyDataController::class, 'customerInvoice']);
 Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'containers']);
 Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
+Route::get('storage/triffs/{service}/{company_id}', [StorageContainersController::class, 'getStorageTriffs']);
