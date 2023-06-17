@@ -41,7 +41,7 @@
                                         @foreach($containers as $container)
                                         <option value="{{$container->code}}"></option>
                                         @endforeach
-                                        </select>
+                                    </select>
                             </div> 
                             <div class="form-group col-md-4">
                                 <label for="Date">Services</label>
@@ -157,6 +157,26 @@
 
 @push('scripts')
 <script>
+
+        $(document).ready(function() {
+            $('#port').change(function() {
+                var selectedValue = $(this).val();
+                if (selectedValue.length > 1 && selectedValue.includes('all')) {
+                    selectedValue = selectedValue.filter(function(value) {
+                        return value !== 'all';
+                    });
+                    $(this).val(selectedValue);
+                }
+
+                if (selectedValue.includes('all')) {
+                    $('#port option:not(:selected)').prop('disabled', true);
+                } else {
+                    $('#port option').prop('disabled', false);
+                }
+                $('#port').selectpicker('refresh');
+            });
+        });
+
         $(function(){
                 let bl = $('#blno');
                 let company_id = "{{optional(Auth::user())->company->id}}";
@@ -174,7 +194,7 @@
                 });
             });
         });
-
+  
         $(function() {
             let service = $('#service');
             let company_id = "{{optional(Auth::user())->company->id}}";
@@ -210,4 +230,5 @@
             });
         });
 </script>
+
 @endpush
