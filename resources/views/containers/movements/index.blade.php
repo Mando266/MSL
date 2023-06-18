@@ -99,7 +99,7 @@
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -234,11 +234,11 @@
                                             <td>{{{optional($item->container)->description}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
-                                            <td>{{$item->bl_no}}</td>
+                                            <td>{{$item->bl_no}}</td> 
                                             <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
-                                            <td>{{$item->port_location_id}}</td>
-                                            <td>{{$item->pol_id}}</td>
-                                            <td>{{$item->pod_id}}</td>
+                                            <td>{{optional($item->activitylocation)->code}}</td>
+                                            <td>{{optional($item->pol)->code}}</td>
+                                            <td>{{optional($item->pod)->code}}</td>
                                             <td>{{$item->free_time}}</td>
                                             {{-- <td>{{{optional($item->importAgent)->name}}}</td>
                                             <td>{{{optional($item->bookingAgent)->name}}}</td> --}}

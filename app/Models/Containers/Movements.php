@@ -12,6 +12,7 @@ use App\Models\Master\ContainersTypes;
 use App\Models\Master\Containers;
 use App\Models\Master\Vessels;
 use App\Models\Voyages\Voyages;
+use App\Models\Master\Ports;
 
 class Movements extends Model implements PermissionSeederContract
 {
@@ -50,6 +51,18 @@ class Movements extends Model implements PermissionSeederContract
             'Delete'
         ]);
     }
+    public function pol(){
+        return $this->belongsTo(Ports::class,'pol_id','id');
+    }
+
+    public function pod(){
+        return $this->belongsTo(Ports::class,'pod_id','id');
+    }
+
+    public function activitylocation(){
+        return $this->belongsTo(Ports::class,'port_location_id','id');
+    }
+
     public function movementcode(){
         return $this->belongsTo(ContainersMovement::class,'movement_id','id');
     }
