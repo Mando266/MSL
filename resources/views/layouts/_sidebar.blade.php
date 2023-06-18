@@ -166,6 +166,12 @@
                                     </li>
                                 @endpermission
 
+                                @permission('Suppliers-List')
+                                    <li>
+                                        <a href="{{route('seller.index')}}">Lessor or Seller</a>
+                                    </li>
+                                @endpermission
+
                                 @permission('Customers-List')
                                     <li>
                                         <a href="{{route('customers.index')}}"> Customers</a>

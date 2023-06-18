@@ -110,7 +110,7 @@ class BookingExport implements FromCollection,WithHeadings
                     'leg' => optional($booking->voyage->leg)->name,
                     'second_vessel' => optional(optional($booking->secondvoyage)->vessel)->name,
                     'voyage_id_second' => optional($booking->secondvoyage)->voyage_no,
-                    'leg' => optional($booking->secondvoyage->leg)->name,
+                    'leg' => optional(optional($booking->secondvoyage)->leg)->name,
                     'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
                     'shipping_status' => $shipping_status,
                     'main_line' => optional($booking->principal)->name,
