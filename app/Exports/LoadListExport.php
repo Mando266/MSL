@@ -133,7 +133,7 @@ class LoadListExport implements FromCollection,WithHeadings
                             'Description' => optional($booking)->commodity_description,
                             'booking_confirm' => $booking->booking_confirm,
                             'shipment_type' => optional(optional($booking)->quotation)->shipment_type,
-                            'booking_type' => optional(optional($booking)->quotation)->quotation_type,
+                            'booking_type' => optional(optional($booking)->quotation)->quotation_type ? : optional($booking)->booking_type,
                             'payment_kind'=>optional(optional($booking)->quotation)->payment_kind,
                         ]);
                         $exportBookings->add($tempCollection);
