@@ -53,7 +53,7 @@
                                 <label for="codeInput">Container Number</label>
                                 <div class="input-container">
                                     <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}" placeholder="Container Number" autocomplete="off">
-                                    <span class="fa-2x mt-1"></span>
+                                    <span class="fa-2x mt-1 mySpan"></span>
                                 </div>
                                 @error('code')
                                 <div style="color: red;">
@@ -82,7 +82,7 @@
                     <div class="form-row">
                     <div class="form-group col-md-4">
                                 <label for="tar_weightInput">Tare Weight</label>
-                                <input type="text" class="form-control" id="tar_weightInput" name="tar_weight" value="{{old('tar_weight')}}"
+                                <input type="number" class="form-control" id="tar_weightInput" name="tar_weight" value="{{old('tar_weight')}}"
                                     placeholder="Tare Weight" autocomplete="off">
                                 @error('tar_weight')
                                 <div style="color: red;">
@@ -92,7 +92,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="max_payloadInput">Max Payload</label>
-                                <input type="text" class="form-control" id="max_payloadInput" name="max_payload" value="{{old('max_payload')}}"
+                                <input type="number" class="form-control" id="max_payloadInput" name="max_payload" value="{{old('max_payload')}}"
                                     placeholder="Max Payload" autocomplete="off">
                                 @error('max_payload')
                                 <div style="color: red;">
@@ -102,7 +102,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="production_yearInput">Production Year</label>
-                                <input type="text" class="form-control" id="production_yearInput" name="production_year" value="{{old('production_year')}}"
+                                <input type="number" class="form-control" id="production_yearInput" name="production_year" value="{{old('production_year')}}"
                                     placeholder="Production Year" autocomplete="off">
                                 @error('production_year')
                                 <div style="color: red;">
@@ -133,8 +133,21 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
+                                <label for="soc-coc-Select"> TYPE </label>
+                                <select class="selectpicker form-control" id="soc-coc-select" data-live-search="true" name="type" data-size="10"
+                                        title="{{trans('forms.select')}}" required>
+                                    <option value="SOC">SOC</option>
+                                    <option value="COC">COC</option>
+                                </select>
+                                @error('soc-coc')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
                                 <div class="custom-file-container" data-upload-id="certificat">
-                                    <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
+                                    <label> <span style="color:#3b3f5c";> Certificate </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
                                     <label class="custom-file-container__custom-file" >
                                         <input type="file" class="custom-file-container__custom-file__custom-file-input" name="certificat" accept="pdf">
                                         <input type="hidden" name="MAX_FILE_SIZE" disabled value="10485760" />
@@ -181,14 +194,23 @@
             margin-right: 5px;
         }
 
+        .mySpan::after {
+            content: "✖";
+            color: red;
+            visibility: hidden;
+        }
+
         .invalid + span::after {
             content: "✖";
             color: red;
+            visibility: visible;
         }
 
         .valid + span::after {
             content: "✓";
             color: green;
+            visibility: visible;
+
         }
 
         

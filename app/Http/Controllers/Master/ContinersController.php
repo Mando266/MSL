@@ -54,11 +54,12 @@ class ContinersController extends Controller
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
+            'type' => 'required|in:SOC,COC'
             ],[
             'code.regex'=>'Invalid Container Number Format', 
             'code.min'=>'Invalid Container Number Format', 
             'code.max'=>'Invalid Container Number Format', 
-            'code.required'=>'Container Number Field is Required', 
+            'code.required'=>'Container Number Field is Required',
 
         ]);
         $user = Auth::user();

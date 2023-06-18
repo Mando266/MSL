@@ -350,33 +350,28 @@
     }
 
     validator = new ContainerValidator();
-    $("#codeInput").on('input', e => {
+    let codeInput = $("#codeInput")
+    let form = codeInput.closest('form')
+    codeInput.on('input', e => {
         let result = validator.isValid(e.target.value)
-        let form = $("#codeInput").closest('form')
-        console.log(e)
-        console.log(e)
         if (result) {
             $("#codeInput").css({
                 "border-color": "#00de28",
                 "border-width": "2px",
                 "border-style": "solid"
             }).addClass("valid").removeClass("invalid")
+            form.off("submit").on("submit", function(event) {
+                event.returnValue = true
+            })
         } else {
             $("#codeInput").css({
                 "border-color": "#ff0015",
                 "border-width": "2px",
                 "border-style": "solid"
             }).addClass("invalid").removeClass("valid")
-
+            form.on("submit",function (s) {
+                s.preventDefault()
+            })
         }
-
-
-        form.submit(function (s) {
-            if (e.target.value === true) {
-                s.preventDefault()
-            } else {
-                s.preventDefault()
-            }
-        })
     });
 </script>
