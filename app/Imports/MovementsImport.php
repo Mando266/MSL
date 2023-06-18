@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\Voyages\Voyages;
 use App\Models\Voyages\Legs;
+use App\Models\Master\Ports;
 
 
 class MovementsImport implements ToModel,WithHeadingRow
@@ -39,11 +40,17 @@ class MovementsImport implements ToModel,WithHeadingRow
         $containertype = $row['container_type_id'];
         $voyage = $row['voyage_id'];
         $leg = $row['leg'];
+        $activitylocation = $row['port_location_id'];
+        $pol = $row['pol_id'];
+        $pod = $row['pod_id'];
 
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         $row['leg'] = Legs::where('name',$row['leg'])->pluck('id')->first();
         $row['voyage_id'] = Voyages::where('company_id',Auth::user()->company_id)->where('voyage_no',$row['voyage_id'])->where('leg_id',$row['leg'])->pluck('id')->first();
-        
+        $row['port_location_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['port_location_id'])->pluck('id')->first();
+        $row['pol_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['pol_id'])->pluck('id')->first();
+        $row['pod_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['pod_id'])->pluck('id')->first();
+
         // Validation
         if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
             return Session::flash('message', "This Container Number: {$containerId} Must have Movement Code and Activity location and Movement Date");
@@ -61,7 +68,21 @@ class MovementsImport implements ToModel,WithHeadingRow
             
             return session()->flash('message',"This Container Type: {$containertype} Not found ");
         } 
-        
+
+        if(!$row['port_location_id']){
+            
+            return session()->flash('message',"This Activity Location Code: {$activitylocation} Not found");
+        }
+
+        if(!$row['pol_id']){
+            
+            return session()->flash('message',"This POL Code: {$pol} Not found");
+        }
+
+        if(!$row['pod_id']){
+            
+            return session()->flash('message',"This POD Code: {$pod} Not found");
+        }
         try {
             // code that triggers a pdo exception
             $dateConvertion = Date::excelToDateTimeObject($row['movement_date'])->format('Y-m-d');

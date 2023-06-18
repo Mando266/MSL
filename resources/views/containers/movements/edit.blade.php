@@ -53,7 +53,7 @@
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id',$movement->port_location_id) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('port_location_id',$movement->port_location_id) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('port_location_id')
@@ -70,7 +70,7 @@
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pol_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('pol_id',$movement->pol_id) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('pol_id',$movement->pol_id) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @error('pol_id')
@@ -84,7 +84,7 @@
                                 <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pod_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('pod_id',$movement->pod_id) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('pod_id',$movement->pod_id) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @error('pod_id')

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Voyages\Voyages;
+use App\Models\Master\Ports;
 
 class MovementsExportAll implements FromCollection,WithHeadings
 {
@@ -63,6 +64,9 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->import_agent = Agents::where('id',$movement->import_agent)->pluck('name')->first();
             $movement->description = optional($movement->container)->description;
             $movement->containersOwner = optional($movement->container->containersOwner)->name;
+            $movement->pol_id = Ports::where('id',$movement->pol_id)->pluck('code')->first();
+            $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
+            $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
         }
         
         return $movements;
