@@ -287,6 +287,7 @@
                     <table id="blDraft" class="table table-bordered">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th class="text-center">Container</th>
                                 <th class="text-center">Seal No.s</th>
                                 <th class="text-center">Packs</th>
@@ -301,6 +302,7 @@
                             @foreach($bldraft->blDetails as $key => $blDetail)
                             <tr>
                             <input type="hidden" value ="{{ $blDetail->id }}" name="blDraftdetails[{{ $key }}][id]">
+                               <td>{{ $loop->iteration }}</td>
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="" data-size="10"
                                           title="{{trans('forms.select')}}" disabled>
