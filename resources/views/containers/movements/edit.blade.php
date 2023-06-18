@@ -80,8 +80,8 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="portofloadInput">Port Of Discharge</label>
-                                <select class="selectpicker form-control" id="portofloadInput" data-live-search="true" name="pod_id" data-size="10"
+                                <label for="portofdisch">Port Of Discharge</label>
+                                <select class="selectpicker form-control" id="portofdisch" data-live-search="true" name="pod_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('pod_id',$movement->pod_id) ? 'selected':''}}>{{$item->code}}</option>

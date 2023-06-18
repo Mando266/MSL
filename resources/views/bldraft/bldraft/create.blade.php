@@ -322,7 +322,8 @@
                     <table id="blDraft" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                    <th class="text-center">Container</th>
+                                        <th>#</th>
+                                        <th class="text-center">Container</th>
                                         <th class="text-center">Seal No.s</th>
                                         <th class="text-center">Packs</th>
                                         <th class="text-center">Packs Type</th>
@@ -338,6 +339,7 @@
                             @foreach($booking_containers as $key => $bookingContainer)
                            {{-- @dd ($bookingContainer->weight); --}}
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
@@ -386,6 +388,8 @@
                             @for($i=0 ; $i < $booking_qyt ; $i++)
                             <?php $key = $key + 1; ?>
                             <tr>
+                            <td>{{ $i + 1 }}</td>
+
                                 <td>
                                   <select class="selectpicker form-control" id="containerDetailsID" data-live-search="true" name="blDraftdetails[{{ $key }}][container_id]" data-size="10"
                                           title="{{trans('forms.select')}}">
