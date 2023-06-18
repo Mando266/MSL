@@ -7,6 +7,7 @@ use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
 use App\Http\Controllers\Invoice\RefundController;
+use App\Http\Controllers\Master\LessorSellerController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Http\Controllers\Storage\StorageController;
@@ -204,6 +205,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('storage','StorageController');
 
         // Route::get('storage',[StorageController::class,'index'])->name('storage.index');
+    });
+    Route::prefix('lessor')->namespace('Master')->group(function () {
+        Route::resource('seller','LessorSellerController');
     });
 });
 Auth::routes(['register' => false]);
