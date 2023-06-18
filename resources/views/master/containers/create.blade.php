@@ -51,14 +51,18 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="codeInput">Container Number</label>
-                                <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}"
-                                    placeholder="Container Number" autocomplete="off">
+                                <div class="input-container">
+                                    <input type="text" class="form-control" id="codeInput" name="code" value="{{old('code')}}" placeholder="Container Number" autocomplete="off">
+                                    <span class="fa-2x mt-1"></span>
+                                </div>
                                 @error('code')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
+
+
                             <div class="form-group col-md-3">
                                 <label for="countryInput"> Container Ownership </label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
@@ -163,3 +167,30 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+    @include('master.containers._validate')
+@endpush
+@push('styles')
+    <style>
+        .input-container {
+            display: flex;
+        }
+
+        .input-container input {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .invalid + span::after {
+            content: "✖";
+            color: red;
+        }
+
+        .valid + span::after {
+            content: "✓";
+            color: green;
+        }
+
+        
+    </style>
+@endpush
