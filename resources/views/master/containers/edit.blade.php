@@ -128,9 +128,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="soc-coc-Input"> TYPE </label>
+                                    <label for="soc-coc-Input"> SOC/COC </label>
                                     <select class="selectpicker form-control" id="soc-coc-select"
-                                            data-live-search="true" name="type" data-size="10"
+                                            data-live-search="true" name="SOC_COC" data-size="10"
                                             title="{{trans('forms.select')}}">
                                         <option value="SOC" {{ ($container->type != "SOC") ?: 'selected' }}>SOC</option>
                                         <option value="COC" {{ ($container->type != "COC") ?: 'selected' }}>COC</option>

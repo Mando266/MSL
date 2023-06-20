@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTypeToContainersTable extends Migration
+class AddSocCocToContainersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddTypeToContainersTable extends Migration
     public function up()
     {
         Schema::table('containers', function (Blueprint $table) {
-            $table->string('type')->nullable();
+            $table->string('SOC_COC')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddTypeToContainersTable extends Migration
     public function down()
     {
         Schema::table('containers', function (Blueprint $table) {
-            $table->dropColumn('type');
+            $table->dropColumn('SOC_COC');
         });
     }
 }

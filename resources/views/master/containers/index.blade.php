@@ -104,7 +104,7 @@
                                         <th>max payload</th>
                                         <th>production year</th>
                                         <th>Lessor/Seller Refrence</th>
-                                        <th>Type</th>
+                                        <th>SOC_COC</th>
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>
@@ -121,7 +121,7 @@
                                             <td>{{$item->max_payload}}</td>
                                             <td>{{$item->production_year}}</td>
                                             <td>{{$item->description}}</td>
-                                            <td>{{$item->type}}</td>
+                                            <td>{{$item->SOC_COC}}</td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

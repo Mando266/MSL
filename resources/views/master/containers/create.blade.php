@@ -145,9 +145,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="soc-coc-Select"> TYPE </label>
+                                    <label for="soc-coc-Select"> SOC/COC </label>
                                     <select class="selectpicker form-control" id="soc-coc-select"
-                                            data-live-search="true" name="type" data-size="10"
+                                            data-live-search="true" name="SOC_COC" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                         <option value="SOC">SOC</option>
                                         <option value="COC">COC</option>
