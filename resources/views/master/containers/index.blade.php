@@ -120,7 +120,7 @@
                                             <td>{{$item->tar_weight}}</td>
                                             <td>{{$item->max_payload}}</td>
                                             <td>{{$item->production_year}}</td>
-                                            <td>{{$item->description}}</td>
+                                            <td>{{$item->seller->name ?? $item->description }}</td>
                                             <td>{{$item->SOC_COC}}</td>
 
                                             <td class="text-center">

@@ -30,7 +30,7 @@ class StorageController extends Controller
             'movementsBlNo'=>$movementsBlNo,
             'containers' =>$containers,
             'demurrages' =>$demurrages,
-            'movementsCode' =>$movementsCode,
+            'movementsCode' =>$movementsCode
         ]);
     }
 
@@ -51,7 +51,7 @@ class StorageController extends Controller
         $request->validate($rules);
         
         $triff = Demurrage::where('id', $request->Triff_id)->with('periods')->first();
-        
+//        dd(request()->container_code);
         $containerCalc = collect();
         if(count(request()->container_code) == 1){
             if(request()->container_code[0] == "all"){

@@ -31,16 +31,12 @@
                                         <option value="{{$item->ref_no}}" {{$item->ref_no == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                     </select>
-                            </div> 
-
+                            </div>
                             <div class="form-group col-md-4" >
                                 <label for="Date">Container No</label>
                                     <select class="selectpicker form-control" id="port" data-live-search="true"name="container_code[]" data-size="10"
                                         title="{{trans('forms.select')}}" required multiple>
                                         <option value="all" {{ "all" == old('container_code',isset($input) ? $input['container_code'] : '') ? 'selected':'hidden'}}>All</option>
-                                        @foreach($containers as $container)
-                                        <option value="{{$container->code}}"></option>
-                                        @endforeach
                                     </select>
                             </div> 
                             <div class="form-group col-md-4">
@@ -157,61 +153,77 @@
 
 @push('scripts')
 <script>
+    let selectedCodes = '{{ implode(',',$input['container_code'] ??[]) }}'
+    selectedCodes = selectedCodes.split(',')
+    let selectedTriff = '{{ $input['Triff_id'] ?? '' }}'
 
-        $(document).ready(function() {
-            $('#port').change(function() {
-                var selectedValue = $(this).val();
-                if (selectedValue.length > 1 && selectedValue.includes('all')) {
-                    selectedValue = selectedValue.filter(function(value) {
-                        return value !== 'all';
-                    });
-                    $(this).val(selectedValue);
-                }
-
-                if (selectedValue.includes('all')) {
-                    $('#port option:not(:selected)').prop('disabled', true);
-                } else {
-                    $('#port option').prop('disabled', false);
-                }
-                $('#port').selectpicker('refresh');
-            });
-        });
-
-        $(function(){
-                let bl = $('#blno');
-                let company_id = "{{optional(Auth::user())->company->id}}";
-                $('#blno').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function(data){
-                        let containers = data.containers || '';
-                        let list2 = [`<option value='all'>All</option>`];
-                        for(let i = 0 ; i < containers.length; i++){
-                            list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`);
-                        }
-                let container = $('#port');
-                container.html(list2.join(''));
-                $('.selectpicker').selectpicker('refresh');
-                });
-            });
-        });
-  
-        $(function() {
-            let service = $('#service');
-            let company_id = "{{optional(Auth::user())->company->id}}";
-            service.on('change', function(e) {
-                let value = e.target.value;
-                $.get(`/api/storage/triffs/${service.val()}/${company_id}`).then(function(data) {
+    let service = $('#service');
+    let company_id = "{{optional(Auth::user())->company->id}}";
+    
+    $(document).ready(function () {
+        const getTriff = () => {
+            let value = service.val();
+            $.get(`/api/storage/triffs/${service.val()}/${company_id}`).then(function (data) {
                 let triffs = data.triffs || '';
                 let list2 = [];
                 for (let i = 0; i < triffs.length; i++) {
-                    list2.push(`<option value="${triffs[i].id}">${triffs[i].is_storge} ${triffs[i].bound} ${triffs[i].portsCode} ${triffs[i].containersTypeName}</option>`);
+                    (triffs[i].id == selectedTriff) ?
+                        list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].is_storge} ${triffs[i].bound} ${triffs[i].portsCode} ${triffs[i].containersTypeName}</option>`) :
+                        list2.push(`<option value="${triffs[i].id}">${triffs[i].is_storge} ${triffs[i].bound} ${triffs[i].portsCode} ${triffs[i].containersTypeName}</option>`);
                 }
                 let triff = $('#triff_id');
                 triff.html(list2.join(''));
                 $('.selectpicker').selectpicker('refresh');
-                });
             });
+        }
+        if(service.val())
+        {
+            getTriff()
+        }
+        
+        service.on('change',() => getTriff())
+        
+        const getContainers = () => {
+            let bl = $('#blno');
+            let isSelected = "";
+            let company_id = "{{optional(Auth::user())->company->id}}";
+            let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
+                let containers = data.containers || '';
+                let list2 = [`<option value='all'>All</option>`];
+                for (let i = 0; i < containers.length; i++) {
+                    (selectedCodes.includes(containers[i].id.toString())) ?
+                        list2.push(`<option value='${containers[i].id}' selected>${containers[i].code} </option>`) :
+                        list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`)
+                }
+                let container = $('#port');
+                container.html(list2.join(''));
+                $('.selectpicker').selectpicker('refresh');
+            });
+        }
+        if ($('#blno').val()) {
+            getContainers()
+        }
+        document.getElementById('blno').addEventListener('change', getContainers)
+
+        $('#port').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue.length > 1 && selectedValue.includes('all')) {
+                selectedValue = selectedValue.filter(function (value) {
+                    return value !== 'all';
+                });
+                $(this).val(selectedValue);
+            }
+
+            if (selectedValue.includes('all')) {
+                $('#port option:not(:selected)').prop('disabled', true);
+            } else {
+                $('#port option').prop('disabled', false);
+            }
+            $('#port').selectpicker('refresh');
         });
+    });
+
+
 
         $(function(){
             let service = $('#service');

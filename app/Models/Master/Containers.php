@@ -41,6 +41,9 @@ class Containers extends Model implements PermissionSeederContract
     public function activityLocation (){
         return $this->belongsto(Ports::class,'activity_location_id','id');
     }
+    public function seller (){
+        return $this->belongsto(LessorSeller::class,'description','id');
+    }
     
     public function scopeUserContainers($query){
         if(is_null(Auth::user()->company_id))

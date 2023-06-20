@@ -31,7 +31,7 @@ class ContainersImport implements ToModel, WithHeadingRow
         $user = Auth::user();
         $codeIsValid = $this->containerValidator->isValid($containerNumber);
         if (!$codeIsValid) {
-            $this->errors[] = "This Container Number: {$containerNumber} Is Not correct!";
+            $this->errors[] = "This Container Number: {$containerNumber} Is Not correct!!!";
             return session()->flash('message', implode(PHP_EOL, $this->errors));
         }
 
@@ -41,14 +41,14 @@ class ContainersImport implements ToModel, WithHeadingRow
         )->first();
 
         if (!$row['container_type_id']) {
-            $this->errors[] = "This Container Type: {$containerType} Not found!";
+            $this->errors[] = "This Container Type: {$containerType} Not found!!!";
             return session()->flash('message', implode(PHP_EOL, $this->errors));
         }
 
         $containerDuplicate = Containers::where('code', $row['code'])->where('company_id', $user->company_id)->first();
 
         if ($containerDuplicate != null) {
-            $this->errors[] = 'This Container Number: ' . $containerNumber . ' Already Exists!';
+            $this->errors[] = 'This Container Number: ' . $containerNumber . " Already Exists!!!";
             return session()->flash('message', implode(PHP_EOL, $this->errors));
         }
 

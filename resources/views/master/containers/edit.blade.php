@@ -106,10 +106,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="descriptionInput">Lessor/Seller Refrence</label>
-                                    <input type="text" class="form-control" id="descriptionInput" name="description"
-                                           value="{{old('description',$container->description)}}"
-                                           placeholder="Lessor/Seller Refrence" autocomplete="off">
+                                    <label for="countryInput">Lessor/Seller Refrence</label>
+                                    <select class="selectpicker form-control" id="countryInput" data-live-search="true"
+                                            name="description" data-size="10"
+                                            title="{{trans('forms.select')}}">
+                                        @foreach ($sellers as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('description',$container->description) ? 'selected':''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
                                     @error('description')
                                     <div style="color: red;">
                                         {{$message}}
