@@ -366,7 +366,7 @@ class MovementController extends Controller
                 // prepare Data for show
                 $movements = $movements->orderBy('movement_date', 'desc')->orderBy('id', 'desc')->with(
                     'movementcode.containerstock'
-                )->get();
+                )->paginate(30);
                 $new = $movements->getCollection();
                 $new = $new->groupBy('movement_date');
 
