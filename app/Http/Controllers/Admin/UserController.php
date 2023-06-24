@@ -6,6 +6,7 @@ use App\Filters\User\UserIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Company;
 use App\Models\Master\Agents;
+use App\Models\Master\LessorSeller;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -53,6 +54,8 @@ class UserController extends Controller
         $user_agent = Agents::where('company_id',Auth::user()->company_id)->get();
         $roles = Role::orderBy('name')->get();
         $isSuperAdmin = false;
+        $lessors = LessorSeller::where('company_id',Auth::user()->company_id)->get();
+        $operators = LessorSeller::where('company_id',Auth::user()->company_id)->get();
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
             $agents = Agents::where('company_id',Auth::user()->company_id)->get();
@@ -63,6 +66,7 @@ class UserController extends Controller
             'companies'=>$companies,
             'roles'=>$roles,
             'agents'=>$agents,
+            'lessors'=>$lessors,
             'user_agent'=>$user_agent,
             'isSuperAdmin'=>$isSuperAdmin
         ]);
