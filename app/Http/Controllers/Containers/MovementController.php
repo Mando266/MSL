@@ -14,6 +14,7 @@ use App\Models\Containers\Movements;
 use App\Models\Master\Agents;
 use App\Models\Master\ContainerStatus;
 use App\Filters\Movements\ContainersIndexFilter;
+use App\Models\Booking\Booking;
 use App\MovementImportErrors;
 use Illuminate\Support\Carbon;
 use App\Models\Containers\Demurrage;
@@ -507,6 +508,7 @@ class MovementController extends Controller
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $agents = Agents::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $bookings = Booking::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
 
         if (isset($container_id)) {
@@ -521,6 +523,7 @@ class MovementController extends Controller
             if ($movement->movementcode['code'] == 'RCVC' || $movement->movementcode['code'] == 'DCHE' || $movement->movementcode['code'] == 'RCVE') {
                 return view('containers.movements.create', [
                     'voyages' => $voyages,
+                    'bookings' => $bookings,
                     'vessels' => $vessels,
                     'container' => $container,
                     'containersTypes' => $containersTypes,
@@ -534,6 +537,7 @@ class MovementController extends Controller
                 return view('containers.movements.create', [
                     'movement' => $movement,
                     'voyages' => $voyages,
+                    'bookings' => $bookings,
                     'vessels' => $vessels,
                     'container' => $container,
                     'containersTypes' => $containersTypes,
@@ -548,6 +552,7 @@ class MovementController extends Controller
             $containers = Containers::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
             return view('containers.movements.create', [
                 'voyages' => $voyages,
+                'bookings' => $bookings,
                 'vessels' => $vessels,
                 'containers' => $containers,
                 'containersTypes' => $containersTypes,
@@ -825,10 +830,12 @@ class MovementController extends Controller
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $agents = Agents::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $bookings = Booking::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
         return view('containers.movements.edit', [
             'movement' => $movement,
             'voyages' => $voyages,
+            'bookings' => $bookings,
             'vessels' => $vessels,
             'containers' => $containers,
             'containersTypes' => $containersTypes,

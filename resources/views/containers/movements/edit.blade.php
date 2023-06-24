@@ -127,8 +127,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="booking_noInput">Booking No</label>
-                                <input type="text" class="form-control" id="booking_noInput" name="booking_no" value="{{old('booking_no',$movement->booking_no)}}"
-                                    placeholder="Booking No" autocomplete="off">
+                                <select class="selectpicker form-control" id="booking_noInput" data-live-search="true" name="booking_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select</option>
+                                    @foreach ($bookings as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_no',$movement->booking_no) ? 'selected':''}}>{{optional($item->booking)->ref_no}}</option>    
+                                    @endforeach
+                                </select>
                                 @error('booking_no')
                                 <div class="invalid-feedback">
                                     {{$message}}
