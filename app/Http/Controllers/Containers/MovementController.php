@@ -21,6 +21,7 @@ use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Master\ContinerOwnership;
+use Illuminate\Support\Facades\Log;
 
 class MovementController extends Controller
 {
@@ -516,7 +517,8 @@ class MovementController extends Controller
             $movement = Movements::where('container_id', $container_id)->with(
                 'movementcode',
                 'container',
-                'containersType'
+                'containersType',
+                'booking'
             )->orderBy('movement_date', 'desc')->orderBy('id', 'desc')->first();
             $container_type = $movement->container_type_id;
             // dd($container_type);
@@ -737,7 +739,7 @@ class MovementController extends Controller
                 'movement_date',
                 'desc'
             )
-                ->orderBy('id', 'desc')->with('movementcode')->paginate(30);
+                ->orderBy('id', 'desc')->with('movementcode','booking')->paginate(30);
             $new = $movements->getCollection();
             $new = $new->groupBy('movement_date');
 

@@ -239,7 +239,7 @@ if(request()->input('container_id') != null){
                                             <td>{{optional($items->pol)->code}}</td>
                                             <td>{{optional($items->pod)->code}}</td>
                                             <td>{{{optional($items->vessels)->name}}} {{optional($items->voyage)->voyage_no}}</td>
-                                            <td>{{optional($item->booking)->ref_no?? optional($item->booking)->ref_no : ('old' . $items->booking_no)}}</td>
+                                            <td>{{optional($item->booking)->ref_no ? optional($item->booking)->ref_no : ('old' . $items->booking_no)}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
                                             <td>{{{optional($item->importAgent)->name}}}</td>
@@ -282,7 +282,7 @@ if(request()->input('container_id') != null){
                                             <td>{{optional($item->pol)->code}}</td>
                                             <td>{{optional($item->pod)->code}}</td>
                                             <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
-                                            <td>{{optional($item->booking)->ref_no?? optional($item->booking)->ref_no : ('old' . $items->booking_no)}}</td>
+                                            <td>{{optional($item->booking)->ref_no? optional($item->booking)->ref_no : ('old' . $items->booking_no)}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->free_time}}</td>
                                             <td>{{{optional($item->importAgent)->name}}}</td>

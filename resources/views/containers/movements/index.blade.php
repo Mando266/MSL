@@ -231,7 +231,7 @@
                                             <td>{{{optional($item->containersType)->name}}}</td>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{{optional($item->container->containersOwner)->name}}}</td>
-                                            <td>{{{optional($item->container)->description}}}</td>
+                                            <td>{{{optional($item->container)->seller->name ?? optional($item->container)->description}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
                                             <td>{{$item->bl_no}}</td> 
