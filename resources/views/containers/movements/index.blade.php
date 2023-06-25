@@ -180,7 +180,7 @@
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($lessor as $item)
-                                        <option value="{{$item->description}}" {{$item->description == old('description',request()->input('description')) ? 'selected':''}}>{{$item->description}}</option>
+                                        <option value="{{optional($item->seller)->id}}" {{$item->description == old('description',request()->input('description')) ? 'selected':''}}>{{optional($item->seller)->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('description')
