@@ -34,6 +34,9 @@ class MovementController extends Controller
         $filteredData = Movements::filter(new ContainersIndexFilter(request()))->orderBy('id')->groupBy(
             'container_id'
         )->with('container')->get();
+        $myMoves = Movements::orderBy('movement_date', 'desc')->with('movementcode.containerstock')->get()->groupBy(
+            'container_id'
+        );
 
         // dd($filteredData);
         // $movements = Movements::where('movement_id', request('movement_id'))->paginate(30);
@@ -41,10 +44,6 @@ class MovementController extends Controller
         $movementsBlNo = Movements::where('company_id', Auth::user()->company_id)->select('bl_no')->distinct()->get(
         )->pluck('bl_no');
 
-        $myMoves = Movements::whereIn('container_id', $filteredData->pluck('container_id')->toArray())->orderBy(
-            'movement_date',
-            'desc'
-        )->with('movementcode.containerstock', 'container')->get()->groupBy('container_id');
         // remove element if last movement doesn't include movement_id or port_location_id
         if (request('movement_id') != null || request('port_location_id') != null) {
             // Get All movements and sort it and get the last movement before this movement 
@@ -65,17 +64,15 @@ class MovementController extends Controller
             $movements = $new;
             $filteredData = $movements->unique('container_id');
 
-//            dd($myMoves);
 
             // End Get All movements and sort it and get the last movement before this movement 
             if (request('movement_id') != null) {
                 foreach ($filteredData as $key => $move) {
                     // Get All movements and sort it and get the last movement before this movement 
-//                    $tempMovements = Movements::where('container_id', $move->container_id)->orderBy(
-//                        'movement_date',
-//                        'desc'
-//                    )->with('movementcode.containerstock')->get();
-                    $tempMovements = $myMoves[$move->container_id];
+                    $tempMovements = $myMoves[$move->container_id] ?? Movements::where(
+                            'container_id',
+                            $move->container_id
+                        )->orderBy('movement_date', 'desc')->with('movementcode.containerstock')->get();
 
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
@@ -99,9 +96,10 @@ class MovementController extends Controller
             if (request('port_location_id') != null) {
                 foreach ($filteredData as $key => $move) {
                     // Get All movements and sort it and get the last movement before this movement 
-//                    $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
-                    $tempMovements = $myMoves[$move->container_id];
-//                    dd($move);
+                    $tempMovements = $myMoves[$move->container_id] ?? Movements::where(
+                            'container_id',
+                            $move->container_id
+                        )->orderBy('movement_date', 'desc')->with('movementcode.containerstock')->get();
 
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
@@ -127,9 +125,9 @@ class MovementController extends Controller
             $tillDate = request('TillDate');
             $periods = Period::where('demurrage_id', request('Triff_id'))->get();
             // Get All movements and sort it and get the last movement before this movement 
-//            $movements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
-            $movements = $myMoves[$move->container_id];
-
+            $movements = Movements::where('container_id', $move->container_id)->orderBy('movement_date', 'desc')->with(
+                'movementcode.containerstock'
+            )->get();
 
             $new = $movements;
             $new = $new->groupBy('movement_date');
@@ -169,12 +167,10 @@ class MovementController extends Controller
 
         foreach ($movements as $move) {
             // Get All movements and sort it and get the last movement before this movement 
-//            $tempMovements = Movements::where('container_id', $move->container_id)->orderBy(
-//                'movement_date',
-//                'desc'
-//            )->with('movementcode.containerstock')->get();
-            $tempMovements = $myMoves[$move->container_id];
-
+            $tempMovements = $myMoves[$move->container_id] ?? Movements::where(
+                    'container_id',
+                    $move->container_id
+                )->orderBy('movement_date', 'desc')->with('movementcode.containerstock')->get();
 
             $new = $tempMovements;
             $new = $new->groupBy('movement_date');
@@ -230,21 +226,25 @@ class MovementController extends Controller
         $exportMovements = Movements::where('company_id', Auth::user()->company_id)->wherein('id', $temp)->orderBy(
             'movement_date',
             'desc'
-        )->groupBy('container_id')->with(
+        )->orderBy('id', 'desc')->groupBy('container_id')->with(
             'container.containersOwner',
             'movementcode.containerstock'
-        )->get()->sortByDesc('id');
+        )->get();
 
-        $myMoves = Movements::where('company_id', Auth::user()->company_id)
-            ->orderBy('movement_date', 'desc')->with(
-                'movementcode.containerstock'
-            )->get()->groupBy('container_id');
-
-//        dd($myMoves);
-
-        foreach ($myMoves as $move) {
+//        dd($exportMovements->count());
+        $exportTempMoves = Movements::where('company_id', Auth::user()->company_id)->orderBy(
+            'movement_date',
+            'desc'
+        )->with('movementcode.containerstock')->get()->groupBy('container_id');
+        foreach ($exportMovements as $move) {
             // Get All movements and sort it and get the last movement before this movement 
-            $tempMovements = $move;
+            $tempMovements = $exportTempMoves[$move->container_id] ?? Movements::where(
+                    'company_id',
+                    Auth::user()->company_id
+                )->where('container_id', $move->container_id)->orderBy('movement_date', 'desc')->with(
+                    'movementcode.containerstock'
+                )->get();
+
             $new = $tempMovements;
             $new = $new->groupBy('movement_date');
 
@@ -271,28 +271,27 @@ class MovementController extends Controller
             }
 
             $lastMove = $tempMovements->first();
-            if(isset($lastMove)){
-                $move->bl_no = $lastMove->bl_no;
-                $move->port_location_id = $lastMove->port_location_id;
-                $move->movement_date = $lastMove->movement_date;
-                $move->movement_id = $lastMove->movement_id;
-                $move->container_type_id = $lastMove->container_type_id;
-                $move->pol_id = $lastMove->pol_id;
-                $move->pod_id = $lastMove->pod_id;
-                $move->vessel_id = $lastMove->vessel_id;
-                $move->voyage_id = $lastMove->voyage_id;
-                $move->terminal_id = $lastMove->terminal_id;
-                $move->booking_no = $lastMove->booking_no;
-                $move->remarkes = $lastMove->remarkes;
-                $move->created_at = $lastMove->created_at;
-                $move->updated_at = $lastMove->updated_at;
-                $move->transshipment_port_id = $lastMove->transshipment_port_id;
-                $move->booking_agent_id = $lastMove->booking_agent_id;
-                $move->free_time = $lastMove->free_time;
-                $move->container_status = $lastMove->container_status;
-                $move->import_agent = $lastMove->import_agent;
-                $move->free_time_origin = $lastMove->free_time_origin;
-            }
+
+            $move->bl_no = $lastMove->bl_no;
+            $move->port_location_id = $lastMove->port_location_id;
+            $move->movement_date = $lastMove->movement_date;
+            $move->movement_id = $lastMove->movement_id;
+            $move->container_type_id = $lastMove->container_type_id;
+            $move->pol_id = $lastMove->pol_id;
+            $move->pod_id = $lastMove->pod_id;
+            $move->vessel_id = $lastMove->vessel_id;
+            $move->voyage_id = $lastMove->voyage_id;
+            $move->terminal_id = $lastMove->terminal_id;
+            $move->booking_no = $lastMove->booking_no;
+            $move->remarkes = $lastMove->remarkes;
+            $move->created_at = $lastMove->created_at;
+            $move->updated_at = $lastMove->updated_at;
+            $move->transshipment_port_id = $lastMove->transshipment_port_id;
+            $move->booking_agent_id = $lastMove->booking_agent_id;
+            $move->free_time = $lastMove->free_time;
+            $move->container_status = $lastMove->container_status;
+            $move->import_agent = $lastMove->import_agent;
+            $move->free_time_origin = $lastMove->free_time_origin;
         }
 
         // End of Export Movements 
