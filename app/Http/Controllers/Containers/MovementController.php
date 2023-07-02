@@ -111,7 +111,7 @@ class MovementController extends Controller
                     $new = $new->collapse();
 
                     $tempMovements = $new;
-                    $lastMove = $tempMovements->first();
+                    $lastMove = $tempMovements->first()  ?? collect([]);
                     // End Get All movements and sort it and get the last movement before this movement 
                     if ($lastMove->port_location_id != request('port_location_id')) {
                         unset($filteredData[$key]);
@@ -197,8 +197,8 @@ class MovementController extends Controller
                 });
             }
 
-            $lastMove = $tempMovements->first();
-
+            $lastMove = $tempMovements->first() ?? collect([]);
+            
             $move->bl_no = $lastMove->bl_no;
             $move->port_location_id = $lastMove->port_location_id;
             $move->movement_date = $lastMove->movement_date;
@@ -270,7 +270,7 @@ class MovementController extends Controller
                 });
             }
 
-            $lastMove = $tempMovements->first();
+            $lastMove = $tempMovements->first()  ?? collect([]);
 
             $move->bl_no = $lastMove->bl_no;
             $move->port_location_id = $lastMove->port_location_id;
