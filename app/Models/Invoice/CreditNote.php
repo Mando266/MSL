@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models\Invoice;
+
+use App\Models\Bl\BlDraft;
 use App\Traits\HasFilter;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -26,6 +28,10 @@ class CreditNote extends Model implements PermissionSeederContract
 
     public function customer(){
         return $this->belongsTo(Customers::class,'customer_id','id');
+    }
+
+    public function bldraft(){
+        return $this->belongsTo(BlDraft::class,'bl_no','id');
     }
 
     public function descriptions()
