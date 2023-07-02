@@ -111,7 +111,7 @@ class MovementController extends Controller
                     $new = $new->collapse();
 
                     $tempMovements = $new;
-                    $lastMove = $tempMovements->first()  ?? collect([]);
+                    $lastMove = $tempMovements->first();
                     // End Get All movements and sort it and get the last movement before this movement 
                     if ($lastMove->port_location_id != request('port_location_id')) {
                         unset($filteredData[$key]);
@@ -197,28 +197,31 @@ class MovementController extends Controller
                 });
             }
 
-            $lastMove = $tempMovements->first() ?? collect([]);
+            $lastMove = $tempMovements->first();
             
-            $move->bl_no = $lastMove->bl_no;
-            $move->port_location_id = $lastMove->port_location_id;
-            $move->movement_date = $lastMove->movement_date;
-            $move->movement_id = $lastMove->movement_id;
-            $move->container_type_id = $lastMove->container_type_id;
-            $move->pol_id = $lastMove->pol_id;
-            $move->pod_id = $lastMove->pod_id;
-            $move->vessel_id = $lastMove->vessel_id;
-            $move->voyage_id = $lastMove->voyage_id;
-            $move->terminal_id = $lastMove->terminal_id;
-            $move->booking_no = $lastMove->booking_no;
-            $move->remarkes = $lastMove->remarkes;
-            $move->created_at = $lastMove->created_at;
-            $move->updated_at = $lastMove->updated_at;
-            $move->transshipment_port_id = $lastMove->transshipment_port_id;
-            $move->booking_agent_id = $lastMove->booking_agent_id;
-            $move->free_time = $lastMove->free_time;
-            $move->container_status = $lastMove->container_status;
-            $move->import_agent = $lastMove->import_agent;
-            $move->free_time_origin = $lastMove->free_time_origin;
+            if($lastMove != null)
+            {
+                $move->bl_no = $lastMove->bl_no;
+                $move->port_location_id = $lastMove->port_location_id;
+                $move->movement_date = $lastMove->movement_date;
+                $move->movement_id = $lastMove->movement_id;
+                $move->container_type_id = $lastMove->container_type_id;
+                $move->pol_id = $lastMove->pol_id;
+                $move->pod_id = $lastMove->pod_id;
+                $move->vessel_id = $lastMove->vessel_id;
+                $move->voyage_id = $lastMove->voyage_id;
+                $move->terminal_id = $lastMove->terminal_id;
+                $move->booking_no = $lastMove->booking_no;
+                $move->remarkes = $lastMove->remarkes;
+                $move->created_at = $lastMove->created_at;
+                $move->updated_at = $lastMove->updated_at;
+                $move->transshipment_port_id = $lastMove->transshipment_port_id;
+                $move->booking_agent_id = $lastMove->booking_agent_id;
+                $move->free_time = $lastMove->free_time;
+                $move->container_status = $lastMove->container_status;
+                $move->import_agent = $lastMove->import_agent;
+                $move->free_time_origin = $lastMove->free_time_origin;
+            }
         }
 
         // prepare export movements
@@ -270,28 +273,30 @@ class MovementController extends Controller
                 });
             }
 
-            $lastMove = $tempMovements->first()  ?? collect([]);
+            $lastMove = $tempMovements->first();
 
-            $move->bl_no = $lastMove->bl_no;
-            $move->port_location_id = $lastMove->port_location_id;
-            $move->movement_date = $lastMove->movement_date;
-            $move->movement_id = $lastMove->movement_id;
-            $move->container_type_id = $lastMove->container_type_id;
-            $move->pol_id = $lastMove->pol_id;
-            $move->pod_id = $lastMove->pod_id;
-            $move->vessel_id = $lastMove->vessel_id;
-            $move->voyage_id = $lastMove->voyage_id;
-            $move->terminal_id = $lastMove->terminal_id;
-            $move->booking_no = $lastMove->booking_no;
-            $move->remarkes = $lastMove->remarkes;
-            $move->created_at = $lastMove->created_at;
-            $move->updated_at = $lastMove->updated_at;
-            $move->transshipment_port_id = $lastMove->transshipment_port_id;
-            $move->booking_agent_id = $lastMove->booking_agent_id;
-            $move->free_time = $lastMove->free_time;
-            $move->container_status = $lastMove->container_status;
-            $move->import_agent = $lastMove->import_agent;
-            $move->free_time_origin = $lastMove->free_time_origin;
+            if($lastMove != null){
+                $move->bl_no = $lastMove->bl_no;
+                $move->port_location_id = $lastMove->port_location_id;
+                $move->movement_date = $lastMove->movement_date;
+                $move->movement_id = $lastMove->movement_id;
+                $move->container_type_id = $lastMove->container_type_id;
+                $move->pol_id = $lastMove->pol_id;
+                $move->pod_id = $lastMove->pod_id;
+                $move->vessel_id = $lastMove->vessel_id;
+                $move->voyage_id = $lastMove->voyage_id;
+                $move->terminal_id = $lastMove->terminal_id;
+                $move->booking_no = $lastMove->booking_no;
+                $move->remarkes = $lastMove->remarkes;
+                $move->created_at = $lastMove->created_at;
+                $move->updated_at = $lastMove->updated_at;
+                $move->transshipment_port_id = $lastMove->transshipment_port_id;
+                $move->booking_agent_id = $lastMove->booking_agent_id;
+                $move->free_time = $lastMove->free_time;
+                $move->container_status = $lastMove->container_status;
+                $move->import_agent = $lastMove->import_agent;
+                $move->free_time_origin = $lastMove->free_time_origin;
+            }
         }
 
         // End of Export Movements 
