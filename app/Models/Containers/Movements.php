@@ -50,21 +50,23 @@ class Movements extends Model implements PermissionSeederContract
 
     protected static function booted()
     {
-        $lessor_id = (int) auth()->user()->lessor_id;
-        $operator_id = (int) auth()->user()->operator_id;
-        if ($lessor_id != 0) {
-            static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
-                $builder->whereHas('container', function ($q) use ($lessor_id) {
-                    $q->where('description', $lessor_id);
+        if (!app()->runningInConsole()) {
+            $lessor_id = (int)auth()->user()->lessor_id;
+            $operator_id = (int)auth()->user()->operator_id;
+            if ($lessor_id != 0) {
+                static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
+                    $builder->whereHas('container', function ($q) use ($lessor_id) {
+                        $q->where('description', $lessor_id);
+                    });
                 });
-            });
-        }
-        if ($operator_id != 0) {
-            static::addGlobalScope('operator', function (Builder $builder) use ($operator_id) {
-                $builder->whereHas('booking', function ($q) use ($operator_id) {
-                    $q->where('vessel_name', $operator_id);
+            }
+            if ($operator_id != 0) {
+                static::addGlobalScope('operator', function (Builder $builder) use ($operator_id) {
+                    $builder->whereHas('booking', function ($q) use ($operator_id) {
+                        $q->where('vessel_name', $operator_id);
+                    });
                 });
-            });
+            }
         }
     }
     public function getPermissionActions(){
