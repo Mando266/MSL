@@ -50,9 +50,8 @@ class Movements extends Model implements PermissionSeederContract
 
     protected static function booted()
     {
-        
-        $lessor_id = auth()->user()->lessor_id;
-        $operator_id = auth()->user()->operator_id;
+        $lessor_id = (int) auth()->user()->lessor_id;
+        $operator_id = (int) auth()->user()->operator_id;
         if ($lessor_id != 0) {
             static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
                 $builder->whereHas('container', function ($q) use ($lessor_id) {
