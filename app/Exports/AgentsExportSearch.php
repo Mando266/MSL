@@ -8,6 +8,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Vessels;
+use App\Models\Voyages\Voyages;
+use App\Models\Master\Ports;
 
 class AgentsExportSearch implements FromCollection,WithHeadings
 {
