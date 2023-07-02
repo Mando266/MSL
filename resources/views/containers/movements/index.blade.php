@@ -107,7 +107,7 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="vessel_port_idInput">Vessel Name</label>
-                                <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                                <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_id',request()->input('vessel_id')) ? 'selected':''}}>{{$item->name}}</option>
@@ -290,5 +290,23 @@ function unlock(){
 function unlockupdate(){
     document.getElementById('updatebuttonSubmit').removeAttribute("disabled");
 }
+</script>
+<script>
+         $(function(){
+                    let vessel = $('#vessel_id');
+                    $('#vessel_id').on('change',function(e){
+                        let value = e.target.value;
+                        let response =    $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data){
+                            let voyages = data.voyages || '';
+                            let list2 = [];
+                            for(let i = 0 ; i < voyages.length; i++){
+                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no} - ${voyages[i].leg}</option>`);
+                            }
+                    let voyageno = $('#voyage');
+                    voyageno.html(list2.join(''));
+                    $('.selectpicker').selectpicker('refresh');
+                        });
+                    });
+                });
 </script>
 @endpush
