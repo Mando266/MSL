@@ -23,115 +23,141 @@ use App\Exports\InvoiceListExport;
 use App\Exports\ReceiptExport;
 use App\Imports\BookingImport;
 use App\Imports\MovementsImport;
-use App\Imports\MovementsOvewriteImport; 
+use App\Imports\MovementsOvewriteImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportExportController extends Controller
 {
     public function importExportView()
     {
-       return view('importexport');
+        return view('importexport');
     }
-    public function import() 
+
+    public function import()
     {
-        Excel::import(new MovementsImport,request()->file('file'));
+        Excel::import(new MovementsImport, request()->file('file'));
         return back();
     }
-    public function importBooking() 
+
+    public function importBooking()
     {
-        Excel::import(new BookingImport,request()->file('file'));
+        Excel::import(new BookingImport, request()->file('file'));
         return back();
     }
-    public function overwrite() 
+
+    public function overwrite()
     {
-        Excel::import(new MovementsOvewriteImport,request()->file('file'));
+        Excel::import(new MovementsOvewriteImport, request()->file('file'));
         return back();
     }
-    public function export() 
+
+    public function export()
     {
-        return Excel::download(new MovementsExport, 'Movements.xlsx');
+        return $this->exportWithValidation(new MovementsExport, 'Movements.xlsx', 'items');
     }
-    public function exportAll() 
+
+    public function exportAll()
     {
         return Excel::download(new MovementsExportAll, 'Movements.xlsx');
     }
-    public function exportQuotation() 
+
+    public function exportQuotation()
     {
-        return Excel::download(new QuotationExport, 'Quotations.xlsx');
+        return $this->exportWithValidation(new QuotationExport, 'Quotations.xlsx', 'quotations');
     }
-    public function exportContainers() 
+
+    public function exportContainers()
     {
-        return Excel::download(new ContainersExport, 'Containers.xlsx');
+        return $this->exportWithValidation(new ContainersExport, 'Containers.xlsx', 'containers');
     }
-    public function importContainers() 
+
+    public function importContainers()
     {
-        Excel::import(new ContainersImport,request()->file('file'));
+        Excel::import(new ContainersImport, request()->file('file'));
         return back();
     }
-    public function exportTruckerGate() 
+
+    public function exportTruckerGate()
     {
-        return Excel::download(new TruckerGateExport, 'TruckerGate.xlsx');
+        return $this->exportWithValidation(new TruckerGateExport, 'TruckerGate.xlsx', 'truckergates');
     }
 
-    public function LocalPortTriffShow() 
+    public function LocalPortTriffShow()
     {
-        return Excel::download(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx');
-    }
-    public function exportBooking() 
-    {
-        return Excel::download(new BookingExport, 'Bookings.xlsx');
-    }
-    public function loadlistBooking() 
-    {
-        return Excel::download(new LoadListExport, 'Loadlist.xlsx');
-    }
-    
-    public function exportVoyages() 
-    {
-        return Excel::download(new VoyageExport, 'Voyages.xlsx');
-    }
-    public function exportSearch() 
-    {
-        return Excel::download(new MovementsExportSearch, 'Movements.xlsx');
-    }
-    public function agentSearch() 
-    {
-        return Excel::download(new AgentsExportSearch, 'AgentReport.xlsx');
-    }
-    
-    public function loadlistBl() 
-    {
-        return Excel::download(new BLLoadListExport, 'BLloadList.xlsx');
-    }
-        
-    public function invoiceList() 
-    {
-        return Excel::download(new InvoiceListExport, 'InvoiceList.xlsx');
-    }
-    
-    public function invoiceBreakdown() 
-    {
-        return Excel::download(new InvoiceBreakdownExport, 'InvoiceBreakdownList.xlsx');
-    }
-    
-    public function exportCustomers() 
-    {
-        return Excel::download(new CustomerExport, 'Customers.xlsx');
+        return $this->exportWithValidation(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx', 'TriffNo');
     }
 
-    public function Bllist() 
+    public function exportBooking()
     {
-        return Excel::download(new BLExport, 'BLExport.xlsx');
+        return $this->exportWithValidation(new BookingExport, 'Bookings.xlsx', 'bookings');
     }
 
-    public function receiptExport() 
+    public function loadlistBooking()
     {
-        return Excel::download(new ReceiptExport, 'ReceiptExport.xlsx');
+        return $this->exportWithValidation(new LoadListExport, 'Loadlist.xlsx', 'bookings');
     }
 
-    
-    public function customerStatementsExport() 
+    public function exportVoyages()
     {
-        return Excel::download(new CustomerStatementsExport, 'CustomerStatements.xlsx');
+        return $this->exportWithValidation(new VoyageExport, 'Voyages.xlsx', 'voyages');
+    }
+
+    public function exportSearch()
+    {
+        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'itemssss');
+    }
+
+    public function agentSearch()
+    {
+        return $this->exportWithValidation(new AgentsExportSearch, 'AgentReport.xlsx', 'items');
+    }
+
+    public function loadlistBl()
+    {
+        return $this->exportWithValidation(new BLLoadListExport, 'BLloadList.xlsx', 'bldarft');
+    }
+
+    public function invoiceList()
+    {
+        return $this->exportWithValidation(new InvoiceListExport, 'InvoiceList.xlsx', 'invoice');
+    }
+
+    public function invoiceBreakdown()
+    {
+        return $this->exportWithValidation(new InvoiceBreakdownExport, 'InvoiceBreakdownList.xlsx', 'invoice');
+    }
+
+    public function exportCustomers()
+    {
+        return $this->exportWithValidation(new CustomerExport, 'Customers.xlsx', 'customers');
+    }
+
+    public function Bllist()
+    {
+        return $this->exportWithValidation(new BLExport, 'BLExport.xlsx', 'bldarft');
+    }
+
+    public function receiptExport()
+    {
+        return $this->exportWithValidation(new ReceiptExport, 'ReceiptExport.xlsx', 'receipts');
+    }
+
+    public function customerStatementsExport()
+    {
+        return $this->exportWithValidation(new CustomerStatementsExport, 'CustomerStatements.xlsx', 'statements');
+    }
+
+    private function exportWithValidation($export, $filename, $sessionKey)
+    {
+        if (!session()->has($sessionKey)) {
+            return $this->errorMsg();
+        }
+
+        return Excel::download($export, $filename);
+    }
+
+    private function errorMsg()
+    {
+        return back()->with('message', 'Session Expired! Refresh the page.');
     }
 }
