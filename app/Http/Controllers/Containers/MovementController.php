@@ -695,7 +695,10 @@ class MovementController extends Controller
             $movementId = true;
         }
         if (request('booking_no') != null) {
-            $movements = $movements->where('booking_no', 'like', '%' . request('booking_no') . '%');
+            $refNo = request()->booking_no;
+            $movements = $movements->whereHas('booking', function ($q) use ($refNo) {
+                $q->where('ref_no', 'like', "%{$refNo}%");
+            });
         }
         if (request('movement_id') == null && request('port_location_id') == null) {
             // prepare Data for export

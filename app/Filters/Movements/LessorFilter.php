@@ -8,7 +8,7 @@ class LessorFilter extends AbstractBasicFilter
 {
     public function filter($value)
     {
-        $lessor_id = auth()->user()->lessor_id;
+        $lessor_id = (int) auth()->user()->lessor_id;
         if ($lessor_id != 0) {
             return $this->builder->whereHas('container', function ($q) use ($lessor_id) {
                 $q->where('description', $lessor_id);
