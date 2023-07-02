@@ -34,7 +34,7 @@ class AgentsExportSearch implements FromCollection,WithHeadings
     * @return \Illuminate\Support\Collection
     */
     public function collection()
-    {
+    { 
         $movements = session('items');
 
         $exportmovements = collect();
@@ -47,9 +47,9 @@ class AgentsExportSearch implements FromCollection,WithHeadings
                     $movement->container_status = ContainerStatus::where('id',$movement->container_status)->pluck('name')->first(),
                     'bl_no' => $movement->bl_no,
                     $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first(),
-                    'voyage_id'=> $movement->voyage_id,
-                    'pol_id'=> $movement->pol_id,
-                    'pod_id'=> $movement->pod_id,
+                    $movement->voyage_id = Voyages::where('id',$movement->voyage_id)->pluck('voyage_no')->first(),
+                    $movement->pol_id = Ports::where('id',$movement->pol_id)->pluck('code')->first(),
+                    $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first(),
                 ]);
                 $exportmovements->add($tempCollection);
         }
