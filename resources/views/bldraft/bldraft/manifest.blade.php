@@ -40,6 +40,8 @@
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
 
                                     {{-- <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo"> --}}
+                                    @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
+                                    <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                     @else
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                     @endif

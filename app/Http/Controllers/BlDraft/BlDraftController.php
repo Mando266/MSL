@@ -257,6 +257,17 @@ class BlDraftController extends Controller
             ]);
     }
 
+    public function showCstar($id)
+    {
+        $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
+        $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
+            return view('bldraft.bldraft.showCstar',[
+                'blDraft'=>$blDraft,
+                'etdvoayege'=>$etdvoayege,
+                ]);      
+    }
+
+
     public function edit(BlDraft $bldraft)
     {
         $this->authorize(__FUNCTION__,BlDraft::class);
