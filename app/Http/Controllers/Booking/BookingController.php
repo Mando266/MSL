@@ -554,4 +554,23 @@ class BookingController extends Controller
         $bookings->delete(); 
         return back()->with('success',trans('Booking.Deleted.Success'));
     }
+    
+    public function temperatureDiscrepancy(Booking $booking)
+    {
+        return view('booking.booking.temperatureDiscrepancy')
+            ->with([
+                'booking' => $booking,
+                'bookingContainerDetails' => $booking->bookingContainerDetails
+            ]);
+    }
+    
+    public function sendMailToCustomer()
+    {
+        dd(request()->all());
+    }
+    public function sendMailToProvider()
+    {
+        dd(request()->all());
+
+    }
 }
