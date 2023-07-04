@@ -31,7 +31,7 @@
                                 <td style="height: 45px;"></td>
                             </tr>
                                 <tr>
-                                    <th class="text-center thstyle underline">اذن تسليم</th>
+                                    <th class="text-center thstyle underline">اذن تسليم {{$booking->deleviry_no}}</th>
                                 </tr>
                             </tbody>
                         </table>

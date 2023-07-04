@@ -158,6 +158,6 @@ class ImportExportController extends Controller
 
     private function errorMsg()
     {
-        return back()->with('message', 'Session Expired! Refresh the page.');
+        return back()->with('message', 'Session Expired! Refresh the page and Try Again.');
     }
 }
