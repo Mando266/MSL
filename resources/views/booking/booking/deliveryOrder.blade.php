@@ -121,7 +121,7 @@
 
 
 
-                @if(optional($booking->bldraft)->blDetails->count() > 4)
+                @if(optional(optional($booking->bldraft)->blDetails)->count() > 4 && optional(optional($booking->bldraft)->blDetails)->count() != null)
                     @php
                         $chunkedDetails = optional($booking->bldraft)->blDetails->chunk(26); // Divide the collection into chunks of 15 items
                         $gross_weight = 0;

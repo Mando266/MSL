@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             @permission('XML-Create')
-                                {{-- <a href="{{route('xml.selectmanifest')}}" class="btn btn-primary">New Manifest XML</a> --}}
+                                <a href="{{route('xml.selectManifest')}}" class="btn btn-primary">New Manifest XML</a>
                             @endpermission
 
                             </div>
@@ -25,7 +25,7 @@
                     </br>
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="Refrance">Bl Number </label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -35,7 +35,7 @@
                                 </select>
                             </div>
  
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="voyage_id">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                     title="{{trans('forms.select')}}">
@@ -65,10 +65,9 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Booking no</th>
-                                        <th>Bl Draft ref no</th>
-                                        <th>Agreement Party</th>
-
+                                        <th>Ref No</th>
+                                        <th>Bl Ref No</th>
+                                        <th>Voyage</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
