@@ -43,6 +43,7 @@ class MovementController extends Controller
         $plNo = request()->input('bl_no');
         $movementsBlNo = Movements::where('company_id', Auth::user()->company_id)->select('bl_no')->distinct()->get(
         )->pluck('bl_no');
+        $bookings = Booking::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
 
         // remove element if last movement doesn't include movement_id or port_location_id
         if (request('movement_id') != null || request('port_location_id') != null) {
@@ -317,6 +318,7 @@ class MovementController extends Controller
                 'items' => $movements,
                 'containerstatus' => $containerstatus,
                 'movementsBlNo' => $movementsBlNo,
+                'bookings' => $bookings,
                 'containers' => $containers,
                 'movementerrors' => $movementErrors,
                 'plNo' => $plNo,
@@ -334,6 +336,7 @@ class MovementController extends Controller
                     return view('containers.movements.index', [
                         'items' => $movements,
                         'movementsBlNo' => $movementsBlNo,
+                        'bookings' => $bookings,
                         'containers' => $containers,
                         'movementerrors' => $movementErrors,
                         'plNo' => $plNo,

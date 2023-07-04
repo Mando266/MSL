@@ -153,8 +153,10 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
-                                <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
-                                placeholder="Booking No" autocomplete="off">
+                                    @foreach ($bookings as $item)
+                                        <option value="{{$item->id}}" {{$item == old('booking_no',request()->input('booking_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @endforeach
+                                </select> 
                             </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Remarkes</label>
