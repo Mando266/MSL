@@ -39,6 +39,9 @@ class BlDraft extends Model implements PermissionSeederContract
     public function customer(){
         return $this->belongsTo(Customers::class,'customer_id','id');
     }
+    public function additionalNotify(){
+        return $this->belongsTo(Customers::class,'additional_notify_id','id');
+    }
     public function customerNotify(){
         return $this->belongsTo(Customers::class,'customer_notifiy_id','id');
     }

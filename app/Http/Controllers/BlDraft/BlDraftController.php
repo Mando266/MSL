@@ -205,6 +205,8 @@ class BlDraftController extends Controller
             'customer_id'=> $request->input('customer_id'),
             'customer_consignee_details'=> $request->input('customer_consignee_details'),
             'customer_notifiy_details'=> $request->input('customer_notifiy_details'),
+            'additional_notify_details'=> $request->input('additional_notify_details'),
+            'additional_notify_id'=> $request->input('additional_notify_id'),
             'customer_shipper_details'=> $request->input('customer_shipper_details'),
             'descripions'=> $request->input('descripions'),
             'customer_consignee_id'=> $request->input('customer_consignee_id'),
