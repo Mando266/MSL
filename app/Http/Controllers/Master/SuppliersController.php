@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Master\Country;
+use App\Models\Master\Currency;
 use App\Models\Master\Suppliers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,23 +28,19 @@ class SuppliersController extends Controller
         $countries = Country::orderBy('name')->get();
         return view('master.suppliers.create',[
             'countries'=>$countries,
+            'currencies' => Currency::all()
         ]);
     }
 
     public function store(Request $request)
     {
-        $this->authorize(__FUNCTION__,Suppliers::class);
+        $this->authorize(__FUNCTION__, Suppliers::class);
         $user = Auth::user();
-
-        $NameDublicate  = Suppliers::where('company_id',$user->company_id)->where('name',$request->name)->first();
-        if($NameDublicate != null){
-            return back()->with('alert','This Supplier Name Already Exists');
-        }
-
+        request()->validate(['name' => 'unique:suppliers']);
         $suppliers = Suppliers::create($request->except('_token'));
         $suppliers->company_id = $user->company_id;
         $suppliers->save();
-        return redirect()->route('suppliers.index')->with('success',trans('Suppliers.created'));
+        return redirect()->route('suppliers.index')->with('success', trans('Suppliers.created'));
     }
 
 
@@ -54,11 +51,12 @@ class SuppliersController extends Controller
 
     public function edit(Suppliers $supplier)
     {
-        $this->authorize(__FUNCTION__,Suppliers::class);
+        $this->authorize(__FUNCTION__, Suppliers::class);
         $countries = Country::orderBy('name')->get();
-        return view('master.suppliers.edit',[
-            'supplier'=>$supplier,
-            'countries'=>$countries,
+        return view('master.suppliers.edit', [
+            'supplier' => $supplier,
+            'countries' => $countries,
+            'currencies' => Currency::all()
         ]);
     }
 

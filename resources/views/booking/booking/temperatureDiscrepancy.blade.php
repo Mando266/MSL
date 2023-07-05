@@ -48,18 +48,16 @@
                                                        title="{{ $detail->haz }}" readonly>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="gateInDate[]">
+                                                <input type="date" class="form-control" name="gateInDate[]">
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="tempDiff[]">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="mainLaneNo[]"
-                                                       value="{{ 'main lane' }}" readonly>
+                                                <input type="text" class="form-control" name="mainLaneNo[]">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="secondaryLaneNo[]"
-                                                       value="{{ 'second lane' }}" readonly>
+                                                <input type="text" class="form-control" name="secondaryLaneNo[]">
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="commodityDescription[]"
@@ -79,33 +77,56 @@
                                 </table>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <label for="customerEmail">Customer Email (Shipper/FTW)</label>
-                                            <select name="customerEmail" id="customerEmail" class="form-control">
-                                                <option value="customer1@example.com">customer1@example.com</option>
-                                                <option value="customer2@example.com">customer2@example.com</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="serviceProviderEmail">Service Provider Email (ATEB)</label>
-                                            <select name="serviceProviderEmail" id="serviceProviderEmail"
-                                                    class="form-control">
-                                                <option value="provider1@example.com">provider1@example.com</option>
-                                                <option value="provider2@example.com">provider2@example.com</option>
+                                            <select class="selectpicker form-control w-100" id="customerEmail"
+                                                    data-live-search="true" data-size="10"
+                                                    multiple="multiple">
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->email }}">{{$customer->name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="row mt-3">
-                                        <div class="col-md-6">
-                                            <button class="btn btn-primary" id="sendCustomer" value="sendCustomer"
-                                                    type="submit">Send Customer Email
+                                        <div class="col-md-12">
+                                            <label for="serviceProviderEmail">Service Provider Email (ATEB)</label>
+                                            <select class="selectpicker form-control w-100" id="serviceProviderEmail"
+                                                    data-live-search="true" data-size="10"
+                                                    multiple="multiple">
+                                                @foreach ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->email }}">{{$supplier->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-10">
+                                            <label for="selectedCustomerEmails">Selected Customer Emails:</label>
+                                            <textarea class="form-control" id="selectedCustomerEmails"
+                                                      name="customer_email"
+                                                      readonly></textarea>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button class="btn btn-primary float-right mt-2" id="sendCustomer"
+                                                    value="sendCustomer" type="submit">Send Customer Email
                                             </button>
                                         </div>
-                                        <div class="col-md-6">
-                                            <button class="btn btn-primary" id="sendServiceProvider"
-                                                    value="sendServiceProvider" type="submit">Send Service Provider
-                                                Email
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-10">
+                                            <label for="selectedServiceProviderEmails"
+                                            >Selected Service Provider Emails:</label>
+                                            <textarea class="form-control" id="selectedServiceProviderEmails"
+                                                      name="provider_email"
+                                            ></textarea>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button class="btn btn-primary float-right mt-2" id="sendServiceProvider"
+                                                    value="sendServiceProvider" type="submit"
+                                            >Send Service Provider Email
                                             </button>
                                         </div>
                                     </div>
@@ -121,29 +142,56 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        $(document).ready(() => {
+            let customerSelect = $('#customerEmail');
+            let providerSelect = $('#serviceProviderEmail');
+
+            const updateSelectedCustomerEmails = () => {
+                const selectedcEmails = customerSelect.val().join('\n');
+                $('#selectedCustomerEmails').val(selectedcEmails);
+            };
+
+            const updateSelectedServiceProviderEmails = () => {
+                const selectedEmails = providerSelect.val().join('\n');
+                $('#selectedServiceProviderEmails').val(selectedEmails);
+            };
+
+            customerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
+                updateSelectedCustomerEmails();
+            });
+
+            providerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
+                updateSelectedServiceProviderEmails();
+            });
+
+            updateSelectedCustomerEmails();
+            updateSelectedServiceProviderEmails();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
             removeRow();
             adjustFormAction();
         });
 
-        function removeRow() {
+        const removeRow = () => {
             const removeButtons = document.querySelectorAll('.remove');
 
             removeButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const row = this.closest('tr');
+                button.addEventListener('click', () => {
+                    const row = button.closest('tr');
                     row.remove();
                 });
             });
-        }
+        };
 
-        function adjustFormAction() {
+        const adjustFormAction = () => {
             const sendServiceProviderButton = document.getElementById('sendServiceProvider');
             const temperatureForm = document.getElementById('temperatureForm');
 
-            sendServiceProviderButton.addEventListener('click', function () {
+            sendServiceProviderButton.addEventListener('click', () => {
                 temperatureForm.action = "{{ route('temperature-discrepancy.send-provider') }}";
             });
-        }
+        };
     </script>
+
 @endpush

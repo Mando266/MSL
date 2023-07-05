@@ -153,10 +153,6 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('importBooking');
         Route::get('{booking}/temperatureDiscrepancy', [BookingController::class, 'temperatureDiscrepancy'])
             ->name('temperature-discrepancy');
-        Route::post('temperatureDiscrepancy/sendMailToCustomer', [BookingController::class, 'sendMailToCustomer'])
-            ->name('temperature-discrepancy.send-customer');
-        Route::post('temperatureDiscrepancy/sendMailToProvider', [BookingController::class, 'sendMailToProvider'])
-            ->name('temperature-discrepancy.send-provider');
     });
     /*
     |-------------------------------------------

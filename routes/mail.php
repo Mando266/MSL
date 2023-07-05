@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\MailController;
 
-use App\Mail\TestMail;
-
-Route::get('/testmail', function () {
-    Mail::to('goee2015@gmail.com')->send(new \App\Mail\gogoMail('testgogo'));
+Route::prefix('booking')->namespace('Booking')->group(function () {
+    Route::post('temperatureDiscrepancy/sendMailToCustomer', [MailController::class, 'sendMailToCustomer'])
+        ->name('temperature-discrepancy.send-customer');
+    Route::post('temperatureDiscrepancy/sendMailToProvider', [MailController::class, 'sendMailToProvider'])
+        ->name('temperature-discrepancy.send-provider');
 });
