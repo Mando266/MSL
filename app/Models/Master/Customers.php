@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\ContactPerson;
 use App\Models\Invoice\CreditNote;
 use App\Models\Invoice\Invoice;
 use App\Models\Receipt\Receipt;
@@ -47,6 +48,11 @@ class Customers extends Model implements PermissionSeederContract
     }
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
+    }
+    
+    public function contactPeople()
+    {
+        return $this->hasMany(ContactPerson::class, 'customer_id');
     }
 
     public function scopeUserCustomers($query){

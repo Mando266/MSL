@@ -19,7 +19,7 @@ class AddColumnsToSuppliers extends Migration
             $table->string('email');
             $table->string('tax_card')->nullable();
             $table->bigInteger('currency_id')->nullable();
-            $table->string('secondary_currency_id')->nullable();
+            $table->bigInteger('secondary_currency_id')->nullable();
             $table->text('note')->nullable();
         });
     }
