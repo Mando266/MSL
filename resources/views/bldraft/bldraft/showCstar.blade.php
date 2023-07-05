@@ -42,27 +42,33 @@
                     <table class="col-md-12 tableStyle" style="margin-bottom: 0rem;">
                         <tbody>
                             <tr>
-                                <th class="col-md-6 tableStyle" style="height: 150px;">Shipper (full style and address) </br></br>
-                                <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customer)->name }}</span>
-                                <textarea class="tableStyle" name="shipper"  style="border-style: hidden; overflow: hidden; height: 120px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
-                                    {{ old('shipper',$blDraft->customer_shipper_details) }}
-                                    </textarea>
+                                <th rowspan="2" class="col-md-6 tableStyle" style="height: 150px;">Shipper (full style and address) </br></br>
+                                    <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->customer)->name }}</span>
+                                    <textarea class="tableStyle" name="shipper"  style="border-style: hidden; overflow: hidden; height: 120px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                        {{ old('shipper',$blDraft->customer_shipper_details) }}
+                                        </textarea>
                                 </th>
+                                <td class="col-md-3 tableStyle" >B/L No. </br>
+                                    &nbsp{{ $blDraft->ref_no }}</td>
+                                <td class="col-md-3 tableStyle" >Reference No. </br>
+                                    &nbsp{{ optional($blDraft->booking)->ref_no }}</td>
+                            </tr>
+                            <tr>
                                 @if(optional($blDraft)->number_of_original == "0" )
-                                <th class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
+                                <td class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
                                 @elseif($blDraft->bl_status == 0 && optional($blDraft)->number_of_original != "0")
-                                <th class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @else
-                                <th class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
                                 <div class="col-md-12 text-center">
                                     {{-- @if(optional($blDraft->loadPort)->code == "EGEDK") --}}
-                                        <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                                        <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                         {{-- @else
                                         <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
                                     @endif --}}
                                 </div>
-                                </th>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,14 +80,16 @@
                                          {!! $blDraft->customer_consignee_details !!}
                                         </textarea>
                                     </th>
-                                    <td class="col-md-3 tableStyle" >B/L No. </br>
-                                        &nbsp{{ $blDraft->ref_no }}</td>
-                                    <td class="col-md-3 tableStyle" >Reference No. </br>
-                                        &nbsp{{ optional($blDraft->booking)->ref_no }}</td>
+                                    <td class=" col-md-6 tableStyle" colspan="2">Vessel Voyage No </br>
+                                        &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}
+                                        </td>
                                 </tr>
                                 <tr>
-                                    <td class=" col-md-3 tableStyle" colspan="2">Vessel Voyage No </br>
-                                    &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}
+                                    <td class="col-md-3 tableStyle" >Port of loading </br>
+                                        &nbsp{{ optional($blDraft->loadPort)->name }}
+                                    </td>
+                                    <td class=" col-md-3 tableStyle" colspan="2">Port of discharge </br>
+                                        &nbsp{{ optional($blDraft->dischargePort)->name }}
                                     </td>
                                 </tr>
                             </table>
@@ -95,12 +103,18 @@
                                     {!! $blDraft->customer_notifiy_details !!}
                                     </textarea>
                                     </th>
-                                    <td class="col-md-6 tableStyle" >Port of loading </br>
-                                    &nbsp{{ optional($blDraft->loadPort)->name }}</td>
+                                    <td class="col-md-3 tableStyle" >Place of Receipt </br>
+                                    &nbsp{{ optional(optional(optional($blDraft->booking)->quotation)->placeOfAcceptence)->name }}</td>
+                                    <td class="col-md-3 tableStyle" >Place of Delivery </br>
+                                        &nbsp{{ optional(optional(optional($blDraft->booking)->quotation)->placeOfDelivery)->name }}</td>
                                 </tr>
                                 <tr>
-                                    <td class=" col-md-6 tableStyle" colspan="2">Port of discharge </br>
-                                        &nbsp{{ optional($blDraft->dischargePort)->name }}
+                                    <td class=" col-md-6 tableStyle" colspan="2">Additional Notify Party </br>
+                                        &nbsp
+                                        <span style="font-size: 14px; margin-left: 12px;">{{ optional($blDraft->additionalNotify)->name }}</span>
+                                        <textarea class="tableStyle" name="additional_notify_details"  style="border-style: hidden; overflow: hidden; height: 80px; width: 100%; resize: none; background-color: white; padding-top: unset;" cols="30" rows="10" readonly>
+                                            {{ old('additional_notify_details',$blDraft->additional_notify_details) }}
+                                        </textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -312,6 +326,8 @@
     document.getElementsByName("notify")[0].value = c.trim()
     let d = document.getElementsByName("maindesc")[0].value
     document.getElementsByName("maindesc")[0].value = d.trim()
+    let e = document.getElementsByName("additional_notify_details")[0].value
+    document.getElementsByName("additional_notify_details")[0].value = e.trim()
 </script>
 @endpush
 @push('styles')

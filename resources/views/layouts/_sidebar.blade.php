@@ -383,9 +383,15 @@
 
             
                                 @permission('BlDraft-List')
-                                    <li>
-                                        <a href="{{route('bldraft.index')}}"> Bl Gates </a>
-                                    </li>
+                                <li>
+                                    <a href="{{route('bldraft.index')}}"> Bl Gates </a>
+                                </li>
+                                @endpermission
+
+                                @permission('XML-List')
+                                <li>
+                                    <a href="{{route('xml.index')}}"> Manifest XML Gates </a>
+                                </li>
                                 @endpermission
                                 </ul>
                         </li>

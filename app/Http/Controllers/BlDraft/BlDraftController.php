@@ -26,9 +26,9 @@ class BlDraftController extends Controller
         $blDrafts = BlDraft::filter(new BlDraftIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails','invoices','customer')->paginate(30);
         //dd($blDrafts);
         $exportbls = BlDraft::filter(new BlDraftIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails')->get();
-        $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $blDraftNo = BlDraft::where('company_id',Auth::user()->company_id)->get();
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $ffw = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);})->get();
@@ -205,6 +205,8 @@ class BlDraftController extends Controller
             'customer_id'=> $request->input('customer_id'),
             'customer_consignee_details'=> $request->input('customer_consignee_details'),
             'customer_notifiy_details'=> $request->input('customer_notifiy_details'),
+            'additional_notify_details'=> $request->input('additional_notify_details'),
+            'additional_notify_id'=> $request->input('additional_notify_id'),
             'customer_shipper_details'=> $request->input('customer_shipper_details'),
             'descripions'=> $request->input('descripions'),
             'customer_consignee_id'=> $request->input('customer_consignee_id'),

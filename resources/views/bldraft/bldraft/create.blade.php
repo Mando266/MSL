@@ -115,7 +115,27 @@
                                     placeholder="Customer Notifiy Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_notifiy_details}} @endisset</textarea>
                             </div> 
                     </div>
-                    {{-- @dd($blDraft) --}}
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="customer_id">Additional Notifiy</label>
+                            <select class="selectpicker form-control" id="additionalNotifiy" data-live-search="true" name="additional_notify_id" data-size="10"
+                             title="{{trans('forms.select')}}" required>
+                                @foreach ($customersNotifiy as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('additional_notify_id',isset($blDraft) ? $blDraft->additional_notify_id:'') ? 'selected':''}}>{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                            @error('additional_notify_id')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-8" id="summernote">
+                            <label for="customer_id">Additional Notifiy Details</label>
+                                <textarea id="additional_notify_details" class="form-control"  name="additional_notify_details"
+                                placeholder="Additional Notifiy Details" autocomplete="off">@isset($blDraft){{$blDraft->additional_notifiy_details}} @endisset</textarea>
+                        </div> 
+                </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
@@ -474,6 +494,20 @@
                 });
             });
         });
+</script>
+
+<script>
+    $(function(){
+            let additionalnotifiy = $('#additionalNotifiy');
+            $('#additionalNotifiy').on('change',function(e){
+                let value = e.target.value;
+                let response =    $.get(`/api/master/customers/${additionalnotifiy.val()}`).then(function(data){
+                    let notIfiy = data.customer[0] ;
+                    let notifiy = $('#additional_notify_details').val('Phone :' + ' ' + notIfiy.phone + ' ' + '-' + ' ' +'Email :' +' ' + notIfiy.email +  ' ' + '-' + ' ' + 'Address Line1 :' +' ' + notIfiy.address + ' ' + '-' + ' ' + 'Address Line2 :' +' ' + notIfiy.cust_address + ' ' + '-' + ' ' +' Fax :' +' ' + notIfiy.fax);
+                notifiy.html(list2.join(''));
+            });
+        });
+    });
 </script>
 @endpush
                          

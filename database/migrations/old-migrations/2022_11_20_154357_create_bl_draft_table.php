@@ -17,7 +17,7 @@ class CreateBlDraftTable extends Migration
             $table->id();
             $table->unsignedInteger('booking_id');
             $table->unsignedInteger('company_id')->nullable();  
-            $table->string('ref_no','255')->nullable();                     
+            $table->string('ref_no','255')->nullable();
             $table->unsignedInteger('customer_id')->nullable();
             $table->string('customer_consignee_details','1000')->nullable();
             $table->string('customer_shipper_details','1000')->nullable();
