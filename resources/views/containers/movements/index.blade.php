@@ -153,8 +153,10 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
+                                <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="booking_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($bookings as $item)
-                                        <option value="{{$item->id}}" {{$item == old('booking_no',request()->input('booking_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_no',request()->input('booking_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                 </select> 
                             </div>

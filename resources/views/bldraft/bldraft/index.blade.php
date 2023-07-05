@@ -236,9 +236,15 @@
                                                     @endpermission
                                                     @permission('Booking-Show')
                                                     <li>
+                                                    @if(optional(optional($item->booking)->principal)->code == 'Cstar')
+                                                        <a href="{{route('bldraft.showCstar',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    @else
                                                         <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
+                                                    @endif
                                                     </li>
                                                     @endpermission 
                                                     @permission('BlDraft-Delete')
