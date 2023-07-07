@@ -51,10 +51,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="addressInput">Address</label>
+                                    <label for="addressInput">Address *</label>
                                     <input type="text" class="form-control" id="addressInput" name="address_line_1"
                                            value="{{old('address_line_1')}}"
-                                           placeholder="Address">
+                                           placeholder="Address" required>
                                     @error('address_line_1')
                                     <div class="invalid-feedback">
                                         {{$message}}
@@ -64,10 +64,10 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="phoneInput">Phone</label>
+                                    <label for="phoneInput">Phone *</label>
                                     <input type="text" class="form-control" id="phoneInput" name="phone"
                                            value="{{old('phone')}}"
-                                           placeholder="Phone">
+                                           placeholder="Phone" required>
                                     @error('phone')
                                     <div class="invalid-feedback">
                                         {{$message}}
@@ -75,10 +75,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="emailInput">Email</label>
+                                    <label for="emailInput">Email *</label>
                                     <input type="email" class="form-control" id="emailInput" name="email"
                                            value="{{old('email')}}"
-                                           placeholder="Email">
+                                           placeholder="Email" required>
                                     @error('email')
                                     <div class="invalid-feedback">
                                         {{$message}}
@@ -104,7 +104,7 @@
                                             name="currency_id" data-size="10"
                                             title="{{trans('forms.select')}}">
                                         @foreach($currencies as $currency)
-                                            <option value="{{$currency->id}}" {{$currency->id == old('country_id') ? 'selected':''}}>{{$currency->name}}</option>
+                                            <option value="{{$currency->id}}" {{$currency->id == old('currency_id') ? 'selected':''}}>{{$currency->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('currency_id')
@@ -119,7 +119,7 @@
                                             data-live-search="true" name="secondary_currency_id" data-size="10"
                                             title="{{trans('forms.select')}}">
                                         @foreach($currencies as $currency)
-                                            <option value="{{$currency->id}}" {{$currency->id == old('country_id') ? 'selected':''}}>{{$currency->name}}</option>
+                                            <option value="{{$currency->id}}" {{$currency->id == old('secondary_currency_id') ? 'selected':''}}>{{$currency->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('secondary_currency_id')

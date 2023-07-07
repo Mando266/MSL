@@ -16,7 +16,7 @@
                     </div>
                     <div class="widget-content widget-content-area">
                         <h3>Booking Reference No: {{ $booking->ref_no }}</h3>
-                        <form action="{{ route('temperature-discrepancy.send-customer') }}" method="POST"
+                        <form action="{{ route('temperature-discrepancy.send') }}" method="POST"
                               id="temperatureForm">
                             @csrf
                             <div class="table-responsive">
@@ -83,7 +83,7 @@
                                                     data-live-search="true" data-size="10"
                                                     multiple="multiple">
                                                 @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->email }}">{{$customer->name}}</option>
+                                                    <option value="{{ $customer->get('emails') }}">{{$customer->get('name')}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -105,8 +105,7 @@
                                         <div class="col-md-10">
                                             <label for="selectedCustomerEmails">Selected Customer Emails:</label>
                                             <textarea class="form-control" id="selectedCustomerEmails"
-                                                      name="customer_email"
-                                                      readonly></textarea>
+                                            ></textarea>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
                                             <button class="btn btn-primary float-right mt-2" id="sendCustomer"
@@ -120,7 +119,6 @@
                                             <label for="selectedServiceProviderEmails"
                                             >Selected Service Provider Emails:</label>
                                             <textarea class="form-control" id="selectedServiceProviderEmails"
-                                                      name="provider_email"
                                             ></textarea>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
@@ -143,55 +141,68 @@
 @push('scripts')
     <script>
         $(document).ready(() => {
-            let customerSelect = $('#customerEmail');
-            let providerSelect = $('#serviceProviderEmail');
+            let customerSelect = $('#customerEmail')
+            let providerSelect = $('#serviceProviderEmail')
 
             const updateSelectedCustomerEmails = () => {
                 const selectedcEmails = customerSelect.val().join('\n');
-                $('#selectedCustomerEmails').val(selectedcEmails);
-            };
+                $('#selectedCustomerEmails').val(selectedcEmails)
+            }
 
             const updateSelectedServiceProviderEmails = () => {
                 const selectedEmails = providerSelect.val().join('\n');
                 $('#selectedServiceProviderEmails').val(selectedEmails);
-            };
+            }
 
             customerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
-                updateSelectedCustomerEmails();
-            });
+                updateSelectedCustomerEmails()
+                removeEmptyLines()
+            })
 
             providerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
-                updateSelectedServiceProviderEmails();
-            });
+                updateSelectedServiceProviderEmails()
+                removeEmptyLines()
+            })
 
-            updateSelectedCustomerEmails();
-            updateSelectedServiceProviderEmails();
+            updateSelectedCustomerEmails()
+            updateSelectedServiceProviderEmails()
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            removeRow();
-            adjustFormAction();
-        });
+            removeRow()
+            setEmailsInput()
+        })
 
         const removeRow = () => {
             const removeButtons = document.querySelectorAll('.remove');
 
             removeButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const row = button.closest('tr');
-                    row.remove();
+                    const row = button.closest('tr')
+                    row.remove()
                 });
             });
         };
 
-        const adjustFormAction = () => {
-            const sendServiceProviderButton = document.getElementById('sendServiceProvider');
-            const temperatureForm = document.getElementById('temperatureForm');
+        const setEmailsInput = () => {
+            document.getElementById('sendServiceProvider').addEventListener('click', () => {
+                document.getElementById('selectedServiceProviderEmails').name = "emails"
+            })
+            document.getElementById('sendCustomer').addEventListener('click', () => {
+                document.getElementById('selectedCustomerEmails').name = "emails"
+            })
+        }
 
-            sendServiceProviderButton.addEventListener('click', () => {
-                temperatureForm.action = "{{ route('temperature-discrepancy.send-provider') }}";
-            });
-        };
+        const removeEmptyLines = () => {
+            let textAreas = document.getElementsByTagName('textarea')
+            
+            Array.from(textAreas).forEach((textarea) => {
+                const lines = textarea.value.split('\n')
+                const nonEmptyLines = lines.filter((line) => line.trim() !== '')
+                textarea.value = nonEmptyLines.join('\n')
+            })
+        }
+        
     </script>
 
 @endpush

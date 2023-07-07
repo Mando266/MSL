@@ -3,27 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Mail\temperatureDiscrepancyMail;
+use App\Services\MailControllerService;
 use Illuminate\Http\Request;
 use Mail;
 
 class MailController extends Controller
 {
-    public function sendMailToCustomer()
+    protected MailControllerService $mailService;
+    
+    public function __construct()
     {
-        dd(request()->all());
+        $this->mailService = new MailControllerService();
     }
 
-    public function sendMailToProvider()
+    public function sendTemperatureDiscrepancyMail()
     {
-        $emails = array_filter(explode("\r\n", request()->provider_email));
-        $data = request()->except(['customer_email', 'provider_email', '_token']);
-        $details = collect();
-
-        for ($i = 0; $i < count($data['container_no']); $i++) {
-            $item = collect($data)->map(fn($values) => $values[$i]);
-            $details->push(collect($item));
-        }
+        $emails = $this->mailService->emailStringToArray(request()->emails);
+        $data = request()->except(['emails', '_token']);
+        $details = $this->mailService->seperateInputByIndex($data);
+        
         Mail::to($emails)->send(new temperatureDiscrepancyMail($details));
-        return redirect()->route('booking.index')->with('message',"Email Sent Successfully!");
+        return redirect()->route('booking.index')->with('success',"Email Sent Successfully!");
     }
 }

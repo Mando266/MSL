@@ -734,7 +734,7 @@ class BookingController extends Controller
             ->with([
                 'booking' => $booking,
                 'bookingContainerDetails' => $booking->bookingContainerDetails,
-                'customers' => Customers::orderBy('name')->get(),
+                'customers' => Customers::getAllCustomersAndContactEmails(),
                 'suppliers' => Suppliers::orderBy('name')->get()
             ]);
     }

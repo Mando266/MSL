@@ -73,7 +73,7 @@ class SuppliersController extends Controller
         }
 
         $this->authorize(__FUNCTION__,Suppliers::class);
-        $supplier->update($request->except('_token'));
+        $supplier->update($request->except('_token','_method'));
         return redirect()->route('suppliers.index')->with('success',trans('supplier.updated.success'));
     }
 

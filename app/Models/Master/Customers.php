@@ -79,4 +79,14 @@ class Customers extends Model implements PermissionSeederContract
             }
         }
     }
+
+    public static function getAllCustomersAndContactEmails(): \Illuminate\Support\Collection
+    {
+        $customers = Customers::orderBy('name')->with('contactPeople')->get();
+        return $customers->map(fn($s) => collect([
+            'emails' => $s->contactPeople->pluck('email')->push(str_replace(' - ', "\r\n", $s->email))->implode("\r\n"),
+            'name' => $s->name
+        ]));
+    }
+
 }
