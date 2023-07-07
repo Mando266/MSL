@@ -47,51 +47,51 @@
                                             <td>{{optional($item->country)->name}}</td>
                                             <td class="text-center">
                                                 @if($item->is_container_depot)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>
                                             <td class="text-center">
                                                 @if($item->is_container_services_provider)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>  
                                             <td class="text-center">
                                                 @if($item->is_container_seller)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>
                                             <td class="text-center">
                                                 @if($item->is_container_trucker)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>                                            
                                             <td class="text-center">
                                                 @if($item->is_container_lessor)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>                                            
                                             <td class="text-center">
                                                 @if($item->is_container_haulage)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>                                            
                                             <td class="text-center">
                                                 @if($item->is_container_terminal)
-                                                <input type="checkbox" checked="checked" readonly>
+                                                <input type="checkbox" checked="checked">
                                                     @else
-                                                    <input type="checkbox" readonly>
+                                                    <input type="checkbox">
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -138,6 +138,15 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener('click', function(event) {
+            event.preventDefault();
+            return false;
+        });
+    });
  
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");

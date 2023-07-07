@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateManifestXmlTable extends Migration
+class CreateContactPeopleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateManifestXmlTable extends Migration
      */
     public function up()
     {
-        Schema::create('manifest_xml', function (Blueprint $table) {
+        Schema::create('contact_people', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('company_id')->nullable();   
-            $table->string('ref_no','255')->nullable();
-            $table->unsignedInteger('voyage_id')->nullable();
-            $table->unsignedInteger('port_id')->nullable();
+            $table->bigInteger('customer_id')->nullable();
+            $table->string('role')->nullable();
+            $table->string('title')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateManifestXmlTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('manifest_xml');
+        Schema::dropIfExists('contact_people');
     }
 }

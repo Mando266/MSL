@@ -126,20 +126,34 @@ Route::group(['middleware' => 'auth'], function () {
     | Booking routes
     |--------------------------------------------
     */
-        Route::prefix('booking')->namespace('Booking')->group(function () {
-        Route::resource('booking','BookingController');
-        Route::get('selectQuotation',[BookingController::class,'selectQuotation'])->name('booking.selectQuotation');
-        Route::get('selectGateOut/{booking}',[BookingController::class,'selectGateOut'])->name('booking.selectGateOut');
-        Route::get('showShippingOrder/{booking}',[BookingController::class,'showShippingOrder'])->name('booking.showShippingOrder');
-        Route::get('deliveryOrder/{booking}',[BookingController::class,'deliveryOrder'])->name('booking.deliveryOrder');
-        Route::get('showGateIn/{booking}',[BookingController::class,'showGateIn'])->name('booking.showGateIn');
-        Route::get('showGateInImport/{booking}',[BookingController::class,'showGateInImport'])->name('booking.showGateInImport');
-        Route::get('selectGateInImport/{booking}',[BookingController::class,'selectGateInImport'])->name('booking.selectGateInImport');
-        Route::get('showGateOut/{booking}',[BookingController::class,'showGateOut'])->name('booking.showGateOut');
-        Route::get('showGateOutImport/{booking}',[BookingController::class,'showGateOutImport'])->name('booking.showGateOutImport');
-        Route::get('referManifest',[BookingController::class,'referManifest'])->name('booking.referManifest');
-        Route::get('selectBooking',[BookingController::class,'selectBooking'])->name('booking.selectBooking');
-        Route::post('importBooking', [ImportExportController::class,'importBooking'])->name('importBooking');
+    Route::prefix('booking')->namespace('Booking')->group(function () {
+        Route::resource('booking', 'BookingController');
+        Route::get('selectQuotation', [BookingController::class, 'selectQuotation'])
+            ->name('booking.selectQuotation');
+        Route::get('selectGateOut/{booking}', [BookingController::class, 'selectGateOut'])
+            ->name('booking.selectGateOut');
+        Route::get('showShippingOrder/{booking}', [BookingController::class, 'showShippingOrder'])
+            ->name('booking.showShippingOrder');
+        Route::get('deliveryOrder/{booking}', [BookingController::class, 'deliveryOrder'])
+            ->name('booking.deliveryOrder');
+        Route::get('showGateIn/{booking}', [BookingController::class, 'showGateIn'])
+            ->name('booking.showGateIn');
+        Route::get('showGateInImport/{booking}', [BookingController::class, 'showGateInImport'])
+            ->name('booking.showGateInImport');
+        Route::get('selectGateInImport/{booking}', [BookingController::class, 'selectGateInImport'])
+            ->name('booking.selectGateInImport');
+        Route::get('showGateOut/{booking}', [BookingController::class, 'showGateOut'])
+            ->name('booking.showGateOut');
+        Route::get('showGateOutImport/{booking}', [BookingController::class, 'showGateOutImport'])
+            ->name('booking.showGateOutImport');
+        Route::get('referManifest', [BookingController::class, 'referManifest'])
+            ->name('booking.referManifest');
+        Route::get('selectBooking', [BookingController::class, 'selectBooking'])
+            ->name('booking.selectBooking');
+        Route::post('importBooking', [ImportExportController::class, 'importBooking'])
+            ->name('importBooking');
+        Route::get('{booking}/temperatureDiscrepancy', [BookingController::class, 'temperatureDiscrepancy'])
+            ->name('temperature-discrepancy');
     });
     /*
     |-------------------------------------------
@@ -222,4 +236,10 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 Auth::routes(['register' => false]);
+
+Route::get('/migrate-tables', function () {
+    Artisan::call('migrate');
+});
+
+require 'mail.php';
 
