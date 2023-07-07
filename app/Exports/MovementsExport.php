@@ -12,6 +12,7 @@ use App\Models\Master\ContainersTypes;
 use App\Models\Master\Vessels;
 use App\Models\Voyages\Voyages;
 use App\Models\Master\Ports;
+use App\Models\Booking\Booking;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
@@ -72,6 +73,7 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->pol_id = Ports::where('id',$movement->pol_id)->pluck('code')->first();
                     $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
                     $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
+                    $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                     //dd($movement->container->containersOwner->name);
                 }
             

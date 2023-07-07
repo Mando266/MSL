@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\BlDraft\PDFController;
+use App\Http\Controllers\XML\XmlController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
@@ -223,6 +224,15 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::prefix('lessor')->namespace('Master')->group(function () {
         Route::resource('seller','LessorSellerController');
+    });
+    /*
+    |-------------------------------------------
+    | Manifest XML
+    |--------------------------------------------
+    */
+    Route::prefix('xml')->namespace('XML')->group(function () {
+        Route::resource('xml','XmlController');
+        Route::get('selectManifest',[XmlController::class,'selectManifest'])->name('xml.selectManifest');
     });
 });
 Auth::routes(['register' => false]);
