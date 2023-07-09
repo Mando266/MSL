@@ -66,8 +66,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Ref No</th>
-                                        <th>Bl Ref No</th>
                                         <th>Voyage</th>
+                                        <th>BL No</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>

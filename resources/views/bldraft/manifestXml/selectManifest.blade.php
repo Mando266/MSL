@@ -19,14 +19,14 @@
                             @csrf
                         <div class="form-row">
                             <div class="form-group col-md-7">
-                                <label for="bldraft">Select BL Manifest</label>
-                                <select class="selectpicker form-control" id="bldraft" name="bl_id" data-live-search="true" data-size="10"
+                                <label for="bldraft">Select Voyage Manifest</label>
+                                <select class="selectpicker form-control" id="bldraft" name="voyage_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
-                                    @foreach ($bldrafts as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('bl_id') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->voyage_no}}</option>
                                     @endforeach
                                 </select>
-                                @error('bl_id')
+                                @error('voyage_id')
                                 <div style="color:red;">
                                     {{$message}}
                                 </div>

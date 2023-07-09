@@ -245,12 +245,20 @@
                     </table>
                     @endforeach
                 <div class="row">
-                        <div class="col-md-12 text-center">
-                <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Manifest</button>
-                <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
+                    <div class="col-md-12 text-center">
+                        @if($xml)
+                        <form id="createForm" action="{{route('xml.store')}}" method="POST">
+                            @csrf
+                            <input type="hidden" value="{{$voyage}}" name="voyage_id">
+                            <button type="submit" class="btn btn-primary hide mt-3">Download Manifest XML</button>
+                        </form>
+                        <a href="{{route('xml.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
+                        @else
+                        <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Manifest</button>
+                        <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
+                        @endif
+                    </div>
                 </div>
-    
-</div>
 </div>
 </div>
 </div>
