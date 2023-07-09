@@ -13,10 +13,10 @@ class AddLeaserOperatorToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('lessor_id')->default(0);
-            $table->string('operator_id')->default(0);
-        });
+//        Schema::table('users', function (Blueprint $table) {
+//            $table->string('lessor_id')->default(0);
+//            $table->string('operator_id')->default(0);
+//        });
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\ContactPerson;
 use App\Models\Invoice\CreditNote;
 use App\Models\Invoice\Invoice;
 use App\Models\Receipt\Receipt;
@@ -48,6 +49,11 @@ class Customers extends Model implements PermissionSeederContract
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
+    
+    public function contactPeople()
+    {
+        return $this->hasMany(ContactPerson::class, 'customer_id');
+    }
 
     public function scopeUserCustomers($query){
         if(is_null(Auth::user()->company_id))
@@ -73,4 +79,14 @@ class Customers extends Model implements PermissionSeederContract
             }
         }
     }
+
+    public static function getAllCustomersAndContactEmails(): \Illuminate\Support\Collection
+    {
+        $customers = Customers::orderBy('name')->with('contactPeople')->get();
+        return $customers->map(fn($s) => collect([
+            'emails' => $s->contactPeople->pluck('email')->push(str_replace(' - ', "\r\n", $s->email))->implode("\r\n"),
+            'name' => $s->name
+        ]));
+    }
+
 }
