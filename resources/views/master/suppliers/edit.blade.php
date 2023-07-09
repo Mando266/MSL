@@ -41,7 +41,7 @@
                                     <select class="selectpicker form-control" id="countryInput" data-live-search="true"
                                             name="country_id" data-size="10"
                                             title="{{ trans('forms.select') }}">
-                                        @foreach ($countries as $item)
+                                        @foreach ($countries ?? [] as $item)
                                             <option value="{{ $item->id }}" {{ $item->id == old('country_id', $supplier->country_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
