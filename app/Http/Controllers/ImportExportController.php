@@ -104,7 +104,7 @@ class ImportExportController extends Controller
 
     public function exportSearch()
     {
-        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'itemssss');
+        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'items');
     }
 
     public function agentSearch()
