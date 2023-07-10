@@ -48,10 +48,10 @@
                                                        title="{{ $detail->haz }}" readonly>
                                             </td>
                                             <td>
-                                                <input type="date" class="form-control" name="gateInDate[]">
+                                                <input type="date" class="form-control" name="gateInDate[]" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" name="tempDiff[]">
+                                                <input type="text" class="form-control" name="tempDiff[]" required>
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" name="mainLaneNo[]">
@@ -83,7 +83,9 @@
                                                     data-live-search="true" data-size="10"
                                                     multiple="multiple">
                                                 @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->get('emails') }}">{{$customer->get('name')}}</option>
+                                                    @if(in_array($customer->get('name') ,[optional($booking->customer)->name,optional($booking->forwarder)->name]))
+                                                        <option value="{{ $customer->get('emails') }}">{{$customer->get('name')}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -96,7 +98,7 @@
                                                     data-live-search="true" data-size="10"
                                                     multiple="multiple">
                                                 @foreach ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->email }}">{{$supplier->name}}</option>
+                                                    <option value="{{ $supplier->get('emails') }}">{{$supplier->get('name')}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -108,9 +110,7 @@
                                             ></textarea>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
-                                            <button class="btn btn-primary float-right mt-2" id="sendCustomer"
-                                                    value="sendCustomer" type="submit">Send Customer Email
-                                            </button>
+                                            <input class="form-control w-25" id="checkboxCustomers" type="checkbox">
                                         </div>
                                     </div>
 
@@ -122,11 +122,22 @@
                                             ></textarea>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
-                                            <button class="btn btn-primary float-right mt-2" id="sendServiceProvider"
-                                                    value="sendServiceProvider" type="submit"
-                                            >Send Service Provider Email
-                                            </button>
+                                            <input class="form-control w-25" id="checkboxProviders" type="checkbox">
                                         </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-10">
+                                            <label for="selectedServiceProviderEmails"
+                                            >cc:</label>
+                                            <textarea class="form-control" id="ccEmails" name="ccEmails"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button class="btn btn-primary" id="sendEmails"
+                                                value="sendServiceProvider" type="submit"
+                                        >Send Emails
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -185,24 +196,30 @@
         };
 
         const setEmailsInput = () => {
-            document.getElementById('sendServiceProvider').addEventListener('click', () => {
-                document.getElementById('selectedServiceProviderEmails').name = "emails"
-            })
-            document.getElementById('sendCustomer').addEventListener('click', () => {
-                document.getElementById('selectedCustomerEmails').name = "emails"
-            })
-        }
+            const toggleEmailInput = (elementId) => {
+                const emailInput = document.getElementById(elementId);
+                emailInput.name = (emailInput.name === "emails[]") ? "" : "emails[]";
+            };
+
+            document.getElementById('checkboxProviders').addEventListener('change', () => {
+                toggleEmailInput('selectedServiceProviderEmails');
+            });
+
+            document.getElementById('checkboxCustomers').addEventListener('change', () => {
+                toggleEmailInput('selectedCustomerEmails');
+            });
+        };
 
         const removeEmptyLines = () => {
             let textAreas = document.getElementsByTagName('textarea')
-            
+
             Array.from(textAreas).forEach((textarea) => {
                 const lines = textarea.value.split('\n')
                 const nonEmptyLines = lines.filter((line) => line.trim() !== '')
                 textarea.value = nonEmptyLines.join('\n')
             })
         }
-        
+
     </script>
 
 @endpush

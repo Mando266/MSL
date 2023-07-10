@@ -4,6 +4,13 @@ namespace App\Services;
 
 class MailControllerService
 {
+
+    function emailInputToArray(array $emails)
+    {
+        $emails = implode("\r\n", $emails);
+        return $this->emailStringToArray($emails);
+    }
+    
     function emailStringToArray(string $emails = "")
     {
         return array_filter(explode("\r\n", $emails));

@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Traits\HasContactPeople;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -13,6 +14,7 @@ class Suppliers extends Model implements PermissionSeederContract
     protected $table = 'suppliers';
     protected $guarded = [];
 
+    use HasContactPeople;
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[

@@ -103,7 +103,7 @@ class CustomersController extends Controller
             'company_id'=>$user->company_id,
             'customer_kind'=>$request->input('customer_kind'),
         ]);
-        $this->storeContactPeople($customers);
+        $customers->storeContactPeople(request()->contactPeople);
         foreach($request->input('customerRole',[]) as $customerRole){
             CustomerRoles::create([
                 'customer_id'=>$customers->id,
@@ -157,7 +157,7 @@ class CustomersController extends Controller
 
     public function update(Request $request, Customers $customer)
     {
-        $this->storeContactPeople($customer);
+        $customer->storeContactPeople(request()->contactPeople);
         if ($request->input('customer_kind') == 1){
         $request->validate([ 
             'name' => 'required', 
@@ -207,29 +207,4 @@ class CustomersController extends Controller
         return redirect()->route('customers.index')->with('success',trans('customer.deleted.success'));
     }
 
-    /**
-     * @param $customer
-     * @return void
-     */
-    public function storeContactPeople($customer = null): void
-    {
-        $data = request()->contactPeople;
-        $contactPeople = collect();
-        foreach ($data['role'] ?? [] as $k => $v) {
-            $item = array_map(fn($values) => $values[$k] ?? null, $data);
-            $contactPeople->push($item);
-        }
-
-        if ($customer->contactPeople) {
-            $customer->contactPeople()->delete();
-        }
-
-        foreach ($contactPeople->filter() as $person) {
-            $isEmpty = empty(array_filter($person, fn($s) => $s != null));
-            if (!$isEmpty) {
-                $person['customer_id'] = $customer->id;
-                ContactPerson::create($person);
-            }
-        }
-    }
 }

@@ -730,13 +730,20 @@ class BookingController extends Controller
 
     public function temperatureDiscrepancy(Booking $booking)
     {
+        $customers = Customers::allWithContactEmails(fn($q) => $q->orderBy('name'));
+        $suppliers = Suppliers::allWithContactEmails(
+            fn($q) => $q->where('is_container_depot', true)
+                ->orWhere('is_container_services_provider', true)
+                ->orderBy('name')
+        );
+
         return view('booking.booking.temperatureDiscrepancy')
             ->with([
                 'booking' => $booking,
                 'bookingContainerDetails' => $booking->bookingContainerDetails,
-                'customers' => Customers::getAllCustomersAndContactEmails(),
-                'suppliers' => Suppliers::orderBy('name')->get()
+                'customers' => $customers,
+                'suppliers' => $suppliers
             ]);
     }
-    
+
 }

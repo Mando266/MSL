@@ -18,11 +18,12 @@ class MailController extends Controller
 
     public function sendTemperatureDiscrepancyMail()
     {
-        $emails = $this->mailService->emailStringToArray(request()->emails);
+        $ccEmails = $this->mailService->emailStringToArray(request()->ccEmails);
+        $emails = $this->mailService->emailInputToArray(request()->emails);
         $data = request()->except(['emails', '_token']);
         $details = $this->mailService->seperateInputByIndex($data);
         
-        Mail::to($emails)->send(new temperatureDiscrepancyMail($details));
+        Mail::to($emails)->cc($ccEmails)->send(new temperatureDiscrepancyMail($details));
         return redirect()->route('booking.index')->with('success',"Email Sent Successfully!");
     }
 }

@@ -11,14 +11,18 @@ use Illuminate\Support\Facades\Auth;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
+use App\Traits\HasContactPeople;
 use App\User;
 
 class Customers extends Model implements PermissionSeederContract
 {
     protected $table = 'customers';
     protected $guarded = [];
+    
     use HasFilter;
     use PermissionSeederTrait;
+    use HasContactPeople;
+    
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
             'List',
@@ -50,10 +54,6 @@ class Customers extends Model implements PermissionSeederContract
         return $this->belongsto(Company::class,'company_id','id');
     }
     
-    public function contactPeople()
-    {
-        return $this->hasMany(ContactPerson::class, 'customer_id');
-    }
 
     public function scopeUserCustomers($query){
         if(is_null(Auth::user()->company_id))
@@ -80,13 +80,6 @@ class Customers extends Model implements PermissionSeederContract
         }
     }
 
-    public static function getAllCustomersAndContactEmails(): \Illuminate\Support\Collection
-    {
-        $customers = Customers::orderBy('name')->with('contactPeople')->get();
-        return $customers->map(fn($s) => collect([
-            'emails' => $s->contactPeople->pluck('email')->push(str_replace(' - ', "\r\n", $s->email))->implode("\r\n"),
-            'name' => $s->name
-        ]));
-    }
+
 
 }

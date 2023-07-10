@@ -144,11 +144,13 @@
                                 <div class="form-group col-md-4">
                                     <label for="supplierTypeInput">Supplier Type</label>
                                     <div>
+                                        <input type="hidden" name="is_container_depot" value="0">
                                         <input type="checkbox" id="isContainerDepotInput" name="is_container_depot"
                                                value="1" {{ !$supplier->is_container_depot ?: 'checked' }}>
                                         <label for="isContainerDepotInput">Container Depot</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_services_provider" value="0">
                                         <input type="checkbox" id="isContainerServicesProviderInput"
                                                name="is_container_services_provider"
                                                value="1" {{ !$supplier->is_container_services_provider ?: 'checked' }}>
@@ -156,26 +158,31 @@
                                             Provider</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_seller" value="0">
                                         <input type="checkbox" id="isContainerSellerInput" name="is_container_seller"
                                                value="1" {{ !$supplier->is_container_seller ?: 'checked' }}>
                                         <label for="isContainerSellerInput">Container Seller</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_trucker" value="0">
                                         <input type="checkbox" id="isContainerTruckerInput" name="is_container_trucker"
                                                value="1" {{ !$supplier->is_container_trucker ?: 'checked' }}>
                                         <label for="isContainerTruckerInput">Container Trucker</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_lessor" value="0">
                                         <input type="checkbox" id="isContainerLessorInput" name="is_container_lessor"
                                                value="1" {{ !$supplier->is_container_lessor ?: 'checked' }}>
                                         <label for="isContainerLessorInput">Container Lessor</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_haulage" value="0">
                                         <input type="checkbox" id="isContainerHaulageInput" name="is_container_haulage"
                                                value="1" {{ !$supplier->is_container_haulage ?: 'checked' }}>
                                         <label for="isContainerHaulageInput">Container Haulage</label>
                                     </div>
                                     <div>
+                                        <input type="hidden" name="is_container_terminal" value="0">
                                         <input type="checkbox" id="isContainerTerminalInput"
                                                name="is_container_terminal"
                                                value="1" {{ !$supplier->is_container_terminal ?: 'checked' }}>
@@ -188,7 +195,46 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            <h3>Contact Persons</h3>
+                            <table id="contact-person-table" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Role</th>
+                                    <th>Title</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>
+                                        <a id="add-contact-person"> Add <i class="fas fa-plus"></i></a>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($contactPeople ?? [] as $item)
+                                    <tr>
+                                        <td>
+                                            <input class="form-control" name="contactPeople[role][]"
+                                                   value="{{ $item->role }}">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" name="contactPeople[title][]"
+                                                   value="{{ $item->title }}">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" name="contactPeople[phone][]"
+                                                   value="{{ $item->phone }}">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="email" name="contactPeople[email][]"
+                                                   value="{{ $item->email }}">
+                                        </td>
+                                        <td style="width:85px;">
+                                            <button type="button" class="btn btn-danger removeContact"><i
+                                                        class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit"
@@ -207,3 +253,6 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    @include('master.customers._contact_people_js')
+@endpush

@@ -243,6 +243,7 @@
                                 @enderror
                             </div>
                     </div>
+                    <h3>Contact Persons</h3>
                     <table id="contact-person-table" class="table table-bordered">
                         <thead>
                         <tr>
@@ -295,7 +296,7 @@
 </div>
 @endsection
 @push('scripts')
-    @include('master.customers._js')
+    @include('master.customers._contact_people_js')
 <script>
       $(document).ready(function(){
         $("#customerRole").on("click", ".remove", function () {
