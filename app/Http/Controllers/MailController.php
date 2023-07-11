@@ -23,7 +23,6 @@ class MailController extends Controller
         $data = request()->except(['emails', '_token', 'ccEmails']);
         $details = $this->mailService->seperateInputByIndex($data);
         
-        dd($ccEmails, $emails, $details);
         Mail::to($emails)->cc($ccEmails)->send(new temperatureDiscrepancyMail($details));
         return redirect()->route('booking.index')->with('success',"Email Sent Successfully!");
     }
