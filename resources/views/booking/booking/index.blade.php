@@ -198,6 +198,7 @@
                         <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                <button type="button" id="reset-select" class="btn btn-info mt-3">Reset</button>
                                 <a href="{{route('booking.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
@@ -427,6 +428,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
 
+    $(document).ready(function () {
+        document.getElementById('reset-select').addEventListener('click',() => {
+            $("option:selected").remove()
+            $('.selectpicker').selectpicker('refresh')
+        })
+    });
+    
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
