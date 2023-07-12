@@ -133,7 +133,7 @@ class BookingController extends Controller
                 $quotation->discharge_port_id
             )->get();
         }
-        // dd($quotation);
+        
         $agents = Agents::where('company_id', Auth::user()->company_id)->where('is_active', 1)->get();
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal = Terminals::where('company_id', Auth::user()->company_id)->get();
@@ -148,7 +148,7 @@ class BookingController extends Controller
                 }
             )->get();
         }
-        // dd($voyages);
+
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
             'activityLocation',

@@ -353,6 +353,8 @@ class BlDraftController extends Controller
         return view('bldraft.bldraft.serviceManifest',[
             'blDraft'=>$blDraft,
             'voyage'=>request()->voyage ?? '',
+            'loadPort'=>request()->loadPort ?? null,
+            'dischargePort'=>request()->dischargePort ?? null,
             'xml'=>$xml,
             'etdvoayege'=>$etdvoayege
 

@@ -250,6 +250,12 @@
                         <form id="createForm" action="{{route('xml.store')}}" method="POST">
                             @csrf
                             <input type="hidden" value="{{$voyage}}" name="voyage_id">
+                            @isset($loadPort)
+                            <input type="hidden" value="{{$loadPort}}" name="loadPort">
+                            @endisset
+                            @isset($dischargePort)
+                            <input type="hidden" value="{{$dischargePort}}" name="dischargePort">
+                            @endisset
                             <button type="submit" class="btn btn-primary hide mt-3">Download Manifest XML</button>
                         </form>
                         <a href="{{route('xml.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>

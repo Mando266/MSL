@@ -57,6 +57,21 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-4">
+                                <label for="countryInput">Country *</label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true"
+                                        name="country_id" data-size="10"
+                                        title="{{ trans('forms.select') }}" required>
+                                    @foreach ($countries ?? [] as $item)
+                                        <option value="{{ $item->id }}" {{ $item->id == old('country_id', $line->country_id ?? '') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
 
                        <div class="row">
