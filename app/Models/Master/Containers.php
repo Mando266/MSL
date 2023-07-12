@@ -28,11 +28,13 @@ class Containers extends Model implements PermissionSeederContract
 
     protected static function booted(): void
     {
-        $lessor_id = auth()->user()->lessor_id;
-        if ($lessor_id != 0) {
-            static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
-                $builder->where('description', $lessor_id);
-            });
+        if (!app()->runningInConsole() && !request()->is('api/*')) {
+            $lessor_id = auth()->user()->lessor_id;
+            if ($lessor_id != 0) {
+                static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
+                    $builder->where('description', $lessor_id);
+                });
+            }
         }
     }
     
