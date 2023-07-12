@@ -19,6 +19,7 @@ class CreateManifestXmlTable extends Migration
             $table->string('ref_no','255')->nullable();
             $table->unsignedInteger('voyage_id')->nullable();
             $table->unsignedInteger('port_id')->nullable();
+            $table->unsignedInteger('is_load_port')->nullable();
             $table->timestamps();
         });
     }

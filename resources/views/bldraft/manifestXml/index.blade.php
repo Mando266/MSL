@@ -75,9 +75,13 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ $item->ref_no }}</td>
+                                            <td>{{ $item->voyage->voyage_no }}</td>
+                                            <td>
+                                                @foreach($item->voyage->bldrafts as $bldraft)
+                                                    {{$bldraft->ref_no}} <br>
+                                                @endforeach
+                                            </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                     @permission('xml-Show')

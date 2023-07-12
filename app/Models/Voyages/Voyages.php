@@ -4,6 +4,7 @@ namespace App\Models\Voyages;
 
 use App\Models\Bl\BlDraft;
 use App\Models\Containers\Movements;
+use App\Models\Master\Lines;
 use App\Models\Master\Vessels;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
