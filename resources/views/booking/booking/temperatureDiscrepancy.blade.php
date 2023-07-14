@@ -152,31 +152,48 @@
 @push('scripts')
     <script>
         $(document).ready(() => {
-            let customerSelect = $('#customerEmail')
-            let providerSelect = $('#serviceProviderEmail')
+            let customerSelect = $('#customerEmail');
+            let providerSelect = $('#serviceProviderEmail');
+            let sendEmailsButton = $('#sendEmails');
 
             const updateSelectedCustomerEmails = () => {
                 const selectedcEmails = customerSelect.val().join('\n');
-                $('#selectedCustomerEmails').val(selectedcEmails)
-            }
+                $('#selectedCustomerEmails').val(selectedcEmails);
+            };
 
             const updateSelectedServiceProviderEmails = () => {
                 const selectedEmails = providerSelect.val().join('\n');
                 $('#selectedServiceProviderEmails').val(selectedEmails);
-            }
+            };
 
-            customerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
-                updateSelectedCustomerEmails()
-                removeEmptyLines()
-            })
+            const validateForm = () => {
+                const isCustomerChecked = $('#checkboxCustomers').is(':checked');
+                const isProviderChecked = $('#checkboxProviders').is(':checked');
 
-            providerSelect.on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
-                updateSelectedServiceProviderEmails()
-                removeEmptyLines()
-            })
+                if (!isCustomerChecked && !isProviderChecked) {
+                    alert('Please select at least one checkbox next to the emails.');
+                    return false;
+                }
 
-            updateSelectedCustomerEmails()
-            updateSelectedServiceProviderEmails()
+                return true;
+            };
+
+            customerSelect.on('changed.bs.select', () => {
+                updateSelectedCustomerEmails();
+                removeEmptyLines();
+            });
+
+            providerSelect.on('changed.bs.select', () => {
+                updateSelectedServiceProviderEmails();
+                removeEmptyLines();
+            });
+
+            sendEmailsButton.on('click', () => {
+                return validateForm();
+            });
+
+            updateSelectedCustomerEmails();
+            updateSelectedServiceProviderEmails();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
