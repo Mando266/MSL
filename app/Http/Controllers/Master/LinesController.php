@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\Country;
 use Illuminate\Http\Request;
 use App\Models\Master\Lines;
 use App\Models\Master\LinesType;
@@ -28,6 +29,7 @@ class LinesController extends Controller
         $line_types = LinesType::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         return view('master.lines.create',[
             'line_types'=>$line_types,
+            'countries' => Country::orderBy('name')->get(),
         ]); 
     }
 
@@ -37,6 +39,7 @@ class LinesController extends Controller
         $request->validate([ 
             'code' => 'required', 
             'name' => 'required', 
+            'country_id' => 'required'
         ]);
         $user = Auth::user();
 
@@ -78,6 +81,7 @@ class LinesController extends Controller
             'types'=>$types,
             'line'=>$line,
             'line_types'=>$line_types,
+            'countries' => Country::orderBy('name')->get()
         ]);     
     }
 
@@ -85,6 +89,12 @@ class LinesController extends Controller
     {
         $user = Auth::user();
 
+        $request->validate([
+            'code' => 'required',
+            'name' => 'required',
+            'country_id' => 'required'
+        ]);
+        
         $CodeDublicate  = Lines::where('id','!=',$line->id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
         if($CodeDublicate > 0){
             return back()->with('alert','This Line Code Already Exists');

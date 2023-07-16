@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddLeaserOperatorToUsersTable extends Migration
+class AddXmlRefNoToSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddLeaserOperatorToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('lessor_id')->default(0);
-            $table->string('operator_id')->default(0);
+        Schema::table('settings', function (Blueprint $table) {
+            $table->integer('xml_ref_no')->nullable();
         });
     }
 
@@ -26,9 +25,8 @@ class AddLeaserOperatorToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('lessor_id');
-            $table->dropColumn('operator_id');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('xml_ref_no');
         });
     }
 }

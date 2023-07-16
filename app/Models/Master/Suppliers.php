@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Traits\HasContactPeople;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -13,6 +14,7 @@ class Suppliers extends Model implements PermissionSeederContract
     protected $table = 'suppliers';
     protected $guarded = [];
 
+    use HasContactPeople;
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
@@ -23,19 +25,27 @@ class Suppliers extends Model implements PermissionSeederContract
         ]);
     }
 
-    public function country (){
-        return $this->belongsto(Country::class,'country_id','id');
+    public function country()
+    {
+        return $this->belongsto(Country::class, 'country_id', 'id');
     }
-    public function company (){
-        return $this->belongsto(Company::class,'company_id','id');
+
+    public function company()
+    {
+        return $this->belongsto(Company::class, 'company_id', 'id');
     }
-    public function scopeUserSuppliers($query){
-        if(is_null(Auth::user()->company_id))
-        {
+
+    public function currency()
+    {
+        return $this->hasOne(Currency::class);
+    }
+
+    public function scopeUserSuppliers($query)
+    {
+        if (is_null(Auth::user()->company_id)) {
             $query;
-        }else{
-            $query->where('company_id',Auth::user()->company_id);
+        } else {
+            $query->where('company_id', Auth::user()->company_id);
         }
-    
     }
 }

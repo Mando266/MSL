@@ -34,6 +34,12 @@ class Lines extends Model implements PermissionSeederContract
     public function types(){
         return $this->hasMany(LinesWithType::class,'line_id','id');
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+    
     public function scopeUserLines($query){
         if(is_null(Auth::user()->company_id))
         {

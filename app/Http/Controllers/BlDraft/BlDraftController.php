@@ -345,13 +345,17 @@ class BlDraftController extends Controller
 
             ]);
     }
-    public function serviceManifest($id)
+    public function serviceManifest($id,$xml = false)
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
         $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
-
+        
         return view('bldraft.bldraft.serviceManifest',[
             'blDraft'=>$blDraft,
+            'voyage'=>request()->voyage ?? '',
+            'loadPort'=>request()->loadPort ?? null,
+            'dischargePort'=>request()->dischargePort ?? null,
+            'xml'=>$xml,
             'etdvoayege'=>$etdvoayege
 
             ]);

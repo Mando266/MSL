@@ -25,7 +25,7 @@
                     </br>
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            {{-- <div class="form-group col-md-6">
                                 <label for="Refrance">Bl Number </label>
                                 <select class="selectpicker form-control" id="Refrance" data-live-search="true" name="ref_no" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -33,7 +33,7 @@
                                         <option value="{{$item->ref_no}}" {{$item->ref_no == old('ref_no',request()->input('ref_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
  
                             <div class="form-group col-md-6">
                                 <label for="voyage_id">Vessel / Voyage </label>
@@ -55,7 +55,7 @@
                         <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
-                                <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                <a href="{{route('xml.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
                     </form> 
@@ -66,8 +66,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Ref No</th>
-                                        <th>Bl Ref No</th>
                                         <th>Voyage</th>
+                                        <th>BL No</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -75,9 +75,13 @@
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ $item->ref_no }}</td>
+                                            <td>{{ $item->voyage->voyage_no }}</td>
+                                            <td>
+                                                @foreach($item->voyage->bldrafts as $bldraft)
+                                                    {{$bldraft->ref_no}} <br>
+                                                @endforeach
+                                            </td>
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                     @permission('xml-Show')

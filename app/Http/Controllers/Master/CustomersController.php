@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\ContactPerson;
 use App\Filters\User\UserIndexFilter;
 use App\Models\Master\Country;
 use App\Models\Master\CustomerRoles;
@@ -48,7 +49,6 @@ class CustomersController extends Controller
 
     public function store(Request $request)
     {
-       // dd(request()->input());
         $this->authorize(__FUNCTION__,Customers::class);
         if ($request->input('customer_kind') == 1){
         $request->validate([ 
@@ -103,6 +103,7 @@ class CustomersController extends Controller
             'company_id'=>$user->company_id,
             'customer_kind'=>$request->input('customer_kind'),
         ]);
+        $customers->storeContactPeople(request()->contactPeople);
         foreach($request->input('customerRole',[]) as $customerRole){
             CustomerRoles::create([
                 'customer_id'=>$customers->id,
@@ -150,11 +151,13 @@ class CustomersController extends Controller
             'users'=>$users,
             'currency'=>$currency,
             'customer_role_id'=>$customer_role_id,
+            'contactPeople' => $customer->contactPeople
         ]); 
     }
 
     public function update(Request $request, Customers $customer)
     {
+        $customer->storeContactPeople(request()->contactPeople);
         if ($request->input('customer_kind') == 1){
         $request->validate([ 
             'name' => 'required', 
@@ -184,8 +187,7 @@ class CustomersController extends Controller
             return back()->with('alert','Customer Name Already Exists');
         }
         $this->authorize(__FUNCTION__,Customers::class);
-        $inputs = request()->all();
-        unset($inputs['customerRole'],$inputs['_token'],$inputs['removed']);
+        $inputs = request()->except('customerRole', 'contactPeople', '_token', 'removed');
         $customer->update($inputs);
         CustomerRoles::destroy(explode(',',$request->removed));
         $customer->createOrUpdateRoles($request->customerRole);
@@ -204,4 +206,5 @@ class CustomersController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with('success',trans('customer.deleted.success'));
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Models\Voyages\VoyagePorts;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -22,6 +23,10 @@ class Ports extends Model implements PermissionSeederContract
             'Edit',
             'Delete' 
         ]);
+    }
+    public function voyagePorts()
+    {
+        return $this->hasMany(VoyagePorts::class ,'port_from_name','id');
     }
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');

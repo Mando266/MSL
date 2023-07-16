@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AgentCountry;
 use App\Http\Controllers\API\BlDraftController;
 use App\Http\Controllers\API\CompanyDataController;
 use App\Http\Controllers\API\CountriesController;
+use App\Http\Controllers\API\PortController;
 use App\Http\Controllers\API\PriceController;
 use App\Http\Controllers\API\StorageContainersController;
 use App\Models\Master\Company;
@@ -49,3 +50,4 @@ Route::get('master/invoicesCustomers/{id}', [CompanyDataController::class, 'cust
 Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'containers']);
 Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
 Route::get('storage/triffs/{service}/{company_id}', [StorageContainersController::class, 'getStorageTriffs']);
+Route::get('/get-ports', [PortController::class, 'getPorts'])->name('api.get-ports');

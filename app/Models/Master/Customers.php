@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\ContactPerson;
 use App\Models\Invoice\CreditNote;
 use App\Models\Invoice\Invoice;
 use App\Models\Receipt\Receipt;
@@ -10,14 +11,18 @@ use Illuminate\Support\Facades\Auth;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
+use App\Traits\HasContactPeople;
 use App\User;
 
 class Customers extends Model implements PermissionSeederContract
 {
     protected $table = 'customers';
     protected $guarded = [];
+    
     use HasFilter;
     use PermissionSeederTrait;
+    use HasContactPeople;
+    
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
             'List',
@@ -48,6 +53,7 @@ class Customers extends Model implements PermissionSeederContract
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
+    
 
     public function scopeUserCustomers($query){
         if(is_null(Auth::user()->company_id))
@@ -73,4 +79,7 @@ class Customers extends Model implements PermissionSeederContract
             }
         }
     }
+
+
+
 }

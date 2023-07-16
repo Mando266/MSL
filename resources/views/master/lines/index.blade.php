@@ -29,7 +29,7 @@
                                         <th>Name</th>
                                         <th>Code</th>
                                         <th>Line Type</th>
-
+                                        <th>Country</th>
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
@@ -46,7 +46,7 @@
                                                 @endforeach
                                                 </ul>
                                             </td>
-
+                                            <td>{{$item->country->name ?? ''}}</td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Lines-Edit')

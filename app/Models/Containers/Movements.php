@@ -50,7 +50,7 @@ class Movements extends Model implements PermissionSeederContract
 
     protected static function booted()
     {
-        if (!app()->runningInConsole()) {
+        if (!app()->runningInConsole() && !request()->is('api/*')) {
             $lessor_id = (int)auth()->user()->lessor_id;
             $operator_id = (int)auth()->user()->operator_id;
             if ($lessor_id != 0) {
