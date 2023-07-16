@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\Voyages\Voyages;
 use App\Models\Voyages\Legs;
 use App\Models\Master\Ports;
+use App\Models\Booking\Booking;
 
 
 class MovementsImport implements ToModel,WithHeadingRow
@@ -43,6 +44,7 @@ class MovementsImport implements ToModel,WithHeadingRow
         $activitylocation = $row['port_location_id'];
         $pol = $row['pol_id'];
         $pod = $row['pod_id'];
+        $booking = $row['booking_no'];
 
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         $row['leg'] = Legs::where('name',$row['leg'])->pluck('id')->first();
@@ -83,6 +85,10 @@ class MovementsImport implements ToModel,WithHeadingRow
             
             return session()->flash('message',"This POD Code: {$pod} Not found");
         }
+        if(!$row['booking_no']){
+            
+            return session()->flash('message',"This Booking NO: {$booking} Not found");
+        }
         try {
             // code that triggers a pdo exception
             $dateConvertion = Date::excelToDateTimeObject($row['movement_date'])->format('Y-m-d');
@@ -119,7 +125,8 @@ class MovementsImport implements ToModel,WithHeadingRow
         $row['vessel_id'] = Vessels::where('name',$row['vessel_id'])->where('company_id',Auth::user()->company_id)->pluck('id')->first();
         $row['booking_agent_id'] = Agents::where('name',$row['booking_agent_id'])->pluck('id')->first();
         $row['import_agent'] = Agents::where('name',$row['import_agent'])->pluck('id')->first();
-
+        $row['booking_no'] = Booking::where('ref_no',$row['booking_no'])->pluck('id')->first();
+        
         if(!$row['movement_id']){
             
             return session()->flash('message',"This Movement Code: {$movementCode} Not found ");

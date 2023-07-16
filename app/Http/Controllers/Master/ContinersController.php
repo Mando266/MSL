@@ -30,6 +30,8 @@ class ContinersController extends Controller
             'containers'=>$containers,
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
+
         ]);
     }
 
@@ -42,7 +44,7 @@ class ContinersController extends Controller
         return view('master.containers.create',[
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
-            'sellers' => LessorSeller::all()
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
         ]);
     }
 
@@ -97,8 +99,7 @@ class ContinersController extends Controller
             'container'=>$container,
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
-            'sellers' => LessorSeller::all()
-
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
         ]);
 
     }

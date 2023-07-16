@@ -189,7 +189,7 @@
                                  <option value="">Select</option>
                                     @foreach ($bookings as $item)
                                         @if(isset($movement))
-                                        <option value="{{$item->id}}" {{$item->id == old('booking_no') || $item->id == $movement->booking_no ? 'selected':''}}>{{optional($item->booking)->ref_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_no') || $item->id == $movement->booking_no ? 'selected':''}}>{{$item->ref_no}}</option>
                                         @else
                                         <option value="{{$item->id}}" {{$item->id == old('booking_no') ? 'selected':''}}>{{$item->ref_no}}</option>    
                                         @endif

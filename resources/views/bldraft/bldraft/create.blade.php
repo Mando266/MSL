@@ -119,7 +119,7 @@
                         <div class="form-group col-md-4">
                             <label for="customer_id">Additional Notifiy</label>
                             <select class="selectpicker form-control" id="additionalNotifiy" data-live-search="true" name="additional_notify_id" data-size="10"
-                             title="{{trans('forms.select')}}" required>
+                             title="{{trans('forms.select')}}">
                                 @foreach ($customersNotifiy as $item)
                                     <option value="{{$item->id}}" {{$item->id == old('additional_notify_id',isset($blDraft) ? $blDraft->additional_notify_id:'') ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach
@@ -295,13 +295,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
-                                <select class="form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled style="background-color :#fff" > 
-                                    @if(optional($booking->quotation)->ofr != 0)
-                                    <option value="Prepaid" @isset($blDraft){{"Prepaid" == $blDraft->payment_kind?? "selected"}} @endisset>Prepaid </option>
-                                    @else
-                                    <option value="Collect" @isset($blDraft){{"Collect" == $blDraft->payment_kind?? "selected"}} @endisset>Collect</option>
-                                    @endif
-                                </select>
+                                    <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{optional($booking->quotation)->payment_kind}}" disabled>
                                 @error('bl_kind')
                                 <div style="color:red;">
                                     {{$message}}
@@ -472,6 +466,11 @@
 <script>
     $('#createForm').submit(function() {
         $('select').removeAttr('disabled');
+    });
+</script>
+<script>
+    $('#createForm').submit(function() {
+        $('input').removeAttr('disabled');
     });
 </script>
 <script>
