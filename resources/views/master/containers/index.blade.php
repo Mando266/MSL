@@ -81,8 +81,12 @@
                             </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Lessor/Seller Refrence</label>
-                                    <input type="text" class="form-control" id="description" name="description" value="{{request()->input('description')}}"
-                                    placeholder="Lessor/Seller Refrence" autocomplete="off">
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($sellers as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('description',request()->input('description')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>

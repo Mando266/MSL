@@ -88,7 +88,7 @@
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
                             </select>
                             @error('voyage_id')
@@ -236,9 +236,15 @@
                                                     @endpermission
                                                     @permission('Booking-Show')
                                                     <li>
+                                                    @if(optional(optional($item->booking)->principal)->code == 'Cstar')
+                                                        <a href="{{route('bldraft.showCstar',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    @else
                                                         <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
+                                                    @endif
                                                     </li>
                                                     @endpermission 
                                                     @permission('BlDraft-Delete')

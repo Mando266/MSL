@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Models\Master\LessorSeller;
 
 
 class ContainersImport implements ToModel, WithHeadingRow
@@ -28,6 +29,8 @@ class ContainersImport implements ToModel, WithHeadingRow
     {
         $containerType = $row['container_type_id'];
         $containerNumber = $row['code'];
+        $seller = $row['description'];
+
         $user = Auth::user();
         $codeIsValid = $this->containerValidator->isValid($containerNumber);
         if (!$codeIsValid) {
@@ -39,7 +42,13 @@ class ContainersImport implements ToModel, WithHeadingRow
         $row['container_ownership_id'] = ContinerOwnership::where('name', $row['container_ownership_id'])->pluck(
             'id'
         )->first();
+        $row['description'] = LessorSeller::where('name', $row['description'])->pluck('id')->first();
 
+        if(!$row['description']){
+            
+            return session()->flash('message',"This Lessor/Seller: {$seller} Not found ");
+        }
+        
         if (!$row['container_type_id']) {
             $this->errors[] = "This Container Type: {$containerType} Not found!!!";
             return session()->flash('message', implode(PHP_EOL, $this->errors));

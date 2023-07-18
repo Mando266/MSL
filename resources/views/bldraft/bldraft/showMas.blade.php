@@ -120,7 +120,7 @@
                             <tr>
                                 <td class="col-md-4 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;" colspan="2"></td>
                                 <td class="col-md-4 tableStyle text-center" style="border-top-style: hidden; border-bottom-style: hidden;">
-                                    <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; overflow: hidden; height: 355px; width: 455px; padding-bottom: unset; resize: none; background-color: white;" cols="30" rows="18" readonly>
+                                    <textarea class="tableStyle" name="maindesc"  style="border-style: hidden; overflow: hidden; height: 100%; width: 455px; padding-bottom: unset; resize: none; background-color: white;" cols="30" rows="18" readonly>
                                         {!!  $blDraft->descripions  !!}
                                     </textarea> 
                                     </br>

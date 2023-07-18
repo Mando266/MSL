@@ -603,8 +603,7 @@ class BookingController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal = Terminals::where('company_id', Auth::user()->company_id)->get();
         $vessels = Vessels::where('company_id', Auth::user()->company_id)->get();
-
-        if (request('quotation_id') == 'draft' || $booking->quotation_id == null) {
+        if (request('quotation_id') == 'draft' || $booking->quotation_id == null || $booking->transhipment_port != null ) {
             $voyages = Voyages::with('vessel', 'voyagePorts')->where('company_id', Auth::user()->company_id)->get();
         } else {
             $voyages = Voyages::with('vessel', 'voyagePorts')->where('company_id', Auth::user()->company_id)->whereHas(
