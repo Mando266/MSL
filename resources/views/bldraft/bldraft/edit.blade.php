@@ -266,13 +266,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                                 <label for="status">Bl Payment</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" disabled>
-                                @if(optional($bldraft->booking->quotation)->ofr != 0)
-                                    <option value="Prepaid" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
-                                @else
-                                    <option value="Collect" {{$bldraft->id == old('payment_kind') ||  $bldraft->payment_kind == "Collect"? 'selected':''}}>Collect</option>
-                                @endif
-                                </select>
+                                    <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{optional($booking->quotation)->payment_kind}}" disabled>
                                 @error('bl_kind')
                                 <div style="color:red;">
                                     {{$message}}
@@ -382,6 +376,11 @@
 <script>
     $('#createForm').submit(function() {
         $('select').removeAttr('disabled');
+    });
+</script>
+<script>
+    $('#createForm').submit(function() {
+        $('input').removeAttr('disabled');
     });
 </script>
 <script>

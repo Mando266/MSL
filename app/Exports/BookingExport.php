@@ -20,10 +20,11 @@ class BookingExport implements FromCollection,WithHeadings
             "Frist Vessel",
             "Frist VOYAGE",
             "LEG",
+            "ETA",
             "Second Vessel",
             "Second VOYAGE",
             "Second LEG",
-            "ETA",
+            "Second ETA",
             "Shipment Type",
             "Main Line",
             "Vessel Operator",
@@ -99,6 +100,9 @@ class BookingExport implements FromCollection,WithHeadings
                 
                 $loadPort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->loadPort)->id)->first();
                 $dischargePort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+                $loadPortSecond = VoyagePorts::where('voyage_id',optional($booking->secondvoyage)->id)->where('port_from_name',optional($booking->loadPort)->id)->first();
+                $dischargePortSecond  = VoyagePorts::where('voyage_id',optional($booking->secondvoyage)->id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
+
                 $tempCollection = collect([
                     'quotation_ref_no' => optional($booking->quotation)->ref_no,
                     'ref_no' => $booking->ref_no,
@@ -108,10 +112,11 @@ class BookingExport implements FromCollection,WithHeadings
                     'first_vessel' => optional($booking->voyage)->vessel->name,
                     'voyage_id' => optional($booking->voyage)->voyage_no,
                     'leg' => optional(optional($booking->voyage)->leg)->name,
+                    'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
                     'second_vessel' => optional(optional($booking->secondvoyage)->vessel)->name,
                     'voyage_id_second' => optional($booking->secondvoyage)->voyage_no,
                     'leg_2' => optional(optional($booking->secondvoyage)->leg)->name,
-                    'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
+                    'eta_2' => $shipping_status == "Export"? optional($loadPortSecond)->eta : optional($dischargePortSecond)->eta,
                     'shipping_status' => $shipping_status,
                     'main_line' => optional($booking->principal)->name,
                     'operator' => optional($booking->operator)->name,
