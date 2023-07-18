@@ -237,10 +237,6 @@ Route::group(['middleware' => 'auth'], function () {
 });
 Auth::routes(['register' => false]);
 
-Route::get('/migrate-tables', function () {
-    Artisan::call('migrate');
-    dd('migrations done!');
-});
-
 require 'mail.php';
+require 'dev.php';
 
