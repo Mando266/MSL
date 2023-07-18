@@ -119,7 +119,7 @@
                         <div class="form-group col-md-4">
                             <label for="customer_id">Additional Notifiy</label>
                             <select class="selectpicker form-control" id="additionalNotifiy" data-live-search="true" name="additional_notify_id" data-size="10"
-                             title="{{trans('forms.select')}}" required>
+                             title="{{trans('forms.select')}}">
                                 @foreach ($customersNotifiy as $item)
                                     <option value="{{$item->id}}" {{$item->id == old('additional_notify_id',isset($blDraft) ? $blDraft->additional_notify_id:'') ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach

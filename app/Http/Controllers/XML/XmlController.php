@@ -79,6 +79,15 @@ class XmlController extends Controller
             $port = $request->dischargePort;
             $is_load_port = 0;
         }
+        $voyage = Voyages::where('id',$request->voyage_id)
+            ->with('bldrafts.blDetails.container')->first();
+        foreach($voyage->bldrafts as $bldraft){
+            foreach($bldraft->blDetails as $item){
+                if($item->container == null){
+                    return back()->with('error','there is unselected container in Bill Of Lading No : '.$bldraft->ref_no);
+                }
+            }
+        }
         $xmlContent = $this->createXml($request->voyage_id, $port); // Generate the XML content
         $setting = Setting::first();
         Xml::create([
