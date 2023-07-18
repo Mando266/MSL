@@ -68,7 +68,7 @@
                                         <th>Ref No</th>
                                         <th>Voyage</th>
                                         <th>BL No</th>
-                                        <th class='text-center' style='width:100px;'></th>
+                                        {{-- <th class='text-center' style='width:100px;'></th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,7 +82,7 @@
                                                     {{$bldraft->ref_no}} <br>
                                                 @endforeach
                                             </td>
-                                            <td class="text-center">
+                                            {{-- <td class="text-center">
                                                  <ul class="table-controls">
                                                     @permission('xml-Show')
                                                     <li>
@@ -92,7 +92,7 @@
                                                     </li>
                                                     @endpermission 
                                                 </ul>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @empty
                                         <tr class="text-center">
