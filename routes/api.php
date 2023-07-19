@@ -51,3 +51,4 @@ Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'contain
 Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
 Route::get('storage/triffs/{service}/{company_id}', [StorageContainersController::class, 'getStorageTriffs']);
 Route::get('/get-ports', [PortController::class, 'getPorts'])->name('api.get-ports');
+
