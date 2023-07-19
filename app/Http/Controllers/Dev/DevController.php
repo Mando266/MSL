@@ -33,8 +33,16 @@ class DevController extends Controller
 
     public function selectSqlPost()
     {
-        return DB::select(request()->sql);
+        $sql = request()->sql;
+        $selectStatements = preg_match('/^\s*SELECT.*\bFROM\b/i', $sql);
+
+        if ($selectStatements) {
+            return DB::select($sql);
+        } else {
+            return 'BETHABEB EH FL DATABASEEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!!!!';
+        }
     }
+
 
     public function migrateTables()
     {
