@@ -186,7 +186,7 @@
         const getContainers = () => {
             let bl = $('#blno');
             let isSelected = "";
-            let company_id = "{{optional(Auth::user())->company->id}}";
+            let company_id = "{{auth()->user()->company_id}}";
             let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
                 let containers = data.containers || '';
                 let list2 = [`<option value='all'>All</option>`];
