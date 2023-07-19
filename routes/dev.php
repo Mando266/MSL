@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\devController;
+use App\Http\Controllers\Dev\devController;
 
-Route::get('dev', 'devPassController')->middleware(['auth', 'dev.tools']);
+Route::get('dev', 'Dev\devPassController')->middleware(['auth', 'dev.tools']);
 
 Route::prefix('devtools')->name('devtools.')->middleware(['auth', 'dev.tools'])->group(function () {
     Route::get('', [devController::class, 'index'])->name('index');

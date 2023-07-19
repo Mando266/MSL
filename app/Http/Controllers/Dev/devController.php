@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dev;
 
+use App\Http\Controllers\Controller;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;

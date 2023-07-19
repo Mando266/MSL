@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class devTools
+class DevTools
 {
     public function handle($request, Closure $next)
     {

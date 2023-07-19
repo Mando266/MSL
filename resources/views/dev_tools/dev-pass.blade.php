@@ -12,7 +12,6 @@
 <body>
 <div class="bg-gray-500 min-h-screen flex place-items-center justify-center">
     <form action="{{ route('devtools.index') }}" class="bg-gray-200 rounded-md p-6">
-        @csrf
         <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="dev_pass">
                 Password
