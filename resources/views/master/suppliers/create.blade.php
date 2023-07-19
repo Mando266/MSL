@@ -185,21 +185,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <h3>Contact Persons</h3>
-                            <table id="contact-person-table" class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>Role</th>
-                                    <th>Title</th>
-                                    <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>
-                                        <a id="add-contact-person"> Add <i class="fas fa-plus"></i></a>
-                                    </th>
-                                </tr>
-                                </thead>
-                            </table>
-
+                            <x-contact-people-table></x-contact-people-table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit"
@@ -215,6 +201,4 @@
         </div>
     </div>
 @endsection
-@push('scripts')
-    @include('master.customers._contact_people_js')
-@endpush
+
