@@ -72,6 +72,7 @@
                                 @enderror
                             </div>
                         </div>
+                    <x-contact-people-table></x-contact-people-table>
 
                        <div class="row">
                             <div class="col-md-12 text-center">
