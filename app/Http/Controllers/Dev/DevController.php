@@ -7,7 +7,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-class devController extends Controller
+class DevController extends Controller
 {
 
     private $devPass = 414141;
