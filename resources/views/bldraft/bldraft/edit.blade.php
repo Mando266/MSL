@@ -245,7 +245,6 @@
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
                                     <option value="FCL/FCL" {{$bldraft->movement == old('movement') ||  $bldraft->movement == "FCL/FCL"? 'selected':''}}>FCL/FCL</option>
                                     <option value="CY/CY" {{$bldraft->movement == old('movement') ||  $bldraft->movement == "CY/CY"? 'selected':''}}>CY/CY</option>
-
                                 </select>
                                 @error('movement')
                                 <div style="color:red;">
@@ -374,12 +373,12 @@
 @endsection
 @push('scripts')
 <script>
-    $('#createForm').submit(function() {
+    $('#editForm').submit(function() {
         $('select').removeAttr('disabled');
     });
 </script>
 <script>
-    $('#createForm').submit(function() {
+    $('#editForm').submit(function() {
         $('input').removeAttr('disabled');
     });
 </script>

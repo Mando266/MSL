@@ -177,7 +177,7 @@ class BlDraftController extends Controller
                 $blDraftParent->has_child = 0;
                 $blDraftParent->save();
             }elseif($qtyCount > $booking->bookingContainerDetails->sum('qty')){
-                return redirect()->back()->with('error','Containers is More than the booking containers')->withInput($request->input());
+                return redirect()->back()->with('error','Containers is More Than the booking containers')->withInput($request->input());
             }
         }else{
             $ischild = 0;
