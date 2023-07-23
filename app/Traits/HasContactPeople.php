@@ -3,12 +3,16 @@
 namespace App\Traits;
 
 use App\ContactPerson;
+use Illuminate\Support\Str;
 
 trait HasContactPeople
 {
-    public function contactPeople()
+    protected string $keyName;
+
+
+    public function contactPeople(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->hasMany(ContactPerson::class, 'customer_id');
+        return $this->morphMany(ContactPerson::class, 'contactable');
     }
 
     public function storeContactPeople($data): void
@@ -18,13 +22,12 @@ trait HasContactPeople
             $item = array_map(fn($values) => $values[$k] ?? null, $data);
             $contactPeople->push($item);
         }
-        
-        $this->contactPeople()->delete();
 
-        foreach ($contactPeople->filter() as $person) {
-            if (array_filter($person, fn($s) => $s !== null)) {
-                $person['customer_id'] = $this->id;
-                ContactPerson::create($person);
+        $this->contactPeople()->delete();
+        
+        foreach ($contactPeople->toArray() as $contactPerson) {
+            if (array_filter($contactPerson, fn($s) => $s !== null)) {
+                $this->contactPeople()->create($contactPerson);
             }
         }
     }

@@ -15,7 +15,7 @@ class CreateContactPeopleTable extends Migration
     {
         Schema::create('contact_people', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('customer_id')->nullable();
+            $table->morphs('contactable');
             $table->string('role')->nullable();
             $table->string('title')->nullable();
             $table->string('phone')->nullable();

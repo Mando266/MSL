@@ -51,9 +51,10 @@ class LinesController extends Controller
         if($NameDublicate != null){
             return back()->with('alert','This Line Name Already Exists');
         }
-        $line = Lines::create($request->except('_token','line_type_id'));
+        $line = Lines::create($request->except('_token', 'line_type_id', 'contactPeople'));
         $line->company_id = $user->company_id;
         $line->save();
+        $line->storeContactPeople(request()->contactPeople);
         if(isset($request->line_type_id)){
             if(count($request->line_type_id) > 0){
                 foreach($request->line_type_id as $lineType){
@@ -81,7 +82,8 @@ class LinesController extends Controller
             'types'=>$types,
             'line'=>$line,
             'line_types'=>$line_types,
-            'countries' => Country::orderBy('name')->get()
+            'countries' => Country::orderBy('name')->get(),
+            'contactPeople' => $line->contactPeople
         ]);     
     }
 
@@ -94,7 +96,8 @@ class LinesController extends Controller
             'name' => 'required',
             'country_id' => 'required'
         ]);
-        
+        $line->storeContactPeople(request()->contactPeople);
+
         $CodeDublicate  = Lines::where('id','!=',$line->id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
         if($CodeDublicate > 0){
             return back()->with('alert','This Line Code Already Exists');
@@ -105,7 +108,7 @@ class LinesController extends Controller
         }
 
         $this->authorize(__FUNCTION__,Lines::class);
-        $line->update($request->except('_token','line_type_id'));
+        $line->update($request->except('_token', 'line_type_id', 'contactPeople'));
         $newTypes = [];
         foreach($request->line_type_id as $item){
             array_push($newTypes,$item['type_id']);
