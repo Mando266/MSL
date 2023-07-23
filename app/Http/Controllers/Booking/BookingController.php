@@ -197,6 +197,7 @@ class BookingController extends Controller
             'discharge_port_id.different' => 'Load Port The Same  Discharge Port',
         ]);
         // Validate Containers Unique
+    if($request->input('movement') == 'FCL/FCL'){  
         $uniqueContainers = array();
         foreach ($request->containerDetails as $container) {
             if (!in_array(
@@ -212,7 +213,7 @@ class BookingController extends Controller
                 );
             }
         }
-
+    }
         $user = Auth::user();
 
         $ReferanceNumber = Booking::where('company_id', $user->company_id)->where('ref_no', $request->ref_no)->first();
@@ -275,6 +276,7 @@ class BookingController extends Controller
             'transhipment_port' => $request->input('transhipment_port'),
             'acid' => $request->input('acid'),
             'shipment_type' => $request->input('shipment_type'),
+            'movement'=> $request->input('movement'),
         ]);
         $has_gate_in = 0;
         foreach ($request->input('containerDetails', []) as $details) {
@@ -678,7 +680,7 @@ class BookingController extends Controller
         //         ->withInput($request->input());
         //     }
         // } 
-
+    if($request->input('movement') == 'FCL/FCL'){  
         $uniqueContainers = array();
         foreach ($request->containerDetails as $container) {
             if (!in_array(
@@ -694,7 +696,7 @@ class BookingController extends Controller
                 );
             }
         }
-
+    }
         $user = Auth::user();
         $ReferanceNumber = Booking::where('id', '!=', $booking->id)->where('company_id', $user->company_id)->where(
             'ref_no',

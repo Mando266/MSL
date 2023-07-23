@@ -634,6 +634,7 @@
                                 </select>
                             </div>
                             @endif
+
                             <div class="form-group col-md-5">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes" 
@@ -657,6 +658,21 @@
                                 </div>
                             </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label for="status">Movement</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
+                                    <option value="FCL/FCL" {{$booking->movement == old('movement') ||  $booking->movement == "FCL/FCL"? 'selected':''}}>FCL/FCL</option>
+                                    <option value="LCL/LCL" {{$booking->movement == old('movement') ||  $booking->movement == "LCL/LCL"? 'selected':''}}>LCL/LCL</option>
+                                </select>
+                                @error('movement')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                    <div>
+
                         <h4>Container Details</h4>
                             @error('containerDetails')
                                 <div style="color: red; font-size: 30px; text-align: center;">
