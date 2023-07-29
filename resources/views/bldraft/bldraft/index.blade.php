@@ -160,8 +160,8 @@
                                                 {{ $item->blDetails->count() }} Containers
                                              </td>  
                                              @endif                                           
-                                            <td>{{optional($item->voyage)->vessel->name}}  {{optional($item->voyage)->voyage_no}}</td>
-                                            <td>{{optional($item->voyage->leg)->name}}</td>
+                                            <td>{{optional(optional($item->voyage)->vessel)->name}}  {{optional($item->voyage)->voyage_no}}</td>
+                                            <td>{{optional(optional($item->voyage)->leg)->name}}</td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td>
                                                 @php
