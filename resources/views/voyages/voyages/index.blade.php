@@ -70,6 +70,7 @@
                                         <th>Vessel Code</th>
                                         <th>Vessel Name</th>
                                         <th>Voyage No</th>
+                                        <th>Job No</th>
                                         <th>Leg</th>
                                         <th>PORT</th>
                                         <th>ETA</th>
@@ -89,6 +90,7 @@
                                             <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
                                             <td>{{$item->voyage_no}}</td>
+                                            <td>{{$item->job_no}}</td>
                                             <td>{{{optional($item->leg)->name}}}</td>
                                             <td>
                                                 @foreach($item->voyagePorts as $voyagePort)
