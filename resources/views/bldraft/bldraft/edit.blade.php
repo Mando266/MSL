@@ -265,7 +265,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                                 <label for="status">Bl Payment</label>
-                                    <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{optional($booking->quotation)->payment_kind}}" disabled>
+                                    <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{old('payment_kind',$bldraft->payment_kind)}}" disabled>
                                 @error('bl_kind')
                                 <div style="color:red;">
                                     {{$message}}

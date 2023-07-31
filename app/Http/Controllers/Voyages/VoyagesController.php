@@ -200,6 +200,7 @@ class VoyagesController extends Controller
             'notes'=> $request->input('notes'),
             'principal_name'=> $request->input('principal_name'),
             'exchange_rate'=> $request->input('exchange_rate'),
+            'job_no'=> $request->input('job_no'),
             'company_id'=>$user->company_id,
         ]);
 

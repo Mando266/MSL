@@ -18,7 +18,7 @@
                 <form id="regForm" action="{{route('voyages.store')}}" method="POST">
                         @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="vessel_idInput">Name *</label>
                                 <select class="selectpicker form-control" id="vessel_idInput" data-live-search="true" name="vessel_id" data-size="10"
                                     title="{{trans('forms.select')}}">
@@ -32,11 +32,21 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="voyage_noInput">Voyage No *</label>
                                 <input type="text" class="form-control" id="voyage_noInput" name="voyage_no" value="{{old('voyage_no')}}"
                                  placeholder="Voyage No" autocomplete="off" autofocus>
                                 @error('voyage_no')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Job No</label>
+                                <input type="text" class="form-control" name="job_no" value="{{old('job_no')}}"
+                                 placeholder="Job No" autocomplete="off" autofocus>
+                                @error('job_no')
                                 <div class="invalid-feedback">
                                     {{$message}}
                                 </div>

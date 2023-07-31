@@ -74,9 +74,11 @@ class BlDraftController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
-        $voyages = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
-            $query->where('port_from_name',$booking->load_port_id);
-        })->get();
+        $voyages = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->
+        // whereHas('voyagePorts', function ($query) use($booking ){
+        //     $query->where('port_from_name',$booking->load_port_id);
+        // })->
+        get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         //dd($booking_qyt);
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
@@ -177,7 +179,7 @@ class BlDraftController extends Controller
                 $blDraftParent->has_child = 0;
                 $blDraftParent->save();
             }elseif($qtyCount > $booking->bookingContainerDetails->sum('qty')){
-                return redirect()->back()->with('error','Containers is More Than the booking containers')->withInput($request->input());
+                return redirect()->back()->with('error','Containers is More than the booking containers')->withInput($request->input());
             }
         }else{
             $ischild = 0;
@@ -289,9 +291,11 @@ class BlDraftController extends Controller
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $containers = Containers::where('company_id',Auth::user()->company_id)->where('status',2)->orderBy('id')->get();
-        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)->whereHas('voyagePorts', function ($query) use($booking ){
-            $query->where('port_from_name',$booking->load_port_id);
-        })->get();
+        $voyages    = Voyages::with('vessel','voyagePorts')->where('company_id',Auth::user()->company_id)
+        // ->whereHas('voyagePorts', function ($query) use($booking ){
+        //     $query->where('port_from_name',$booking->load_port_id);
+        // })
+        ->get();
         $booking_qyt = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id',000)->sum('qty');
         $booking_containers = BookingContainerDetails::where('booking_id',$booking->id)->where('container_id','!=',000)->with('container')->get();
         $oldbookingcontainers = Containers::where('company_id',Auth::user()->company_id)->get();
