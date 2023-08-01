@@ -75,6 +75,8 @@ class BookingExport implements FromCollection,WithHeadings
                 $qty += $bookingDetail->qty;
                 if($bookingDetail->qty == 1 && $bookingDetail->container_id == "000"){
                     $unassigned += 1;
+                }elseif($bookingDetail->qty == 1 && $bookingDetail->container_id == null){    
+                    $unassigned += 1;
                 }elseif($bookingDetail->qty == 1){
                     $assigned += 1;
                 }else{

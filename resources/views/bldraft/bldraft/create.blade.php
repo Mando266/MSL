@@ -262,7 +262,7 @@
                         </div>
 
                         <div class="form-group col-md-3">
-                            <label for="notes">Declered Value</label>
+                            <label>Declered Value</label>
                             <input type="text" name="declerd_value"  @isset($blDraft) value="{{$blDraft->declerd_value}}" @endisset class="form-control" placeholder="Declered Value" autocomplete="off">
                             @error('declerd_value')
                             <div style="color: red;">
@@ -293,6 +293,20 @@
                         </div>
                     </div>
                     <div class="form-row">
+                        @if($booking->is_transhipment == 1)
+                            <div class="form-group col-md-3">
+                                    <label for="status">Bl Payment</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                    <option value="Prepaid">Prepaid</option>
+                                    <option value="Collect">Collect</option>
+                                </select>
+                                @error('bl_kind')
+                                <div style="color:red;">
+                                    {{$message}} 
+                                </div>
+                                @enderror
+                            </div>
+                            @else
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                     <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{optional($booking->quotation)->payment_kind}}" disabled>
@@ -302,6 +316,7 @@
                                 </div>
                                 @enderror
                         </div>
+                        @endif
                         {{-- @dd("Original" == $blDraft->bl_kind ?? "selected") --}}
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Kind</label>

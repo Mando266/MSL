@@ -558,17 +558,18 @@
                             @endif
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="details">Notes</label>
-                                <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
-                                 placeholder="Notes" autocomplete="off"></textarea>
-                                @error('notes')
-                                <div class="invalid-feedback">
+                            <div class="form-group col-md-3">
+                                <label for="status">Movement</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
+                                    <option value="FCL/FCL">FCL/FCL</option>
+                                    <option value="LCL/LCL">LCL/LCL</option>
+                                </select>
+                                @error('movement')
+                                <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
-
                             <div class="form-group col-md-3">
                                 <div class="custom-file-container" data-upload-id="certificat">
                                     <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
@@ -585,7 +586,16 @@
                                 </div>
                                 @enderror
                             </div>
-                        
+                            <div class="form-group col-md-6">
+                                <label for="details">Notes</label>
+                                <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
+                                 placeholder="Notes" autocomplete="off"></textarea>
+                                @error('notes')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>                        
                         </div>
 
                         <h4>Container Details</h4>
