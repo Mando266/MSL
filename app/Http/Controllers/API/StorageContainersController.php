@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bl\BlDraft;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
@@ -15,7 +16,8 @@ class StorageContainersController extends Controller
     //
     public function getStorageBlContainers($id,$company_id)
     {
-        $mov = Movements::where('bl_no', $id)->where('company_id',$company_id)->distinct()->get()->pluck('container_id')->toarray();
+        $bl = BlDraft::where('id',$id)->first();
+        $mov = Movements::where('bl_no', $bl->ref_no)->where('company_id',$company_id)->distinct()->get()->pluck('container_id')->toarray();
 
         $containers = Containers::whereIn('id',$mov)->get();
 

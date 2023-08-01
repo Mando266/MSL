@@ -127,12 +127,12 @@
                                 </div>
                                 <div class="col-md-2 form-group " >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked {{$total_storage == null?'':'disabled'}}>
                                         <label class="form-check-label" for="exchange_rate">
                                         ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd" {{$total_storage == null?'':'disabled'}}>
                                         <label class="form-check-label" for="exchange_rate">
                                           ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                         </label>
@@ -140,17 +140,17 @@
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked {{$total_storage == null?'':'disabled'}}>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{$total_storage == null?'':'disabled'}}>
                                         <label class="form-check-label" for="add_egp">
                                           USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp" {{$total_storage == null?'':'disabled'}}>
                                         <label class="form-check-label" for="add_egp">
                                           EGP
                                         </label> 
@@ -160,7 +160,7 @@
                             <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label> VAT % </label>
-                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off"  style="background-color:#fff">
+                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off"  style="background-color:#fff" required>
                                 </div> 
                             </div>
                             <div class="form-row">
@@ -185,61 +185,104 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($triffDetails->triffPriceDetailes ?? [] as $key => $detail) 
-                                  
-                            <tr>
-                                <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="{{ $detail->charge_type }}" >
-                                </td>
-                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{ $detail->selling_price }}"
-                                    placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_yes" value="1" >
-                                        <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_no" value="0" checked>
-                                        <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_yes" value="1" {{ $detail->unit == "Container" ? 'checked' : ''}} disabled>
-                                        <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_no" value="0" {{ $detail->unit == "Document" ? 'checked' : ''}} disabled>
-                                        <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
-                                    </div>
-                                </td>
-                                @if($detail->unit == "Container")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price * $qty}}"
-                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                @elseif($detail->unit == "Document")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price}}"
-                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                @endif
-                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
-                                @if($detail->unit == "Container")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * $qty * optional($bldraft->voyage)->exchange_rate }}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
-                                </td>
-                                @elseif($detail->unit == "Document")
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
-                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
-                                </td>
-                                @endif
-                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
+                                    @if($total_storage == null)
+                                        @foreach($triffDetails->triffPriceDetailes ?? [] as $key => $detail) 
+                                            <tr>
+                                                <td>
+                                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="{{ $detail->charge_type }}" >
+                                                </td>
+                                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{ $detail->selling_price }}"
+                                                    placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_yes" value="1" >
+                                                        <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][add_vat]" id="item_{{$key}}_enabled_no" value="0" checked>
+                                                        <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_yes" value="1" {{ $detail->unit == "Container" ? 'checked' : ''}} disabled>
+                                                        <label class="form-check-label" for="item_{{$key}}_enabled_yes">Yes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="invoiceChargeDesc[{{$key}}][enabled]" id="item_{{$key}}_enabled_no" value="0" {{ $detail->unit == "Document" ? 'checked' : ''}} disabled>
+                                                        <label class="form-check-label" for="item_{{$key}}_enabled_no">No</label>
+                                                    </div>
+                                                </td>
+                                                @if($detail->unit == "Container")
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price * $qty}}"
+                                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                                </td>
+                                                @elseif($detail->unit == "Document")
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total]" value="{{$detail->selling_price}}"
+                                                    placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                                </td>
+                                                @endif
+                                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
+                                                @if($detail->unit == "Container")
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * $qty * optional($bldraft->voyage)->exchange_rate }}"
+                                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
+                                                </td>
+                                                @elseif($detail->unit == "Document")
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
+                                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
+                                                </td>
+                                                @endif
+                                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
 
-                                    <td style="width:85px;">
-                                        <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
-                                    </td>
-                            </tr>
-                            @endforeach
+                                                    <td style="width:85px;">
+                                                        <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
+                                                    </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td>
+                                                <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Storage" >
+                                            </td>
+                                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{ $total_storage }}"
+                                                placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][add_vat]" id="item_0_enabled_yes" value="1" disabled>
+                                                    <label class="form-check-label" for="item_0_enabled_yes">Yes</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][add_vat]" id="item_0_enabled_no" value="0" checked disabled>
+                                                    <label class="form-check-label" for="item_0_enabled_no">No</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_yes" value="1" disabled>
+                                                    <label class="form-check-label" for="item_0_enabled_yes">Yes</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][enabled]" id="item_0_enabled_no" value="0" checked disabled>
+                                                    <label class="form-check-label" for="item_0_enabled_no">No</label>
+                                                </div>
+                                            </td>
+                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total]" value="{{$total_storage}}"
+                                                placeholder="Total" autocomplete="off" disabled style="background-color: white;">
+                                            </td>
+                                            <td><input type="text" name="invoiceChargeDesc[0][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
+                                            
+                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][egy_amount]" value="{{$total_storage}}"
+                                                placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
+                                            </td>
+                                            <td><input type="text" name="invoiceChargeDesc[0][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
+
+                                                <td style="width:85px;">
+                                                    <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                        </tr>
+                                    @endif
                             </tbody>
                         </table>
                             <div class="row">

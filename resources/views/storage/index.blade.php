@@ -28,7 +28,7 @@
                                 <select class="selectpicker form-control" id="blno" data-live-search="true" name="bl_no" data-size="10"
                                 title="{{trans('forms.select')}}" required>
                                     @foreach($movementsBlNo as $item)
-                                        <option value="{{$item->ref_no}}" {{$item->ref_no == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                     </select>
                             </div>
@@ -82,7 +82,7 @@
                                 @endif
                             </div>
                         </div> 
-                        {{-- @dd(isset($calculation)) --}}
+                        
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-info mt-3">Calculate</button>
@@ -143,7 +143,14 @@
                            
                         @endisset  
                     </form>
-                    
+                    @isset($calculation)
+                        <form id="createForm" action="{{route('invoice.create_invoice')}}" method="get">
+                            @csrf
+                            <input type="hidden" id="bldraft_id" name="bldraft_id">
+                            <input type="hidden" value="{{$calculation['grandTotal']}}" name="total_storage">
+                            <button type="submit" class="btn btn-primary mt-3">Create Invoice</button>
+                        </form>
+                    @endisset 
                 </div>
             </div>
         </div>
@@ -158,7 +165,7 @@
     let selectedTriff = '{{ $input['Triff_id'] ?? '' }}'
 
     let service = $('#service');
-    let company_id = "{{optional(Auth::user())->company->id}}";
+    let company_id = "{{auth()->user()->company_id}}";
     
     $(document).ready(function () {
         const getTriff = () => {
@@ -185,6 +192,7 @@
         
         const getContainers = () => {
             let bl = $('#blno');
+            $('#bldraft_id').val(bl.val());
             let isSelected = "";
             let company_id = "{{auth()->user()->company_id}}";
             let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
