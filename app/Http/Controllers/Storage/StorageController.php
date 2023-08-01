@@ -49,14 +49,14 @@ class StorageController extends Controller
         ];
         
         $request->validate($rules);
-        
+        $bl_no = BlDraft::where('id',$request->bl_no)->pluck('ref_no')->first();
         $triff = Demurrage::where('id', $request->Triff_id)->with('periods')->first();
 //        dd(request()->container_code);
         $containerCalc = collect();
         if(count(request()->container_code) == 1){
             if(request()->container_code[0] == "all"){
                 // Getting All containers for this Bl 
-                $mov = Movements::where('bl_no', $request->bl_no)->where('company_id',Auth::user()->company_id)->distinct()->get()->pluck('container_id')->toarray();
+                $mov = Movements::where('bl_no', $bl_no)->where('company_id',Auth::user()->company_id)->distinct()->get()->pluck('container_id')->toarray();
                 $containers = Containers::whereIn('id',$mov)->get();
                 // Searching in container movements For the begining movement to the end move to get the difference in days 
                 $fromMoveId = $request->from == 'RCVS' ? 3 : 5;
@@ -66,10 +66,10 @@ class StorageController extends Controller
                     // Calculation of each Container
                     $containerTotal = 0;
                     $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
-                                            ->where('bl_no', $request->bl_no)->first();
+                                            ->where('bl_no', $bl_no)->first();
                     if($request->date == null){
                         $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
-                                                ->where('bl_no', $request->bl_no)->first();
+                                                ->where('bl_no', $bl_no)->first();
                     }else{
                         $toMovement = $request->date;
                     }
@@ -141,10 +141,10 @@ class StorageController extends Controller
                     // Calculation of each Container
                     $containerTotal = 0;
                     $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
-                                            ->where('bl_no', $request->bl_no)->first();
+                                            ->where('bl_no', $bl_no)->first();
                     if($request->date == null){
                         $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
-                                                ->where('bl_no', $request->bl_no)->first();
+                                                ->where('bl_no', $bl_no)->first();
                     }else{
                         $toMovement = $request->date;
                     }
@@ -218,10 +218,10 @@ class StorageController extends Controller
                     // Calculation of each Container
                     $containerTotal = 0;
                     $fromMovement = Movements::where('container_id',$container->id)->where('movement_id', $fromMoveId)
-                                            ->where('bl_no', $request->bl_no)->first();
+                                            ->where('bl_no', $bl_no)->first();
                     if($request->date == null){
                         $toMovement = Movements::where('container_id',$container->id)->where('movement_id', $request->to)
-                                                ->where('bl_no', $request->bl_no)->first();
+                                                ->where('bl_no', $bl_no)->first();
                     }else{
                         $toMovement = $request->date;
                     }
