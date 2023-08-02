@@ -48,36 +48,34 @@
                                     @enderror
                                 </div>
   
-                                <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Container Type <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="container_type_id" data-size="10"
-                                    title="{{trans('forms.select')}}" required>
-                                        @foreach ($containersTypes as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('container_type_id')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="bounds">Bound <span class="text-warning"> * (Required.) </span></label>
-                                    <select class="selectpicker form-control" id="bounds" data-live-search="true" name="bound_id" data-size="10"
-                                    title="{{trans('forms.select')}}" required>
-                                        @foreach ($bounds as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('bound_id') ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('bound_id')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
-                                </div>
+{{--                                <div class="form-group col-md-4">--}}
+{{--                                    <label for="containersTypesInput">Container Type <span class="text-warning"> * (Required.) </span></label>--}}
+{{--                                    <select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="container_type_id" data-size="10"--}}
+{{--                                    title="{{trans('forms.select')}}" required>--}}
+{{--                                        @foreach ($containersTypes as $item)--}}
+{{--                                            <option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                    @error('container_type_id')--}}
+{{--                                    <div class="invalid-feedback">--}}
+{{--                                        {{$message}}--}}
+{{--                                    </div>--}}
+{{--                                    @enderror--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group col-md-4">--}}
+{{--                                    <label for="bounds">Bound <span class="text-warning"> * (Required.) </span></label>--}}
+{{--                                    <select class="selectpicker form-control" id="bounds" data-live-search="true" name="bound_id" data-size="10"--}}
+{{--                                    title="{{trans('forms.select')}}" required>--}}
+{{--                                        @foreach ($bounds as $item)--}}
+{{--                                            <option value="{{$item->id}}" {{$item->id == old('bound_id') ? 'selected':''}}>{{$item->name}}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                    @error('bound_id')--}}
+{{--                                    <div class="invalid-feedback">--}}
+{{--                                        {{$message}}--}}
+{{--                                    </div>--}}
+{{--                                    @enderror--}}
+{{--                                </div>--}}
                                 <div class="form-group col-md-4">
                                     <label for="currency">Currency <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="currency" data-live-search="true" name="currency" data-size="10"
@@ -92,6 +90,8 @@
                                     </div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity From <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_from" value="{{old('validity_from')}}"
@@ -102,8 +102,6 @@
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity to <span class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_to" value="{{old('validity_to')}}"
@@ -117,7 +115,7 @@
 
                                 <div class="form-group col-md-4">
                                     <label for="Triffs">Triff</label>
-                                    <select class="selectpicker form-control" id="Triffs" data-live-search="true" name="tariff_id" data-size="10"
+                                    <select class="selectpicker form-control" id="triff_kind" data-live-search="true" name="tariff_id" data-size="10"
                                     title="{{trans('forms.select')}}" autofocus>
                                         @foreach ($triffs as $item)
                                             <option value="{{$item->name}}" {{$item->name == old('tariff_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -129,23 +127,22 @@
                                     </div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="is_storge">Detention OR Storage</label>
-                                    <select class="selectpicker form-control" id="is_storge" data-live-search="true" name="is_storge" data-size="10"
-                                    title="{{trans('forms.select')}}" required>
-                                            <option value="Detention">Detention</option>
-                                            <option value="Export">Export</option>
-                                            <option value="power charges">power charges</option>
-                                            <option value="Import">Import</option>
+                                    <label for="tariff_type_id">Tariff Type</label>
+                                    <select class="form-control" id="tariff_type_id" name="tariff_type_id" required>
+                                        <option value="" selected hidden>Select Tariff Type...</option>
+                                        @foreach ($tariffTypes as $tariffType)
+                                            <option value="{{ $tariffType->id }}">{{ $tariffType->code }} - {{ $tariffType->description }}</option>
+                                        @endforeach
                                     </select>
-                                    @error('is_storge')
+                                    @error('tariff_type_ide')
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="form-row">
                                 <div class="form-group col-md-8">
                                     <label for="containersTypesInput">Trminal <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10" required>
@@ -160,6 +157,8 @@
                                     </div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                 <label for="BookingInput">Container Status </label>
                                 <select class="selectpicker form-control" id="BookingInput" data-live-search="true" name="container_status" data-size="10"
@@ -175,13 +174,14 @@
                                 @enderror
                             </div>
                             </div>
+                        <div>
                             <table id="period" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Period</th>
                                         <th>Rate</th>
                                         <th>Calendar Days</th>
-
+                                        <th>Container Type</th>
                                         <th>
                                             <a id="add"> Add Period <i class="fas fa-plus"></i></a>
                                         </th>
@@ -196,12 +196,22 @@
                                         <input type="text" id="rate" name="period[0][rate]" class="form-control" autocomplete="off">
                                     </td>
                                     <td>
-                                        <input type="text" id="dayes" name="period[0][number_off_dayes]" class="form-control" autocomplete="off">
+                                        <input type="text" id="days" name="period[0][number_off_days]" class="form-control" autocomplete="off">
+                                    </td>
+                                    <td>
+                                        <select class="selectpicker form-control" id="containersTypesInput"
+                                                data-live-search="true" name="period[0][container_type_id]" data-size="10"
+                                                title="{{trans('forms.select')}}" required>
+                                            @foreach ($containersTypes as $item)
+                                                <option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     <td></td>
                                 </tr>
                                 </tbody>
                             </table>
+                        </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
@@ -225,17 +235,43 @@
     var counter  = 1;
     $("#add").click(function(){
             var tr = '<tr>'+
-        '<td><input type="text" name="period['+counter+'][period]" class="form-control"></td>'+
-        '<td><input type="text" name="period['+counter+'][rate]" class="form-control"></td>'+
-        '<td><input type="text" name="period['+counter+'][number_off_dayes]" class="form-control"></td>'+
-        '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-        '</tr>';
+                '<td><input type="text" name="period['+counter+'][period]" class="form-control"></td>'+
+                '<td><input type="text" name="period['+counter+'][rate]" class="form-control"></td>'+
+                '<td><input type="text" id="days" name="period['+counter+'][number_off_days]" class="form-control" autocomplete="off"></td>'+
+                '<td><select class="selectpicker form-control" id="containersTypesInput" data-live-search="true" name="period['+counter+'][container_type_id]" data-size="10" title="{{trans('forms.select')}}" required>'+
+                '@foreach ($containersTypes as $item)'+
+                '<option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>'+
+                '@endforeach'+
+                '</select></td>'+
+                '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'+
+                '</tr>';
+
         counter++;
         $('#period').append(tr);
+        $('.selectpicker').selectpicker('refresh');
     });
+
 });
 </script>
 <script>
+    $(document).ready(function() {
+        $('#triff_kind').on('change', function (e) {
+            console.log(123)
+            let selectedOption = $(this).val();
+
+            if (selectedOption.includes('Customer')) {
+                $("#tariff_type_id option[value='5'], #tariff_type_id option[value='6']").hide();
+
+                if ($("#tariff_type_id option:selected").is(':hidden')) {
+                    $("#tariff_type_id").val($("#tariff_type_id option:visible:first").val());
+                }
+            } else {
+                $("#tariff_type_id option[value='5'], #tariff_type_id option[value='6']").show();
+            }
+            
+            $('.selectpicker').selectpicker('refresh');
+        })
+    })
         $(function(){
                 let country = $('#country');
                 let company_id = "{{optional(Auth::user())->company->id}}";

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dev\DevController;
+use Database\Seeders\TariffTypeSeeder;
 
 Route::get('dev', 'Dev\DevPassController')->middleware(['auth', 'dev.tools']);
 
@@ -11,5 +12,6 @@ Route::prefix('devtools')->name('devtools.')->middleware(['auth', 'dev.tools'])-
         Route::post('select-post', [DevController::class, 'selectSqlPost'])->name('select-post');
     });
     Route::get('migrate-tables', [DevController::class, 'migrateTables'])->name('migrate-tables');
-});
 
+    Route::get('/seed-tariff-types', [TariffTypeSeeder::class, 'run'])->name('seed-tariff-types');
+});
