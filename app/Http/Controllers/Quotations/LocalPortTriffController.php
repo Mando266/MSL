@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use App\Filters\Quotation\QuotationIndexFilter;
 use App\Models\Master\Currency;
 use App\Models\Master\Agents;
+use App\Models\Invoice\ChargesDesc;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,6 +49,7 @@ class LocalPortTriffController extends Controller
             $country = Country::orderBy('id')->get();
             $currency = Currency::all();
             $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
             return view('quotations.localporttriff.create',[
                 'ports'=>$ports,
@@ -56,7 +58,7 @@ class LocalPortTriffController extends Controller
                 'country'=>$country,
                 'currency'=>$currency,
                 'agents'=>$agents,
-
+                'charges'=>$charges,
             ]);
 
     }

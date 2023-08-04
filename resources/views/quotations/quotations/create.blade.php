@@ -388,8 +388,8 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="status">Payment kind</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}"> 
+                                <label for="status">Payment kind<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required> 
                                     <option value="Prepaid">Prepaid </option>
                                     <option value="Collect">Collect</option>
                                 </select>

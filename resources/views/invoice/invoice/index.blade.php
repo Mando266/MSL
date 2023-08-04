@@ -142,14 +142,7 @@
                                     @php
                                         $totalusd = 0;
                                         $totalegp = 0;
-                                        $vat = $invoice->vat;
-                                        $vat = $vat / 100;
-                                        
-                                        if($chargeDesc->add_vat == 1){
-                                            $total_after_vat += ($vat * $chargeDesc->total_amount);
-                                            $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
-                                        }
-                                        
+
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
                                             ->where('port_from_name',optional(optional($invoice->booking)->loadPort)->id)->first();
@@ -161,7 +154,7 @@
                                     @endphp
                                     @php
                                         foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
-                                            $totalusd = $totalusd + (float)$invoiceDesc->total_amount ;
+                                            $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
                                             $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
                                         }
                                     @endphp

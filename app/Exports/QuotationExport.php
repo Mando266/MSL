@@ -13,6 +13,7 @@ class QuotationExport implements FromCollection,WithHeadings
         return [
             "REF NO",
             "CUSTOMER",
+            "Freight Forwarder Name",
             "VALIDITY FROM" ,
             "VALIDITY TO",
             "EQUIPMENT TYPE",
@@ -21,8 +22,12 @@ class QuotationExport implements FromCollection,WithHeadings
             "LOAD PORT",
             "DISCHARGE PORT",
             "Main Line",
-            'OFR',
+            "OFR",
+            "payment kind",
+            "Quotation Type",
             "STATUS",
+            "Import Free Time",
+            "Export free time"
         ];
     }
 
@@ -35,6 +40,7 @@ class QuotationExport implements FromCollection,WithHeadings
 
         foreach($quotations  ?? [] as $quotation){
             $quotation->customer_id = optional($quotation->customer)->name;
+            $quotation->ffw_id = optional($quotation->ffw)->name;
             $quotation->equipment_type_id = optional($quotation->equipmentsType)->name;
             $quotation->place_of_acceptence_id = optional($quotation->placeOfAcceptence)->name;
             $quotation->place_of_delivery_id = optional($quotation->placeOfDelivery)->name;

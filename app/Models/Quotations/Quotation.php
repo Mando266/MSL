@@ -55,6 +55,9 @@ class Quotation extends Model implements PermissionSeederContract
     public function customer(){
         return $this->belongsTo(Customers::class,'customer_id','id');
     }
+    public function ffw(){
+        return $this->belongsTo(Customers::class,'ffw_id','id');
+    }
     public function agent(){
         return $this->belongsTo(Agents::class,'agent_id','id');
     }

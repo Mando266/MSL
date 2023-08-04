@@ -437,6 +437,11 @@
                         <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
                                 @permission('Invoice-List')
                                 <li>
+                                    <a href="{{route('chargesDesc.index')}}">Charges Gates</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-List')
+                                <li>
                                     <a href="{{route('invoice.index')}}">Invoice Gates</a>
                                 </li>
                                 @endpermission

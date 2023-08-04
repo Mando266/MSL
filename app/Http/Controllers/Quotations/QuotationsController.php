@@ -28,7 +28,10 @@ class QuotationsController extends Controller
         $this->authorize(__FUNCTION__,Quotation::class);
 
             $quotations = Quotation::filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->orderBy('id','desc')->paginate(30);
-            $exportQuotations = Quotation::select('ref_no','customer_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id','principal_name','ofr','status')->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
+            $exportQuotations = Quotation::select('ref_no','customer_id','ffw_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id',
+            'principal_name','ofr','payment_kind','quotation_type','status','import_detention','export_detention')
+            ->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->
+            where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
             $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
@@ -200,6 +203,7 @@ class QuotationsController extends Controller
                 'show_import'=>$request->input('show_import'),
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
+                'quotation_type'=> $request->input('quotation_type'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
             ]);
@@ -241,6 +245,7 @@ class QuotationsController extends Controller
                 'show_import'=>$request->input('show_import'),
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
+                'quotation_type'=> $request->input('quotation_type'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
             ]);
@@ -378,7 +383,7 @@ class QuotationsController extends Controller
             'oog_dimensions'=>$request->oog_dimensions,
             'power_charges'=>$request->power_charges,
             'payment_kind'=> $request->payment_kind,
-
+            'quotation_type'=>$request->quotation_type,
         ];
         if($user->is_super_admin){
             if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){

@@ -56,6 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('container-movement', 'ContainersMovementController');
         Route::resource('stock-types', 'StockTypesController');
         Route::resource('supplierPrice', 'SupplierPriceController');
+        Route::resource('chargesDesc', 'ChargesDescController');
+
     });
     /*
     |-------------------------------------------

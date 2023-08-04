@@ -96,7 +96,7 @@ class InvoiceController extends Controller
     public function create_invoice()
     {
 
-        // dd(request('bldraft_id'));
+        
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
@@ -159,9 +159,9 @@ class InvoiceController extends Controller
             }])
             ->first();
         }
-
         return view('invoice.invoice.create_invoice',[
             'bldrafts'=>$bldrafts,
+            'total_storage'=>request('total_storage'),
             'qty'=>$qty,
             'bldraft'=>$bldraft,
             'triffDetails'=>$triffDetails,
@@ -225,6 +225,7 @@ class InvoiceController extends Controller
             request()->validate([
                 'customer' => ['required'],
                 'customer_id' => ['required'],
+                'vat' => ['required'],
 
             ]);
         }else{
@@ -232,6 +233,7 @@ class InvoiceController extends Controller
                 'bldraft_id' => ['required'],
                 'customer' => ['required'],
                 'customer_id' => ['required'],
+                'vat' => ['required'],
             ]);
         }
         if($request->bldraft_id != 'customize'){
