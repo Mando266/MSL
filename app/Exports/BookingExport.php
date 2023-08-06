@@ -132,7 +132,7 @@ class BookingExport implements FromCollection,WithHeadings
                     'containerType' => optional($booking->bookingContainerDetails[0]->containerType)->name,
                     'qty' => $qty,
                     'ofr'=>optional($booking->quotation)->ofr,
-                    'soc' =>  $booking->soc == 1 ? "SOC":"",
+                    'soc' =>  $booking->soc == 1 ? "SOC":"COC" ,
                     'imo' =>  $booking->imo == 1 ? "IMO":"",
                     'oog' =>  $booking->oog == 1 ? "OOG":"",
                     'created_at' => $booking->created_at,

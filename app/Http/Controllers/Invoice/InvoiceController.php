@@ -503,11 +503,17 @@ class InvoiceController extends Controller
         $total_before_vat = 0;
         $total_eg_after_vat = 0;
         $total_eg_before_vat = 0;
+        $totalAftereTax = 0;
+        $totalAftereTax_eg = 0;
 
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
-            if($chargeDesc->add_vat == 1){
+            //Tax
+            $totalAftereTax = (($total * $invoice->tax_discount)/100);
+            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100); 
+            //End Tax
+           if($chargeDesc->add_vat == 1){
                 $total_after_vat += ($vat * $chargeDesc->total_amount);
                 $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
             }
@@ -594,6 +600,8 @@ class InvoiceController extends Controller
                 'total_before_vat'=>$total_before_vat,
                 'total_eg_after_vat'=>$total_eg_after_vat,
                 'total_eg_before_vat'=>$total_eg_before_vat,
+                'totalAftereTax'=>$totalAftereTax,
+                'totalAftereTax_eg'=>$totalAftereTax_eg,
                 'triffDetails'=>$triffDetails,
             ]);
         }

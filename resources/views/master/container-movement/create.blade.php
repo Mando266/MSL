@@ -69,7 +69,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
+                        </div>
                         <div class="form-group col-md-8">
                                 <label for="ContainerInput">ALLOWED NEXT MOVES</label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="movement[][code]" data-size="10"

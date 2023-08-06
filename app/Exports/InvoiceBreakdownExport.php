@@ -84,6 +84,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                 $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
             }
             foreach($invoice->chargeDesc as $desc ){
+
                 $tempCollection = collect([
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
@@ -106,7 +107,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'total egp' => $desc->total_egy,
                     'Curency' =>$Curency,
                 ]);
-                
+
                 $exportinvoices->add($tempCollection);
             }
         }

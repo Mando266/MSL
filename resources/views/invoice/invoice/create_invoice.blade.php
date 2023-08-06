@@ -127,12 +127,12 @@
                                 </div>
                                 <div class="col-md-2 form-group " >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked {{$total_storage == null?'':'disabled'}}>
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
                                         <label class="form-check-label" for="exchange_rate">
                                         ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd" {{$total_storage == null?'':'disabled'}}>
+                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
                                         <label class="form-check-label" for="exchange_rate">
                                           ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                         </label>
@@ -140,17 +140,17 @@
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked {{$total_storage == null?'':'disabled'}}>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{$total_storage == null?'':'disabled'}}>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
                                         <label class="form-check-label" for="add_egp">
                                           USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp" {{$total_storage == null?'':'disabled'}}>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp">
                                         <label class="form-check-label" for="add_egp">
                                           EGP
                                         </label> 

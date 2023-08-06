@@ -77,7 +77,7 @@
                                     <td class="col-md-3 tableStyle" >B/L No. </br>
                                         &nbsp{{ $blDraft->ref_no }}</td>
                                     <td class="col-md-3 tableStyle" >Reference No. </br>
-                                        &nbsp{{ optional($blDraft->booking)->ref_no }}</td>
+                                        &nbsp{{ optional($blDraft->booking)->forwarder_ref_no }}</td>
                                 </tr>
                                 <tr>
                                     <td class=" col-md-3 tableStyle" colspan="2">Vessel Voyage No </br>
