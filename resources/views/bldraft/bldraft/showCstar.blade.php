@@ -51,7 +51,7 @@
                                 <td class="col-md-3 tableStyle" >B/L No. </br>
                                     &nbsp{{ $blDraft->ref_no }}</td>
                                 <td class="col-md-3 tableStyle" >Reference No. </br>
-                                    &nbsp{{ optional($blDraft->booking)->ref_no }}</td>
+                                    &nbsp{{ optional($blDraft->booking)->forwarder_ref_no }}</td>
                             </tr>
                             <tr>
                                 @if(optional($blDraft)->number_of_original == "0" )

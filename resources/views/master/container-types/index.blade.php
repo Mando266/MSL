@@ -28,6 +28,7 @@
                                         <th>#</th>
                                         <th>description</th>
                                         <th>code</th>
+                                        <th>Category</th>
                                         <th>Iso NO</th>
                                         <th>width</th>
                                         <th>heights</th>
@@ -41,6 +42,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
+                                            <td>{{$item->category}}</td>
                                             <td>{{$item->iso_no}}</td>
                                             <td>{{$item->width}}</td>
                                             <td>{{$item->heights}}</td>

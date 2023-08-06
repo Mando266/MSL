@@ -23,6 +23,7 @@ class QuotationExport implements FromCollection,WithHeadings
             "DISCHARGE PORT",
             "Main Line",
             "OFR",
+            "SOC / COC",
             "payment kind",
             "Quotation Type",
             "STATUS",
@@ -47,6 +48,8 @@ class QuotationExport implements FromCollection,WithHeadings
             $quotation->load_port_id = optional($quotation->loadPort)->name;
             $quotation->discharge_port_id = optional($quotation->dischargePort)->name;
             $quotation->principal_name = optional($quotation->principal)->name;
+            $quotation->soc = $quotation->soc == 1 ? "SOC":"COC" ;
+
             //dump(optional($quotation->principal)->name);
         }
         
