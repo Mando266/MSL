@@ -37,7 +37,7 @@
                                 </tr>
                             @else
                                 <tr>
-                                    <th class="text-center thstyle underline">خطاب صرف حاويات</th>
+                                    <th class="text-center thstyle underline">خطاب صرف حاويات وارد</th>
                                 </tr>
                             @endif    
                             </tbody>
@@ -67,7 +67,7 @@
                             <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->bookingContainerDetails->first()->activityLocation)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                             @else
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfDelivery)->name}}</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfDelivery)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                             @endif
                         </tr>
@@ -88,7 +88,7 @@
 
                     @if(optional($booking->quotation)->shipment_type == "Import")
                         <tr>
-                        <td class=" tableStyle text-right underline" colspan="2">يرجي التكرم السماح بصرف الحاويات ادناه من الدائره الجمركيه حتي يوم </td>
+                        <td class=" tableStyle text-right underline" colspan="2">يرجي التكرم بأرقامالسماح بصرف الحاويات ادناه من الدائره الجمركيه حتي يوم {{$mytime}} </td>
                         </tr>
                     @else 
                         <tr>
@@ -105,19 +105,26 @@
                         @if(optional($booking->quotation)->shipment_type == "Import")
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->consignee)->name}} <br>
-                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->consignee)->address}} &nbsp {{optional($booking->consignee->country)->name}} &nbsp {{optional($booking->consignee)->landline}}</td>
+                            <!-- &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->consignee)->address}} &nbsp {{optional($booking->consignee->country)->name}} &nbsp {{optional($booking->consignee)->landline}} -->
+                        </td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         @else
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->name}} <br>
-                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
+                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} 
+                            &nbsp {{optional($booking->customer)->landline}}
+                        </td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         @endif
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->ref_no }}</td>
+                        @if(optional($booking->quotation)->shipment_type == "Import")
+                            <td class="col-md-3 tableStyle text-right underline" >رقم البوليصة </td>
+                            @else
                             <td class="col-md-3 tableStyle text-right underline" >إذن شحن</td>
+                        @endif
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>

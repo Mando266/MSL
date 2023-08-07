@@ -24,6 +24,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
             "PAYMENT KIND",
             "INVOICE STATUS",
             "Payment STATUS",
+            "Shipment STATUS",
             "Receipts",
             "Charge Description",
             "Quantity",
@@ -42,6 +43,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
         $exportinvoices = collect();
 
         foreach($invoices  ?? [] as $invoice){
+
             $Curency = '';
             $Payment = '';
 
@@ -84,7 +86,6 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                 $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
             }
             foreach($invoice->chargeDesc as $desc ){
-
                 $tempCollection = collect([
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
@@ -99,6 +100,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
                     'STATUS' => $invoice->invoice_status,
                     'PaymentSTATUS' => $Payment,
+                    'ShipmentStatus' => $invoice->bldraft_id == 0 ? $invoice->booking_status : optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type ,
                     'receipts' => $receipts,
                     'charge_desc' => $desc->charge_description,
                     'qty' => $invoice->qty,
