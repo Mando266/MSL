@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BoundTableSeeder::class);
         $this->call(TriffSeeder::class);
         $this->call(CurrencySeeder::class);
+        $this->call(ChargesMatricesSeeder::class);
     }
 }

@@ -11,5 +11,9 @@ Route::prefix('devtools')->name('devtools.')->middleware(['auth', 'dev.tools'])-
         Route::post('select-post', [DevController::class, 'selectSqlPost'])->name('select-post');
     });
     Route::get('migrate-tables', [DevController::class, 'migrateTables'])->name('migrate-tables');
+    Route::get('seed-charges-matrices', function () {
+        Artisan::call('db:seed', ['--class' => 'ChargesMatricesSeeder']);
+        return "ChargesMatricesSeeder has been seeded!";
+    })->name('seed-charges-matrices');
 });
 
