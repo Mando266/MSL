@@ -22,5 +22,5 @@ class ContainersIndexFilter extends AbstractFilter{
         'container_ownership_id'=>ContainerOwnershipFilter::class,
         'container_status'=>ContainerStatusFilter::class,
         'description'=>LessorFilter::class,
-    ];
+    ]; 
 }

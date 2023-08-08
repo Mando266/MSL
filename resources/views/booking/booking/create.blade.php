@@ -330,7 +330,7 @@
 
                         <div class="form-row">
                             @if(request()->input('quotation_id') != "draft") 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
@@ -346,7 +346,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="voyage_id_second">Second Vessel / Voyage</label>
                                 <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -361,8 +361,22 @@
                                 </div>
                                 @enderror
                             </div>
-                            
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
+                                <label for="Transhipment">Transhipment Port</label>
+                                <select class="selectpicker form-control" id="transhipment_port" data-live-search="true" name="transhipment_port" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select...</option>
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('transhipment_port') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('transhipment_port')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>

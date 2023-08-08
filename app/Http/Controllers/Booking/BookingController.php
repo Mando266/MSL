@@ -271,7 +271,6 @@ class BookingController extends Controller
             'notes' => $request->input('notes'),
             'principal_name' => $request->input('principal_name'),
             'vessel_name' => $request->input('vessel_name'),
-            'customer_consignee_id' => $request->input('customer_consignee_id'),
             'is_transhipment' => $request->input('is_transhipment'),
             'transhipment_port' => $request->input('transhipment_port'),
             'acid' => $request->input('acid'),
