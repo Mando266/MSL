@@ -19,6 +19,7 @@
                         <form action="{{ route('temperature-discrepancy.send') }}" method="POST"
                               id="temperatureForm">
                             @csrf
+                            <input value="{{ $booking->ref_no }}" name="booking_no" hidden>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-condensed mb-4">
                                     <thead>
