@@ -14,6 +14,9 @@ Route::prefix('devtools')->name('devtools.')->middleware(['auth', 'dev.tools'])-
     Route::get('seed-charges-matrices', function () {
         Artisan::call('db:seed', ['--class' => 'ChargesMatricesSeeder']);
         return "ChargesMatricesSeeder has been seeded!";
-    })->name('seed-charges-matrices');
+    })->name('seed-charges-matrices'); Route::get('seed-charges-matrices', function () {
+        Artisan::call('db:seed');
+        return "Seeded!";
+    })->name('seed');
 });
 
