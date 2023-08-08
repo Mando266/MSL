@@ -429,7 +429,6 @@ $(document).ready(function(){
 
     });
 
-     var counter  = '<?= isset($key)? ++$key : 0 ?>';
     $("#add").click(function(){
         var counter = $('#charges tbody tr').length; // Count existing rows
         var tr = '<tr>' +

@@ -668,20 +668,7 @@ $(document).ready(function(){
 
     });
     var counter  = '<?= isset($key)? ++$key : 0 ?>';
-
-    $("#add").click(function(){
-       var tr = '<tr>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description"></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount"></td>'+
-           '<td><input type="text" value="0" class="form-control" autocomplete="off" placeholder="VAT" disabled></td>'+
-           '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" disabled></td>'+
-           '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_egy]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled requierd></td>'+
-           '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-       '</tr>';
-       counter++;
-      $('#charges').append(tr);
-    });
+    
 });
 var removed = [];
 function removeItem( item )

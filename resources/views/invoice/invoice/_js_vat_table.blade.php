@@ -47,4 +47,42 @@
         $('input[id="total_egp"]').val(totEgp);
         $('input[id="total_usd"]').val(totUsd);
     }
+
+    $("#add").click(function(){
+        var counter = $('#charges tbody tr').length; // Count existing rows
+        var tr = '<tr>' +
+            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>' +
+            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" value="0" required></td>' +
+            '<td>' +
+            '<div class="form-check">' +
+            '<input class="form-check-input vatRadio" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1">' +
+            '<label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label>' +
+            '</div>' +
+            '<div class="form-check">' +
+            '<input class="form-check-input vatRadio" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked>' +
+            '<label class="form-check-label" for="item_'+counter+'_enabled_no">No</label>' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="form-check">' +
+            '<input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1">' +
+            '<label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label>' +
+            '</div>' +
+            '<div class="form-check">' +
+            '<input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0" checked>' +
+            '<label class="form-check-label" for="item_'+counter+'_enabled_no">No</label>' +
+            '</div>' +
+            '</td>' +
+            '<td><input type="text" class="form-control" id="usd_'+counter+'" name="invoiceChargeDesc['+counter+'][total_amount]" placeholder="Total" value="0" autocomplete="off" style="background-color: white;" required disabled></td>' +
+            '<td><input type="text" id="usd_vat_'+counter+'" name="invoiceChargeDesc['+counter+'][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" value="0" disabled></td>' +
+            '<td><input type="text" class="form-control" id="egp_'+counter+'" name="invoiceChargeDesc['+counter+'][total_egy]" placeholder="Egp Amount" value="0" autocomplete="off" style="background-color: white;" required disabled></td>' +
+            '<td><input id="egp_vat_'+counter+'" type="text" name="invoiceChargeDesc['+counter+'][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" value="0" disabled></td>' +
+            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'+
+            '</tr>';
+        $('#charges tbody').append(tr);
+        document.querySelectorAll('.vatRadio').forEach(radio => {
+            radio.addEventListener('change', handleVatInput);
+        })
+
+    });
 </script>
