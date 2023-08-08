@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PortCharge extends Model
 {
-    //
+    protected $guarded = [];
 }
