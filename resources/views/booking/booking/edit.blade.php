@@ -290,7 +290,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="shipper_ref_no">Shipper Ref No</label>
-                                <input type="text" class="form-control" id="shipper_ref_no" name="shipper_ref_no" value="{{old('shipper_ref_no',$quotation->shipper_ref_no)}}"
+                                <input type="text" class="form-control" id="shipper_ref_no" name="shipper_ref_no" value="{{old('shipper_ref_no',$booking->shipper_ref_no)}}"
                                     placeholder="Shipper Ref No" autocomplete="off">
                                 @error('shipper_ref_no')
                                 <div style="color: red;">
@@ -338,7 +338,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="forwarder_ref_no">Cstar Ref No</label>
-                                <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no',$quotation->forwarder_ref_no)}}"
+                                <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no',$booking->forwarder_ref_no)}}"
                                     placeholder="Cstar Ref No" autocomplete="off">
                                 @error('forwarder_ref_no')
                                 <div style="color: red;">
@@ -402,7 +402,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            @if($quotation->id != 0)
+                        @if($quotation->id != 0)
                             <div class="form-group col-md-4">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
@@ -428,6 +428,21 @@
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Transhipment">Transhipment Port</label>
+                                <select class="selectpicker form-control" id="transhipment_port" data-live-search="true" name="transhipment_port" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                 <option value="">Select...</option>
+                                    @foreach ($ports as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('transhipment_port',$booking->transhipment_port) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('transhipment_port')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>

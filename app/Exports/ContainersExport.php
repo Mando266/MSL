@@ -10,6 +10,7 @@ class ContainersExport implements FromCollection,WithHeadings
     public function headings(): array
     {
         return [
+            "id",
             "NUMBER",
             "ISO",
             "TYPE",
@@ -36,6 +37,7 @@ class ContainersExport implements FromCollection,WithHeadings
                 $transhipment = 'Yes';
             }
                 $tempCollection = collect([
+                    'id' => $container->id,
                     'code' => $container->code,
                     'iso' => $container->iso,
                     'type' => optional($container->containersTypes)->name,
@@ -43,7 +45,7 @@ class ContainersExport implements FromCollection,WithHeadings
                     'tar_weight'=> $container->tar_weight,
                     'max_payload'=> $container->max_payload,
                     'prod_year'=> $container->production_year,
-                    'lessor'=> $container->description,
+                    'lessor'=> optional($container->seller)->name,
                     'is_transhipment'=>$transhipment,
                 ]);
                 $exportContainers->add($tempCollection);

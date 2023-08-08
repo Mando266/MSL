@@ -75,7 +75,7 @@
                             <td class="col-md-9 tableStyle text-right underline" ></td>
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td class="col-md-9 tableStyle text-right underline"></td>
                             @if(optional($booking->principal)->code == 'PLS')
                             <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} SOC</td>
@@ -84,11 +84,18 @@
                             @else
                             <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
                             @endif
-                        </tr>
+                        </tr> -->
 
                     @if(optional($booking->quotation)->shipment_type == "Import")
                         <tr>
-                        <td class=" tableStyle text-right underline" colspan="2">يرجي التكرم بأرقامالسماح بصرف الحاويات ادناه من الدائره الجمركيه حتي يوم {{$mytime}} </td>
+                            <td class="tableStyle text-right underline" colspan="2">
+                                <textarea style="margin-bottom: -40px; text-align: right; border: none; resize: none; background-color: white;"></textarea> 
+                    يرجي التكرم بالسماح بصرف الحاويات ادناه من الدائره الجمركيه حتي يوم </td>
+                        </tr>
+                        <tr>
+                            <td class="tableStyle text-right underline" colspan="2">
+                                <textarea style="margin-bottom: -40px; text-align: right; border: none; resize: none; background-color: white;"></textarea> 
+                  تم تحصيل مصاريف الطاقة حتي يوم </td>
                         </tr>
                     @else 
                         <tr>
@@ -110,13 +117,13 @@
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         @else
-                        <tr>
+                        <!-- <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->name}} <br>
                             &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} 
                             &nbsp {{optional($booking->customer)->landline}}
                         </td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
-                        </tr>
+                        </tr> -->
                         @endif
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->ref_no }}</td>
@@ -130,16 +137,29 @@
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
+
                         @if(optional($booking->quotation)->shipment_type != "Import")
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($firstVoyagePort)->eta}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >متوقع الوصول</td>
+                        </tr>
+                        @else
+                        <tr>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($firstVoyagePort)->eta}}</td>
+                            <td class="col-md-3 tableStyle text-right underline" >تاريخ الرحلة</td>
                         </tr>
                         @endif
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{$containerCount}} X {{$containerType}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
+                        @if(optional($booking->quotation)->shipment_type != "Import")
+                        <tr>
+                        <td class="col-md-9 tableStyle"><textarea style="margin-bottom: -40px; border: none; resize: none; background-color: white;"></textarea></td>
+                        <td class="col-md-3 tableStyle text-right underline">
+                       مقاول النقل </td>
+                        </tr>
+                        @endif
                     </tbody>
                 </table>
                 <div class="row">
@@ -231,8 +251,9 @@
                     <tbody>
                         <tr>
                             <td class="col-md-4 tableStyle text-center">قسم الوارد </td>
-                            <td class="col-md-8 tableStyle text-right underline"> / مقاول النقل </td>
+                            <td class="col-md-8 tableStyle text-right underline"> <textarea style="margin-bottom: -40px; text-align: right; border: none; resize: none; background-color: white;"></textarea>  / مقاول النقل 
 
+                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -24,6 +24,8 @@ use App\Exports\ReceiptExport;
 use App\Imports\BookingImport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
+use App\Imports\ContainersOvewriteImport;
+
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportExportController extends Controller
@@ -50,6 +52,13 @@ class ImportExportController extends Controller
         Excel::import(new MovementsOvewriteImport, request()->file('file'));
         return back();
     }
+
+    public function overwritecont()
+    {
+        Excel::import(new ContainersOvewriteImport, request()->file('file'));
+        return back();
+    }
+
 
     public function export()
     {
