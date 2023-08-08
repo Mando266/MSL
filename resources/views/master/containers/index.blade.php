@@ -36,6 +36,13 @@
                                     <button  id="buttonSubmit" class="btn btn-success  mt-3" disabled>Import</button>
                                 </form>
                                 @endpermission
+                                @permission('Containers-List')
+                                <form action="{{ route('overwritecont') }}" method="POST" enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <input type="file" name="file" onchange="unlockupdate();">
+                                    <button  id="updatebuttonSubmit" class="btn btn-danger  mt-3" disabled>Overwrite</button>
+                                </form>
+                                @endpermission
                             </div>
                         </div>  
                             </br>

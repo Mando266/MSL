@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
     Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
+    Route::post('overwritecont', 'ImportExportController@overwritecont')->name('overwritecont');
     Route::post('importContainers', 'ImportExportController@importContainers')->name('importContainers');
     Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');

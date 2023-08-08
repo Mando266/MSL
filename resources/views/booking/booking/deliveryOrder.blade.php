@@ -85,7 +85,7 @@
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
-                            <td class="col-md-3 tableStyle text-right underline" >البضاعة المذكوره أدناه والواردة علي </td>
+                            <td class="col-md-3 tableStyle text-right underline"> البضاعة المذكوره أدناه والواردة علي الباخرة</td>
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($firstVoyagePortImport)->eta}}</td>
@@ -95,10 +95,10 @@
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{$containerCount}} X {{$containerType}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->payment_kind}} </td>
                             <td class="col-md-3 tableStyle text-right underline" >النولون</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->import_detention}} &nbsp; Days</td>
                             <td class="col-md-3 tableStyle text-right underline" >السماح</td>

@@ -46,7 +46,7 @@
                                  title="{{trans('forms.select')}}" Required>
                                         <option value="General" {{$container_type->category == old('category') ||  $container_type->category == "General"? 'selected':''}}>General</option>
                                         <option value="Reefer" {{$container_type->category == old('category') ||  $container_type->category == "Reefer"? 'selected':''}}>Reefer</option>
-                                        <option value="Reefer" {{$container_type->category == old('category') ||  $container_type->category == "Special Equipment"? 'selected':''}}>Special Equipment</option>
+                                        <option value="Special Equipment" {{$container_type->category == old('category') ||  $container_type->category == "Special Equipment"? 'selected':''}}>Special Equipment</option>
                                 </select>
                             </div>
                 

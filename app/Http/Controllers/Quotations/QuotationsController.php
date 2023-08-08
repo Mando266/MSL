@@ -31,7 +31,7 @@ class QuotationsController extends Controller
             $exportQuotations = Quotation::select('ref_no','customer_id','ffw_id','validity_from','validity_to','equipment_type_id','place_of_acceptence_id','place_of_delivery_id','load_port_id','discharge_port_id',
             'principal_name','ofr','soc','payment_kind','quotation_type','status','import_detention','export_detention')
             ->filter(new QuotationIndexFilter(request()))->where('company_id',Auth::user()->company_id)->
-            where('discharge_agent_id',Auth::user()->agent_id)->orderBy('id','desc')->get();
+            orderBy('id','desc')->get();
             $quotation = Quotation::where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();

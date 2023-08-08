@@ -47,7 +47,7 @@
                                         <option value="General">General</option>
                                         <option value="Reefer">Reefer</option>
                                         <option value="Special Equipment">Special Equipment</option>
-                                </select>
+                                </select> 
                             </div>
                         </div>
  
