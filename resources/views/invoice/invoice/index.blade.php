@@ -131,7 +131,6 @@
                                         <th>Invoice Status</th>
                                         <th>Payment Status</th>
                                         <th>Receipts</th>
-
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>

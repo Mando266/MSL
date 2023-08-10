@@ -125,6 +125,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         $exportinvoices->add($tempCollection);
                     }
                 }else{
+                    foreach($invoice->receipts as $receipt){
+
                     $tempCollection = collect([
                         'customer' => $customer->name,
                         'type' => optional($invoice)->type,
@@ -152,7 +154,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
                     $total_balance_egp += $blanceEgp;
                 }
-                    
+            }     
             }
             foreach($customer->creditNotes as $creditNote){
                 if($creditNote->currency == "credit_usd"){
