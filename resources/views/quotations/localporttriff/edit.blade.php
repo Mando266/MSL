@@ -126,12 +126,12 @@
                                 <tr> 
                                 <input type="hidden" value ="{{ $item->id }}" name="triffPriceDetailes[{{ $key }}][id]">
                                     <td>
-                                        <input type="text" id="triffPriceDetailes" name="triffPriceDetailes[{{$key}}][charge_type]" class="form-control" autocomplete="off"  value="{{old('charge_type',$item->charge_type)}}">
-                                            @error('charge_type')
-                                            <div style="color:red;">
-                                                {{$message}}
-                                            </div>
-                                            @enderror
+                                        <select class="selectpicker form-control" id="triffPriceDetailes" data-live-search="true" name="triffPriceDetailes[{{$key}}][charge_type]" data-size="10"
+                                            title="{{trans('forms.select')}}" autofocus>
+                                            @foreach ($charges as $charge)
+                                                <option value="{{$charge->id}}" {{$item->id == old('charge_type') ||  $item->charge_type == $charge->id? 'selected':''}}>{{$charge->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     
                                     <td>
@@ -282,7 +282,7 @@ $(document).ready(function(){
 
     $("#add").click(function(){
             var tr = '<tr>'+
-        '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off"></td>'+
+        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][charge_type]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document" >Document</option></select></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][selling_price]" class="form-control" autocomplete="off"></td>'+

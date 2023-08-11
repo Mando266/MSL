@@ -6,6 +6,7 @@ use App\Filters\Invoice\InvoiceIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Booking\Booking;
+use App\Models\Invoice\ChargesDesc;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceChargeDesc;
 use App\Models\Quotations\LocalPortTriff;
@@ -96,6 +97,7 @@ class InvoiceController extends Controller
     public function create_invoice()
     {
 
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
@@ -120,7 +122,8 @@ class InvoiceController extends Controller
                 'ports'=>$ports,
                 'equipmentTypes'=>$equipmentTypes,
                 'bookings'=>$bookings,
-            ]);
+                'charges'=>$charges,
+        ]);
         }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
@@ -144,7 +147,7 @@ class InvoiceController extends Controller
                     $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                     ->orWhere('equipment_type_id', '100');
                 });
-            }]) 
+            },'triffPriceDetailes.charge']) 
             ->first();
         }else{
 
@@ -156,7 +159,7 @@ class InvoiceController extends Controller
                         $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                         ->orWhere('equipment_type_id', '100');
                     });
-            }])
+            },'triffPriceDetailes.charge'])
             ->first();
         }
         return view('invoice.invoice.create_invoice',[
@@ -166,6 +169,7 @@ class InvoiceController extends Controller
             'bldraft'=>$bldraft,
             'triffDetails'=>$triffDetails,
             'voyages'=>$voyages,
+            'charges'=>$charges,
         ]);
     }
 
@@ -610,6 +614,8 @@ class InvoiceController extends Controller
 
     public function edit(Request $request, Invoice $invoice)
     {
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+
         if($invoice->bldraft_id != 0){
             $bldraft = BlDraft::where('id',$invoice->bldraft_id)->with('blDetails')->first();
         }else{
@@ -648,6 +654,7 @@ class InvoiceController extends Controller
                 'voyages'=>$voyages,
                 'invoice_details'=>$invoice_details,
                 'total'=>$total,
+                'charges'=>$charges,
                 'total_eg'=>$total_eg,
             ]);
         }
@@ -668,7 +675,8 @@ class InvoiceController extends Controller
             'voyages'=>$voyages,
             'invoice_details'=>$invoice_details,
             'total'=>$total,
-            'total_eg'=>$total_eg,
+                'charges'=>$charges,
+                'total_eg'=>$total_eg,
         ]);
     }
     public function update(Request $request, Invoice $invoice)
