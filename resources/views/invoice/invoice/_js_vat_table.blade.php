@@ -51,7 +51,7 @@
     $("#add").click(function(){
         var counter = $('#charges tbody tr').length; // Count existing rows
         var tr = '<tr>' +
-            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>' +
+            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>' +
             '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" value="0" required></td>' +
             '<td>' +
             '<div class="form-check">' +
@@ -79,8 +79,10 @@
             '<td><input id="egp_vat_'+counter+'" type="text" name="invoiceChargeDesc['+counter+'][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" value="0" disabled></td>' +
             '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'+
             '</tr>';
-        $('#charges tbody').append(tr);
-        document.querySelectorAll('.vatRadio').forEach(radio => {
+            $('#charges tbody').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#selectpickers').selectpicker();
+            document.querySelectorAll('.vatRadio').forEach(radio => {
             radio.addEventListener('change', handleVatInput);
         })
 
