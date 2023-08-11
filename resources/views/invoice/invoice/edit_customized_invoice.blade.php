@@ -292,12 +292,12 @@
                                                     <input type="hidden" value="{{ $item->id }}"
                                                            name="invoiceChargeDesc[{{ $key }}][id]">
                                                     <td>
-                                                        <input type="text" id="charge_description"
-                                                               name="invoiceChargeDesc[{{ $key }}][charge_description]"
-                                                               class="form-control"
-                                                               autocomplete="off" placeholder="Charge Description"
-                                                               value="{{old('charge_description',$item->charge_description)}}"
-                                                               style="background-color: white;" required>
+                                                        <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
+                                                            title="{{trans('forms.select')}}" autofocus>
+                                                            @foreach ($charges as $charge)
+                                                                <option value="{{$charge->id}}" {{$charge->id == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <input type="text" id="size_small"
@@ -685,7 +685,7 @@ $(document).ready(function(){
 
     $("#addDepit").click(function(){
        var tr = '<tr>'+
-            '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
             '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;" required></td>'+
             '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
             '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc['+counter+'][total_amount]"  placeholder="Total" autocomplete="off" style="background-color: white;" disabled required></td>'+
@@ -693,6 +693,8 @@ $(document).ready(function(){
         '</tr>';
        counter++;
       $('#containerDepit').append(tr);
+        $('.selectpicker').selectpicker("render");
+        $('#selectpickers').selectpicker();
     });
 });
 </script>

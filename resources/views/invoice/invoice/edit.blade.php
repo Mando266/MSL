@@ -220,8 +220,12 @@
                             <tr>
                                 <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                                 <td>
-                                    <input type="text" id="charge_description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" 
-                                    autocomplete="off" placeholder="Charge Description" value="{{old('charge_description',$item->charge_description)}}"  style="background-color: white;" required> 
+                                    <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
+                                        title="{{trans('forms.select')}}" autofocus>
+                                        @foreach ($charges as $charge)
+                                            <option value="{{$charge->id}}" {{$charge->id == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                                 <td>
                                     <input type="text" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" class="form-control" 
@@ -432,7 +436,7 @@ $(document).ready(function(){
     $("#add").click(function(){
         var counter = $('#charges tbody tr').length; // Count existing rows
         var tr = '<tr>' +
-            '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>' +
+            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>' +
             '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" value="0" required></td>' +
             '<td>' +
             '<div class="form-check">' +
@@ -461,6 +465,8 @@ $(document).ready(function(){
             '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'+
             '</tr>';
         $('#charges tbody').append(tr);
+        $('.selectpicker').selectpicker("render");
+        $('#selectpickers').selectpicker();
         document.querySelectorAll('.vatRadio').forEach(radio => {
             radio.addEventListener('change', handleVatInput);
         })

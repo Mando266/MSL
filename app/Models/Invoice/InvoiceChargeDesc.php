@@ -14,4 +14,8 @@ class InvoiceChargeDesc extends Model
     public function invoice(){
         return $this->belongsTo(Invoice::class,'invoice_id','id');
     }
+
+    public function charge(){
+        return $this->belongsTo(ChargesDesc::class,'charge_description','id');
+    }
 }

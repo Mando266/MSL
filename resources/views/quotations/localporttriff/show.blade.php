@@ -44,7 +44,7 @@
                                 <tbody>
                                     @forelse ($triffPriceDetailes as $triffPriceDetailes)
                                         <tr>
-                                            <td>{{$triffPriceDetailes->charge_type}}</td>
+                                            <td>{{$triffPriceDetailes->charge->name}}</td>
                                             @if($triffPriceDetailes->equipment_type_id == 100)
                                             <td>All</td>
                                             @else

@@ -31,7 +31,8 @@ class LocalPortTriffController extends Controller
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
 
-            $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+            $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))
+                ->with('triffPriceDetailes.charge')->orderBy('id','desc')->paginate(30);
             $localport = LocalPortTriff::where('company_id',Auth::user()->company_id)->get();
             
             return view('quotations.localporttriff.index',[
@@ -141,6 +142,7 @@ class LocalPortTriffController extends Controller
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('id')->get();
         $currency = Currency::all();
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         
         return view('quotations.localporttriff.edit',[
@@ -151,6 +153,7 @@ class LocalPortTriffController extends Controller
             'country'=>$country,
             'currency'=>$currency,
             'agents'=>$agents,
+            'charges'=>$charges,
         ]);
     }
 
