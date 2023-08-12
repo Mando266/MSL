@@ -21,6 +21,7 @@ class VoyageExport implements FromCollection,WithHeadings
             "Terminal Name" ,
             "Road NO",
             "BL Engaged",
+            "Booking Engaged",
             "Shipment Type",
         ];
     }
@@ -54,6 +55,7 @@ class VoyageExport implements FromCollection,WithHeadings
                     'terminal'=> optional($voyagePort->terminal)->name,
                     'road_no'=> $voyagePort->road_no,
                     'bl_engaged'=> $voyage->bldrafts->count(),
+                    'booking_engaged'=> $voyage->bookings->count(),
                     'shipment_type'=> $exportNum . ' Export - ' . $importNum . ' Import',
                 ]);
                 $exportVoyages->add($tempCollection);

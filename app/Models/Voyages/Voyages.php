@@ -5,6 +5,7 @@ namespace App\Models\Voyages;
 use App\Models\Bl\BlDraft;
 use App\Models\Containers\Movements;
 use App\Models\Master\Vessels;
+use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -53,6 +54,12 @@ class Voyages extends Model implements PermissionSeederContract
             $q->where('is_transhipment',1);
         });;
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class ,'voyage_id','id')->where('booking_confirm',1);
+    }
+
     public function createOrUpdatevoyageport($inputs)
     {
 

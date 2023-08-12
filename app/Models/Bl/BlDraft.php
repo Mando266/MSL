@@ -74,7 +74,6 @@ class BlDraft extends Model implements PermissionSeederContract
     {
         return $this->hasMany(BlDraftDetails::class ,'bl_id','id');
     }
-    
     public function invoices()
     {
         return $this->hasMany(Invoice::class ,'bldraft_id','id');

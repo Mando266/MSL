@@ -835,5 +835,19 @@
         });
   });  
 </script>
+<script>
+    $(document).ready(function() {
+        $('#voyage_id_second').change(function() {
+            var selectedVoyageId = $(this).val();
+            if (selectedVoyageId) {
+                $('#transhipment_port').prop('required', true);
+                alert('Please Fill Transhipment Port Item')
+            } else {
+                $('#transhipment_port').prop('required', false);
+            }
+        });
+    });
+</script>
+
 @endpush
 
