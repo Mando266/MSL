@@ -122,8 +122,9 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <select class="selectpicker form-control" id="triffPriceDetailes" data-live-search="true" name="triffPriceDetailes[0][charge_type]" data-size="10"
-                                            title="{{trans('forms.select')}}">
+                                        <select class="form-control" id="triffPriceDetailes" data-live-search="true" name="triffPriceDetailes[0][charge_type]" data-size="10"
+                                            title="{{trans('forms.select')}}" required>
+                                            <option>select...</option>
                                             @foreach ($charges as $item)
                                                 <option value="{{$item->id}}" {{$item->id == old('charge_type') ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
@@ -131,7 +132,7 @@
                                     </td>
                                     
                                     <td>
-                                        <select class="selectpicker form-control" id="equipment_types" data-live-search="true" name="triffPriceDetailes[0][equipment_type_id]" data-size="10"
+                                        <select class="form-control" id="equipment_types" data-live-search="true" name="triffPriceDetailes[0][equipment_type_id]" data-size="10"
                                         title="{{trans('forms.select')}}">
                                             <option value="100">All</option>
                                             @foreach ($equipment_types as $item)
