@@ -311,14 +311,14 @@
                                                         <div class="form-check">
                                                             <input class="form-check-input vatRadio" type="radio"
                                                                    name="invoiceChargeDesc[{{$key}}][add_vat]"
-                                                                   id="item_{{$key}}_enabled_yes" value="1">
+                                                                   id="item_{{$key}}_enabled_yes" value="1"  {{ $item->add_vat ==  1 ? 'checked="checked"' :''}}>
                                                             <label class="form-check-label"
                                                                    for="item_{{$key}}_enabled_yes">Yes</label>
                                                         </div>
                                                         <div class="form-check">
                                                             <input class="form-check-input vatRadio" type="radio"
                                                                    name="invoiceChargeDesc[{{$key}}][add_vat]"
-                                                                   id="item_{{$key}}_enabled_no" value="0" checked>
+                                                                   id="item_{{$key}}_enabled_no" value="0" {{ $item->add_vat ==  0 ? 'checked="checked"' :''}}>
                                                             <label class="form-check-label"
                                                                    for="item_{{$key}}_enabled_no">No</label>
                                                         </div>

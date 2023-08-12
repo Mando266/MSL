@@ -59,6 +59,7 @@
             "Tests\\": "tests/"
         }
     },
+
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
@@ -73,4 +74,5 @@
             "@php artisan key:generate --ansi"
         ]
     }
+
 }
