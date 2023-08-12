@@ -128,7 +128,7 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                {{ $item->bldrafts->count() }}
+                                                {{ $item->bldrafts->count() == 0 ? $item->transhipmentBldrafts->count() : $item->bldrafts->count() }}
                                             </td>
                                             <td class="text-center">
                                                 <ul class="table-controls"> 
