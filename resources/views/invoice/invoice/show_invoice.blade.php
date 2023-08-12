@@ -76,7 +76,11 @@
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePortdis)->eta}}</span></td>
+                            @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
+                            @endif
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
@@ -84,7 +88,11 @@
                             <td class="col-md-2 tableStyle text-center" >POL</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Departure Date</td>
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePortdis)->etd}}</span></td>
+                            @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
+                            @endif
                         </tr>
                          
                         <tr>

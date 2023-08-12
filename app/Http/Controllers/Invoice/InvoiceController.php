@@ -486,6 +486,11 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $invoice = Invoice::with('chargeDesc')->find($id);
+        $firstVoyagePortdis =null;
+        if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import"){
+            $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
+            ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
+        }
         if($invoice->bldraft_id == 0){
             $qty = $invoice->qty;
             if($invoice->booking != null){
@@ -557,6 +562,7 @@ class InvoiceController extends Controller
                 'total'=>$total,
                 'total_eg'=>$total_eg,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'firstVoyagePortdis'=>$firstVoyagePortdis, 
                 'USD'=>$USD,
                 'EGP'=>$EGP,
 
@@ -598,6 +604,7 @@ class InvoiceController extends Controller
                 'amount'=>$amount,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'firstVoyagePortdis'=>$firstVoyagePortdis,  
                 'USD'=>$USD,
                 'EGP'=>$EGP,
                 'total_after_vat'=>$total_after_vat,
