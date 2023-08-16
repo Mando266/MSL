@@ -17,6 +17,9 @@ class CreatePortChargesTable extends Migration
         Schema::create('port_charges', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('charge_matrix_id');
+            $table->decimal('thc_20ft', 10, 2)->nullable();
+            $table->decimal('thc_40ft', 10, 2)->nullable();
+            $table->decimal('storage_20ft', 10, 2)->nullable();
             $table->decimal('storage_40ft_first_5', 10, 2)->nullable();
             $table->decimal('storage_40ft_after_5', 10, 2)->nullable();
             $table->decimal('power_20ft', 10, 2)->nullable();
