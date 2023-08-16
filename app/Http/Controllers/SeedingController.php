@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChargesMatrix;
+use App\Models\PortCharge;
 use Illuminate\Http\Request;
 
 class SeedingController extends Controller
@@ -108,8 +109,14 @@ class SeedingController extends Controller
             ],
         ];
 
+        $chargeMatrices = [];
         foreach ($dataSets as $data) {
-            ChargesMatrix::firstOrCreate($data);
+            $chargeMatrices[] = ChargesMatrix::updateOrCreate(['name' => $data['name']], $data);
+        }
+        foreach ($chargeMatrices as $chargeMatrix){
+            PortCharge::firstOrCreate([
+                'charge_matrix_id' => $chargeMatrix->id
+            ]);
         }
         dd('seeded Charges Matrices');
     }
