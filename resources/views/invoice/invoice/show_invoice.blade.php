@@ -71,25 +71,35 @@
                 <table class="col-lg-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="col-md-2 tableStyle text-center" >Vessel</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
+                            <td class="col-md-2 tableStyle text-center">Vessel</td>
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)    
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</span></td>
+                            @else
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
+                            @endif                            
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePortdis)->eta}}</span></td>
+                            @elseif(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($secondVoyagePortdis)->eta}}</span></td>
                             @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
                             @endif
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)  
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional(optional($invoice->bldraft)->booking)->secondvoyage)->voyage_no }}</span></td>
+                            @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span></td>
+                            @endif
                             <td class="col-md-2 tableStyle text-center" >POL</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Departure Date</td>
                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePortdis)->etd}}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($firstVoyagePortdis)->etd}}</span></td>
                             @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                             @endif

@@ -137,10 +137,35 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($invoices as $invoice)
-                                    {{-- @dd($invoice->customer) --}}
                                     @php
-                                        $totalusd = 0;
-                                        $totalegp = 0;
+
+                                    $vat = $invoice->vat;
+                                    $vat = $vat / 100;
+                                    $total = 0;
+                                    $total_eg = 0;
+                                    $total_after_vat = 0;
+                                    $total_before_vat = 0;
+                                    $total_eg_after_vat = 0;
+                                    $total_eg_before_vat = 0;
+                                    $totalAftereTax = 0;
+                                    $totalAftereTax_eg = 0;
+
+                                    foreach($invoice->chargeDesc as $chargeDesc){
+                                        $total += $chargeDesc->total_amount;
+                                        $total_eg += $chargeDesc->total_egy;
+
+                                        $totalAftereTax = (($total * $invoice->tax_discount)/100);
+                                        $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100);
+
+                                    if($chargeDesc->add_vat == 1){
+                                            $total_after_vat += ($vat * $chargeDesc->total_amount);
+                                            $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
+                                        }
+                                    }
+                                    $total_before_vat = $total;
+                                    if($total_after_vat != 0){
+                                        $total = $total + $total_after_vat;
+                                    }
 
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
@@ -151,12 +176,7 @@
                                         }
 
                                     @endphp
-                                    @php
-                                        foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
-                                            $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
-                                            $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
-                                        }
-                                    @endphp
+                                
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($invoices,$loop)}}</td>
                                             <td>{{optional($invoice)->invoice_no}}</td>
@@ -171,12 +191,12 @@
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
                                             @if( $invoice->add_egp != 'onlyegp')
-                                            <td>{{$totalusd}}</td>
+                                            <td>{{$total - $totalAftereTax}}</td>
                                             @else
                                             <td></td>
                                             @endif
                                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                                            <td>{{$totalegp}}</td>
+                                            <td>{{$total_eg - $totalAftereTax_eg}}</td>
                                             @else
                                             <td></td>
                                             @endif
