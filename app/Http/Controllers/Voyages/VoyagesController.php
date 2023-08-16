@@ -299,7 +299,7 @@ class VoyagesController extends Controller
         // ]);
         //dd($request->input());
         $user = Auth::user();
-        $VoyageDublicate  = Voyages::where('id','!=',$voyage->id)->where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->first();
+        $VoyageDublicate  = Voyages::where('id','!=',$voyage->id)->where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
         
         foreach($request->voyageport as $voyagePort){
             if($voyagePort['etd'] < $voyagePort['eta']){
@@ -308,7 +308,7 @@ class VoyagesController extends Controller
         }  
         if($VoyageDublicate != null){
             if($VoyageDublicate->count() > 0){
-                    if($VoyageDublicate->vessel_id != null && $VoyageDublicate->voyage_no != null){
+                    if($VoyageDublicate->vessel_id != null && $VoyageDublicate->voyage_no != null && $VoyageDublicate->leg_id != null){
                         return back()->with('error','This Voyage Already Exists');
                     }
                 }

@@ -145,7 +145,7 @@
                         </tr>
                         @else
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($firstVoyagePort)->eta}}</td>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($firstVoyagePortImport)->eta}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >تاريخ الرحلة</td>
                         </tr>
                         @endif
