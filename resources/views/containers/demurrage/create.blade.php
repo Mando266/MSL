@@ -51,24 +51,6 @@
                                     </div>
                                     @enderror
                                 </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="containersTypesInput">Container Type<span class="text-warning"> * (Required.) </span></label>
-                                    <select class="selectpicker form-control" id="containersTypesInput"
-                                            data-live-search="true" name="container_type_id" data-size="10"
-                                            title="{{trans('forms.select')}}" required>
-                                        @foreach ($containersTypes as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('container_type_id') ? 'selected':''}}>{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('container_type_id')
-                                    <div class="invalid-feedback">
-                                        {{$message}}
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="currency">Currency <span
                                                 class="text-warning"> * (Required.) </span></label>
@@ -85,6 +67,8 @@
                                     </div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity From <span
                                                 class="text-warning"> * (Required.) </span></label>
@@ -109,8 +93,6 @@
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="Triffs">Triff</label>
                                     <select class="selectpicker form-control" id="triff_kind" data-live-search="true"
@@ -126,7 +108,9 @@
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-8">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
                                     <label for="terminal">Terminal <span
                                                 class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="terminal" data-live-search="true"
@@ -227,7 +211,6 @@
                         </form>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -278,15 +261,15 @@
                 } else if (selectedOption.includes('IDET')) {
                     setValues('IMPORT', 'IMPORT/DETENTION', 'FULL');
                 } else if (selectedOption.includes('ISTO')) {
-                    setValues('IMPORT', 'IMPORT/DETENTION', 'FULL');
+                    setValues('IMPORT', 'IMPORT/STORAGE', 'FULL');
                 } else if (selectedOption.includes('EEST')) {
                     setValues('EXPORT', 'EXPORT/STORAGE', 'EMPTY');
                 } else if (selectedOption.includes('IEST')) {
                     setValues('IMPORT', 'IMPORT/STORAGE', 'EMPTY');
                 } else if (selectedOption.includes('PCEX')) {
-                    setValues('EXPORT', 'EXPORT', 'FULL');
+                    setValues('EXPORT', 'EXPORT/POWER', 'FULL');
                 } else if (selectedOption.includes('PCIM')) {
-                    setValues('IMPORT', 'IMPORT', 'FULL');
+                    setValues('IMPORT', 'IMPORT/POWER', 'FULL');
                 } else {
                     setValues('', '', '');
                 }
