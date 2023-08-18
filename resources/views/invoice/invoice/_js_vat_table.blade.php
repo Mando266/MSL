@@ -44,8 +44,10 @@
             totEgp = totEgp + parseFloat(egpAmount);
             totUsd = totUsd + parseFloat(usdAmount);
         });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
+        var egpRoundedValue = Math.round(totEgp * 100) / 100;
+        var usdRoundedValue = Math.round(totUsd * 100) / 100;
+        $('input[id="total_egp"]').val(egpRoundedValue);
+        $('input[id="total_usd"]').val(usdRoundedValue);
     }
 
     $("#add").click(function(){
