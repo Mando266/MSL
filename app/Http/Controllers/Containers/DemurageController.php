@@ -4,31 +4,31 @@ namespace App\Http\Controllers\Containers;
 
 use App\Filters\Containers\ContainersIndexFilter;
 use App\Http\Controllers\Controller;
-use App\TariffType;
-use Illuminate\Http\Request;
+use App\Models\Containers\Bound;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
 use App\Models\Containers\Triff;
+use App\Models\Master\ContainerStatus;
 use App\Models\Master\ContainersTypes;
-use App\Models\Master\Ports;
 use App\Models\Master\Country;
 use App\Models\Master\Currency;
-use App\Models\Containers\Bound;
-use App\Models\Master\ContainerStatus;
+use App\Models\Master\Ports;
 use App\Models\Master\Terminals;
-use Illuminate\Support\Facades\Auth;
+use App\TariffType;
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DemurageController extends Controller
 {
     public function index()
     {
-        $this->authorize(__FUNCTION__,Demurrage::class);
- 
-            $demurrage = Demurrage::where('company_id',Auth::user()->company_id)->get();
-            $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->filter(new ContainersIndexFilter(request()))->get();
-            $countries = Country::orderBy('name')->get();
-            
+        $this->authorize(__FUNCTION__, Demurrage::class);
+
+        $demurrage = Demurrage::where('company_id', Auth::user()->company_id)->get();
+        $demurrages = Demurrage::where('company_id', Auth::user()->company_id)->filter(new ContainersIndexFilter(request()))->get();
+        $countries = Country::orderBy('name')->get();
+
         return view('containers.demurrage.index',[
             'countries'=>$countries,
             'items'=>$demurrages,
@@ -64,6 +64,7 @@ class DemurageController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        dd($request);
         $demurrages = Demurrage::create([
             'country_id' => $request->input('country_id'),
             'terminal_id' => $request->input('terminal_id'),
@@ -149,9 +150,9 @@ class DemurageController extends Controller
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
         $demurrage = $demurrage->load('periods');
-        $input = [                    
+        $input = [
             'country_id' => $request->country_id,
-            'terminal_id'=>$request->terminal_id,
+            'terminal_id' => $request->terminal_id,
             'port_id' => $request->port_id,
             'container_type_id' => $request->container_type_id,
             'bound_id' => $request->bound_id,

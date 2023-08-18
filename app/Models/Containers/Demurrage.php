@@ -42,7 +42,7 @@ class Demurrage extends Model implements PermissionSeederContract
     }
     public function periods()
     {
-        return $this->hasMany(Period::class ,'demurrage_id','id');
+        return $this->belongsToMany(Period::class,'demurage_periods_slabs' ,'demurrage_id','period_id');
     }
     public function createOrUpdatePeriod($inputs)
     {
