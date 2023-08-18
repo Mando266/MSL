@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Containers;
 
 use App\Filters\Containers\ContainersIndexFilter;
 use App\Http\Controllers\Controller;
+use App\TariffType;
 use Illuminate\Http\Request;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
@@ -38,6 +39,7 @@ class DemurageController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
+        $tariffTypes = TariffType::all();
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
@@ -55,6 +57,7 @@ class DemurageController extends Controller
             'triffs'=>$triffs,
             'currency'=>$currency,
             'containerstatus'=>$containerstatus,
+            'tariffTypes'=>$tariffTypes,
         ]);
     }
 
@@ -62,30 +65,31 @@ class DemurageController extends Controller
     {
         $user = Auth::user();
         $demurrages = Demurrage::create([
-            'country_id'=> $request->input('country_id'),
-            'terminal_id'=>$request->input('terminal_id'),
-            'container_type_id'=> $request->input('container_type_id'),
-            'port_id'=> $request->input('port_id'),
-            'validity_from'=> $request->input('validity_from'),
-            'validity_to'=> $request->input('validity_to'),
-            'currency'=> $request->input('currency'),
-            'bound_id'=> $request->input('bound_id'),
-            'is_storge' => $request->is_storge,
+            'country_id' => $request->input('country_id'),
+            'terminal_id' => $request->input('terminal_id'),
+//            'container_type_id'=> $request->input('container_type_id'),
+            'port_id' => $request->input('port_id'),
+            'validity_from' => $request->input('validity_from'),
+            'validity_to' => $request->input('validity_to'),
+            'currency' => $request->input('currency'),
+//            'bound_id'=> $request->input('bound_id'),
+//            'is_storge' => $request->is_storge,
             'container_status' => $request->container_status,
-            'tariff_id'=> $request->input('tariff_id'),
-            'company_id'=>$user->company_id,
+            'tariff_id' => $request->input('tariff_id'),
+            'company_id' => $user->company_id,
+            'tariff_type_id' => $request->tariff_type_id,
         ]);
 
-        foreach($request->input('period',[]) as $period){
+        foreach ($request->input('period', []) as $period) {
             Period::create([
-                'demurrage_id'=>$demurrages->id,
-                'rate'=>$period['rate'],
-                'period'=>$period['period'],
-                'number_off_dayes'=>$period['number_off_dayes'],
+                'demurrage_id' => $demurrages->id,
+                'rate' => $period['rate'],
+                'period' => $period['period'],
+                'number_off_dayes' => $period['number_off_days'],
+                'container_type_id' => $period['container_type_id'],
             ]);
         }
-        return redirect()->route('demurrage.index')->with('success',trans('Demurrage.created'));
-
+        return redirect()->route('demurrage.index')->with('success', trans('Demurrage.created'));
     }
 
     /**
