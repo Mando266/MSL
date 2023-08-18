@@ -221,7 +221,7 @@
                                 <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                                 <td>
                                     <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
-                                        title="{{trans('forms.select')}}" autofocus>
+                                        title="{{trans('forms.select')}}" autofocus disabled>
                                         @foreach ($charges as $charge)
                                             <option value="{{$charge->id}}" {{$charge->id == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
                                         @endforeach

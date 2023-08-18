@@ -142,7 +142,7 @@
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
                         <tr>
                             <td class="col-md-1 tableStyle text-center"><span class="entry">{{ $key+1 }}</span></td>
-                            <td class="col-md-5 tableStyle"><span class="entry">{{ $chargeDesc->charge_description }}</span></td>
+                            <td class="col-md-5 tableStyle"><span class="entry">{{ optional($chargeDesc->charge)->name }}</span></td>
                             @if($invoice->add_egp == 'onlyegp')
                                 @if($chargeDesc->enabled == 1 )
                                     @if($invoice->bldraft_id == 0)

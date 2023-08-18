@@ -23,13 +23,13 @@
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" name="customer_id" id="customer" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" required>
-                                    @if( optional($bldraft->customerNotify)->name != null && optional($bldraft->booking)->quotation->shipment_type == "Import")
-                                        @if($bldraft != null)
+                                    @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
                                         <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
                                         @elseif(optional($bldraft->booking->consignee)->name != null)
                                         <option value="{{optional($bldraft->booking)->customer_consignee_id}}">{{ optional($bldraft->booking->consignee)->name }} Consignee</option>
                                         @endif
+                                        @if(optional($bldraft->customerNotify)->name != null)
                                         <option value="{{optional($bldraft)->customer_notifiy_id}}">{{ optional($bldraft->customerNotify)->name }} Notify</option>
                                         @endif
                                         <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
@@ -195,7 +195,7 @@
                                             <tr>
                                                 <td>
                                                     <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[{{ $key }}][charge_description]" data-size="10"
-                                                        title="{{trans('forms.select')}}">
+                                                        title="{{trans('forms.select')}}" disabled>
                                                         @foreach ($charges as $item)
                                                             <option value="{{$item->id}}" {{$detail->charge_type == old('charge_description',$item->id) ? 'selected':''}}>{{$item->name}}</option>
                                                         @endforeach
