@@ -43,6 +43,9 @@
                                         @foreach($suppliers as $supplier)
                                             <option value="{{$supplier->id}}" {{$supplier->id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ $supplier->name }} Supplier</option>
                                         @endforeach
+                                        @foreach($notify as $notifys)
+                                            <option value="{{$notifys->id}}" {{ $notifys->id  == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ $notifys->name }} Notify</option>
+                                        @endforeach
                                 </select>
                                 @error('customer_id')
                                 <div style="color: red;">

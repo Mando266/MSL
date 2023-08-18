@@ -112,7 +112,6 @@ class InvoiceController extends Controller
             })->with('CustomerRoles.role')->get();
             $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 3);
-
             })->with('CustomerRoles.role')->get();
 
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
