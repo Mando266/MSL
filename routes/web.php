@@ -252,7 +252,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 Auth::routes(['register' => false]);
-Route::get('/test',function(){});
+Route::get('/test',[\App\Http\Controllers\PortChargeController::class,'createInvoice']);
 require 'mail.php';
 require 'dev.php';
 

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Master\Lines;
+use App\Models\Master\Vessels;
 use App\Models\PortCharge;
+use App\Models\Voyages\Voyages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PortChargeController extends Controller
 {
@@ -24,6 +28,22 @@ class PortChargeController extends Controller
         $savedId = $portCharge->id;
 
         return response()->json(['id' => $savedId], 201);
+    }
+
+
+    public function createInvoice()
+    {
+        $vessels = Vessels::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $voyages = Voyages::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $lines = Lines::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $portCharges = PortCharge::paginate(10);
+
+        return view('port_charge.invoice', [
+            'vessels' => $vessels,
+            'voyages' => $voyages,
+            'lines' => $lines,
+            'portCharges' => $portCharges
+        ]);
     }
 
     public function create()
