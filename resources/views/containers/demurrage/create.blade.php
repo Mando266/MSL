@@ -295,17 +295,26 @@
 @push('scripts')
     <script>
         var counter = 0
+        var selectedTypes = []
         document.addEventListener('DOMContentLoaded', function () {
             const addSlabButton = document.getElementById('addSlab');
             const periodTableBody = document.querySelector('#period tbody');
             const slabsTableBody = document.querySelector('#slabs tbody');
             const containersTypesInput = document.getElementById('containersTypesInputHeader');
+            const equipmentType = containersTypesInput.value
+
 
             addSlabButton.addEventListener('click', function () {
+                
+                if (selectedTypes.includes(equipmentType)) {
+                    alert(`A slab was already created for the ${equipmentType} container type.`);
+                    return;
+                }
+
+                selectedTypes.push(equipmentType);
                 const periodRows = Array.from(periodTableBody.querySelectorAll('tr:not(.d-none)'));
 
                 let count = counter++
-                const equipmentType = containersTypesInput.value
 
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
@@ -320,16 +329,18 @@
 
                 slabsTableBody.appendChild(newRow);
 
-                // Remove the row from the period table
 
-                // Optionally, you can add a remove button handler for the new row.
                 newRow.querySelector('.removeSlabBtn').addEventListener('click', function (e) {
-                    let rowId = e.target.id
-                    this.closest('tr').remove()
-                    console.log(`.row-${rowId}`)
-                    document.querySelectorAll(`.row-${rowId}`).forEach(row => row.remove())
+                    let rowId = e.target.id;
+                    this.closest('tr').remove();
+                    document.querySelectorAll(`.row-${rowId}`).forEach(row => row.remove());
+                    
+                    const equipmentTypeToRemove = newRow.querySelector('.equipmentType').value;
+                    const indexToRemove = selectedTypes.indexOf(equipmentTypeToRemove);
+                    if (indexToRemove !== -1) {
+                        selectedTypes.splice(indexToRemove, 1);
+                    }
                 });
-
 
                 periodRows.forEach(row => {
                     const periodInput = row.querySelector('.period').value;
