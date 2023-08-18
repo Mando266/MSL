@@ -11,18 +11,12 @@ class PortChargeController extends Controller
     public function index()
     {
         $portCharges = PortCharge::paginate(10);
-            
+
         return view('port_charge.index')
             ->with([
                 'portCharges' => $portCharges
             ]);
     }
-
-
-    public function create()
-    {
-    }
-
 
     public function store(Request $request)
     {
@@ -32,6 +26,9 @@ class PortChargeController extends Controller
         return response()->json(['id' => $savedId], 201);
     }
 
+    public function create()
+    {
+    }
 
     public function show($id)
     {
@@ -43,13 +40,6 @@ class PortChargeController extends Controller
     {
         //
     }
-
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
 
     public function destroy($id)
     {
@@ -88,6 +78,11 @@ class PortChargeController extends Controller
             'wire_trnshp_20ft' => $data[$count++],
             'wire_trnshp_40ft' => $data[$count++],
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        //
     }
 
     public function deleteRow()
