@@ -28,7 +28,7 @@
                                             title="{{trans('forms.select')}}" required>
                                         @foreach ($countries as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('country_id')
@@ -44,7 +44,7 @@
                                         <option value="">Select...</option>
                                         @foreach ($ports as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('port_id')
@@ -55,13 +55,13 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="currency">Currency <span
-                                            class="text-warning"> * (Required.) </span></label>
+                                                class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="currency" data-live-search="true"
                                             name="currency" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                         @foreach ($currency as $item)
                                             <option
-                                                value="{{$item->name}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
+                                                    value="{{$item->name}}" {{$item->id == old('currency') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('currency')
@@ -74,7 +74,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity From <span
-                                            class="text-warning"> * (Required.) </span></label>
+                                                class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_from"
                                            value="{{old('validity_from')}}"
                                            placeholder="Validity From" autocomplete="off" required>
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity to <span
-                                            class="text-warning"> * (Required.) </span></label>
+                                                class="text-warning"> * (Required.) </span></label>
                                     <input type="date" class="form-control" id="currency" name="validity_to"
                                            value="{{old('validity_to')}}"
                                            placeholder="Validity To" autocomplete="off" required>
@@ -103,7 +103,7 @@
                                             title="{{trans('forms.select')}}" autofocus>
                                         @foreach ($triffs as $item)
                                             <option
-                                                value="{{$item->name}}" {{$item->name == old('tariff_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    value="{{$item->name}}" {{$item->name == old('tariff_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('tariff_id')
@@ -116,13 +116,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="terminal">Terminal <span
-                                            class="text-warning"> * (Required.) </span></label>
+                                                class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="terminal" data-live-search="true"
                                             name="terminal_id" data-size="10" required>
                                         <option value="">Select...</option>
                                         @foreach ($terminals as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('terminal_id') ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     @error('terminal_id')
@@ -166,71 +166,80 @@
 
 
                             <div class="container-fluid">
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-8">
-                                                            <h5 class="card-title">Period</h5>
-                                                        </div>
-                                                        <div class="col-md-4 text-right">
-                                                            <button type="button" class="btn btn-sm btn-success" id="addSlab">Create Slab</button>
-                                                            <button type="button" class="btn btn-sm btn-primary" id="updateSlab">Update Slab</button>
-                                                        </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-8">
+                                                        <h5 class="card-title">Period</h5>
                                                     </div>
-                                                    <div class="row mt-3">
-                                                        <div class="col-md-3 offset-md-1">
-                                                            <label for="containersTypesInputHeader" class="text-center w-30">Select Container Type:</label>
-                                                            <select class="selectpicker form-control" id="containersTypesInputHeader"
-                                                                    data-live-search="true" name="container_type_id" data-size="10"
-                                                                    title="{{trans('forms.select')}}" required>
-                                                                @foreach ($containersTypes as $item)
-                                                                    <option value="{{$item->id}}">{{$item->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
+                                                    <div class="col-md-4 text-right">
+                                                        <button type="button" class="btn btn-sm btn-success"
+                                                                id="addSlab">Create Slab
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-primary"
+                                                                id="updateSlab">Update Slab
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div class="card-body">
-                                                    <div class="table-responsive">
-                                                        <table id="period" class="table table-bordered table-hover">
-                                                            <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Period</th>
-                                                                <th>Rate</th>
-                                                                <th>Calendar Days</th>
-                                                                <th>
-                                                                    <a id="add"> Add Period <i class="fas fa-plus"></i></a>
-                                                                </th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="text" id="period" name="period[0][period]"
-                                                                           class="form-control period"
-                                                                           autocomplete="off">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="rate" name="period[0][rate]"
-                                                                           class="form-control rate"
-                                                                           autocomplete="off">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="days" name="period[0][number_off_days]"
-                                                                           class="form-control days" autocomplete="off">
-                                                                </td>
-                                                                <td></td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-3 offset-md-1">
+                                                        <label for="containersTypesInputHeader"
+                                                               class="text-center w-30">Select Container Type:</label>
+                                                        <select class="selectpicker form-control"
+                                                                id="containersTypesInputHeader"
+                                                                data-live-search="true" name="container_type_id"
+                                                                data-size="10"
+                                                                title="{{trans('forms.select')}}" required>
+                                                            @foreach ($containersTypes as $item)
+                                                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="period" class="table table-bordered table-hover">
+                                                        <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Period</th>
+                                                            <th>Rate</th>
+                                                            <th>Calendar Days</th>
+                                                            <th>
+                                                                <a id="add"> Add Period <i class="fas fa-plus"></i></a>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" id="period" name="period[0][period]"
+                                                                       class="form-control period"
+                                                                       autocomplete="off">
+                                                                <input name="period[0][container_type]"
+                                                                       class="container_type" hidden>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" id="rate" name="period[0][rate]"
+                                                                       class="form-control rate"
+                                                                       autocomplete="off">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" id="days"
+                                                                       name="period[0][number_off_days]"
+                                                                       class="form-control days" autocomplete="off">
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
+                                </div>
 
 
                                 <div class="row mb-3">
@@ -239,8 +248,10 @@
                                             <div class="card-header">
                                                 <h5 class="card-title">Slabs</h5>
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-sm btn-primary">Button 1</button>
-                                                    <button type="button" class="btn btn-sm btn-secondary">Button 2</button>
+                                                    <button type="button" class="btn btn-sm btn-primary">Button 1
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-secondary">Button 2
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -284,24 +295,20 @@
 @push('scripts')
     <script>
         var counter = 0
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const addSlabButton = document.getElementById('addSlab');
             const periodTableBody = document.querySelector('#period tbody');
             const slabsTableBody = document.querySelector('#slabs tbody');
             const containersTypesInput = document.getElementById('containersTypesInputHeader');
 
-            addSlabButton.addEventListener('click', function() {
+            addSlabButton.addEventListener('click', function () {
                 const periodRows = Array.from(periodTableBody.querySelectorAll('tr:not(.d-none)'));
 
-                periodRows.forEach(row => {
-                    let count = counter++
-                    const periodInput = row.querySelector('.period').value;
-                    const rateInput = row.querySelector('.rate').value;
-                    const daysInput = row.querySelector('.days').value;
-                    const equipmentType = containersTypesInput.value;
+                let count = counter++
+                const equipmentType = containersTypesInput.value
 
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
                     <td><input type="text" class="equipmentType form-control period" value="${equipmentType}" /></td>
                     <td><input type="text" class="status form-control period" value="Active" /></td>
                     <td><input type="text" class="currencyCode form-control period" value="Demurrage" /></td>
@@ -311,18 +318,26 @@
                     </td>
                 `;
 
-                    slabsTableBody.appendChild(newRow);
+                slabsTableBody.appendChild(newRow);
 
-                    // Remove the row from the period table
+                // Remove the row from the period table
+
+                // Optionally, you can add a remove button handler for the new row.
+                newRow.querySelector('.removeSlabBtn').addEventListener('click', function (e) {
+                    let rowId = e.target.id
+                    this.closest('tr').remove()
+                    console.log(`.row-${rowId}`)
+                    document.querySelectorAll(`.row-${rowId}`).forEach(row => row.remove())
+                });
+
+
+                periodRows.forEach(row => {
+                    const periodInput = row.querySelector('.period').value;
+                    const rateInput = row.querySelector('.rate').value;
+                    const daysInput = row.querySelector('.days').value;
+
+                    row.querySelector('.container_type').value = equipmentType
                     row.className = `d-none row-${count}`;
-
-                    // Optionally, you can add a remove button handler for the new row.
-                    newRow.querySelector('.removeSlabBtn').addEventListener('click', function(e) {
-                        let rowId = e.target.id
-                        this.closest('tr').remove()
-                        console.log(`.row-${rowId}`)
-                        document.querySelector(`.row-${rowId}`).remove()
-                    });
                 });
             });
         });
@@ -337,7 +352,7 @@
             var counter = 1;
             $("#add").click(function () {
                 var tr = '<tr>' +
-                    '<td><input type="text" name="period[' + counter + '][period]" class="form-control period"></td>' +
+                    '<td><input type="text" name="period[' + counter + '][period]" class="form-control period"><input name="period[' + counter + '][container_type]" class="container_type" hidden></td>' +
                     '<td><input type="text" name="period[' + counter + '][rate]" class="form-control rate"></td>' +
                     '<td><input type="text" id="days" name="period[' + counter + '][number_off_days]" class="form-control days" autocomplete="off"></td>' +
                     '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>' +
