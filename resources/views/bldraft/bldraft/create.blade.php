@@ -275,6 +275,7 @@
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
                                     <option value="FCL/FCL">FCL/FCL</option>
                                     <option value="CY/CY">CY/CY</option>
+                                    <option value="Empty">Empty</option>
                                 </select>
                                 @error('movement')
                                 <div style="color:red;">

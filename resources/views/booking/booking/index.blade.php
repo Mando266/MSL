@@ -20,11 +20,15 @@
                             @endif
                         </br>
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>                            
+                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a> 
+                    @endpermission
+                    @permission('Booking-List')
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
                             <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a> 
+                    @endpermission
                             </div>
                         </div>
+                    @permission('Booking-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
                             <form action="{{route('importBooking')}}" method="POST" enctype="multipart/form-data">

@@ -13,7 +13,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($contactPeople as $item)
+        @foreach($contactPeople ?? [] as $item)
             <tr>
                 <td>
                     <input class="form-control" name="contactPeople[role][]"

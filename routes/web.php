@@ -33,11 +33,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('reset-password', 'ResetPasswordController@edit')->name('user.reset-password');
         Route::put('reset-password', 'ResetPasswordController@update');
     });
-     /*
-    |-------------------------------------------
-    | master routes
-    |--------------------------------------------
-    */
+    /*
+   |-------------------------------------------
+   | master routes
+   |--------------------------------------------
+   */
     Route::prefix('master')->namespace('Master')->group(function () {
         Route::resource('company', 'CompanyController');
         Route::resource('countries', 'CountryController');
@@ -57,7 +57,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('stock-types', 'StockTypesController');
         Route::resource('supplierPrice', 'SupplierPriceController');
         Route::resource('chargesDesc', 'ChargesDescController');
-
     });
     /*
     |-------------------------------------------
@@ -66,9 +65,8 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('voyages')->namespace('Voyages')->group(function () {
         Route::resource('voyages', 'VoyagesController');
-        Route::get('voyages/{voyage}/{FromPort?}/{ToPort?}','VoyagesController@show')->name('voyages.show');
+        Route::get('voyages/{voyage}/{FromPort?}/{ToPort?}', 'VoyagesController@show')->name('voyages.show');
         Route::resource('voyageports', 'VoyageportsController');
-
     });
 
     /*
@@ -81,12 +79,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('tracking', 'TrackingController');
         Route::resource('demurrage', 'DemurageController');
         Route::resource('movementerrors', 'MovementImportErrorsController');
-        Route::get('detentionView','DetentionController@showDetentionView')->name('detention.view');
-        Route::post('calculateDetention','DetentionController@calculateDetention')->name('detention.calculation');
-        Route::get('detention/{id}/{detention}/{dchfDate}/{rcvcDate?}','DetentionController@showTriffSelectWithBlno')->name('detention.showTriffSelectWithBlno');
-        Route::post('detention','DetentionController@showDetention')->name('detention.showDetention');
+        Route::get('detentionView', 'DetentionController@showDetentionView')->name('detention.view');
+        Route::post('calculateDetention', 'DetentionController@calculateDetention')->name('detention.calculation');
+        Route::get(
+            'detention/{id}/{detention}/{dchfDate}/{rcvcDate?}',
+            'DetentionController@showTriffSelectWithBlno'
+        )->name('detention.showTriffSelectWithBlno');
+        Route::post('detention', 'DetentionController@showDetention')->name('detention.showDetention');
     });
-    
+
     /*Excel import export*/
     Route::get('export', 'ImportExportController@export')->name('export');
     Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
@@ -94,7 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
     Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
-    Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate'); 
+    Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate');
     Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('loadlistBl', 'ImportExportController@loadlistBl')->name('export.BLloadList');
     Route::get('Bllist', 'ImportExportController@Bllist')->name('export.BLExport');
@@ -110,7 +111,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('invoiceBreakdown', 'ImportExportController@invoiceBreakdown')->name('export.invoice.breakdown');
     Route::get('receiptExport', 'ImportExportController@receiptExport')->name('export.receipt');
-    Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name('export.statements');
+    Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name(
+        'export.statements'
+    );
 
     /*
     |-------------------------------------------
@@ -119,10 +122,12 @@ Route::group(['middleware' => 'auth'], function () {
     */
     Route::prefix('quotations')->namespace('Quotations')->group(function () {
         Route::resource('quotations', 'QuotationsController');
-        Route::get('{quotation}/approve',[QuotationsController::class,'approve'])->name('quotation.approve');
-        Route::get('{quotation}/reject',[QuotationsController::class,'reject'])->name('quotation.reject');
+        Route::get('{quotation}/approve', [QuotationsController::class, 'approve'])->name('quotation.approve');
+        Route::get('{quotation}/reject', [QuotationsController::class, 'reject'])->name('quotation.reject');
         Route::resource('localporttriff', 'LocalPortTriffController');
-        Route::get('localporttriffdetailes/{id}',[LocalPortTriffDetailesController::class,'destroy'])->name('LocalPortTriffDetailes.destroy');
+        Route::get('localporttriffdetailes/{id}', [LocalPortTriffDetailesController::class, 'destroy'])->name(
+            'LocalPortTriffDetailes.destroy'
+        );
     });
     /*
     |-------------------------------------------
@@ -164,12 +169,14 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('bldraft')->namespace('BlDraft')->group(function () {
-        Route::resource('bldraft','BlDraftController');
-        Route::get('selectBooking',[BlDraftController::class,'selectBooking'])->name('bldraft.selectbooking');
-        Route::get('manifest/{bldraft}',[BlDraftController::class,'manifest'])->name('bldraft.manifest');
-        Route::get('serviceManifest/{bldraft}/{xml?}',[BlDraftController::class,'serviceManifest'])->name('bldraft.serviceManifest');
-        Route::get('showCstar/{bldraft}',[BlDraftController::class,'showCstar'])->name('bldraft.showCstar');
-        Route::get('pdf',[PDFController::class,'showPDF'])->name('bldraft.showPDF');
+        Route::resource('bldraft', 'BlDraftController');
+        Route::get('selectBooking', [BlDraftController::class, 'selectBooking'])->name('bldraft.selectbooking');
+        Route::get('manifest/{bldraft}', [BlDraftController::class, 'manifest'])->name('bldraft.manifest');
+        Route::get('serviceManifest/{bldraft}/{xml?}', [BlDraftController::class, 'serviceManifest'])->name(
+            'bldraft.serviceManifest'
+        );
+        Route::get('showCstar/{bldraft}', [BlDraftController::class, 'showCstar'])->name('bldraft.showCstar');
+        Route::get('pdf', [PDFController::class, 'showPDF'])->name('bldraft.showPDF');
     });
 
     /*
@@ -178,7 +185,7 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('statements')->namespace('Statements')->group(function () {
-        Route::resource('statements','CustomerStatementController');
+        Route::resource('statements', 'CustomerStatementController');
     });
     /*
     |-------------------------------------------
@@ -186,9 +193,9 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('trucker')->namespace('Trucker')->group(function () {
-        Route::resource('trucker','TruckerController');
-        Route::resource('truckergate','TruckerGateController');
-        Route::get('basic_email',[TruckerGateController::class,'basic_email'])->name('trucker.basic_email');
+        Route::resource('trucker', 'TruckerController');
+        Route::resource('truckergate', 'TruckerGateController');
+        Route::get('basic_email', [TruckerGateController::class, 'basic_email'])->name('trucker.basic_email');
     });
     /*
     |-------------------------------------------
@@ -196,37 +203,37 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('invoice')->namespace('Invoice')->group(function () {
-        Route::resource('invoice','InvoiceController');
-        Route::get('selectBL',[InvoiceController::class,'selectBL'])->name('invoice.selectBL');
-        Route::get('selectBLinvoice',[InvoiceController::class,'selectBLinvoice'])->name('invoice.selectBLinvoice');
-        Route::get('create_invoice',[InvoiceController::class,'create_invoice'])->name('invoice.create_invoice');
-        Route::post('create_invoice',[InvoiceController::class,'storeInvoice'])->name('invoice.store_invoice');
-        Route::resource('receipt','ReceiptController');
-        Route::get('selectinvoice',[ReceiptController::class,'selectinvoice'])->name('receipt.selectinvoice');
-        Route::resource('refund','RefundController');
-        Route::resource('creditNote','CreditController');
-
+        Route::resource('invoice', 'InvoiceController');
+        Route::get('selectBL', [InvoiceController::class, 'selectBL'])->name('invoice.selectBL');
+        Route::get('selectBLinvoice', [InvoiceController::class, 'selectBLinvoice'])->name('invoice.selectBLinvoice');
+        Route::get('create_invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice');
+        Route::post('create_invoice', [InvoiceController::class, 'storeInvoice'])->name('invoice.store_invoice');
+        Route::resource('receipt', 'ReceiptController');
+        Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
+        Route::resource('refund', 'RefundController');
+        Route::resource('creditNote', 'CreditController');
     });
     /*
     |-------------------------------------------
     | Manual Updates
     |--------------------------------------------
     */
-    Route::get('/update/manual',[RefreshController::class,'updateContainers'])->name('containerRefresh');
-    Route::get('/update/quotation',[RefreshController::class,'updateQuotation'])->name('updateQuotation');
-    Route::get('/update/booking/containers/{id?}',[RefreshController::class,'updateBookingContainers'])->name('bookingContainersRefresh');
+    Route::get('/update/manual', [RefreshController::class, 'updateContainers'])->name('containerRefresh');
+    Route::get('/update/quotation', [RefreshController::class, 'updateQuotation'])->name('updateQuotation');
+    Route::get('/update/booking/containers/{id?}', [RefreshController::class, 'updateBookingContainers'])->name(
+        'bookingContainersRefresh'
+    );
     /*
     |-------------------------------------------
     | Storage routes
     |--------------------------------------------
     */
     Route::prefix('storage')->namespace('Storage')->group(function () {
-        Route::resource('storage','StorageController');
-
+        Route::resource('storage', 'StorageController');
         // Route::get('storage',[StorageController::class,'index'])->name('storage.index');
     });
     Route::prefix('lessor')->namespace('Master')->group(function () {
-        Route::resource('seller','LessorSellerController');
+        Route::resource('seller', 'LessorSellerController');
     });
     /*
     |-------------------------------------------
@@ -234,8 +241,14 @@ Route::group(['middleware' => 'auth'], function () {
     |--------------------------------------------
     */
     Route::prefix('xml')->namespace('XML')->group(function () {
-        Route::resource('xml','XmlController');
-        Route::get('selectManifest',[XmlController::class,'selectManifest'])->name('xml.selectManifest');
+        Route::resource('xml', 'XmlController');
+        Route::get('selectManifest', [XmlController::class, 'selectManifest'])->name('xml.selectManifest');
+    });
+
+    Route::resource('port-charges', 'PortChargeController');
+    Route::prefix('port-charges')->name('port-charges.')->group(function () {
+        Route::post('edit-row',[\App\Http\Controllers\PortChargeController::class,'editRow'])->name('edit-row');
+        Route::post('delete-row',[\App\Http\Controllers\PortChargeController::class,'deleteRow'])->name('delete-row');
     });
 });
 Auth::routes(['register' => false]);

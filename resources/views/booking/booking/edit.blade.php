@@ -66,13 +66,13 @@
                             $is_ffw = 0;
                             $is_consignee = 0 ; 
                             if($booking->quotation_id != null){
-                                foreach($quotation->customer->CustomerRoles as $customerRole){
+                                foreach($quotation->customer->CustomerRoles ?? []  as $customerRole){
                                     if($customerRole->role->name == "Fright Forwarder"){
                                         $is_ffw = 1;
                                     }elseif($customerRole->role->name == "Shipper"){
                                         $is_shipper = 1;
                                     }
-                                    elseif($customerRole->role->name == "Consignee"){
+                                    elseif(optional($customerRole)->role->name == "Consignee"){
                                         $is_consignee = 1;
                                     }
                                 }
@@ -202,6 +202,7 @@
                                     <label for="ffw_id">Forwarder Customer</label>
                                     <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
                                     title="{{trans('forms.select')}}" @if($is_ffw) disabled @endif>
+                                        <option value="">Select...</option>
                                         @foreach ($ffw as $item)
                                             @if($quotation->id != $booking->quotation_id)
                                                 @if($quotation->customer_id != null)

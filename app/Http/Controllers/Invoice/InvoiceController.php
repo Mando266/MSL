@@ -64,6 +64,7 @@ class InvoiceController extends Controller
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $etd = VoyagePorts::get();
+
         return view('invoice.invoice.index',[
             'invoices'=>$paginator,
             'invoiceRef'=>$invoiceRef,
@@ -109,6 +110,11 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+
+            })->with('CustomerRoles.role')->get();
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -117,6 +123,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.create_customize_invoice',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
                 'ports'=>$ports,
@@ -124,7 +131,7 @@ class InvoiceController extends Controller
                 'bookings'=>$bookings,
                 'charges'=>$charges,
         ]);
-        }
+    }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
@@ -186,6 +193,11 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+
+            })->with('CustomerRoles.role')->get();
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -194,6 +206,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
                 'ports'=>$ports,
@@ -288,6 +301,7 @@ class InvoiceController extends Controller
                 'type'=>'debit',
                 'invoice_status'=>$request->invoice_status,
                 'add_egp'=>'false',
+                'voyage_id'=>$request->voyage_id,
                 'notes'=>$request->notes,
             ]); 
         }
@@ -486,6 +500,18 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $invoice = Invoice::with('chargeDesc')->find($id);
+        $firstVoyagePortdis =null;
+        if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import"){
+            $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
+            ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
+        }
+        
+        $secondVoyagePortdis =null;
+        if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null){
+            $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id_second)
+            ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
+        }
+
         if($invoice->bldraft_id == 0){
             $qty = $invoice->qty;
             if($invoice->booking != null){
@@ -557,6 +583,8 @@ class InvoiceController extends Controller
                 'total'=>$total,
                 'total_eg'=>$total_eg,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'firstVoyagePortdis'=>$firstVoyagePortdis, 
+                'secondVoyagePortdis'=>$secondVoyagePortdis,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
 
@@ -598,6 +626,8 @@ class InvoiceController extends Controller
                 'amount'=>$amount,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
+                'firstVoyagePortdis'=>$firstVoyagePortdis,
+                'secondVoyagePortdis'=>$secondVoyagePortdis,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
                 'total_after_vat'=>$total_after_vat,
@@ -629,6 +659,12 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+
+            })->with('CustomerRoles.role')->get();
+
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -645,6 +681,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.edit_customized_invoice',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'ports'=>$ports,
                 'equipmentTypes'=>$equipmentTypes,

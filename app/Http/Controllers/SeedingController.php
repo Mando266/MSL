@@ -12,8 +12,8 @@ class SeedingController extends Controller
         $dataSets = [
             [
                 'name' => 'FULL-IMPORT',
-                'empty' => true,
-                'full' => false,
+                'empty' => false,
+                'full' => true,
                 'import' => true,
                 'export' => false,
                 'ts' => false,
@@ -28,8 +28,8 @@ class SeedingController extends Controller
             ],
             [
                 'name' => 'FULL-EXPORT',
-                'empty' => false,
-                'full' => true,
+                'empty' => true,
+                'full' => false,
                 'import' => false,
                 'export' => true,
                 'ts' => false,
@@ -44,8 +44,8 @@ class SeedingController extends Controller
             ],
             [
                 'name' => 'EMPTY-IMPORT',
-                'empty' => false,
-                'full' => true,
+                'empty' => true,
+                'full' => false,
                 'import' => true,
                 'export' => false,
                 'ts' => false,
@@ -60,8 +60,8 @@ class SeedingController extends Controller
             ],
             [
                 'name' => 'EMPTY-EXPORT',
-                'empty' => false,
-                'full' => true,
+                'empty' => true,
+                'full' => false,
                 'import' => false,
                 'export' => true,
                 'ts' => false,
@@ -76,8 +76,8 @@ class SeedingController extends Controller
             ],
             [
                 'name' => 'FULL-TRANSHIPMENT',
-                'empty' => true,
-                'full' => false,
+                'empty' => false,
+                'full' => true,
                 'import' => false,
                 'export' => false,
                 'ts' => true,
@@ -92,8 +92,8 @@ class SeedingController extends Controller
             ],
             [
                 'name' => 'EMPTY-TRANSHIPMENT',
-                'empty' => false,
-                'full' => true,
+                'empty' => true,
+                'full' => false,
                 'import' => false,
                 'export' => false,
                 'ts' => true,
