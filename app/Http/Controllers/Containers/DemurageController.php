@@ -64,7 +64,7 @@ class DemurageController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        dd($request);
+        dd($request->all());
         $demurrages = Demurrage::create([
             'country_id' => $request->input('country_id'),
             'terminal_id' => $request->input('terminal_id'),
