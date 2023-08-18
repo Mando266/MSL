@@ -182,11 +182,11 @@
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>Total USD</label>
-                                        <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                        <input type="text" class="form-control" id="total_usd"  value="{{round($total,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>Total EGP</label>
-                                        <input type="text" class="form-control" id="total_egp"  value="{{$total_eg}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                        <input type="text" class="form-control" id="total_egp"  value="{{round($total_eg,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
                             </div>
                             <div class="form-row">

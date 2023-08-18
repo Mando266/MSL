@@ -53,7 +53,7 @@ class VoyageExport implements FromCollection,WithHeadings
                     'etd'=> $voyagePort->etd,
                     'terminal'=> optional($voyagePort->terminal)->name,
                     'road_no'=> $voyagePort->road_no,
-                    'bl_engaged'=> $voyage->bldrafts->count(),
+                    'bl_engaged'=> $voyage->bldrafts->count() == 0 ? $voyage->transhipmentBldrafts->count() : $voyage->bldrafts->count(),
                     'shipment_type'=> $exportNum . ' Export - ' . $importNum . ' Import',
                 ]);
                 $exportVoyages->add($tempCollection);
