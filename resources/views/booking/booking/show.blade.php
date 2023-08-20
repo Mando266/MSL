@@ -155,7 +155,7 @@
                             <td class="tableStyle">{{ $details->qty }}</td>
                             <td class="tableStyle">{{ optional($details->container)->code }}</td>
                             <td class="tableStyle">{{ $details->weight}}</td>
-                            <td class="tableStyle">{{ $details->haz}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{!! $hazformat !!}</td>
                         </tr>
                         @endforeach
                     </tbody>

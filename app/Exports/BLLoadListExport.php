@@ -29,8 +29,10 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Seal No",
         "PACKS",
         "PACKS TYPE",
+        "TARE WEIGHT",
         "GROSS WEIGHT KGS",
         "NET WEIGHT KGS	",
+        "VGM",
         "MEASURE CBM",
         "Payment TYPE",
         "BL Type",
@@ -46,12 +48,12 @@ class BLLoadListExport implements FromCollection,WithHeadings
 
         foreach($bldarfts ?? []  as $bldarft){
             foreach($bldarft->blDetails as $blDetail){
-
                     if($bldarft->bl_status == 1){
                         $bldarft->bl_status = "Confirm";
                     }else{
                         $bldarft->bl_status = "Draft";
-                    }        
+                    } 
+       
                     $tempCollection = collect([
                         'Booking No' => optional($bldarft->booking)->ref_no,
                         'Bl No' => $bldarft->ref_no,
@@ -71,15 +73,16 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'Seal No' => $blDetail->seal_no, 
                         'PACKS' => $blDetail->packs,
                         'PACKS TYPE' => $blDetail->pack_type,
+                        'TARE WEIGHT' => optional(optional(optional($blDetail->booking)->bookingContainerDetail)->container)->tar_weight,
                         'CARGO WEIGHT' => $blDetail->gross_weight,
                         'NET WEIGHT' => $blDetail->net_weight,
+                        'vgm'=>"",
                         'MEASURE' => $blDetail->measurement,
                         'Payment' => $bldarft->payment_kind,
                         'bl_kind' => $bldarft->bl_kind,
                         'Description' => $bldarft->descripions,
                     ]);
             $exportbls->add($tempCollection);
-
         }
     }
         return $exportbls;

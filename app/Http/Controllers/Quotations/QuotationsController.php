@@ -204,6 +204,7 @@ class QuotationsController extends Controller
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
                 'quotation_type'=> $request->input('quotation_type'),
+                'transportation_mode'=> $request->input('transportation_mode'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
             ]);
@@ -246,6 +247,7 @@ class QuotationsController extends Controller
                 'power_charges'=>$request->input('power_charges'),
                 'payment_kind'=> $request->input('payment_kind'),
                 'quotation_type'=> $request->input('quotation_type'),
+                'transportation_mode'=> $request->input('transportation_mode'),
                 'status'=> "pending",
                 'shipment_type'=> $shipment_type,
             ]);
@@ -384,6 +386,7 @@ class QuotationsController extends Controller
             'power_charges'=>$request->power_charges,
             'payment_kind'=> $request->payment_kind,
             'quotation_type'=>$request->quotation_type,
+            'transportation_mode'=> $request->transportation_mode,
         ];
         if($user->is_super_admin){
             if($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id){
