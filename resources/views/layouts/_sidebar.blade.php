@@ -410,16 +410,19 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component9" data-parent="#accordionExample">
-                                @permission('Trucker-List')
-                                <li>
-                                    <a href="{{route('trucker.index')}}">Truckers List</a>
-                                </li>
-                                @endpermission
-                                @permission('TruckerGates-List')
-                                <li>
-                                    <a href="{{route('truckergate.index')}}">Trucker Gates</a>
-                                </li>
-                                @endpermission
+                            @permission('Trucker-List')
+                            <li>
+                                <a href="{{route('trucker.index')}}">Truckers List</a>
+                            </li>
+                            @endpermission
+                            @permission('TruckerGates-List')
+                            <li>
+                                <a href="{{route('truckergate.index')}}">Trucker Gates</a>
+                            </li>
+                            @endpermission
+                            <li>
+                                <a href="{{ route('port-charges.invoice') }}">Port Charges Invoice</a>
+                            </li>
                         </ul>
             </li>
             @endpermission

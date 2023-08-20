@@ -247,7 +247,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
         Route::get('get-ref-no', [PortChargeController::class, 'getRefNo'])->name('get-ref-no');
-        Route::get('invoice', [PortChargeController::class, 'createInvoice']);
+        Route::get('invoice', [PortChargeController::class, 'createInvoice'])->name('invoice');
     });
 });
 Auth::routes(['register' => false]);
