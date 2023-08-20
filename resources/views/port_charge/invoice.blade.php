@@ -57,15 +57,13 @@
                                                     name="invoice_type"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
-                                                <option value="Storage Of Full Inbound Containers">Storage Of Full
-                                                    Inbound Containers
+                                                <option value="02-VESSEL DISCHARGING AND LOADIND OPERATIONS">
+                                                    02-VESSEL DISCHARGING AND LOADIND OPERATIONS
                                                 </option>
-                                                <option value="Vessel Discharging And Loading Operations">Vessel
-                                                    Discharging And Loading Operations
+                                                <option value="03-VESSEL OUTBOUND CONTAINERS STORAGE">
+                                                    03-VESSEL OUTBOUND CONTAINERS STORAGE
                                                 </option>
-                                                <option value="Withdrawal And Stuffing Containers">Withdrawal And
-                                                    Stuffing Containers
-                                                </option>
+
                                             </select>
                                         </div>
                                     </div>
@@ -180,7 +178,7 @@
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($lines as $item)
                                                     <option
-                                                        value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -207,7 +205,7 @@
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($vessels as $item)
                                                     <option
-                                                        value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -234,7 +232,7 @@
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($voyages as $item)
                                                     <option
-                                                        value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -251,7 +249,13 @@
                                     <table class="table table-bordered table-hover table-condensed mb-4">
                                         <thead>
                                         <tr>
-                                            <th rowspan="3" style="min-width: 222px">NAME</th>
+                                            {{--- TODO  ---}}
+                                            <th rowspan="3" style="min-width: 222px">Service</th>
+                                            <th rowspan="3" style="min-width: 222px">BL NO</th>
+                                            <th rowspan="3" style="min-width: 222px">CONTAINER NO</th>
+                                            <th rowspan="3" style="min-width: 222px">TS</th>
+                                            <th rowspan="3" style="min-width: 222px">SHIPMENT TYPE</th>
+                                            <th rowspan="3" style="min-width: 222px">QUOTATION TYPE</th>
                                             <th colspan=2>THC</th>
                                             <th colspan=7>STORAGE</th>
                                             <th colspan=2>POWER</th>
@@ -262,7 +266,6 @@
                                             <th colspan=2>GAT-LIFT ON-INBND-EM-FT40</th>
                                             <th colspan=2>PTI</th>
                                             <th colspan=2>WIRE-TRNSHP</th>
-                                            <th rowspan="3">Edit</th>
                                         </tr>
                                         <tr>
                                             <th rowspan=2 height=98>20FT</th>
@@ -298,117 +301,80 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach ($portCharges as $portCharge)
-                                            <tr>
-                                                <td>{{ $portCharge->chargeMatrix->name }}</td>
-                                                <td class="editable">{{ $portCharge->thc_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->thc_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->storage_free }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab1_period }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab1_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab1_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab2_period }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab2_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->storage_slab2_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->power_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->power_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->shifting_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->shifting_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->disinf_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->disinf_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->hand_fes_em_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->hand_fes_em_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->gat_lift_off_inbnd_em_ft40_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->gat_lift_off_inbnd_em_ft40_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->gat_lift_on_inbnd_em_ft40_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->gat_lift_on_inbnd_em_ft40_40ft }}</td>
-                                                <td class="editable">{{ $portCharge->pti_failed }}</td>
-                                                <td class="editable">{{ $portCharge->pti_passed }}</td>
-                                                <td class="editable">{{ $portCharge->wire_trnshp_20ft }}</td>
-                                                <td class="editable">{{ $portCharge->wire_trnshp_40ft }}</td>
-                                                <td>
-                                                    <button class="btn btn-info edit-button" data-id="{{ $portCharge->id }}">
-                                                        Edit
-                                                    </button>
-                                                    {{--                                            <button class="btn btn-danger delete-button"--}}
-                                                    {{--                                                    data-id="{{ $portCharge->id }}">--}}
-                                                    {{--                                                Delete--}}
-                                                    {{--                                            </button>--}}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        <tr class="add-row d-none">
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="thc_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="thc_40ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="storage_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="storage_40ft_first_5"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="storage_40ft_after_5"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="power_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="power_40ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text" name="shifting_20ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text" name="shifting_40ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text" name="disinf_20ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text" name="disinf_40ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text"
-                                                                        name="hand_fes_em_20ft"/>
-                                            </td>
-                                            <td class="editable"><input class="form-control" type="text"
-                                                                        name="hand_fes_em_40ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text"
-                                                       name="gat_lift_off_inbnd_em_ft40_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text"
-                                                       name="gat_lift_off_inbnd_em_ft40_40ft"/></td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="gat_lift_on_inbnd_em_ft40_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="gat_lift_on_inbnd_em_ft40_40ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="pti_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="pti_40ft_failed"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="pti_40ft_pass"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="wire_trnshp_20ft"/>
-                                            </td>
-                                            <td class="editable">
-                                                <input class="form-control" type="text" name="wire_trnshp_40ft"/>
-                                            </td>
-                                            <td class="actions-td">
-                                                <button class="btn btn-success save-new-button">
-                                                    Save
-                                                </button>
-                                            </td>
-                                        </tr>
-
-
+                                        <tr>
+                                            <td><select name="service[]" class="form-control">
+                                                    <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                                                    <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                                                    <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                                                    <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                                                    <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                                                    <option value="018-YARD-SERV">018-YARD-SERV</option>
+                                                    <option value="019-LOG-SERV">019-LOG-SERV</option>
+                                                    <option value="020-HAND-FES">020-HAND-FES</option>
+                                                    <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS
+                                                    </option>
+                                                    <option value="024-STRG-OUTBND-CONTRS-FL">
+                                                        024-STRG-OUTBND-CONTRS-FL
+                                                    </option>
+                                                    <option value="025-STRG-OUTBND-CONTRS-EM">
+                                                        025-STRG-OUTBND-CONTRS-EM
+                                                    </option>
+                                                    <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                                                    <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP
+                                                    </option>
+                                                    <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                                                    <option value="038-MISC-REV-YARD-CRN-SHIFTING">
+                                                        038-MISC-REV-YARD-CRN-SHIFTING
+                                                    </option>
+                                                    <option value="039-MISC-REV-GAT-SERV-LIFT OFF">
+                                                        039-MISC-REV-GAT-SERV-LIFT OFF
+                                                    </option>
+                                                    <option value="045-MISC-REV-ELEC-REP-SERV">
+                                                        045-MISC-REV-ELEC-REP-SERV
+                                                    </option>
+                                                    <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                                                    <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF
+                                                        CONTAINERS
+                                                    </option>
+                                                </select></td>
+                                            <td><input type="text" class="form-control ref-no-td" name="bl_no[]"></td>
+                                            <td><input type="text" id="container_no_input" name="container_no[]"
+                                                       class="container_no form-control"></td>
+                                            <td><input type="text" name="is_transhipment[]"
+                                                       class="is_transhipment form-control"></td>
+                                            <td><input type="text" name="shipment_type[]"
+                                                       class="shipment_type form-control"></td>
+                                            <td><input type="text" name="quotation_type[]"
+                                                       class="quotation_type form-control"></td>
+                                            <td><input type="text" name="thc_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="thc_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="free_time[]" class="form-control"></td>
+                                            <td><input type="text" name="slab1_period[]" class="form-control"></td>
+                                            <td><input type="text" name="slab1_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="slab1_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="slab2_period[]" class="form-control"></td>
+                                            <td><input type="text" name="slab2_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="slab2_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="power_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="power_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="shifting_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="shifting_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="disinf_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="disinf_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="hand_fes_em_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="hand_fes_em_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]"
+                                                       class="form-control"></td>
+                                            <td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]"
+                                                       class="form-control"></td>
+                                            <td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]"
+                                                       class="form-control"></td>
+                                            <td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]"
+                                                       class="form-control"></td>
+                                            <td><input type="text" name="pti_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="pti_40ft[]" class="form-control"></td>
+                                            <td><input type="text" name="wire_trnshp_20ft[]" class="form-control"></td>
+                                            <td><input type="text" name="wire_trnshp_40ft[]" class="form-control"></td>
                                         </tbody>
 
                                     </table>
@@ -435,26 +401,134 @@
         </div>
     </div>
 @endsection
+@push('styles')
+    <style>
+        input {
+            min-width: 100px;
+        }
+    </style>
+@endpush
 @push('scripts')
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        $(function () {
-            let vessel = $('#vessel_id');
-            $('#vessel_id').on('change', function (e) {
-                let value = e.target.value;
-                let response = $.get(`/api/vessel/voyages/${vessel.val()}`).then(function (data) {
-                    let voyages = data.voyages || '';
-                    let list2 = [];
-                    for (let i = 0; i < voyages.length; i++) {
-                        list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no} - ${voyages[i].leg}</option>`);
+        document.addEventListener('DOMContentLoaded', () => {
+            const containerNoInput = $('#container_no_input');
+            const tbody = $('table tbody');
+
+            containerNoInput.on('paste', e => {
+                e.preventDefault();
+                const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+                const pastedContent = clipboardData.getData('text/plain');
+                const containerNumbers = pastedContent.split('\n');
+
+                const row = containerNoInput.closest('tr');
+                containerNumbers.forEach(containerNumber => {
+                    if (containerNumber.trim() !== '') {
+                        const newRow = $('<tr>' +
+                            `<td><select name="service[]" class="form-control">
+                                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                                <option value="018-YARD-SERV">018-YARD-SERV</option>
+                                <option value="019-LOG-SERV">019-LOG-SERV</option>
+                                <option value="020-HAND-FES">020-HAND-FES</option>
+                                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
+                                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
+                                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+                                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
+                                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
+                                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
+                                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+                                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+                             </select></td>` +
+                            '<td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>' +
+                            '<td><input type="text" name="container_no[]" class="form-control container_no" value="' + containerNumber + '"></td>' +
+                            `<td><input type="text" name="is_transhipment[]"
+                                                       class="is_transhipment form-control"></td>
+                            <td><input type="text" name="shipment_type[]"
+                                                       class="shipment_type form-control"></td>
+                            <td><input type="text" name="quotation_type[]"
+                                                       class="quotation_type form-control"></td>` +
+                            '<td><input type="text" name="thc_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="thc_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="free_time[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab1_period[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab1_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab1_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab2_period[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab2_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="slab2_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="power_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="power_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="shifting_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="shifting_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="disinf_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="disinf_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="hand_fes_em_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="hand_fes_em_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="pti_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="pti_40ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="wire_trnshp_20ft[]" class="form-control"></td>' +
+                            '<td><input type="text" name="wire_trnshp_40ft[]" class="form-control"></td>' +
+                            '</tr>');
+                        tbody.append(newRow);
+                        newRow.find('.container_no').trigger('change');
+                        row.remove();
                     }
-                    let voyageno = $('#voyage');
-                    voyageno.html(list2.join(''));
-                    $('.selectpicker').selectpicker('refresh');
                 });
             });
-        });
+
+            $(document).on('change', '.container_no', function () {
+                const containerNumber = $(this).val().trim()
+                if (containerNumber !== '') {
+                    const row = $(this).closest('tr')
+                    const refNoCell = row.find('.ref-no-td')[0]
+                    const isTsCell = row.find('.is_transhipment')[0]
+                    const shipTypeCell = row.find('.shipment_type')[0]
+                    const quoteTypeCell = row.find('.quotation_type')[0]
+
+                    axios.get(`{{ route('port-charges.get-ref-no') }}`, {
+                        params: {
+                            vessel: $('#vessel_id').val(),
+                            voyage: $('#voyage').val(),
+                            container: containerNumber
+                        }
+                    }).then(response => {
+                        if (response.data.status === 'success') {
+                            refNoCell.value = response.data.ref_no
+                            isTsCell.value = response.data.is_ts
+                            shipTypeCell.value = response.data.shipment_type
+                            quoteTypeCell.value = response.data.quotation_type
+                        }
+                    }).catch(() => {
+                        console.error('Could not find ref_no')
+                    })
+                }
+            })
+
+            const vessel = $('#vessel_id')
+            vessel.on('change', function (e) {
+                const value = e.target.value
+                $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
+                    const voyages = data.voyages || []
+                    const voyageNo = $('#voyage')
+                    const list2 = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
+                    voyageNo.html(list2.join(''))
+                    $('.selectpicker').selectpicker('refresh')
+                })
+            })
+        })
+
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    @include('port_charge._js')
+    {{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>--}}
+    {{--    @include('port_charge._js')--}}
 @endpush

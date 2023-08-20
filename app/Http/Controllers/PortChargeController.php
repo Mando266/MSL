@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bl\BlDraft;
+use App\Models\Master\Containers;
 use App\Models\Master\Lines;
 use App\Models\Master\Vessels;
 use App\Models\PortCharge;
@@ -30,6 +32,9 @@ class PortChargeController extends Controller
         return response()->json(['id' => $savedId], 201);
     }
 
+    public function create()
+    {
+    }
 
     public function createInvoice()
     {
@@ -46,16 +51,35 @@ class PortChargeController extends Controller
         ]);
     }
 
-    public function create()
+    public function getRefNo()
     {
+//        $vessel = request()->input('vessel');
+        $voyage = request()->input('voyage');
+
+        $container = request()->input('container');
+        $containerNo = Containers::firstWhere('code', $container)->id;
+
+//        dd($containerNo, $voyage);
+        $blDraft = BlDraft::where('voyage_id', $voyage)
+            ->whereHas('blDetails', function ($q) use ($containerNo) {
+                $q->where('container_id', $containerNo);
+            })->first();
+        $booking = $blDraft->booking;
+        $quotation = $booking->quotation;
+        if ($blDraft) {
+            return response()->json([
+                'status' => 'success',
+                'ref_no' => $blDraft->ref_no,
+                'is_ts' => $booking->is_transhipment ?? '',
+                'shipment_type' => $quotation->shipment_type ?? '',
+                'quotation_type' => $quotation->quotation_type ?? ''
+            ], 201);
+        }
+
+        return response()->json(['status' => 'failed'], 404);
     }
 
-    public function show($id)
-    {
-        //
-    }
-
-
+//cost gate
     public function edit($id)
     {
         //

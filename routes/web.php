@@ -2,19 +2,16 @@
 
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\BlDraft\PDFController;
-use App\Http\Controllers\XML\XmlController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
-use App\Http\Controllers\Invoice\RefundController;
-use App\Http\Controllers\Master\LessorSellerController;
+use App\Http\Controllers\PortChargeController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
-use App\Http\Controllers\Storage\StorageController;
 use App\Http\Controllers\Trucker\TruckerGateController;
 use App\Http\Controllers\Update\RefreshController;
-use App\Models\ViewModel\RootMenuNode;
+use App\Http\Controllers\XML\XmlController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -245,14 +242,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectManifest', [XmlController::class, 'selectManifest'])->name('xml.selectManifest');
     });
 
-    Route::resource('port-charges', 'PortChargeController');
+    Route::resource('port-charges', 'PortChargeController')->except(['show']);
     Route::prefix('port-charges')->name('port-charges.')->group(function () {
-        Route::post('edit-row',[\App\Http\Controllers\PortChargeController::class,'editRow'])->name('edit-row');
-        Route::post('delete-row',[\App\Http\Controllers\PortChargeController::class,'deleteRow'])->name('delete-row');
+        Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
+        Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
+        Route::get('get-ref-no', [PortChargeController::class, 'getRefNo'])->name('get-ref-no');
+        Route::get('invoice', [PortChargeController::class, 'createInvoice']);
     });
 });
 Auth::routes(['register' => false]);
-Route::get('/test',[\App\Http\Controllers\PortChargeController::class,'createInvoice']);
 require 'mail.php';
 require 'dev.php';
 
