@@ -241,7 +241,6 @@ class InvoiceController extends Controller
             request()->validate([
                 'customer' => ['required'],
                 'customer_id' => ['required'],
-                'vat' => ['required'],
 
             ]);
         }else{
@@ -249,7 +248,6 @@ class InvoiceController extends Controller
                 'bldraft_id' => ['required'],
                 'customer' => ['required'],
                 'customer_id' => ['required'],
-                'vat' => ['required'],
             ]);
         }
         if($request->bldraft_id != 'customize'){
@@ -310,15 +308,15 @@ class InvoiceController extends Controller
             $setting->debit_confirm += 1;
         }else{
             $invoice_no = 'DRAFTD';
-            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+            $invoice_no = $invoice_no . str_pad( $setting->debit_draft, 4, "0", STR_PAD_LEFT );
             $setting->debit_draft += 1;
         }
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
         $setting->save();
-        if($request->bldraft_id != 'customize'){
 
-        $qty = $bldraft->blDetails->count();
+        if($request->bldraft_id != 'customize'){
+            $qty = $bldraft->blDetails->count();
         }
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){

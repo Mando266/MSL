@@ -32,16 +32,16 @@
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                        <option value="debit">Debit</option>
-                                        <option value="invoice">Invoice</option>
+                                        <option value="debit" {{ request()->input('type') == "debit" ? 'selected':'' }}>Debit</option>
+                                        <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
                             
                             <div class="form-group col-md-4">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
-                                    <option value="draft">Draft</option>
-                                    <option value="confirm">Confirm</option>
+                                    <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
+                                    <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
                             <div class="form-group col-md-4">
@@ -78,8 +78,8 @@
                             <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
-                                    <option value="Prepaid">Prepaid </option>
-                                    <option value="Collect">Collect</option>
+                                    <option value="Prepaid" {{ request()->input('payment_kind') == "Prepaid" ? 'selected':'' }}>Prepaid </option>
+                                    <option value="Collect" {{ request()->input('payment_kind') == "Collect" ? 'selected':'' }}>Collect</option>
                                 </select>
                                 @error('payment_kind')
                                 <div style="color:red;">
