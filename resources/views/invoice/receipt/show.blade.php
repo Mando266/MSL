@@ -45,7 +45,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">{{ optional($receipt->invoice)->customer }} </span>&nbsp;&nbsp; : استلمت من<h3>
-                    </div>
+                    </div> 
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
