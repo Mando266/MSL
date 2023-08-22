@@ -196,12 +196,12 @@
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
                                             @if( $invoice->add_egp != 'onlyegp')
-                                            <td>{{$total - $totalAftereTax}}</td>
+                                            <td>{{$total}}</td>
                                             @else
                                             <td></td>
                                             @endif
                                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                                            <td>{{$total_eg - $totalAftereTax_eg}}</td>
+                                            <td>{{$total_eg}}</td>
                                             @else
                                             <td></td>
                                             @endif
@@ -253,7 +253,6 @@
                                                     </li>
                                                     @endpermission 
                                                 @if($invoice->paymentstauts == 0)
-
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" method="post">
