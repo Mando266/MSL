@@ -107,6 +107,22 @@ class SeedingController extends Controller
                 'power_from' => 'NOT APP',
                 'power_to' => 'NOT APP',
             ],
+            [
+                'name' => 'DA-INVENTORY',
+                'empty' => false,
+                'full' => false,
+                'import' => false,
+                'export' => false,
+                'ts' => false,
+                'payer' => 'FOREIGN PAYER',
+                'currency' => 'USD',
+                'storage_free' => 0,
+                'storage_from' => 'DCTE',
+                'storage_to' => 'LOTE',
+                'power_free' => 0,
+                'power_from' => 'NOT APP',
+                'power_to' => 'NOT APP',
+            ],
         ];
 
         $chargeMatrices = [];
