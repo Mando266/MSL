@@ -148,7 +148,9 @@ class InvoiceController extends Controller
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
             ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
             ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                $q->where("is_import_or_export", 1)
+                $q->where("is_import_or_export", 1);
+                $q->where('standard_or_customise',1)
+
                 ->where(function($query) use($bldraft) {
                     $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                     ->orWhere('equipment_type_id', '100');
@@ -160,7 +162,8 @@ class InvoiceController extends Controller
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->discharge_port_id)
                 ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
                 ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                    $q->where("is_import_or_export", 0)
+                    $q->where("is_import_or_export", 0);
+                    $q->where('standard_or_customise',1)
                     ->where(function($query) use($bldraft) {
                         $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                         ->orWhere('equipment_type_id', '100');
@@ -430,6 +433,8 @@ class InvoiceController extends Controller
                 'invoice_kind'=>$blkind,
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
+                'notes'=>$request->notes,
+
             ]);
         }
         
@@ -571,8 +576,6 @@ class InvoiceController extends Controller
             $EGP =  ucfirst($f->format($exp[0]));
         }
         
-        
-
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
@@ -709,8 +712,8 @@ class InvoiceController extends Controller
             'voyages'=>$voyages,
             'invoice_details'=>$invoice_details,
             'total'=>$total,
-                'charges'=>$charges,
-                'total_eg'=>$total_eg,
+            'charges'=>$charges,
+            'total_eg'=>$total_eg,
         ]);
     }
     public function update(Request $request, Invoice $invoice)

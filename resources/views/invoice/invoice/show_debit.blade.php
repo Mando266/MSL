@@ -93,7 +93,7 @@
                     <tbody>
                         @foreach($invoice->chargeDesc as $chargeDesc)
                         <tr>
-                            <td class="col-md-4 tableStyle" style="font-size: 16px !important; font-weight: 100 !important;">{{ optional($chargeDesc->charge)->name }}</td>
+                            <td class="col-md-4 tableStyle" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->charge_description }}</td>
                             <td class="col-md-3 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->size_small }}</td>
                             <td class="col-md-2 tableStyle text-center" style="font-size: 16px !important; font-weight: 100 !important;">{{ $chargeDesc->total_amount }}</td>
                         </tr>
