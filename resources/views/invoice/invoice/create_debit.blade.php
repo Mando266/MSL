@@ -23,12 +23,15 @@
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" name="customer_id"  id="customer" data-live-search="true" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                        @if($bldraft != null)
+                                    @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
                                         <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
                                         @endif
-                                        <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
+                                        @if(optional($bldraft->customerNotify)->name != null )
+                                        <option value="{{optional($bldraft)->customer_notifiy_id}}">{{ optional($bldraft->customerNotify)->name }} Notify</option>
                                         @endif
+                                        <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
+                                    @endif
                                 </select>
                                 @error('customer')
                                 <div style="color: red;">
@@ -73,9 +76,11 @@
                                 <select class="selectpicker form-control" id="voyage_id" name="voyage_id"  data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
-                                    @if(optional($bldraft)->voyage_id != null)
-                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
-                                        @endif
+                                    @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                        @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>

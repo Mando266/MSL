@@ -48,6 +48,10 @@
                     $containerType = optional($detail->containerType)->name;
                 }
                 @endphp
+                @php
+                    $data = $haz;
+                    $hazformat = implode(",<br>", explode(", ", $data));
+                @endphp
                 <table class="col-md-12 tableStyle" >
                     <tbody>
                         <tr>
@@ -102,7 +106,7 @@
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" ></td>
-                            <td class="col-md-4 tableStyle text-center" >{{$haz}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{!! nl2br(e($haz)) !!}</td>
                             <td class="col-md-4 tableStyle text-right underline" ></td>
                         </tr>
 

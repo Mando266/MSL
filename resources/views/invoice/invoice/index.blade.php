@@ -32,16 +32,16 @@
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                        <option value="debit">Debit</option>
-                                        <option value="invoice">Invoice</option>
+                                        <option value="debit" {{ request()->input('type') == "debit" ? 'selected':'' }}>Debit</option>
+                                        <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
                             
                             <div class="form-group col-md-4">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
-                                    <option value="draft">Draft</option>
-                                    <option value="confirm">Confirm</option>
+                                    <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
+                                    <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
                             <div class="form-group col-md-4">
@@ -78,8 +78,8 @@
                             <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
-                                    <option value="Prepaid">Prepaid </option>
-                                    <option value="Collect">Collect</option>
+                                    <option value="Prepaid" {{ request()->input('payment_kind') == "Prepaid" ? 'selected':'' }}>Prepaid </option>
+                                    <option value="Collect" {{ request()->input('payment_kind') == "Collect" ? 'selected':'' }}>Collect</option>
                                 </select>
                                 @error('payment_kind')
                                 <div style="color:red;">
@@ -137,10 +137,35 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($invoices as $invoice)
-                                    {{-- @dd($invoice->customer) --}}
                                     @php
-                                        $totalusd = 0;
-                                        $totalegp = 0;
+
+                                    $vat = $invoice->vat;
+                                    $vat = $vat / 100;
+                                    $total = 0;
+                                    $total_eg = 0;
+                                    $total_after_vat = 0;
+                                    $total_before_vat = 0;
+                                    $total_eg_after_vat = 0;
+                                    $total_eg_before_vat = 0;
+                                    $totalAftereTax = 0;
+                                    $totalAftereTax_eg = 0;
+
+                                    foreach($invoice->chargeDesc as $chargeDesc){
+                                        $total += $chargeDesc->total_amount;
+                                        $total_eg += $chargeDesc->total_egy;
+
+                                        $totalAftereTax = (($total * $invoice->tax_discount)/100);
+                                        $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100);
+
+                                    if($chargeDesc->add_vat == 1){
+                                            $total_after_vat += ($vat * $chargeDesc->total_amount);
+                                            $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
+                                        }
+                                    }
+                                    $total_before_vat = $total;
+                                    if($total_after_vat != 0){
+                                        $total = $total + $total_after_vat;
+                                    }
 
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
@@ -151,32 +176,32 @@
                                         }
 
                                     @endphp
-                                    @php
-                                        foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
-                                            $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
-                                            $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
-                                        }
-                                    @endphp
+                                
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($invoices,$loop)}}</td>
                                             <td>{{optional($invoice)->invoice_no}}</td>
                                             <td>{{$invoice->customer}}</td>
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{optional($invoice->bldraft)->ref_no ?? "Customize"}}</td>
+                                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional($invoice->bldraft->booking)->secondvoyage)->voyage_no }}</td>
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</td>
+                                            @else
                                             <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</td>
+                                            @endif
                                             <td>{{optional($VoyagePort)->eta}}</td>
                                             <td>{{optional($VoyagePort)->etd}}</td>
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
                                             @if( $invoice->add_egp != 'onlyegp')
-                                            <td>{{$totalusd}}</td>
+                                            <td>{{$total}}</td>
                                             @else
                                             <td></td>
                                             @endif
                                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                                            <td>{{$totalegp}}</td>
+                                            <td>{{$total_eg}}</td>
                                             @else
                                             <td></td>
                                             @endif
@@ -228,7 +253,6 @@
                                                     </li>
                                                     @endpermission 
                                                 @if($invoice->paymentstauts == 0)
-
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" method="post">

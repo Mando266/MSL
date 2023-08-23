@@ -32,6 +32,9 @@
                                         @foreach($suppliers as $supplier)
                                             <option value="{{$supplier->id}}">{{ $supplier->name }} Supplier</option>
                                         @endforeach
+                                        @foreach($notify as $notifys)
+                                            <option value="{{$notifys->id}}">{{ $notifys->name }} Notify</option>
+                                        @endforeach
                                 </select>
                                 @error('customer_id')
                                 <div style="color: red;">
@@ -215,7 +218,7 @@
                             <div class="form-row">
                                     <div class="col-md-3 form-group">
                                         <label> VAT % </label>
-                                        <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off"  style="background-color:#fff">
+                                        <input type="text" class="form-control" placeholder="VAT %" name="vat" value={{0}} autocomplete="off"  style="background-color:#fff">
                                     </div> 
                                 <div class="form-group col-md-3">
                                     <label for="status">Booking Status<span class="text-warning"> * </span></label>
@@ -446,8 +449,8 @@ $('body').on('input', 'input[name$="[size_small]"]', function() {
         });
         var counter  = '<?= isset($key)? ++$key : 0 ?>';
         $("#add").click(function(){
-           var tr = '<tr>'+
-               '<td><input type="text" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
+           var tr = '<tr>'+ 
+                '<td><select class="form-control" data-live-search="true" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1"><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+

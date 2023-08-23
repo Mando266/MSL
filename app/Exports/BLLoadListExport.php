@@ -24,13 +24,14 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Voyage",
         "Container Type",
         "Container No",
-        "TARE WEIGHT",
         "OFR",
         "Seal No",
         "PACKS",
         "PACKS TYPE",
+        "TARE WEIGHT",
         "GROSS WEIGHT KGS",
         "NET WEIGHT KGS	",
+        "VGM",
         "MEASURE CBM",
         "Payment TYPE",
         "BL Type",
@@ -46,12 +47,12 @@ class BLLoadListExport implements FromCollection,WithHeadings
 
         foreach($bldarfts ?? []  as $bldarft){
             foreach($bldarft->blDetails as $blDetail){
-
                     if($bldarft->bl_status == 1){
                         $bldarft->bl_status = "Confirm";
                     }else{
                         $bldarft->bl_status = "Draft";
-                    }        
+                    } 
+       
                     $tempCollection = collect([
                         'Booking No' => optional($bldarft->booking)->ref_no,
                         'Bl No' => $bldarft->ref_no,
@@ -66,20 +67,20 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'Voyage' => optional($bldarft->voyage)->voyage_no,
                         'Container Type' => optional($bldarft->equipmentsType)->name,
                         'Container No' => optional($blDetail->container)->code,
-                        'TARE WEIGHT' => optional($blDetail->container)->tar_weight,
                         'OFR' => optional($bldarft->booking->quotation)->ofr,
                         'Seal No' => $blDetail->seal_no, 
                         'PACKS' => $blDetail->packs,
                         'PACKS TYPE' => $blDetail->pack_type,
+                        'TARE WEIGHT' => optional($blDetail->container)->tar_weight,
                         'CARGO WEIGHT' => $blDetail->gross_weight,
                         'NET WEIGHT' => $blDetail->net_weight,
+                        'vgm'=>(float)optional($blDetail->container)->tar_weight + (float)$blDetail->gross_weight,
                         'MEASURE' => $blDetail->measurement,
                         'Payment' => $bldarft->payment_kind,
                         'bl_kind' => $bldarft->bl_kind,
                         'Description' => $bldarft->descripions,
                     ]);
             $exportbls->add($tempCollection);
-
         }
     }
         return $exportbls;

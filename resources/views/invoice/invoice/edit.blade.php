@@ -182,11 +182,11 @@
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>Total USD</label>
-                                        <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                        <input type="text" class="form-control" id="total_usd"  value="{{round($total,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>Total EGP</label>
-                                        <input type="text" class="form-control" id="total_egp"  value="{{$total_eg}}" autocomplete="off"  style="background-color:#fff" readonly>
+                                        <input type="text" class="form-control" id="total_egp"  value="{{round($total_eg,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -221,7 +221,7 @@
                                 <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                                 <td>
                                     <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
-                                        title="{{trans('forms.select')}}" autofocus>
+                                        title="{{trans('forms.select')}}" autofocus disabled>
                                         @foreach ($charges as $charge)
                                             <option value="{{$charge->id}}" {{$charge->id == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
                                         @endforeach

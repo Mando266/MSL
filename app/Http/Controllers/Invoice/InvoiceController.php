@@ -64,6 +64,7 @@ class InvoiceController extends Controller
         $voyages    = Voyages::where('company_id',Auth::user()->company_id)->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $etd = VoyagePorts::get();
+
         return view('invoice.invoice.index',[
             'invoices'=>$paginator,
             'invoiceRef'=>$invoiceRef,
@@ -109,6 +110,10 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+            })->with('CustomerRoles.role')->get();
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -117,6 +122,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.create_customize_invoice',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
                 'ports'=>$ports,
@@ -124,7 +130,7 @@ class InvoiceController extends Controller
                 'bookings'=>$bookings,
                 'charges'=>$charges,
         ]);
-        }
+    }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
@@ -142,7 +148,9 @@ class InvoiceController extends Controller
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
             ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
             ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                $q->where("is_import_or_export", 1)
+                $q->where("is_import_or_export", 1);
+                $q->where('standard_or_customise',1)
+
                 ->where(function($query) use($bldraft) {
                     $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                     ->orWhere('equipment_type_id', '100');
@@ -154,7 +162,8 @@ class InvoiceController extends Controller
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->discharge_port_id)
                 ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
                 ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                    $q->where("is_import_or_export", 0)
+                    $q->where("is_import_or_export", 0);
+                    $q->where('standard_or_customise',1)
                     ->where(function($query) use($bldraft) {
                         $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                         ->orWhere('equipment_type_id', '100');
@@ -186,6 +195,11 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+
+            })->with('CustomerRoles.role')->get();
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -194,6 +208,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
                 'ports'=>$ports,
@@ -229,7 +244,6 @@ class InvoiceController extends Controller
             request()->validate([
                 'customer' => ['required'],
                 'customer_id' => ['required'],
-                'vat' => ['required'],
 
             ]);
         }else{
@@ -237,7 +251,6 @@ class InvoiceController extends Controller
                 'bldraft_id' => ['required'],
                 'customer' => ['required'],
                 'customer_id' => ['required'],
-                'vat' => ['required'],
             ]);
         }
         if($request->bldraft_id != 'customize'){
@@ -288,6 +301,7 @@ class InvoiceController extends Controller
                 'type'=>'debit',
                 'invoice_status'=>$request->invoice_status,
                 'add_egp'=>'false',
+                'voyage_id'=>$request->voyage_id,
                 'notes'=>$request->notes,
             ]); 
         }
@@ -297,15 +311,15 @@ class InvoiceController extends Controller
             $setting->debit_confirm += 1;
         }else{
             $invoice_no = 'DRAFTD';
-            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+            $invoice_no = $invoice_no . str_pad( $setting->debit_draft, 4, "0", STR_PAD_LEFT );
             $setting->debit_draft += 1;
         }
         $invoice->invoice_no = $invoice_no;
         $invoice->save();
         $setting->save();
-        if($request->bldraft_id != 'customize'){
 
-        $qty = $bldraft->blDetails->count();
+        if($request->bldraft_id != 'customize'){
+            $qty = $bldraft->blDetails->count();
         }
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
@@ -419,6 +433,8 @@ class InvoiceController extends Controller
                 'invoice_kind'=>$blkind,
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
+                'notes'=>$request->notes,
+
             ]);
         }
         
@@ -491,6 +507,13 @@ class InvoiceController extends Controller
             $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
             ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
         }
+        
+        $secondVoyagePortdis =null;
+        if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null){
+            $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id_second)
+            ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
+        }
+
         if($invoice->bldraft_id == 0){
             $qty = $invoice->qty;
             if($invoice->booking != null){
@@ -553,8 +576,6 @@ class InvoiceController extends Controller
             $EGP =  ucfirst($f->format($exp[0]));
         }
         
-        
-
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
@@ -563,6 +584,7 @@ class InvoiceController extends Controller
                 'total_eg'=>$total_eg,
                 'firstVoyagePort'=>$firstVoyagePort,
                 'firstVoyagePortdis'=>$firstVoyagePortdis, 
+                'secondVoyagePortdis'=>$secondVoyagePortdis,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
 
@@ -604,7 +626,8 @@ class InvoiceController extends Controller
                 'amount'=>$amount,
                 'gross_weight'=>$gross_weight,
                 'firstVoyagePort'=>$firstVoyagePort,
-                'firstVoyagePortdis'=>$firstVoyagePortdis,  
+                'firstVoyagePortdis'=>$firstVoyagePortdis,
+                'secondVoyagePortdis'=>$secondVoyagePortdis,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
                 'total_after_vat'=>$total_after_vat,
@@ -636,6 +659,12 @@ class InvoiceController extends Controller
             $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
+            $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+                return $query->where('role_id', 3);
+
+            })->with('CustomerRoles.role')->get();
+
+
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -652,6 +681,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.edit_customized_invoice',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'notify'=>$notify,
                 'ffws'=>$ffws,
                 'ports'=>$ports,
                 'equipmentTypes'=>$equipmentTypes,
@@ -682,8 +712,8 @@ class InvoiceController extends Controller
             'voyages'=>$voyages,
             'invoice_details'=>$invoice_details,
             'total'=>$total,
-                'charges'=>$charges,
-                'total_eg'=>$total_eg,
+            'charges'=>$charges,
+            'total_eg'=>$total_eg,
         ]);
     }
     public function update(Request $request, Invoice $invoice)

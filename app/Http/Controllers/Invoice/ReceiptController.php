@@ -99,6 +99,7 @@ class ReceiptController extends Controller
                 $oldPayment += $oldReceipt->paid;
             }
         }
+
         $total = 0;
         $total_eg = 0;
         $now = Carbon::now();
@@ -110,7 +111,6 @@ class ReceiptController extends Controller
         $total_eg = $total_eg - (($total_eg * $invoice->tax_discount)/100);
         if($invoice->add_egp == "false"){
             if($total <= $oldPayment){
-
                 return redirect()->back()->with('error','Sorry You Cant Create Receipt for this invoice its already Paid')->withInput(request()->input());
             }else{
                 $total -= $oldPayment;
@@ -122,6 +122,7 @@ class ReceiptController extends Controller
                 $total_eg -= $oldPayment;
             }
         }
+
         $banks = Bank::where('company_id',Auth::user()->company_id)->get();
         return view('invoice.receipt.create',[
             'invoice'=>$invoice,
@@ -135,7 +136,12 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
-
+        if ($request->input('bank_cash') < $request->input('total_payment') || $request->input('matching') < $request->input('total_payment')
+            || $request->input('bank_check') < $request->input('total_payment') || $request->input('bank_deposit') < $request->input('total_payment') 
+            || $request->input('bank_transfer') < $request->input('total_payment')){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount')->withInput(request()->input());
+        }
+    
         if ($request->input('bank_deposit') != Null){
             $request->validate([
                 'bank_id' => ['required'],

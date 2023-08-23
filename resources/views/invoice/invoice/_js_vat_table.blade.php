@@ -44,14 +44,16 @@
             totEgp = totEgp + parseFloat(egpAmount);
             totUsd = totUsd + parseFloat(usdAmount);
         });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
+        var egpRoundedValue = Math.round(totEgp * 100) / 100;
+        var usdRoundedValue = Math.round(totUsd * 100) / 100;
+        $('input[id="total_egp"]').val(egpRoundedValue);
+        $('input[id="total_usd"]').val(usdRoundedValue);
     }
 
     $("#add").click(function(){
         var counter = $('#charges tbody tr').length; // Count existing rows
         var tr = '<tr>' +
-            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>' +
+            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>' +
             '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" value="0" required></td>' +
             '<td>' +
             '<div class="form-check">' +
