@@ -63,6 +63,9 @@
                                                 <option value="03-VESSEL OUTBOUND CONTAINERS STORAGE">
                                                     03-VESSEL OUTBOUND CONTAINERS STORAGE
                                                 </option>
+                                                <option value="08-STORAGE OF FULL INBOUND CONTAINERS">
+                                                    08-STORAGE OF FULL INBOUND CONTAINERS
+                                                </option>
 
                                             </select>
                                         </div>
@@ -166,6 +169,52 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
+                                                       for="country">
+                                                    Country
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="selectpicker form-control rounded-0" id="country"
+                                                    name="country"
+                                                    data-live-search="true" data-size="10"
+                                                    title="{{trans('forms.select')}}">
+                                                @foreach ($countries as $item)
+                                                    <option
+                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0"
+                                                       for="ports">
+                                                    Port
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="selectpicker form-control rounded-0" id="ports"
+                                                    name="country"
+                                                    data-live-search="true" data-size="10"
+                                                    title="{{trans('forms.select')}}">
+                                                @foreach ($ports as $item)
+                                                    <option
+                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0"
                                                        for="shipping_line">
                                                     Shipping Line
                                                 </label>
@@ -244,47 +293,49 @@
                                     @enderror
                                 </div>
                                 <div class="container">
-                                    <div class="row">
-                                        <div class="col-md-6 text-center">
+                                    <div id="table2-selects" class="d-none">
+                                        <div class="text-center">
                                             <label>Empty/Export</label>
-                                        </div>
-                                        <div class="col-md-6 text-center">
-                                            <label>Empty/Import</label>
+                                            <label class="col-md-3">From
+                                                <select name="empty_export_from" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                            <label class="col-md-3">To
+                                                <select name="empty_export_to" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="row justify-content-center">
-                                        <label class="col-md-3">From
-                                            <select name="empty_export_from" class="form-control">
-                                                <option hidden selected>Select</option>
-                                            @foreach ($possibleMovements as $movement)
-                                                    <option value="{{ $movement->id }}">{{ $movement->code }}</option>
-                                                @endforeach
-                                            </select>
-                                        </label>
-                                        <label class="col-md-3">To
-                                            <select name="empty_export_to" class="form-control">
-                                                <option hidden selected>Select</option>
-                                            @foreach ($possibleMovements as $movement)
-                                                    <option value="{{ $movement->id }}">{{ $movement->code }}</option>
-                                                @endforeach
-                                            </select>
-                                        </label>
-                                        <label class="col-md-3">From
-                                            <select name="empty_import_from" class="form-control">
-                                                <option hidden selected>Select</option>
-                                                @foreach ($possibleMovements as $movement)
-                                                    <option value="{{ $movement->id }}">{{ $movement->code }}</option>
-                                                @endforeach
-                                            </select>
-                                        </label>
-                                        <label class="col-md-3">To
-                                            <select name="empty_import_from" class="form-control">
-                                                <option hidden selected>Select</option>
-                                            @foreach ($possibleMovements as $movement)
-                                                    <option value="{{ $movement->id }}">{{ $movement->code }}</option>
-                                                @endforeach
-                                            </select>
-                                        </label>
+                                </div>
+                                <div class="container">
+                                    <div id="table3-selects" class="d-none">
+                                        <div class="text-center">
+                                            <label>Empty/Import</label>
+                                            <label class="col-md-3">From
+                                                <select name="empty_import_from" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                            <label class="col-md-3">To
+                                                <select name="empty_import_from" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -305,14 +356,23 @@
                                             Empty/Import
                                         </button>
                                     </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link switch-table" data-table="table4">
+                                            Transhipment
+                                        </button>
+                                    </li>
                                 </ul>
                             </div>
 
+                            <div>
+                                <button type="button" id="add-row" class="btn btn-info m-3">Add Row</button>
+                            </div>
                             <div class="col-md-12">
                                 <div class="table-container">
                                     <x-soa-table id="table1"/>
                                     <x-soa-table id="table2" class="d-none"/>
                                     <x-soa-table id="table3" class="d-none"/>
+                                    <x-soa-table id="table4" class="d-none"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -338,6 +398,7 @@
         input {
             min-width: 100px;
         }
+
         .table-container {
             overflow-x: auto;
             max-width: 100%;
@@ -347,6 +408,33 @@
 @push('scripts')
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+
+        $(document).ready(function () {
+            $(document).on('click', '.removeContact', e => {
+
+                e.target.closest("tr").remove()
+            })
+            $(document).on('change', '.charge_type', function () {
+                let selectedValue = $(this).val();
+                let row = $(this).closest('tr');
+                let dynamicInputs = row.find('.dynamic-input');
+                console.log(JSON.parse(selectedValue))
+
+                dynamicInputs.each(function () {
+                    let field = $(this).data('field');
+                    console.log(field)
+                    let value = selectedValue ? JSON.parse(selectedValue)[field] : '';
+                    $(this).val(value);
+                });
+            });
+            $("#add-row").on('click', () => {
+                const targetTable = $('table:not(.d-none)').first();
+
+                const newRow = getNewRow();
+
+                targetTable.append(newRow);
+            })
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             // const tbody = $('table tbody');
@@ -364,87 +452,7 @@
 
                 containerNumbers.forEach(containerNumber => {
                     if (containerNumber.trim() !== '') {
-                        const newRow = $('<tr>' +
-                            `<td>
-                <select name="port_charge_type[]" class="form-control charge_type" required>
-                <option hidden selected>Select</option>
-                            @foreach($portCharges as $portCharge)
-                            <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
-                            @endforeach
-                            </select>
-                        </td>`+
-                            `<td><select name="service[]" class="form-control">
-                                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
-                                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
-                                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
-                                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
-                                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
-                                <option value="018-YARD-SERV">018-YARD-SERV</option>
-                                <option value="019-LOG-SERV">019-LOG-SERV</option>
-                                <option value="020-HAND-FES">020-HAND-FES</option>
-                                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
-                                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
-                                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
-                                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
-                                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
-                                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
-                                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
-                                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
-                                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
-                                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-                                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
-                             </select></td>` +
-                            '<td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>' +
-                            '<td><input type="text" name="container_no[]" class="form-control container_no" value="' + containerNumber + '"></td>' +
-                            `<td><input type="text" name="is_transhipment[]"
-                                                       class="is_transhipment form-control"></td>
-                            <td><input type="text" name="shipment_type[]"
-                                                       class="shipment_type form-control"></td>
-                            <td><input type="text" name="quotation_type[]"
-                                                       class="quotation_type form-control"></td>` +
-                            `        <td><input type="text" name="thc_20ft[]" class="form-control dynamic-input" data-field="thc_20ft"></td>
-        <td><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>
-        <td><input type="text" name="free_time[]" class="form-control dynamic-input" data-field="storage_free"></td>
-        <td><input type="text" name="slab1_period[]" class="form-control dynamic-input"
-                   data-field="storage_slab1_period"></td>
-        <td><input type="text" name="slab1_20ft[]" class="form-control dynamic-input" data-field="storage_slab1_20ft">
-        </td>
-        <td><input type="text" name="slab1_40ft[]" class="form-control dynamic-input" data-field="storage_slab1_40ft">
-        </td>
-        <td><input type="text" name="slab2_period[]" class="form-control dynamic-input"
-                   data-field="storage_slab2_period"></td>
-        <td><input type="text" name="slab2_20ft[]" class="form-control dynamic-input" data-field="storage_slab2_20ft">
-        </td>
-        <td><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
-        </td>
-        <td><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
-        <td><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
-        <td><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
-        </td>
-        <td><input type="text" name="shifting_40ft[]" class="form-control dynamic-input" data-field="shifting_40ft">
-        </td>
-        <td><input type="text" name="disinf_20ft[]" class="form-control dynamic-input" data-field="disinf_20ft"></td>
-        <td><input type="text" name="disinf_40ft[]" class="form-control dynamic-input" data-field="disinf_40ft"></td>
-        <td><input type="text" name="hand_fes_em_20ft[]" class="form-control dynamic-input"
-                   data-field="hand_fes_em_20ft"></td>
-        <td><input type="text" name="hand_fes_em_40ft[]" class="form-control dynamic-input"
-                   data-field="hand_fes_em_40ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_off_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_off_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_on_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_on_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
-        <td><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
-        <td><input type="text" name="wire_trnshp_20ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_20ft"></td>
-        <td><input type="text" name="wire_trnshp_40ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_40ft"></td>`
-                            +
-                            '</tr>');
+                        const newRow = getNewRow(containerNumber)
                         tbody.append(newRow);
                         newRow.find('.container_no').trigger('change');
                         row.remove();
@@ -496,6 +504,9 @@
         const switchTables = () => {
             const switchButtons = document.querySelectorAll('.switch-table');
             const tableContainer = document.querySelector('.table-container');
+            const table2Selects = document.getElementById('table2-selects');
+            const table3Selects = document.getElementById('table3-selects');
+
 
             switchButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -506,6 +517,17 @@
                     button.classList.add('active');
 
                     const tableId = button.getAttribute('data-table');
+
+                    if (tableId === "table2") {
+                        table2Selects.classList.remove('d-none');
+                        table3Selects.classList.add('d-none');
+                    } else if (tableId === "table3") {
+                        table2Selects.classList.add('d-none');
+                        table3Selects.classList.remove('d-none');
+                    } else {
+                        table2Selects.classList.add('d-none');
+                        table3Selects.classList.add('d-none');
+                    }
 
                     tableContainer.querySelectorAll('table').forEach(table => {
                         table.classList.add('d-none');
@@ -518,6 +540,93 @@
                 });
             });
         }
+
+        const getNewRow = (containerNumber = '') => $('<tr>' +
+            `        <td style="width:85px;">
+            <button type="button" class="btn btn-danger removeContact"><i
+                        class="fa fa-trash"></i></button>
+        </td>`+
+            `<td>
+                <select name="port_charge_type[]" class="form-control charge_type" required>
+                <option hidden selected>Select</option>
+                            @foreach($portCharges as $portCharge)
+            <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
+                            @endforeach
+            </select>
+        </td>` +
+            `<td><select name="service[]" class="form-control" required>
+                                <option selected hidden>Select</option>
+                                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                                <option value="018-YARD-SERV">018-YARD-SERV</option>
+                                <option value="019-LOG-SERV">019-LOG-SERV</option>
+                                <option value="020-HAND-FES">020-HAND-FES</option>
+                                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
+                                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
+                                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+                                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
+                                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
+                                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
+                                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+                                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+                             </select></td>` +
+            '<td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>' +
+            '<td><input type="text" name="container_no[]" class="form-control container_no" value="' + containerNumber + '"></td>' +
+            `<td><input type="text" name="is_transhipment[]"
+                                                       class="is_transhipment form-control"></td>
+                            <td><input type="text" name="shipment_type[]"
+                                                       class="shipment_type form-control"></td>
+                            <td><input type="text" name="quotation_type[]"
+                                                       class="quotation_type form-control"></td>` +
+            `        <td><input type="text" name="thc_20ft[]" class="form-control dynamic-input" data-field="thc_20ft"></td>
+        <td><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>
+        <td><input type="text" name="free_time[]" class="form-control dynamic-input" data-field="storage_free"></td>
+        <td><input type="text" name="slab1_period[]" class="form-control dynamic-input"
+                   data-field="storage_slab1_period"></td>
+        <td><input type="text" name="slab1_20ft[]" class="form-control dynamic-input" data-field="storage_slab1_20ft">
+        </td>
+        <td><input type="text" name="slab1_40ft[]" class="form-control dynamic-input" data-field="storage_slab1_40ft">
+        </td>
+        <td><input type="text" name="slab2_period[]" class="form-control dynamic-input"
+                   data-field="storage_slab2_period"></td>
+        <td><input type="text" name="slab2_20ft[]" class="form-control dynamic-input" data-field="storage_slab2_20ft">
+        </td>
+        <td><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
+        </td>
+        <td><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
+        <td><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
+        <td><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
+        </td>
+        <td><input type="text" name="shifting_40ft[]" class="form-control dynamic-input" data-field="shifting_40ft">
+        </td>
+        <td><input type="text" name="disinf_20ft[]" class="form-control dynamic-input" data-field="disinf_20ft"></td>
+        <td><input type="text" name="disinf_40ft[]" class="form-control dynamic-input" data-field="disinf_40ft"></td>
+        <td><input type="text" name="hand_fes_em_20ft[]" class="form-control dynamic-input"
+                   data-field="hand_fes_em_20ft"></td>
+        <td><input type="text" name="hand_fes_em_40ft[]" class="form-control dynamic-input"
+                   data-field="hand_fes_em_40ft"></td>
+        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
+                   data-field="gat_lift_off_inbnd_em_ft40_20ft"></td>
+        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
+                   data-field="gat_lift_off_inbnd_em_ft40_40ft"></td>
+        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
+                   data-field="gat_lift_on_inbnd_em_ft40_20ft"></td>
+        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
+                   data-field="gat_lift_on_inbnd_em_ft40_40ft"></td>
+        <td><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
+        <td><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
+        <td><input type="text" name="wire_trnshp_20ft[]" class="form-control dynamic-input"
+                   data-field="wire_trnshp_20ft"></td>
+        <td><input type="text" name="wire_trnshp_40ft[]" class="form-control dynamic-input"
+                   data-field="wire_trnshp_40ft"></td>`
+            +
+            '</tr>');
 
     </script>
 @endpush

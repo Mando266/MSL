@@ -6,6 +6,7 @@
 <table id="{{ $id ?? '' }}" {{ $attributes->merge(['class' => 'table table-bordered table-hover table-condensed mb-4']) }}>
     <thead>
     <tr>
+        <th rowspan="3">Remove</th>
         <th rowspan="3" style="min-width: 222px">Type</th>
         <th rowspan="3" style="min-width: 222px">Service</th>
         <th rowspan="3" style="min-width: 222px">BL NO</th>
@@ -59,6 +60,10 @@
     </thead>
     <tbody>
     <tr>
+        <td style="width:85px;">
+            <button type="button" class="btn btn-danger removeContact"><i
+                        class="fa fa-trash"></i></button>
+        </td>
         <td>
             <select name="port_charge_type[]" class="form-control charge_type" required>
                 <option hidden selected>Select</option>
@@ -69,6 +74,8 @@
                         <option value="{{ json_encode($portCharge) }}" selected>{{ $portCharge->name }}</option>
                     @elseif($id == 'table3' && strpos($portCharge->name, 'EMPTY-IMPORT') !== false)
                         <option value="{{ json_encode($portCharge) }}" selected>{{ $portCharge->name }}</option>
+                    @elseif($id == 'table4' && strpos($portCharge->name, 'TRANSHIP') !== false)
+                        <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @endif
                 @endforeach
             </select>
@@ -166,20 +173,6 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function () {
-            $(document).on('change', '.charge_type', function () {
-                let selectedValue = $(this).val();
-                let row = $(this).closest('tr');
-                let dynamicInputs = row.find('.dynamic-input');
-                console.log(JSON.parse(selectedValue))
 
-                dynamicInputs.each(function () {
-                    let field = $(this).data('field');
-                    console.log(field)
-                    let value = selectedValue ? JSON.parse(selectedValue)[field] : '';
-                    $(this).val(value);
-                });
-            });
-        });
     </script>
 @endpush

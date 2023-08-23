@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Bl\BlDraft;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
+use App\Models\Master\Country;
 use App\Models\Master\Lines;
+use App\Models\Master\Ports;
 use App\Models\Master\Vessels;
 use App\Models\PortCharge;
 use App\Models\Voyages\Voyages;
@@ -44,13 +46,17 @@ class PortChargeController extends Controller
         $lines = Lines::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $portCharges = PortCharge::paginate(10);
         $possibleMovements = ContainersMovement::where('name','like','%empty%')->get();
+        $countries = Country::orderBy('name')->get();
+        $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
         return view('port_charge.invoice', [
             'vessels' => $vessels,
             'voyages' => $voyages,
             'lines' => $lines,
             'portCharges' => $portCharges,
-            'possibleMovements' => $possibleMovements
+            'possibleMovements' => $possibleMovements,
+            'countries' => $countries,
+            'ports' => $ports
         ]);
     }
 
