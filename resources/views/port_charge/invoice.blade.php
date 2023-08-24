@@ -459,174 +459,167 @@
 @endpush
 @push('scripts')
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    @push('scripts')
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                setupEventHandlers()
-                switchTables()
-                calculateTotalUSD()
+    <script>
+        $(document).ready(function () {
+            setupEventHandlers()
+            switchTables()
+            calculateTotalUSD()
+            loadVoyages()
+        })
 
-                $(document).on('change', '#dynamic_fields', function () {
-                    const selectedFields = $(this).val()
-                    $('.dynamic-input').removeClass('included')
+        function handleDynamicFieldsChange() {
+            const selectedFields = $('#dynamic_fields').val()
+            $('.dynamic-input').removeClass('included')
 
-                    selectedFields.forEach(selectedField => {
-                        $('.dynamic-input[data-field="' + selectedField + '"]').addClass('included')
-                    })
-                })
+            selectedFields.forEach(selectedField => {
+                $('.dynamic-input[data-field="' + selectedField + '"]').addClass('included')
+            })
+        }
 
-                $('body').on('DOMSubtreeModified', function () {
-                    calculateTotalUSD()
-                })
+        function calculateTotalUSD() {
+            let totalUSD = 0
+
+            $('.dynamic-input.included').each(function () {
+                totalUSD += parseFloat($(this).val()) || 0
             })
 
-            function calculateTotalUSD() {
-                let totalUSD = 0
+            $('#total_usd').val(totalUSD)
+        }
 
-                $('.dynamic-input.included').each(function () {
-                    const value = parseFloat($(this).val()) || 0
-                    totalUSD += value
+        function setupEventHandlers() {
+            $(document).on('click', '.removeContact', handleRemoveRow)
+            $("#add-row").on('click', handleAddRow)
+            $(document).on('change', '.charge_type', handleChargeTypeChange)
+            $(document).on('paste', '.container_no', handleContainerNoPaste)
+            $(document).on('change', '.container_no', handleContainerNoChange)
+            $('#vessel_id').on('change', loadVoyages)
+            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
+            $('body').on('DOMSubtreeModified', calculateTotalUSD)
+        }
+
+        function handleRemoveRow() {
+            $(this).closest("tr").remove()
+            calculateTotalUSD()
+        }
+
+        function handleAddRow() {
+            const targetTable = $('table:not(.d-none)').first()
+            const newRow = getNewRow()
+
+            targetTable.append(newRow)
+            handleDynamicFieldsChange()
+        }
+
+        function handleChargeTypeChange() {
+            const selectedValue = $(this).val()
+            const row = $(this).closest('tr')
+            const dynamicInputs = row.find('.dynamic-input')
+
+            dynamicInputs.each(function () {
+                const field = $(this).data('field')
+                const value = selectedValue ? JSON.parse(selectedValue)[field] : ''
+                $(this).val(value)
+            })
+
+            calculateTotalUSD()
+        }
+
+        function handleContainerNoPaste(e) {
+            e.preventDefault()
+            const tbody = $(this).closest('tbody')
+            const clipboardData = e.originalEvent.clipboardData || window.clipboardData
+            const pastedContent = clipboardData.getData('text/plain')
+            const containerNumbers = pastedContent.split('\n')
+            const row = $(this).closest('tr')
+            const selectedCharge = row.find('.charge_type')[0].selectedIndex
+            const selectedService = row.find('.service_type')[0].selectedIndex
+
+            containerNumbers.forEach(containerNumber => {
+                if (containerNumber.trim() !== '') {
+                    const newRow = getNewRow(containerNumber)
+                    tbody.append(newRow)
+                    newRow.find('.charge_type')[0].selectedIndex = selectedCharge
+                    newRow.find('.service_type')[0].selectedIndex = selectedService
+                    newRow.find('.container_no').trigger('change')
+                    newRow.find('.charge_type').trigger('change')
+                    row.remove()
+                }
+            })
+
+            handleDynamicFieldsChange()
+        }
+
+        function handleContainerNoChange() {
+            const containerNumber = $(this).val().trim()
+            if (containerNumber !== '') {
+                const row = $(this).closest('tr')
+                const refNoCell = row.find('.ref-no-td')[0]
+                const isTsCell = row.find('.is_transhipment')[0]
+                const shipTypeCell = row.find('.shipment_type')[0]
+                const quoteTypeCell = row.find('.quotation_type')[0]
+
+                axios.get('{{ route('port-charges.get-ref-no') }}', {
+                    params: {
+                        vessel: $('#vessel_id').val(),
+                        voyage: $('#voyage').val(),
+                        container: containerNumber
+                    }
+                }).then(response => {
+                    if (response.data.status === 'success') {
+                        refNoCell.value = response.data.ref_no
+                        isTsCell.value = response.data.is_ts
+                        shipTypeCell.value = response.data.shipment_type
+                        quoteTypeCell.value = response.data.quotation_type
+                    }
+                }).catch(() => {
+                    console.error('Could not find ref_no')
                 })
-
-                $('#total_usd').val(totalUSD)
             }
 
-            function setupEventHandlers() {
-                $(document).on('click', '.removeContact', function (e) {
-                    $(this).closest("tr").remove()
-                    calculateTotalUSD()
-                })
+            handleDynamicFieldsChange()
+        }
 
-                $("#add-row").on('click', () => {
-                    const targetTable = $('table:not(.d-none)').first()
-                    const newRow = getNewRow()
+        function loadVoyages() {
+            const vessel = $('#vessel_id')
+            const voyageNo = $('#voyage')
 
-                    targetTable.append(newRow)
-                    $('#dynamic_fields').trigger('change')
-                })
+            $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
+                const voyages = data.voyages || []
+                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
+                voyageNo.html('<option hidden selected>Select</option>' + options.join(''))
+                $('.selectpicker').selectpicker('refresh')
+            })
+        }
 
-                $(document).on('change', '.charge_type', function () {
-                    const selectedValue = $(this).val()
-                    const row = $(this).closest('tr')
-                    const dynamicInputs = row.find('.dynamic-input')
+        function switchTables() {
+            const switchButtons = document.querySelectorAll('.switch-table')
+            const tableContainer = document.querySelector('.table-container')
+            const table2Selects = document.getElementById('table2-selects')
+            const table3Selects = document.getElementById('table3-selects')
 
-                    dynamicInputs.each(function () {
-                        const field = $(this).data('field')
-                        const value = selectedValue ? JSON.parse(selectedValue)[field] : ''
-                        $(this).val(value)
+            switchButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchButtons.forEach(btn => {
+                        btn.classList.remove('active')
                     })
 
-                    calculateTotalUSD()
-                })
+                    button.classList.add('active')
+                    const tableId = button.getAttribute('data-table')
 
-                $(document).on('paste', '.container_no', function (e) {
-                    e.preventDefault()
-                    const tbody = $(this).closest('tbody')
-                    const clipboardData = e.originalEvent.clipboardData || window.clipboardData
-                    const pastedContent = clipboardData.getData('text/plain')
-                    const containerNumbers = pastedContent.split('\n')
-                    const row = $(this).closest('tr')
-                    const selectedCharge = row.find('.charge_type')[0].selectedIndex
-                    const selectedService = row.find('.service_type')[0].selectedIndex
+                    table2Selects.classList.toggle('d-none', tableId !== 'table2')
+                    table3Selects.classList.toggle('d-none', tableId !== 'table3')
 
-
-                containerNumbers.forEach(containerNumber => {
-                    if (containerNumber.trim() !== '') {
-                        const newRow = getNewRow(containerNumber);
-                        tbody.append(newRow);
-                        newRow.find('.charge_type')[0].selectedIndex = selectedCharge
-                        newRow.find('.service_type')[0].selectedIndex = selectedService
-                        newRow.find('.container_no').trigger('change');
-                        newRow.find('.charge_type').trigger('change');
-                        row.remove();
-                    }
-                });
-                $('#dynamic_fields').trigger('change');
-
-                    $('#dynamic_fields').trigger('change')
-                })
-
-                $(document).on('change', '.container_no', function () {
-                    const containerNumber = $(this).val().trim()
-                    if (containerNumber !== '') {
-                        const row = $(this).closest('tr')
-                        const refNoCell = row.find('.ref-no-td')[0]
-                        const isTsCell = row.find('.is_transhipment')[0]
-                        const shipTypeCell = row.find('.shipment_type')[0]
-                        const quoteTypeCell = row.find('.quotation_type')[0]
-
-                        axios.get('{{ route('port-charges.get-ref-no') }}', {
-                            params: {
-                                vessel: $('#vessel_id').val(),
-                                voyage: $('#voyage').val(),
-                                container: containerNumber
-                            }
-                        }).then(response => {
-                            if (response.data.status === 'success') {
-                                refNoCell.value = response.data.ref_no
-                                isTsCell.value = response.data.is_ts
-                                shipTypeCell.value = response.data.shipment_type
-                                quoteTypeCell.value = response.data.quotation_type
-                            }
-                        }).catch(() => {
-                            console.error('Could not find ref_no')
-                        })
-                    }
-
-                    $('#dynamic_fields').trigger('change')
-                })
-
-                $('#vessel_id').on('change', function () {
-                    loadVoyages()
-                })
-
-                loadVoyages()
-            }
-
-            function loadVoyages() {
-                const vessel = $('#vessel_id')
-                const voyageNo = $('#voyage')
-
-                $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
-                    const voyages = data.voyages || []
-                    const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
-                    voyageNo.html('<option hidden selected>Select</option>' + options.join(''))
-                    $('.selectpicker').selectpicker('refresh')
-                })
-            }
-
-            function switchTables() {
-                const switchButtons = document.querySelectorAll('.switch-table')
-                const tableContainer = document.querySelector('.table-container')
-                const table2Selects = document.getElementById('table2-selects')
-                const table3Selects = document.getElementById('table3-selects')
-
-                switchButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        switchButtons.forEach(btn => {
-                            btn.classList.remove('active')
-                        })
-
-                        button.classList.add('active')
-                        const tableId = button.getAttribute('data-table')
-
-                        table2Selects.classList.toggle('d-none', tableId !== 'table2')
-                        table3Selects.classList.toggle('d-none', tableId !== 'table3')
-
-                        tableContainer.querySelectorAll('table').forEach(table => {
-                            table.classList.add('d-none')
-                        })
-
-                        const selectedTable = document.getElementById(tableId)
-                        if (selectedTable) {
-                            selectedTable.classList.remove('d-none')
-                        }
+                    tableContainer.querySelectorAll('table').forEach(table => {
+                        table.classList.add('d-none')
                     })
+
+                    const selectedTable = document.getElementById(tableId)
+                    if (selectedTable) {
+                        selectedTable.classList.remove('d-none')
+                    }
                 })
-            }
-
-
+            })
+        }
         function getNewRow(containerNumber = '') {
             const newRow = $(`
         <tr>
