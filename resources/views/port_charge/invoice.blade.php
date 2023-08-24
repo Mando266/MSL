@@ -526,27 +526,40 @@
 
         function handleContainerNoPaste(e) {
             e.preventDefault()
-            const tbody = $(this).closest('tbody')
-            const clipboardData = e.originalEvent.clipboardData || window.clipboardData
-            const pastedContent = clipboardData.getData('text/plain')
-            const containerNumbers = pastedContent.split('\n')
+
+            const clipboardData = getClipboardData(e)
+            const containerNumbers = getPastedContainerNumbers(clipboardData)
+
             const row = $(this).closest('tr')
             const selectedCharge = row.find('.charge_type')[0].selectedIndex
             const selectedService = row.find('.service_type')[0].selectedIndex
 
+            const tbody = row.closest('tbody')
+            appendNewRows(containerNumbers, selectedCharge, selectedService, tbody)
+            row.remove()
+            handleDynamicFieldsChange()
+        }
+
+        function getClipboardData(event) {
+            return (event.originalEvent || event).clipboardData || window.clipboardData
+        }
+
+        function getPastedContainerNumbers(clipboardData) {
+            const pastedContent = clipboardData.getData('text/plain')
+            return pastedContent.split('\n').map(containerNumber => containerNumber.trim())
+        }
+        
+        function appendNewRows(containerNumbers, selectedCharge, selectedService, tbody) {
             containerNumbers.forEach(containerNumber => {
-                if (containerNumber.trim() !== '') {
+                if (containerNumber !== '') {
                     const newRow = getNewRow(containerNumber)
                     tbody.append(newRow)
                     newRow.find('.charge_type')[0].selectedIndex = selectedCharge
                     newRow.find('.service_type')[0].selectedIndex = selectedService
                     newRow.find('.container_no').trigger('change')
                     newRow.find('.charge_type').trigger('change')
-                    row.remove()
                 }
             })
-
-            handleDynamicFieldsChange()
         }
 
         function handleContainerNoChange() {
