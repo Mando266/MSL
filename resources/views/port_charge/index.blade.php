@@ -26,14 +26,14 @@
                                     <th rowspan="3" style="min-width: 222px">NAME</th>
                                     <th colspan=2>THC</th>
                                     <th colspan=7>STORAGE</th>
-                                    <th colspan=2>POWER</th>
+                                    <th colspan=3>POWER</th>
                                     <th colspan=2>SHIFTING</th>
                                     <th colspan=2>DISINF</th>
                                     <th colspan=2>HAND-FES-EM</th>
                                     <th colspan=2>GAT-LIFT OFF-INBND-EM-FT40</th>
                                     <th colspan=2>GAT-LIFT ON-INBND-EM-FT40</th>
                                     <th colspan=2>PTI</th>
-                                    <th colspan=2>WIRE-TRNSHP</th>
+                                    <th colspan=2>ADD-PLAN</th>
                                     <th rowspan="3">Edit</th>
                                 </tr>
                                 <tr>
@@ -42,6 +42,7 @@
                                     <th rowspan=2>Free Time</th>
                                     <th colspan=3>Slab1</th>
                                     <th colspan=3>Slab2</th>
+                                    <th rowspan=2>Free Time</th>
                                     <th rowspan=2>20FT</th>
                                     <th rowspan=2>40FT</th>
                                     <th rowspan=2>20FT</th>
@@ -82,6 +83,7 @@
                                         <td class="editable">{{ $portCharge->storage_slab2_period }}</td>
                                         <td class="editable">{{ $portCharge->storage_slab2_20ft }}</td>
                                         <td class="editable">{{ $portCharge->storage_slab2_40ft }}</td>
+                                        <td class="editable">{{ $portCharge->power_free }}</td>
                                         <td class="editable">{{ $portCharge->power_20ft }}</td>
                                         <td class="editable">{{ $portCharge->power_40ft }}</td>
                                         <td class="editable">{{ $portCharge->shifting_20ft }}</td>
@@ -96,8 +98,8 @@
                                         <td class="editable">{{ $portCharge->gat_lift_on_inbnd_em_ft40_40ft }}</td>
                                         <td class="editable">{{ $portCharge->pti_failed }}</td>
                                         <td class="editable">{{ $portCharge->pti_passed }}</td>
-                                        <td class="editable">{{ $portCharge->wire_trnshp_20ft }}</td>
-                                        <td class="editable">{{ $portCharge->wire_trnshp_40ft }}</td>
+                                        <td class="editable">{{ $portCharge->add_plan_20ft }}</td>
+                                        <td class="editable">{{ $portCharge->add_plan_40ft }}</td>
                                         <td>
                                             <button class="btn btn-info edit-button" data-id="{{ $portCharge->id }}">
                                                 Edit
@@ -124,6 +126,9 @@
                                     </td>
                                     <td class="editable">
                                         <input class="form-control" type="text" name="storage_40ft_after_5"/>
+                                    </td>
+                                    <td class="editable">
+                                        <input class="form-control" type="text" name="power_free"/>
                                     </td>
                                     <td class="editable">
                                         <input class="form-control" type="text" name="power_20ft"/>
@@ -168,10 +173,10 @@
                                         <input class="form-control" type="text" name="pti_40ft_pass"/>
                                     </td>
                                     <td class="editable">
-                                        <input class="form-control" type="text" name="wire_trnshp_20ft"/>
+                                        <input class="form-control" type="text" name="add_plan_20ft"/>
                                     </td>
                                     <td class="editable">
-                                        <input class="form-control" type="text" name="wire_trnshp_40ft"/>
+                                        <input class="form-control" type="text" name="add_plan_40ft"/>
                                     </td>
                                     <td class="actions-td">
                                         <button class="btn btn-success save-new-button">

@@ -114,6 +114,7 @@ class PortChargeController extends Controller
             'storage_slab2_period' => $data[$count++],
             'storage_slab2_20ft' => $data[$count++],
             'storage_slab2_40ft' => $data[$count++],
+            'power_free' => $data[$count++],
             'power_20ft' => $data[$count++],
             'power_40ft' => $data[$count++],
             'shifting_20ft' => $data[$count++],
@@ -128,8 +129,8 @@ class PortChargeController extends Controller
             'gat_lift_on_inbnd_em_ft40_40ft' => $data[$count++],
             'pti_failed' => $data[$count++],
             'pti_passed' => $data[$count++],
-            'wire_trnshp_20ft' => $data[$count++],
-            'wire_trnshp_40ft' => $data[$count++],
+            'add_plan_20ft' => $data[$count++],
+            'add_plan_40ft' => $data[$count++],
         ]);
     }
 

@@ -292,6 +292,58 @@
                                     </div>
                                     @enderror
                                 </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0"
+                                                       for="dynamic_fields">
+                                                    Dynamic Fields
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="selectpicker form-control" id="dynamic_fields" multiple
+                                                    data-size="10">
+                                                @foreach ([
+                                                            'thc_20ft', 'thc_40ft', 'storage_free', 'storage_slab1_period', 'storage_slab1_20ft',
+                                                            'storage_slab1_40ft', 'storage_slab2_period', 'storage_slab2_20ft', 'storage_slab2_40ft',
+                                                            'power_free', 'power_20ft', 'power_40ft', 'shifting_20ft', 'shifting_40ft', 'disinf_20ft', 'disinf_40ft',
+                                                            'hand_fes_em_20ft', 'hand_fes_em_40ft', 'gat_lift_off_inbnd_em_ft40_20ft',
+                                                            'gat_lift_off_inbnd_em_ft40_40ft', 'gat_lift_on_inbnd_em_ft40_20ft',
+                                                            'gat_lift_on_inbnd_em_ft40_40ft', 'pti_failed', 'pti_passed', 'add_plan_20ft',
+                                                            'add_plan_40ft'
+                                                        ] as $field)
+                                                    <option value="{{ $field }}">{{ $field }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-transparent border-0">Total EGP</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="total_egp" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-transparent border-0">Total USD</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="total_usd" readonly>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="container">
                                     <div id="table2-selects" class="d-none">
                                         <div class="text-center">
@@ -408,68 +460,102 @@
 @push('scripts')
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-
         $(document).ready(function () {
-            $(document).on('click', '.removeContact', e => {
+            setupEventHandlers();
+            switchTables();
+            calculateTotalUSD()
+            $(document).on('change', '#dynamic_fields', function () {
+                const selectedFields = $(this).val();
 
-                e.target.closest("tr").remove()
-            })
-            $(document).on('change', '.charge_type', function () {
-                let selectedValue = $(this).val();
-                let row = $(this).closest('tr');
-                let dynamicInputs = row.find('.dynamic-input');
-                console.log(JSON.parse(selectedValue))
+                $('.dynamic-input').removeClass('included');
 
-                dynamicInputs.each(function () {
-                    let field = $(this).data('field');
-                    console.log(field)
-                    let value = selectedValue ? JSON.parse(selectedValue)[field] : '';
-                    $(this).val(value);
+                selectedFields.forEach(selectedField => {
+                    $('.dynamic-input[data-field="' + selectedField + '"]').addClass('included');
                 });
             });
+            $('body').on('DOMSubtreeModified', function () {
+                calculateTotalUSD()
+            });
+
+        });
+
+        function calculateTotalUSD() {
+            let totalUSD = 0;
+
+            $('.dynamic-input.included').each(function () {
+                const value = parseFloat($(this).val()) || 0;
+                totalUSD += value;
+            });
+            console.log('belongs to you')
+            $('#total_usd').val(totalUSD);
+        }
+
+        function setupEventHandlers() {
+            $(document).on('click', '.removeContact', function (e) {
+                $(this).closest("tr").remove();
+                calculateTotalUSD()
+            });
+
             $("#add-row").on('click', () => {
                 const targetTable = $('table:not(.d-none)').first();
-
+                
                 const newRow = getNewRow();
 
                 targetTable.append(newRow);
+                $('#dynamic_fields').trigger('change');
+
             })
-        });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // const tbody = $('table tbody');
+            $(document).on('change', '.charge_type', function () {
+                const selectedValue = $(this).val();
+                const row = $(this).closest('tr');
+                const dynamicInputs = row.find('.dynamic-input');
 
-            switchTables()
+                dynamicInputs.each(function () {
+                    const field = $(this).data('field');
+                    const value = selectedValue ? JSON.parse(selectedValue)[field] : '';
+                    $(this).val(value);
+                });
+                calculateTotalUSD()
+            });
 
-            $(document).on('paste', '.container_no', e => {
-                const tbody = $(e.target).closest('tbody')
+            $(document).on('paste', '.container_no', function (e) {
                 e.preventDefault();
+                const tbody = $(this).closest('tbody');
                 const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
                 const pastedContent = clipboardData.getData('text/plain');
                 const containerNumbers = pastedContent.split('\n');
 
-                const row = e.target.closest('tr');
+                const row = $(this).closest('tr');
+                const selectedCharge = row.find('.charge_type')[0].selectedIndex
+                const selectedService = row.find('.service_type')[0].selectedIndex
+
 
                 containerNumbers.forEach(containerNumber => {
                     if (containerNumber.trim() !== '') {
-                        const newRow = getNewRow(containerNumber)
+                        const newRow = getNewRow(containerNumber);
                         tbody.append(newRow);
+                        newRow.find('.charge_type')[0].selectedIndex = selectedCharge
+                        newRow.find('.service_type')[0].selectedIndex = selectedService
                         newRow.find('.container_no').trigger('change');
+                        newRow.find('.charge_type').trigger('change');
                         row.remove();
                     }
                 });
+                $('#dynamic_fields').trigger('change');
+
             });
 
             $(document).on('change', '.container_no', function () {
-                const containerNumber = $(this).val().trim()
+                const containerNumber = $(this).val().trim();
                 if (containerNumber !== '') {
-                    const row = $(this).closest('tr')
-                    const refNoCell = row.find('.ref-no-td')[0]
-                    const isTsCell = row.find('.is_transhipment')[0]
-                    const shipTypeCell = row.find('.shipment_type')[0]
-                    const quoteTypeCell = row.find('.quotation_type')[0]
+                    const row = $(this).closest('tr');
+                    const refNoCell = row.find('.ref-no-td')[0];
+                    const isTsCell = row.find('.is_transhipment')[0];
+                    const shipTypeCell = row.find('.shipment_type')[0];
+                    const quoteTypeCell = row.find('.quotation_type')[0];
 
-                    axios.get(`{{ route('port-charges.get-ref-no') }}`, {
+                    axios.get('{{ route('port-charges.get-ref-no') }}', {
                         params: {
                             vessel: $('#vessel_id').val(),
                             voyage: $('#voyage').val(),
@@ -477,36 +563,43 @@
                         }
                     }).then(response => {
                         if (response.data.status === 'success') {
-                            refNoCell.value = response.data.ref_no
-                            isTsCell.value = response.data.is_ts
-                            shipTypeCell.value = response.data.shipment_type
-                            quoteTypeCell.value = response.data.quotation_type
+                            refNoCell.value = response.data.ref_no;
+                            isTsCell.value = response.data.is_ts;
+                            shipTypeCell.value = response.data.shipment_type;
+                            quoteTypeCell.value = response.data.quotation_type;
                         }
                     }).catch(() => {
-                        console.error('Could not find ref_no')
-                    })
+                        console.error('Could not find ref_no');
+                    });
                 }
-            })
+                $('#dynamic_fields').trigger('change');
 
-            const vessel = $('#vessel_id')
-            vessel.on('change', function (e) {
-                const value = e.target.value
-                $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
-                    const voyages = data.voyages || []
-                    const voyageNo = $('#voyage')
-                    const list2 = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
-                    voyageNo.html(list2.join(''))
-                    $('.selectpicker').selectpicker('refresh')
-                })
-            })
-        })
+            });
 
-        const switchTables = () => {
+            $('#vessel_id').on('change', function () {
+                loadVoyages();
+            });
+
+            loadVoyages();
+        }
+
+        function loadVoyages() {
+            const vessel = $('#vessel_id');
+            const voyageNo = $('#voyage');
+
+            $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
+                const voyages = data.voyages || [];
+                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`);
+                voyageNo.html('<option hidden selected>Select</option>' + options.join(''));
+                $('.selectpicker').selectpicker('refresh');
+            });
+        }
+
+        function switchTables() {
             const switchButtons = document.querySelectorAll('.switch-table');
             const tableContainer = document.querySelector('.table-container');
             const table2Selects = document.getElementById('table2-selects');
             const table3Selects = document.getElementById('table3-selects');
-
 
             switchButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -515,19 +608,10 @@
                     });
 
                     button.classList.add('active');
-
                     const tableId = button.getAttribute('data-table');
 
-                    if (tableId === "table2") {
-                        table2Selects.classList.remove('d-none');
-                        table3Selects.classList.add('d-none');
-                    } else if (tableId === "table3") {
-                        table2Selects.classList.add('d-none');
-                        table3Selects.classList.remove('d-none');
-                    } else {
-                        table2Selects.classList.add('d-none');
-                        table3Selects.classList.add('d-none');
-                    }
+                    table2Selects.classList.toggle('d-none', tableId !== 'table2');
+                    table3Selects.classList.toggle('d-none', tableId !== 'table3');
 
                     tableContainer.querySelectorAll('table').forEach(table => {
                         table.classList.add('d-none');
@@ -541,92 +625,81 @@
             });
         }
 
-        const getNewRow = (containerNumber = '') => $('<tr>' +
-            `        <td style="width:85px;">
-            <button type="button" class="btn btn-danger removeContact"><i
-                        class="fa fa-trash"></i></button>
-        </td>`+
-            `<td>
+        function getNewRow(containerNumber = '') {
+            const newRow = $(`
+        <tr>
+            <td style="width: 85px;">
+                <button type="button" class="btn btn-danger removeContact">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+            <td>
                 <select name="port_charge_type[]" class="form-control charge_type" required>
-                <option hidden selected>Select</option>
-                            @foreach($portCharges as $portCharge)
+                    <option hidden selected>Select</option>
+                    @foreach($portCharges as $portCharge)
             <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
-                            @endforeach
+                    @endforeach
             </select>
-        </td>` +
-            `<td><select name="service[]" class="form-control" required>
-                                <option selected hidden>Select</option>
-                                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
-                                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
-                                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
-                                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
-                                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
-                                <option value="018-YARD-SERV">018-YARD-SERV</option>
-                                <option value="019-LOG-SERV">019-LOG-SERV</option>
-                                <option value="020-HAND-FES">020-HAND-FES</option>
-                                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
-                                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
-                                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
-                                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
-                                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
-                                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
-                                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
-                                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
-                                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
-                                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-                                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
-                             </select></td>` +
-            '<td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>' +
-            '<td><input type="text" name="container_no[]" class="form-control container_no" value="' + containerNumber + '"></td>' +
-            `<td><input type="text" name="is_transhipment[]"
-                                                       class="is_transhipment form-control"></td>
-                            <td><input type="text" name="shipment_type[]"
-                                                       class="shipment_type form-control"></td>
-                            <td><input type="text" name="quotation_type[]"
-                                                       class="quotation_type form-control"></td>` +
-            `        <td><input type="text" name="thc_20ft[]" class="form-control dynamic-input" data-field="thc_20ft"></td>
-        <td><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>
-        <td><input type="text" name="free_time[]" class="form-control dynamic-input" data-field="storage_free"></td>
-        <td><input type="text" name="slab1_period[]" class="form-control dynamic-input"
-                   data-field="storage_slab1_period"></td>
-        <td><input type="text" name="slab1_20ft[]" class="form-control dynamic-input" data-field="storage_slab1_20ft">
         </td>
-        <td><input type="text" name="slab1_40ft[]" class="form-control dynamic-input" data-field="storage_slab1_40ft">
+        <td>
+            <select name="service[]" class="form-control service_type" required>
+                <option selected hidden>Select</option>
+                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                <option value="018-YARD-SERV">018-YARD-SERV</option>
+                <option value="019-LOG-SERV">019-LOG-SERV</option>
+                <option value="020-HAND-FES">020-HAND-FES</option>
+                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
+                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
+                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
+                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
+                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
+                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+            </select>
         </td>
-        <td><input type="text" name="slab2_period[]" class="form-control dynamic-input"
-                   data-field="storage_slab2_period"></td>
-        <td><input type="text" name="slab2_20ft[]" class="form-control dynamic-input" data-field="storage_slab2_20ft">
-        </td>
-        <td><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
-        </td>
-        <td><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
-        <td><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
-        <td><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
-        </td>
-        <td><input type="text" name="shifting_40ft[]" class="form-control dynamic-input" data-field="shifting_40ft">
-        </td>
-        <td><input type="text" name="disinf_20ft[]" class="form-control dynamic-input" data-field="disinf_20ft"></td>
-        <td><input type="text" name="disinf_40ft[]" class="form-control dynamic-input" data-field="disinf_40ft"></td>
-        <td><input type="text" name="hand_fes_em_20ft[]" class="form-control dynamic-input"
-                   data-field="hand_fes_em_20ft"></td>
-        <td><input type="text" name="hand_fes_em_40ft[]" class="form-control dynamic-input"
-                   data-field="hand_fes_em_40ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_off_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_off_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_on_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
-                   data-field="gat_lift_on_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
-        <td><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
-        <td><input type="text" name="wire_trnshp_20ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_20ft"></td>
-        <td><input type="text" name="wire_trnshp_40ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_40ft"></td>`
-            +
-            '</tr>');
+        <td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>
+        <td><input type="text" name="container_no[]" class="form-control container_no" value="${containerNumber}"></td>
+            <td><input type="text" name="is_transhipment[]" class="is_transhipment form-control"></td>
+            <td><input type="text" name="shipment_type[]" class="shipment_type form-control"></td>
+            <td><input type="text" name="quotation_type[]" class="quotation_type form-control"></td>
+            ${generateDynamicInputsHtml()}
+        </tr>
+    `);
+
+            return newRow
+        }
+
+        function generateDynamicInputsHtml() {
+            const dynamicFields = [
+                'thc_20ft', 'thc_40ft', 'storage_free', 'storage_slab1_period', 'storage_slab1_20ft',
+                'storage_slab1_40ft', 'storage_slab2_period', 'storage_slab2_20ft', 'storage_slab2_40ft',
+                'power_free', 'power_20ft', 'power_40ft', 'shifting_20ft', 'shifting_40ft', 'disinf_20ft', 'disinf_40ft',
+                'hand_fes_em_20ft', 'hand_fes_em_40ft', 'gat_lift_off_inbnd_em_ft40_20ft',
+                'gat_lift_off_inbnd_em_ft40_40ft', 'gat_lift_on_inbnd_em_ft40_20ft',
+                'gat_lift_on_inbnd_em_ft40_40ft', 'pti_failed', 'pti_passed', 'add_plan_20ft',
+                'add_plan_40ft'
+            ];
+
+            let dynamicInputsHtml = '';
+            dynamicFields.forEach(field => {
+                dynamicInputsHtml += `
+            <td>
+                <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}">
+            </td>
+        `;
+            });
+
+            return dynamicInputsHtml;
+        }
+
 
     </script>
 @endpush

@@ -16,14 +16,14 @@
         <th rowspan="3" style="min-width: 222px">QUOTATION TYPE</th>
         <th colspan=2>THC</th>
         <th colspan=7>STORAGE</th>
-        <th colspan=2>POWER</th>
+        <th colspan=3>POWER</th>
         <th colspan=2>SHIFTING</th>
         <th colspan=2>DISINF</th>
         <th colspan=2>HAND-FES-EM</th>
         <th colspan=2>GAT-LIFT OFF-INBND-EM-FT40</th>
         <th colspan=2>GAT-LIFT ON-INBND-EM-FT40</th>
         <th colspan=2>PTI</th>
-        <th colspan=2>WIRE-TRNSHP</th>
+        <th colspan=2>ADD-PLAN</th>
     </tr>
     <tr>
         <th rowspan=2 height=98>20FT</th>
@@ -31,6 +31,7 @@
         <th rowspan=2>Free Time</th>
         <th colspan=3>Slab1</th>
         <th colspan=3>Slab2</th>
+        <th rowspan=2>Free Time</th>
         <th rowspan=2>20FT</th>
         <th rowspan=2>40FT</th>
         <th rowspan=2>20FT</th>
@@ -68,7 +69,7 @@
             <select name="port_charge_type[]" class="form-control charge_type" required>
                 <option hidden selected>Select</option>
                 @foreach($portCharges as $portCharge)
-                    @if($id == 'table1' && strpos($portCharge->name, 'FULL') !== false)
+                    @if ($id == 'table1' && (strpos($portCharge->name, 'FULL-IMPORT') !== false || strpos($portCharge->name, 'FULL-EXPORT') !== false))
                         <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @elseif($id == 'table2' && strpos($portCharge->name, 'EMPTY-EXPORT') !== false)
                         <option value="{{ json_encode($portCharge) }}" selected>{{ $portCharge->name }}</option>
@@ -80,7 +81,7 @@
                 @endforeach
             </select>
         </td>
-        <td><select name="service[]" class="form-control" required>
+        <td><select name="service[]" class="form-control service_type" required>
                 <option hidden selected>Select</option>
                 <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
                 <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
@@ -140,6 +141,7 @@
         </td>
         <td><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
         </td>
+        <td><input type="text" name="power_free[]" class="form-control dynamic-input" data-field="power_free"></td>
         <td><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
         <td><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
         <td><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
@@ -162,10 +164,10 @@
                    data-field="gat_lift_on_inbnd_em_ft40_40ft"></td>
         <td><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
         <td><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
-        <td><input type="text" name="wire_trnshp_20ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_20ft"></td>
-        <td><input type="text" name="wire_trnshp_40ft[]" class="form-control dynamic-input"
-                   data-field="wire_trnshp_40ft"></td>
+        <td><input type="text" name="add_plan_20ft[]" class="form-control dynamic-input"
+                   data-field="add_plan_20ft"></td>
+        <td><input type="text" name="add_plan_40ft[]" class="form-control dynamic-input"
+                   data-field="add_plan_40ft"></td>
 
     </tbody>
 
