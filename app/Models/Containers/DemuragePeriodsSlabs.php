@@ -4,6 +4,7 @@ namespace App\Models\Containers;
 
 use App\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DemuragePeriodsSlabs extends Model
 {
@@ -17,8 +18,8 @@ class DemuragePeriodsSlabs extends Model
         return $this->belongsTo(Demurrage::class, 'demurage_id', 'id');
     }
 
-    public function period()
+    public function periods(): HasMany
     {
-        return $this->belongsTo(Period::class, 'period_id', 'id');
+        return $this->hasMany(Period::class, 'slab_id', 'id');
     }
 }

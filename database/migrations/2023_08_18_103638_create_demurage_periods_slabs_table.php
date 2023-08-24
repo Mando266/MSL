@@ -15,8 +15,7 @@ class CreateDemuragePeriodsSlabsTable extends Migration
     {
         Schema::create('demurage_periods_slabs', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('status')->default(0);
-            $table->unsignedInteger('period_id')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->unsignedInteger('demurage_id')->nullable();
             $table->unsignedInteger('container_type_id')->nullable();
             $table->timestamps();

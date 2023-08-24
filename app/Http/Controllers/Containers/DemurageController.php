@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Containers;
 use App\Filters\Containers\ContainersIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Containers\Bound;
+use App\Models\Containers\DemuragePeriodsSlabs;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Period;
 use App\Models\Containers\Triff;
@@ -64,7 +65,7 @@ class DemurageController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        dd($request->all());
+
         $demurrages = Demurrage::create([
             'country_id' => $request->input('country_id'),
             'terminal_id' => $request->input('terminal_id'),
@@ -80,15 +81,20 @@ class DemurageController extends Controller
             'company_id' => $user->company_id,
             'tariff_type_id' => $request->tariff_type_id,
         ]);
-
-        foreach ($request->input('period', []) as $period) {
-            Period::create([
-                'demurrage_id' => $demurrages->id,
-                'rate' => $period['rate'],
-                'period' => $period['period'],
-                'number_off_dayes' => $period['number_off_days'],
-                'container_type_id' => $period['container_type_id'],
+        $slabs = collect($request->period)->groupBy('container_type');
+        foreach ($slabs as $slab) {
+            $createdSlab = DemuragePeriodsSlabs::create([
+                'demurage_id' => $demurrages->id,
+                'container_type_id' => $slab->first()['container_type']
             ]);
+            foreach ($slab as $period) {
+                Period::create([
+                    'rate' => $period['rate'],
+                    'period' => $period['period'],
+                    'number_off_dayes' => $period['number_off_days'],
+                    'slab_id' => $createdSlab->id,
+                ]);
+            }
         }
         return redirect()->route('demurrage.index')->with('success', trans('Demurrage.created'));
     }
@@ -123,7 +129,6 @@ class DemurageController extends Controller
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
         $user = Auth::user();
-
         $demurrage = $demurrage->load('periods');
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
@@ -178,8 +183,14 @@ class DemurageController extends Controller
     public function destroy($id)
     {
         $demurrage = Demurrage::find($id);
-        Period::where('demurrage_id',$id)->delete();
+        $slabs = DemuragePeriodsSlabs::where('demurage_id', $id)->with('periods')->get();
+        foreach ($slabs as $slab) {
+            foreach ($slab->periods as $period) {
+                $period->delete();
+            }
+            $slab->delete();
+        }
         $demurrage->delete();
-        return redirect()->route('demurrage.index')->with('success',trans('Demurrage.deleted.success'));
+        return redirect()->route('demurrage.index')->with('success', trans('Demurrage.deleted.success'));
     }
 }

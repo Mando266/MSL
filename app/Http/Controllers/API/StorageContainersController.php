@@ -7,7 +7,6 @@ use App\Models\Bl\BlDraft;
 use App\Models\Containers\Demurrage;
 use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 
@@ -29,39 +28,22 @@ class StorageContainersController extends Controller
     public function getStorageTriffs($service,$company_id)
     {
         $now = Carbon::now()->format('Y-m-d');
-        if($service == "power charges"){
-            $is_torage = "power charges";
-            $status = 1;
-        }elseif($service == "Export Full" || $service == "Export Empty"){ // full 1 empty 2 
-            $is_torage = "Export";
-            if($service == "Export Full"){
-                $status = 1;
-            }else{
-                $status = 2;
-            }
-        }else{
-            $is_torage = "Import";
-            if($service == "Import Full"){
-                $status = 1;
-            }else{
-                $status = 2;
-            }
-        }
-        $triffs = Demurrage::where('company_id',$company_id)->where('validity_to','>=',$now)
-                    ->where('is_storge',$is_torage)->where('container_status',$status)->get();
+
+        $triffs = Demurrage::where('company_id', $company_id)->where('validity_to', '>=', $now)->where('tariff_type_id', $service)->with('tarriffType')->get();
 
         $data = [];
         foreach ($triffs as $triff) {
             $rowData = [
                 'id' => $triff->id,
-                'is_storge' => $triff->is_storge,
-                'bound' => optional($triff->bound)->name,
+                'tariffTypeCode' => $triff->tarriffType->code,
+                'tariffTypeDesc' => $triff->tarriffType->description,
                 'portsCode' => optional($triff->ports)->code,
-                'containersTypeName' => optional($triff->containersType)->name
+                'validfrom' => $triff->validity_from,
+                'validto' => $triff->validity_to,
             ];
             $data[] = $rowData;
         }
-                
+
         return Response::json([
             'triffs' => $data
         ],200);

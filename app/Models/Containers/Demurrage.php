@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models\Containers;
+use App\TariffType;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,8 @@ use App\Models\Master\Ports;
 use App\Models\Master\Country;
 use App\Models\Containers\Bound;
 use App\Traits\HasFilter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Demurrage extends Model implements PermissionSeederContract
 {
@@ -25,6 +28,14 @@ class Demurrage extends Model implements PermissionSeederContract
             'Delete'
         ]);
     }
+
+    /**
+     * @return BelongsTo
+     */
+    public function tarriffType(): BelongsTo
+    {
+        return $this->belongsTo(TariffType::class,'tariff_type_id','id');
+    }
     public function containersType(){
         return $this->belongsTo(ContainersTypes::class,'container_type_id','id');
     }
@@ -40,9 +51,9 @@ class Demurrage extends Model implements PermissionSeederContract
     public function bound(){
         return $this->belongsTo(Bound::class,'bound_id','id');
     }
-    public function periods()
+    public function slabs()
     {
-        return $this->belongsToMany(Period::class,'demurage_periods_slabs' ,'demurrage_id','period_id');
+        return $this->hasMany(DemuragePeriodsSlabs::class,'demurage_id' ,'id');
     }
     public function createOrUpdatePeriod($inputs)
     {

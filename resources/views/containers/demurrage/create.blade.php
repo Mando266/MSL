@@ -178,9 +178,9 @@
                                                         <button type="button" class="btn btn-sm btn-success"
                                                                 id="addSlab">Create Slab
                                                         </button>
-                                                        <button type="button" class="btn btn-sm btn-primary"
-                                                                id="updateSlab">Update Slab
-                                                        </button>
+{{--                                                        <button type="button" class="btn btn-sm btn-primary"--}}
+{{--                                                                id="updateSlab">Update Slab--}}
+{{--                                                        </button>--}}
                                                     </div>
                                                 </div>
                                                 <div class="row mt-3">
@@ -191,7 +191,7 @@
                                                                 id="containersTypesInputHeader"
                                                                 data-live-search="true" name="container_type_id"
                                                                 data-size="10"
-                                                                title="{{trans('forms.select')}}" required>
+                                                                required>
                                                             @foreach ($containersTypes as $item)
                                                                 <option value="{{$item->id}}">{{$item->name}}</option>
                                                             @endforeach
@@ -247,12 +247,6 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h5 class="card-title">Slabs</h5>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-sm btn-primary">Button 1
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm btn-secondary">Button 2
-                                                    </button>
-                                                </div>
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
@@ -293,6 +287,7 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script>
         var counter = 0
         var selectedTypes = []
@@ -301,27 +296,90 @@
             const periodTableBody = document.querySelector('#period tbody');
             const slabsTableBody = document.querySelector('#slabs tbody');
             const containersTypesInput = document.getElementById('containersTypesInputHeader');
-            const equipmentType = containersTypesInput.value
 
 
             addSlabButton.addEventListener('click', function () {
-                
-                if (selectedTypes.includes(equipmentType)) {
-                    alert(`A slab was already created for the ${equipmentType} container type.`);
+                let equipmentType = containersTypesInput.selectedOptions[0].textContent
+                let equipmentTypeValue = containersTypesInput.value;
+                if (selectedTypes.includes(equipmentTypeValue)) {
+                    swal({
+                        title: `A slab was already created for the ${equipmentType} container type.`,
+                        icon: 'error'
+                    });
                     return;
                 }
 
-                selectedTypes.push(equipmentType);
                 const periodRows = Array.from(periodTableBody.querySelectorAll('tr:not(.d-none)'));
+                let hasEmptyInput = false;
+                let alerted = false;
+                periodRows.forEach(row => {
+                    const periodInput = row.querySelector('.period').value;
+                    const rateInput = row.querySelector('.rate').value;
+                    const daysInput = row.querySelector('.days').value;
+                    if (periodInput === '' || rateInput === '' || daysInput === '') {
+                        // Show a SweetAlert indicating the empty input
+                        swal({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Please fill in all input fields before proceeding!',
+                        });
+
+                        alerted = true;
+                        hasEmptyInput = true;
+                    }
+                    let trimmedInput = periodInput.replace(/\s/g, '');
+                    let periodIsAlpha = /^[a-zA-Z0-9]+$/.test(trimmedInput);
+                    let rateIsNumeric = /^[0-9]+$/.test(rateInput);
+                    let daysIsNumeric = /^[0-9]+$/.test(daysInput);
+                    if (!periodIsAlpha) {
+                        swal({
+                            icon: 'error',
+                            title: 'Invalid Input',
+                            text: 'The period input should only contain letters and numbers.',
+                        });
+                        alerted = true;
+                        hasEmptyInput = true;
+                    }
+                    if (!rateIsNumeric) {
+                        swal({
+                            icon: 'error',
+                            title: 'Invalid Input',
+                            text: 'The rate input should only contain numbers.',
+                        });
+                        alerted = true;
+                        hasEmptyInput = true;
+                    }
+                    if (!daysIsNumeric) {
+                        swal({
+                            icon: 'error',
+                            title: 'Invalid Input',
+                            text: 'The days input should only contain numbers.',
+                        });
+                        alerted = true;
+                        hasEmptyInput = true;
+                    }
+                });
+                if (hasEmptyInput || periodRows.length === 0) {
+                    if (!alerted) {
+                        swal({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Please fill in all input fields before proceeding!',
+                        });
+                    }
+                    return;
+                }
+                selectedTypes.push(equipmentTypeValue);
 
                 let count = counter++
 
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td><input type="text" class="equipmentType form-control period" value="${equipmentType}" /></td>
-                    <td><input type="text" class="status form-control period" value="Active" /></td>
-                    <td><input type="text" class="currencyCode form-control period" value="Demurrage" /></td>
-                    <td><input type="text" class="containerStatus form-control period" /></td>
+                    <input type="text" class="equipmentType form-control bg-transparent border-0 period" value="${equipmentType}" disabled/>
+                    <input type="hidden" name="equipmentType" value="${equipmentTypeValue}" disabled/>
+                    <td><input type="text" class="status form-control bg-transparent border-0 period" value="Active" disabled/></td>
+                    <td><input type="text" class="currencyCode form-control bg-transparent border-0 period" value="Same As Demurrage" disabled/></td>
+                    <td><input type="text" class="containerStatus form-control bg-transparent border-0 period" value="Same As Demurrage" disabled/></td>
                     <td>
                         <button class="removeSlabBtn btn btn-danger" id="${count}"><i class="fa fa-trash"></i></button>
                     </td>
@@ -334,7 +392,7 @@
                     let rowId = e.target.id;
                     this.closest('tr').remove();
                     document.querySelectorAll(`.row-${rowId}`).forEach(row => row.remove());
-                    
+
                     const equipmentTypeToRemove = newRow.querySelector('.equipmentType').value;
                     const indexToRemove = selectedTypes.indexOf(equipmentTypeToRemove);
                     if (indexToRemove !== -1) {
@@ -347,7 +405,7 @@
                     const rateInput = row.querySelector('.rate').value;
                     const daysInput = row.querySelector('.days').value;
 
-                    row.querySelector('.container_type').value = equipmentType
+                    row.querySelector('.container_type').value = equipmentTypeValue
                     row.className = `d-none row-${count}`;
                 });
             });
