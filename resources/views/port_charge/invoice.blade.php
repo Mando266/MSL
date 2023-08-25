@@ -504,10 +504,12 @@
 
         function handleAddRow() {
             const targetTable = $('table:not(.d-none)').first()
+            const tableId = targetTable.attr('id')
             const newRow = getNewRow()
 
             targetTable.append(newRow)
             handleDynamicFieldsChange()
+            updateChargeTypeOptions(tableId)
         }
 
         function handleChargeTypeChange() {
@@ -533,11 +535,13 @@
             const row = $(this).closest('tr')
             const selectedCharge = row.find('.charge_type')[0].selectedIndex
             const selectedService = row.find('.service_type')[0].selectedIndex
+            const tableId = row.closest('table').attr('id')
 
             const tbody = row.closest('tbody')
             appendNewRows(containerNumbers, selectedCharge, selectedService, tbody)
             row.remove()
             handleDynamicFieldsChange()
+            updateChargeTypeOptions(tableId);
         }
 
         function getClipboardData(event) {
@@ -548,7 +552,7 @@
             const pastedContent = clipboardData.getData('text/plain')
             return pastedContent.split('\n').map(containerNumber => containerNumber.trim())
         }
-        
+
         function appendNewRows(containerNumbers, selectedCharge, selectedService, tbody) {
             containerNumbers.forEach(containerNumber => {
                 if (containerNumber !== '') {
@@ -633,6 +637,7 @@
                 })
             })
         }
+
         function getNewRow(containerNumber = '') {
             const newRow = $(`
         <tr>
@@ -642,7 +647,7 @@
                 </button>
             </td>
             <td>
-                <select name="port_charge_type[]" class="form-control charge_type" required>
+                <select name="port_charge_type[]" class="form-control charge_type new_charge" required>
                     <option hidden selected>Select</option>
                     @foreach($portCharges as $portCharge)
             <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
@@ -706,6 +711,26 @@
             })
 
             return dynamicInputsHtml
+        }
+
+        function updateChargeTypeOptions(tableId) {
+            const chargeTypeSelect = $(`#${tableId} .new_charge`)
+            const options = chargeTypeSelect.find('option:not([hidden])')
+
+            const allowedValues = {
+                'table1': ['FULL-IMPORT', 'FULL-EXPORT'],
+                'table2': ['EMPTY-EXPORT'],
+                'table3': ['EMPTY-IMPORT'],
+                'table4': ['TRANSHIP']
+            }
+
+            options.each((index, option) => {
+                const optionValue = JSON.parse(option.value).name
+
+                if (!(allowedValues[tableId].some(allowed => optionValue.includes(allowed)))) {
+                    option.remove()
+                }
+            })
         }
 
 

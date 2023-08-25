@@ -72,9 +72,9 @@
                     @if ($id == 'table1' && (strpos($portCharge->name, 'FULL-IMPORT') !== false || strpos($portCharge->name, 'FULL-EXPORT') !== false))
                         <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @elseif($id == 'table2' && strpos($portCharge->name, 'EMPTY-EXPORT') !== false)
-                        <option value="{{ json_encode($portCharge) }}" selected>{{ $portCharge->name }}</option>
+                        <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @elseif($id == 'table3' && strpos($portCharge->name, 'EMPTY-IMPORT') !== false)
-                        <option value="{{ json_encode($portCharge) }}" selected>{{ $portCharge->name }}</option>
+                        <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @elseif($id == 'table4' && strpos($portCharge->name, 'TRANSHIP') !== false)
                         <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
                     @endif
