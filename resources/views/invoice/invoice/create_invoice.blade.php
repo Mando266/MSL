@@ -165,7 +165,7 @@
                             <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label> VAT % </label>
-                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off"  style="background-color:#fff" required>
+                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off" value={{0}}  style="background-color:#fff" required>
                                 </div> 
                             </div>
                             <div class="form-row">
@@ -197,7 +197,7 @@
                                                     <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[{{ $key }}][charge_description]" data-size="10"
                                                         title="{{trans('forms.select')}}" disabled>
                                                         @foreach ($charges as $item)
-                                                            <option value="{{$item->id}}" {{$detail->charge_type == old('charge_description',$item->id) ? 'selected':''}}>{{$item->name}}</option>
+                                                            <option value="{{$item->name}}" {{$detail->charge_type == old('charge_description',$item->name) ? 'selected':''}}>{{$item->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>

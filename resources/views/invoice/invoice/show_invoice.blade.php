@@ -132,9 +132,8 @@
                             <th class="col-md-5 tableStyle text-center">Description Of Charges</th>
                             <th class="col-md-2 tableStyle text-center">QTY</th>
                             <th class="col-md-2 tableStyle text-center">Amount ({{$invoice->add_egp == 'onlyegp' ? 'EGP' : 'USD'}})</th>
-                            @if( $invoice->add_egp != 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">Vat</th>
-                            @endif
+                        
                             <!-- @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">EGP Vat</th>
                             @endif -->
@@ -142,7 +141,7 @@
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
+                            <th class="col-md-2 tableStyle text-center">Equivalent Total(EGP)</th>
                             @endif
                         </tr>
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
@@ -164,12 +163,10 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
                             @endif
 
-                            @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount * $invoice->vat / 100}}</span></td>
-                            @endif
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
 
                             <!-- @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy * $invoice->vat / 100}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
                             @endif -->
 
                             @if( $invoice->add_egp != 'onlyegp')
@@ -184,7 +181,13 @@
                         </tr>
                         @endforeach
                         <tr>
+                        @if($invoice->add_egp == 'onlyegp')
+                            <td class="col-md-6 tableStyle" colspan="5"><span class="entry">TOTAL</span></td>
+                            @elseif( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-6 tableStyle" colspan="4"><span class="entry">TOTAL</span></td>
+                            @else
+                            <td class="col-md-6 tableStyle" colspan="5"><span class="entry">TOTAL</span></td>
+                        @endif
                             @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_after_vat }}</span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_before_vat }}</span></td>
@@ -211,7 +214,7 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg_after_vat }}</span></td>
                             @endif
                         </tr> -->
-                        <tr>
+                        <tr>         
                             <td class="col-md-6 tableStyle" colspan="5"><span class="entry">GRAND TOTAL</span></td>
                             <!-- <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td>
                             <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td> -->
