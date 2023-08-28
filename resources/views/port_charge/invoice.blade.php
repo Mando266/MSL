@@ -306,13 +306,9 @@
                                             <select class="selectpicker form-control" id="dynamic_fields" multiple
                                                     data-size="10">
                                                 @foreach ([
-                                                            'thc_20ft', 'thc_40ft', 'storage_free', 'storage_slab1_period', 'storage_slab1_20ft',
-                                                            'storage_slab1_40ft', 'storage_slab2_period', 'storage_slab2_20ft', 'storage_slab2_40ft',
-                                                            'power_free', 'power_20ft', 'power_40ft', 'shifting_20ft', 'shifting_40ft', 'disinf_20ft', 'disinf_40ft',
-                                                            'hand_fes_em_20ft', 'hand_fes_em_40ft', 'gat_lift_off_inbnd_em_ft40_20ft',
-                                                            'gat_lift_off_inbnd_em_ft40_40ft', 'gat_lift_on_inbnd_em_ft40_20ft',
-                                                            'gat_lift_on_inbnd_em_ft40_40ft', 'pti_failed', 'pti_passed', 'add_plan_20ft',
-                                                            'add_plan_40ft'
+                                                            'thc', 'storage','power', 'shifting',
+                                                            'disinf','hand_fes_em', 'gat_lift_off',
+                                                            'gat_lift_on', 'pti', 'add_plan'
                                                         ] as $field)
                                                     <option value="{{ $field }}">{{ $field }}</option>
                                                 @endforeach
@@ -455,6 +451,14 @@
             overflow-x: auto;
             max-width: 100%;
         }
+
+        .dynamic-input:not(.included) {
+            display: none;
+        }
+
+        td:not(:has(input.included)) {
+            display: none;
+        }
     </style>
 @endpush
 @push('scripts')
@@ -465,16 +469,29 @@
             switchTables()
             calculateTotalUSD()
             loadVoyages()
+            hideCellsWithoutIncludedInput()
+            handleDynamicFieldsChange()
         })
 
         function handleDynamicFieldsChange() {
-            const selectedFields = $('#dynamic_fields').val()
-            $('.dynamic-input').removeClass('included')
+            const selectedFields = $('#dynamic_fields').val();
+            $('.dynamic-input').removeClass('included');
 
             selectedFields.forEach(selectedField => {
-                $('.dynamic-input[data-field="' + selectedField + '"]').addClass('included')
-            })
+                $('.dynamic-input[data-field*="' + selectedField + '"]').addClass('included');
+            });
+
+            const options = $('#dynamic_fields option'); // Get all the options
+
+            options.each(function() {
+                const optionValue = $(this).val();
+                const formattedValue = optionValue.replace(/_/g, '-');
+                const contains = selectedFields.some(field => field.includes(optionValue));
+                $('[data-field="' + formattedValue + '"]').toggleClass('d-none', !contains);
+            });
+            hideCellsWithoutIncludedInput();
         }
+
 
         function calculateTotalUSD() {
             let totalUSD = 0
@@ -732,6 +749,19 @@
                 }
             })
         }
+
+        function hideCellsWithoutIncludedInput() {
+            const firstVisibleTable = $('table:not(.d-none):first');
+            firstVisibleTable.find('td:has(input.dynamic-input)').each(function() {
+                const $input = $(this).find('input.dynamic-input');
+                if (!$input.hasClass('included')) {
+                    $(this).addClass('d-none');
+                } else {
+                    $(this).removeClass('d-none');
+                }
+            });
+        }
+
 
 
     </script>

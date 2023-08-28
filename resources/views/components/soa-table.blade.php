@@ -14,49 +14,49 @@
         <th rowspan="3" style="min-width: 222px">TS</th>
         <th rowspan="3" style="min-width: 222px">SHIPMENT TYPE</th>
         <th rowspan="3" style="min-width: 222px">QUOTATION TYPE</th>
-        <th colspan=2>THC</th>
-        <th colspan=7>STORAGE</th>
-        <th colspan=3>POWER</th>
-        <th colspan=2>SHIFTING</th>
-        <th colspan=2>DISINF</th>
-        <th colspan=2>HAND-FES-EM</th>
-        <th colspan=2>GAT-LIFT OFF-INBND-EM-FT40</th>
-        <th colspan=2>GAT-LIFT ON-INBND-EM-FT40</th>
-        <th colspan=2>PTI</th>
-        <th colspan=2>ADD-PLAN</th>
+        <th colspan=2 data-field="thc">THC</th>
+        <th colspan=7 data-field="storage">STORAGE</th>
+        <th colspan=3 data-field="power">POWER</th>
+        <th colspan=2 data-field="shifting">SHIFTING</th>
+        <th colspan=2 data-field="disinf">DISINF</th>
+        <th colspan=2 data-field="hand-fes-em">HAND-FES-EM</th>
+        <th colspan=2 data-field="gat-lift-off">GAT-LIFT OFF-INBND-EM-FT40</th>
+        <th colspan=2 data-field="gat-lift-on">GAT-LIFT ON-INBND-EM-FT40</th>
+        <th colspan=2 data-field="pti">PTI</th>
+        <th colspan=2 data-field="add-plan">ADD-PLAN</th>
     </tr>
     <tr>
-        <th rowspan=2 height=98>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>Free Time</th>
-        <th colspan=3>Slab1</th>
-        <th colspan=3>Slab2</th>
-        <th rowspan=2>Free Time</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
-        <th colspan=2>20FT & 40FT</th>
-        <th rowspan=2>20FT</th>
-        <th rowspan=2>40FT</th>
+        <th rowspan=2 height=98 data-field="thc">20FT</th>
+        <th rowspan=2 data-field="thc">40FT</th>
+        <th rowspan=2 data-field="storage">Free Time</th>
+        <th colspan=3 data-field="storage">Slab1</th>
+        <th colspan=3 data-field="storage">Slab2</th>
+        <th rowspan=2 data-field="power">Free Time</th>
+        <th rowspan=2 data-field="power">20FT</th>
+        <th rowspan=2 data-field="power">40FT</th>
+        <th rowspan=2 data-field="shifting">20FT</th>
+        <th rowspan=2 data-field="shifting">40FT</th>
+        <th rowspan=2 data-field="disinf">20FT</th>
+        <th rowspan=2 data-field="disinf">40FT</th>
+        <th rowspan=2 data-field="hand-fes-em">20FT</th>
+        <th rowspan=2 data-field="hand-fes-em">40FT</th>
+        <th rowspan=2 data-field="gat-lift-off">20FT</th>
+        <th rowspan=2 data-field="gat-lift-off">40FT</th>
+        <th rowspan=2 data-field="gat-lift-on">20FT</th>
+        <th rowspan=2 data-field="gat-lift-on">40FT</th>
+        <th colspan=2 data-field="pti">20FT & 40FT</th>
+        <th rowspan=2 data-field="add-plan">20FT</th>
+        <th rowspan=2 data-field="add-plan">40FT</th>
     </tr>
     <tr>
-        <th>Period</th>
-        <th>20 FT</th>
-        <th>40 FT</th>
-        <th>Period</th>
-        <th>20 FT</th>
-        <th>40 FT</th>
-        <th>failed</th>
-        <th>pass</th>
+        <th data-field="storage">Period</th>
+        <th data-field="storage">20 FT</th>
+        <th data-field="storage">40 FT</th>
+        <th data-field="storage">Period</th>
+        <th data-field="storage">20 FT</th>
+        <th data-field="storage">40 FT</th>
+        <th data-field="pti">failed</th>
+        <th data-field="pti">pass</th>
     </tr>
     </thead>
     <tbody>
@@ -126,47 +126,47 @@
                    class="shipment_type form-control"></td>
         <td><input type="text" name="quotation_type[]"
                    class="quotation_type form-control"></td>
-        <td><input type="text" name="thc_20ft[]" class="form-control dynamic-input" data-field="thc_20ft"></td>
-        <td><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>
-        <td><input type="text" name="free_time[]" class="form-control dynamic-input" data-field="storage_free"></td>
-        <td><input type="text" name="slab1_period[]" class="form-control dynamic-input"
+        <td data-field="thc"><input type="text" name="thc_20ft[]" class="form-control dynamic-input" data-field="thc_20ft"></td>
+        <td data-field="thc"><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>
+        <td data-field="storage"><input type="text" name="free_time[]" class="form-control dynamic-input" data-field="storage_free"></td>
+        <td data-field="storage"><input type="text" name="slab1_period[]" class="form-control dynamic-input"
                    data-field="storage_slab1_period"></td>
-        <td><input type="text" name="slab1_20ft[]" class="form-control dynamic-input" data-field="storage_slab1_20ft">
+        <td data-field="storage"><input type="text" name="slab1_20ft[]" class="form-control dynamic-input" data-field="storage_slab1_20ft">
         </td>
-        <td><input type="text" name="slab1_40ft[]" class="form-control dynamic-input" data-field="storage_slab1_40ft">
+        <td data-field="storage"><input type="text" name="slab1_40ft[]" class="form-control dynamic-input" data-field="storage_slab1_40ft">
         </td>
-        <td><input type="text" name="slab2_period[]" class="form-control dynamic-input"
+        <td data-field="storage"><input type="text" name="slab2_period[]" class="form-control dynamic-input"
                    data-field="storage_slab2_period"></td>
-        <td><input type="text" name="slab2_20ft[]" class="form-control dynamic-input" data-field="storage_slab2_20ft">
+        <td data-field="storage"><input type="text" name="slab2_20ft[]" class="form-control dynamic-input" data-field="storage_slab2_20ft">
         </td>
-        <td><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
+        <td data-field="storage"><input type="text" name="slab2_40ft[]" class="form-control dynamic-input" data-field="storage_slab2_40ft">
         </td>
-        <td><input type="text" name="power_free[]" class="form-control dynamic-input" data-field="power_free"></td>
-        <td><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
-        <td><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
-        <td><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
+        <td data-field="power"><input type="text" name="power_free[]" class="form-control dynamic-input" data-field="power_free"></td>
+        <td data-field="power"><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>
+        <td data-field="power"><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>
+        <td data-field="shifting"><input type="text" name="shifting_20ft[]" class="form-control dynamic-input" data-field="shifting_20ft">
         </td>
-        <td><input type="text" name="shifting_40ft[]" class="form-control dynamic-input" data-field="shifting_40ft">
+        <td data-field="shifting"><input type="text" name="shifting_40ft[]" class="form-control dynamic-input" data-field="shifting_40ft">
         </td>
-        <td><input type="text" name="disinf_20ft[]" class="form-control dynamic-input" data-field="disinf_20ft"></td>
-        <td><input type="text" name="disinf_40ft[]" class="form-control dynamic-input" data-field="disinf_40ft"></td>
-        <td><input type="text" name="hand_fes_em_20ft[]" class="form-control dynamic-input"
+        <td data-field="disinf"><input type="text" name="disinf_20ft[]" class="form-control dynamic-input" data-field="disinf_20ft"></td>
+        <td data-field="disinf"><input type="text" name="disinf_40ft[]" class="form-control dynamic-input" data-field="disinf_40ft"></td>
+        <td data-field="hand-fes-em"><input type="text" name="hand_fes_em_20ft[]" class="form-control dynamic-input"
                    data-field="hand_fes_em_20ft"></td>
-        <td><input type="text" name="hand_fes_em_40ft[]" class="form-control dynamic-input"
+        <td data-field="hand-fes-em"><input type="text" name="hand_fes_em_40ft[]" class="form-control dynamic-input"
                    data-field="hand_fes_em_40ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
+        <td data-field="gat-lift-off"><input type="text" name="gat_lift_off_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
                    data-field="gat_lift_off_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
+        <td data-field="gat-lift-off"><input type="text" name="gat_lift_off_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
                    data-field="gat_lift_off_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
+        <td data-field="gat-lift-on"><input type="text" name="gat_lift_on_inbnd_em_ft40_20ft[]" class="form-control dynamic-input"
                    data-field="gat_lift_on_inbnd_em_ft40_20ft"></td>
-        <td><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
+        <td data-field="gat-lift-on"><input type="text" name="gat_lift_on_inbnd_em_ft40_40ft[]" class="form-control dynamic-input"
                    data-field="gat_lift_on_inbnd_em_ft40_40ft"></td>
-        <td><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
-        <td><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
-        <td><input type="text" name="add_plan_20ft[]" class="form-control dynamic-input"
+        <td data-field="pti"><input type="text" name="pti_20ft[]" class="form-control dynamic-input" data-field="pti_failed"></td>
+        <td data-field="pti"><input type="text" name="pti_40ft[]" class="form-control dynamic-input" data-field="pti_passed"></td>
+        <td data-field="add-plan"><input type="text" name="add_plan_20ft[]" class="form-control dynamic-input"
                    data-field="add_plan_20ft"></td>
-        <td><input type="text" name="add_plan_40ft[]" class="form-control dynamic-input"
+        <td data-field="add-plan"><input type="text" name="add_plan_40ft[]" class="form-control dynamic-input"
                    data-field="add_plan_40ft"></td>
 
     </tbody>
