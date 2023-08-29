@@ -165,7 +165,7 @@
                             <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label> VAT % </label>
-                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off" value={{0}}  style="background-color:#fff" required>
+                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off" value="0" style="background-color:#fff" required>
                                 </div> 
                             </div>
                             <div class="form-row">
@@ -197,7 +197,7 @@
                                                     <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[{{ $key }}][charge_description]" data-size="10"
                                                         title="{{trans('forms.select')}}" disabled>
                                                         @foreach ($charges as $item)
-                                                            <option value="{{$item->name}}" {{$detail->charge_type == old('charge_description',$item->name) ? 'selected':''}}>{{$item->name}}</option>
+                                                            <option value="{{$item->name}}" {{$detail->charge_type == old('charge_description',$item->id) ? 'selected':''}}>{{$item->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -483,7 +483,7 @@ $(document).ready(function(){
     var counter  = '<?= isset($key)? ++$key : 0 ?>';
     $("#add").click(function(){
        var tr = '<tr>'+
-           '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
+           '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1"><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+

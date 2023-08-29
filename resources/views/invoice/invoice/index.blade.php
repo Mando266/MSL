@@ -166,7 +166,9 @@
                                     if($total_after_vat != 0){
                                         $total = $total + $total_after_vat;
                                     }
-
+                                    if($total_after_vat != 0){
+                                        $total_eg = $total_eg + $total_eg_after_vat;
+                                    }
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
                                             ->where('port_from_name',optional(optional($invoice->booking)->loadPort)->id)->first();

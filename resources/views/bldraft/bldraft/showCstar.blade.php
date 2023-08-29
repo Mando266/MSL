@@ -9,7 +9,7 @@
                             <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);"> Bl Draft Confirmation</a></li>
                             <li class="breadcrumb-item"></li>
-                        </ol> 
+                        </ol>  
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
@@ -53,11 +53,25 @@
                                 <td class="col-md-3 tableStyle" >Reference No. </br>
                                     &nbsp{{ optional($blDraft->booking)->forwarder_ref_no }}</td>
                             </tr>
+
+                                        @php
+                                            $draft_invoice=0;
+                                            $confirm_invoice=0;
+                                            foreach ($blDraft->invoices as $invoice) {
+                                                if($invoice->invoice_status == "draft"){
+                                                    $draft_invoice ++;
+                                                }elseif($invoice->invoice_status == "confirm"){
+                                                    $confirm_invoice ++;
+                                                }
+                                            }
+                                        @endphp
                             <tr>
                                 @if(optional($blDraft)->number_of_original == "0" )
                                 <td class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
-                                @elseif($blDraft->bl_status == 0 && optional($blDraft)->number_of_original != "0")
+                                @elseif($blDraft->bl_status == 0 || $invoice->paymentstauts == 0)
                                 <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @elseif($blDraft->bl_status == 1 || $invoice->paymentstauts == 0)
+                                <td class="col-md-6 tableStyle " colspan="2">Non Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @else
                                 <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif

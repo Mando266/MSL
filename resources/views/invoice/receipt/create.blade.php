@@ -140,7 +140,7 @@
                             <div class="col-md-4 form-group">
                              {{-- @dd($invoice); --}}
                                 <label> Total {{$invoice->add_egp == "false"? "USD" : "EGP"}}</label>
-                                    <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total : $total_eg}}" readonly>
+                                    <input  class="form-control"  type="text" name="total_payment" value="{{$invoice->add_egp == "false"? $total  : $total_eg}}" readonly>
                                 </div>
                                 <div class="col-md-2 form-group">
                                     <label> Customer Credit USD </label>
