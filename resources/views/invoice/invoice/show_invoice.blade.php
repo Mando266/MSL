@@ -163,10 +163,10 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
                             @endif
 
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount * $invoice->vat / 100}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
 
                             <!-- @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy * $invoice->vat / 100}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
                             @endif -->
 
                             @if( $invoice->add_egp != 'onlyegp')
