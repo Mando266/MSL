@@ -197,7 +197,6 @@
                             </div>
                         <h4>Charges<h4>
                     @if($invoice->type == "invoice")
-
                         <table id="charges" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -220,12 +219,16 @@
                             <tr>
                                 <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                                 <td>
+                                    @if($item->created_at <= '2023-08-27 10:55:28')
+                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" >
+                                    @else
                                     <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
                                         title="{{trans('forms.select')}}" autofocus disabled>
                                         @foreach ($charges as $charge)
                                             <option value="{{$charge->id}}" {{$charge->id == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
                                         @endforeach
                                     </select>
+                                    @endif
                                 </td>
                                 <td>
                                     <input type="text" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" class="form-control" 

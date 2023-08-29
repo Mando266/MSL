@@ -141,7 +141,7 @@
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <th class="col-md-2 tableStyle text-center">Equivalent Total(EGP)</th>
+                            <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
                             @endif
                         </tr>
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
@@ -162,22 +162,19 @@
                             @else
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
                             @endif
-
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
-
-                            <!-- @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
-                            @endif -->
+                            @if( $invoice->add_egp != 'onlyegp')
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount * $invoice->vat / 100}}</span></td>
+                            @else
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy * $invoice->vat / 100}}</span></td>
+                            @endif
 
                             @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount }}</span></td>
                             @endif
 
-
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy}}</span></td>
                             @endif
-
                         </tr>
                         @endforeach
                         <tr>
@@ -196,28 +193,8 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg_before_vat }}</span></td>
                             @endif
                         </tr>
-                        <!-- <tr>
-                            <td class="col-md-6 tableStyle text-center" colspan="4"><span class="entry">Tax ({{ $invoice->tax_discount . '%' }})</span></td>
-                            @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $totalAftereTax }}</span></td>
-                            @endif
-                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $totalAftereTax_eg }}</span></td>
-                            @endif
-                        </tr> -->
-                        <!-- <tr>
-                            <td class="col-md-4 tableStyle" colspan="4"><span class="entry">VAT ({{ $invoice->vat . '%' }})</span></td>
-                            @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_after_vat }}</span></td>
-                            @endif
-                            @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg_after_vat }}</span></td>
-                            @endif
-                        </tr> -->
                         <tr>         
                             <td class="col-md-6 tableStyle" colspan="5"><span class="entry">GRAND TOTAL</span></td>
-                            <!-- <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="entry"></span></td> -->
                             @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total}}</span></td>
                             @endif

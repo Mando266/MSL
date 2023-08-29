@@ -57,16 +57,12 @@
                                 @if(optional($blDraft)->number_of_original == "0" )
                                 <td class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
                                 @elseif($blDraft->bl_status == 0 && optional($blDraft)->number_of_original != "0")
-                                <td class="col-md-6 tableStyle" colspan="2">NON NEGOTIABLE Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @else
-                                <td class="col-md-6 tableStyle" colspan="2">Bill OF Lading<h3 style="font-weight: 900;"></h3><br>
+                                <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
                                 <div class="col-md-12 text-center">
-                                    {{-- @if(optional($blDraft->loadPort)->code == "EGEDK") --}}
                                         <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
-                                        {{-- @else
-                                        <img src="{{asset('assets/img/msl-logo.jpeg')}}" style="width: 350px;" alt="logo">
-                                    @endif --}}
                                 </div>
                                 </td>
                             </tr>
