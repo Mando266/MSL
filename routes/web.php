@@ -248,6 +248,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
         Route::get('get-ref-no', [PortChargeController::class, 'getRefNo'])->name('get-ref-no');
         Route::get('invoice', [PortChargeController::class, 'createInvoice'])->name('invoice');
+        Route::post('calculateInvoiceRow', [PortChargeController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
     });
 });
 Auth::routes(['register' => false]);

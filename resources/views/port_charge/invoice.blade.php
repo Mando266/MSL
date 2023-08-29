@@ -468,7 +468,6 @@
             setupEventHandlers()
             switchTables()
             calculateTotalUSD()
-            loadVoyages()
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
         })
@@ -483,7 +482,7 @@
 
             const options = $('#dynamic_fields option'); // Get all the options
 
-            options.each(function() {
+            options.each(function () {
                 const optionValue = $(this).val();
                 const formattedValue = optionValue.replace(/_/g, '-');
                 const contains = selectedFields.some(field => field.includes(optionValue));
@@ -511,7 +510,9 @@
             $(document).on('change', '.container_no', handleContainerNoChange)
             $('#vessel_id').on('change', loadVoyages)
             $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $('body').on('DOMSubtreeModified', calculateTotalUSD)
+            $(document).on('input', '.dynamic-input', calculateTotalUSD)
+            $(document).on('change', '.pti-type', handlePtiTypeChange);
+            $(document).on('click change keyup paste',() => calculateTotalUSD());
         }
 
         function handleRemoveRow() {
@@ -530,18 +531,58 @@
         }
 
         function handleChargeTypeChange() {
-            const selectedValue = $(this).val()
-            const row = $(this).closest('tr')
-            const dynamicInputs = row.find('.dynamic-input')
+            const selectedOption = $(this).find('option:selected');
+            const selectedValue = $(this).val();
+            const row = $(this).closest('tr');
+            const dynamicInputs = row.find('.dynamic-input');
+            const containerInput = row.find('.container_no');
+            const refNoInput = row.find('.ref-no-td');
+            const ptiTypeSelect = row.find('.pti-type');
+            const emptyExportFromSelect = $('[name="empty_export_from"]');
+            const emptyExportToSelect = $('[name="empty_export_to"]');
+            const emptyImportFromSelect = $('[name="empty_import_from"]');
+            const emptyImportToSelect = $('[name="empty_import_to"]');
+            
+            if (selectedValue && containerInput.val() && refNoInput.val()) {
+                const requestData = {
+                    charge_type: selectedValue,
+                    container_no: containerInput.val(),
+                    bl_no: refNoInput.val()
+                };
+                
+                if (selectedOption.text() === 'EMPTY-EXPORT') {
+                    requestData.from = emptyExportFromSelect.find('option:selected').text();
+                    requestData.to = emptyExportToSelect.find('option:selected').text();
+                } else if (selectedOption.text() === 'EMPTY-IMPORT') {
+                    requestData.from = emptyImportFromSelect.find('option:selected').text();
+                    requestData.to = emptyImportToSelect.find('option:selected').text();
+                }
+                
 
-            dynamicInputs.each(function () {
-                const field = $(this).data('field')
-                const value = selectedValue ? JSON.parse(selectedValue)[field] : ''
-                $(this).val(value)
-            })
+                axios.post('{{ route('port-charges.calculate-invoice-row') }}', requestData)
+                    .then(function (response) {
+                        const dynamicFields = [
+                            'thc', 'storage',
+                            'power', 'shifting', 'disinf',
+                            'hand_fes_em', 'gat_lift_off_inbnd_em_ft40',
+                            'gat_lift_on_inbnd_em_ft40', 'add_plan'
+                        ]
+                        dynamicFields.forEach(item => {
+                            row.find(`[name*="${item}"]`).val(response.data[item]);
+                        });
 
-            calculateTotalUSD()
+                        ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
+                        ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
+                        ptiTypeSelect.trigger('change')
+
+                        calculateTotalUSD();
+                    })
+                    .catch(function (error) {
+                        console.error('Error:', error);
+                    });
+            }
         }
+
 
         function handleContainerNoPaste(e) {
             e.preventDefault()
@@ -578,39 +619,54 @@
                     newRow.find('.charge_type')[0].selectedIndex = selectedCharge
                     newRow.find('.service_type')[0].selectedIndex = selectedService
                     newRow.find('.container_no').trigger('change')
-                    newRow.find('.charge_type').trigger('change')
+                    // setTimeout(function () {
+                    // }, 4400)
                 }
             })
         }
 
         function handleContainerNoChange() {
-            const containerNumber = $(this).val().trim()
-            if (containerNumber !== '') {
-                const row = $(this).closest('tr')
-                const refNoCell = row.find('.ref-no-td')[0]
-                const isTsCell = row.find('.is_transhipment')[0]
-                const shipTypeCell = row.find('.shipment_type')[0]
-                const quoteTypeCell = row.find('.quotation_type')[0]
+            const containerNumber = $(this).val().trim();
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+
+            if (containerNumber !== '' && vesselId !== '' && voyage !== '') {
+                const row = $(this).closest('tr');
+                const refNoCell = row.find('.ref-no-td')[0];
+                const isTsCell = row.find('.is_transhipment')[0];
+                const shipTypeCell = row.find('.shipment_type')[0];
+                const quoteTypeCell = row.find('.quotation_type')[0];
 
                 axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
-                        vessel: $('#vessel_id').val(),
-                        voyage: $('#voyage').val(),
+                        vessel: vesselId,
+                        voyage: voyage,
                         container: containerNumber
                     }
                 }).then(response => {
                     if (response.data.status === 'success') {
-                        refNoCell.value = response.data.ref_no
-                        isTsCell.value = response.data.is_ts
-                        shipTypeCell.value = response.data.shipment_type
-                        quoteTypeCell.value = response.data.quotation_type
+                        refNoCell.value = response.data.ref_no;
+                        isTsCell.value = response.data.is_ts;
+                        shipTypeCell.value = response.data.shipment_type;
+                        quoteTypeCell.value = response.data.quotation_type;
+                        row.find('.charge_type').trigger('change');
                     }
                 }).catch(() => {
-                    console.error('Could not find ref_no')
-                })
+                    console.error('Could not find ref_no');
+                });
             }
 
-            handleDynamicFieldsChange()
+            handleDynamicFieldsChange();
+        }
+
+
+        function handlePtiTypeChange() {
+            const selectedPtiType = $(this).val();
+            const ptiValue = $(this).find(`option:selected`).data('cost');
+
+            const row = $(this).closest('tr');
+            const ptiInput = row.find('input[name*="pti"]');
+            ptiInput.val(ptiValue);
         }
 
         function loadVoyages() {
@@ -667,7 +723,7 @@
                 <select name="port_charge_type[]" class="form-control charge_type new_charge" required>
                     <option hidden selected>Select</option>
                     @foreach($portCharges as $portCharge)
-            <option value="{{ json_encode($portCharge) }}">{{ $portCharge->name }}</option>
+            <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
                     @endforeach
             </select>
         </td>
@@ -709,22 +765,33 @@
 
         function generateDynamicInputsHtml() {
             const dynamicFields = [
-                'thc_20ft', 'thc_40ft', 'storage_free', 'storage_slab1_period', 'storage_slab1_20ft',
-                'storage_slab1_40ft', 'storage_slab2_period', 'storage_slab2_20ft', 'storage_slab2_40ft',
-                'power_free', 'power_20ft', 'power_40ft', 'shifting_20ft', 'shifting_40ft', 'disinf_20ft', 'disinf_40ft',
-                'hand_fes_em_20ft', 'hand_fes_em_40ft', 'gat_lift_off_inbnd_em_ft40_20ft',
-                'gat_lift_off_inbnd_em_ft40_40ft', 'gat_lift_on_inbnd_em_ft40_20ft',
-                'gat_lift_on_inbnd_em_ft40_40ft', 'pti_failed', 'pti_passed', 'add_plan_20ft',
-                'add_plan_40ft'
+                'thc', 'storage', 'power',
+                'shifting', 'disinf', 'hand_fes_em',
+                'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
+                'pti', 'add_plan'
             ]
 
             let dynamicInputsHtml = ''
             dynamicFields.forEach(field => {
-                dynamicInputsHtml += `
-            <td>
-                <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}">
-            </td>
-        `;
+                if (field === "pti") {
+                    dynamicInputsHtml += `
+                    <td data-field="${field}">
+                        <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}_cost">
+                    </td>
+                    <td data-field="${field}">
+                        <select style="min-width: 100px" class="form-control pti-type" name="pti_type[]">
+                            <option value="passed" data-cost="0" selected>Passed</option>
+                            <option value="failed" data-cost="0">Failed</option>
+                        </select>
+                    </td>
+                    `;
+                } else {
+                    dynamicInputsHtml += `
+                    <td data-field="${field}">
+                        <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}_cost">
+                    </td>
+                    `;
+                }
             })
 
             return dynamicInputsHtml
@@ -742,7 +809,7 @@
             }
 
             options.each((index, option) => {
-                const optionValue = JSON.parse(option.value).name
+                const optionValue = option.textContent
 
                 if (!(allowedValues[tableId].some(allowed => optionValue.includes(allowed)))) {
                     option.remove()
@@ -752,7 +819,7 @@
 
         function hideCellsWithoutIncludedInput() {
             const firstVisibleTable = $('table:not(.d-none):first');
-            firstVisibleTable.find('td:has(input.dynamic-input)').each(function() {
+            firstVisibleTable.find('td:has(input.dynamic-input)').each(function () {
                 const $input = $(this).find('input.dynamic-input');
                 if (!$input.hasClass('included')) {
                     $(this).addClass('d-none');
@@ -761,7 +828,6 @@
                 }
             });
         }
-
 
 
     </script>
