@@ -143,12 +143,21 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->input('bank_cash') < $request->input('total_payment') || $request->input('matching') < $request->input('total_payment')
-            || $request->input('bank_check') < $request->input('total_payment') || $request->input('bank_deposit') < $request->input('total_payment') 
-            || $request->input('bank_transfer') < $request->input('total_payment')){
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount')->withInput(request()->input());
+        if ($request->input('bank_transfer') < $request->input('total_payment')){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-    
+        if ( $request->input('bank_cash') < $request->input('total_payment') ){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        }
+        if ( $request->input('matching') < $request->input('total_payment') ){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        }
+        if ( $request->input('bank_check') < $request->input('total_payment') ){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        }
+        if ( $request->input('bank_deposit') < $request->input('total_payment') ){
+            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        }
         if ($request->input('bank_deposit') != Null){
             $request->validate([
                 'bank_id' => ['required'],

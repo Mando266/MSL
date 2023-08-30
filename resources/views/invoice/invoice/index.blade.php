@@ -12,7 +12,7 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                    </div> 
+                    </div>
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             @permission('Invoice-Create')
@@ -27,7 +27,7 @@
                         </div>
                     </br>
                     <form>
-                        <div class="form-row"> 
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
@@ -36,7 +36,7 @@
                                         <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
-                            
+
                             <div class="form-group col-md-4">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
@@ -48,7 +48,7 @@
                                 <label for="invoice">Invoice No</label>
                                 <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($invoiceRef as $item)     
+                                    @foreach ($invoiceRef as $item)
                                         <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
                                     @endforeach
                                 </select>
@@ -60,7 +60,7 @@
                                 <label for="Bldraft">Bl Number</label>
                                 <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($bldrafts as $item)    
+                                    @foreach ($bldrafts as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                 </select>
@@ -94,7 +94,7 @@
                                 @foreach ($voyages as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} {{optional($item->vessel)->name }} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
-                            </select> 
+                            </select>
                         </div>
                         </div>
 
@@ -166,7 +166,7 @@
                                     if($total_after_vat != 0){
                                         $total = $total + $total_after_vat;
                                     }
-                                    if($total_after_vat != 0){
+                                    if($total_eg_after_vat != 0){
                                         $total_eg = $total_eg + $total_eg_after_vat;
                                     }
                                         if($invoice->booking != null){
@@ -178,7 +178,7 @@
                                         }
 
                                     @endphp
-                                
+
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($invoices,$loop)}}</td>
                                             <td>{{optional($invoice)->invoice_no}}</td>
@@ -215,7 +215,7 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
-           
+
                                             <td class="text-center">
                                                 @if($invoice->paymentstauts == 1)
                                                     <span class="badge badge-info"> Paid </span>
@@ -245,7 +245,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                @endif 
+                                                @endif
 
                                                     @permission('Invoice-Show')
                                                     <li>
@@ -253,7 +253,7 @@
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission 
+                                                    @endpermission
                                                 @if($invoice->paymentstauts == 0)
                                                     @permission('Invoice-Delete')
                                                     <li>
@@ -261,7 +261,7 @@
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                 @endif
@@ -292,7 +292,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
@@ -309,6 +309,6 @@
             }
           });
       });
-  
+
 </script>
 @endpush
