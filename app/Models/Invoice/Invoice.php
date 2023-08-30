@@ -13,20 +13,26 @@ use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Master\Customers;
 use App\Models\Receipt\Receipt;
-
+use App\ViewModel\Address;
+use App\ViewModel\Invoice as TaxInvoice;
+use App\ViewModel\Issuer;
+use App\ViewModel\Payment;
+use App\ViewModel\Reciver;
+use App\ViewModel\ReceiverAddress;
+use Carbon\Carbon;
 class Invoice extends Model implements PermissionSeederContract
 {
     use HasFilter;
     protected $table = 'invoice';
     protected $guarded = [];
-    
+
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
             'List',
             'Create',
             'Edit',
-            'Delete' 
+            'Delete'
         ]);
     }
     public function bldraft(){
@@ -49,7 +55,7 @@ class Invoice extends Model implements PermissionSeederContract
     }
     public function loadPort(){
         return $this->belongsTo(Ports::class,'load_port','id');
-    } 
+    }
     public function dischargePort(){
         return $this->belongsTo(Ports::class,'discharge_port','id');
     }
@@ -86,6 +92,113 @@ class Invoice extends Model implements PermissionSeederContract
                 }
             }
         }
+    }
+
+    public function cleanName($data){
+        if(is_null($data)){
+            return "";
+        }
+        return $data;
+        return str_replace('/','-',$data);
+    }
+    public function cleanDecimal($value){
+        $data = $value ?? 0.00;
+        return fmod($data,1) !== 0.00 ? $data : number_format(intval($data),2,'.','');
+    }
+    public function getTaxInvoiceModel($version = "1.0"){
+        $header = $this;
+        $totalEgp = round($this->chargeDesc()->sum('total_egy'),5);
+        $egpVat = round($this->chargeDesc()->sum('egp_vat'),5);
+        $invoice = new TaxInvoice(
+            $this->cleanName($this->invoice_no),
+            $this->cleanDecimal($totalEgp),
+            $this->cleanDecimal(0),
+            $this->cleanDecimal($totalEgp),//gross amount
+            $this->cleanDecimal($egpVat),//after vat (net amount)
+            $this->cleanDecimal(0));
+        $invoice->documentType = $this->document_type ?? 'I';
+        $issuer = new Issuer();
+        $address = new ReceiverAddress($this->customerShipperOrFfw->city ?? "",$this->customerShipperOrFfw->city ?? "",$this->customerShipperOrFfw->address ?? "","1","",$this->customerShipperOrFfw->country->prefix ?? "");
+        $reciver = new Reciver($address,$this->customerShipperOrFfw->tax_card_no,$this->customerShipperOrFfw->name,"B");
+        $invoice->issuer = $issuer;
+        $invoice->receiver = $reciver;
+        $invoice->dateTimeIssued = Carbon::parse($this->date)->subHours(3)->toIso8601ZuluString();
+        $invoice->taxpayerActivityCode = "5222"; //Activity Code
+        $invoice->purchaseOrderReference = "";
+        $invoice->purchaseOrderDescription = "";
+        $invoice->salesOrderReference ="";
+        $invoice->salesOrderDescription ="";
+        $invoice->totalItemsDiscountAmount = 0;
+        $invoice->totalDiscountAmount = 0;
+        $invoice->documentTypeVersion = $version;
+        $invoice->setHeaderId($this->id);
+        $payment = new Payment(
+            // $this->cleanName($this->payment_bank_name),
+            // $this->cleanName($this->payment_bank_address),
+            // $this->cleanName($this->payment_bank_account_no),
+            // $this->cleanName($this->payment_bank_account_iban),
+            // $this->cleanName($this->payment_swift_code),
+            // $this->cleanName($this->payment_terms)
+        );
+        $invoice->setPayment($payment);
+        $totalVat = round($this->chargeDesc()->sum('egp_vat') - $this->chargeDesc()->sum('total_egy'),5);
+        $invoice->addTaxTotalItme($this->cleanDecimal($totalVat),"T1");
+        // $invoice->addTaxTotalItme($this->cleanDecimal($this->tax_discount),"T4");
+        $qty = $this->qty;
+        $this->chargeDesc->each(function($item)use(&$invoice,$qty){
+            $line = new \App\ViewModel\InvoiceLine(
+                $this->cleanName($item->charge_description),
+                $this->cleanName(strval($item->charge->code)),
+                $this->cleanDecimal($item->enabled == "1" ? $qty : 1),
+                $this->cleanName(strval($item->charge->code)),
+                $this->cleanDecimal(round($item->total_egy,5)),
+                $this->cleanDecimal(round($item->total_egy,5)),
+                $this->cleanDecimal(0),
+                $this->cleanDecimal(round($item->egp_vat,5)),
+            );
+           // $item->taxItems->each(function($taxItem)use($line){
+            $vat = round($item->egp_vat - $item->total_egy,5);
+
+            if($item->add_vat == "1"){
+                $line->addTaxItem($this->cleanDecimal($vat),"T1","V009",$this->cleanDecimal($this->vat));
+
+            }else{
+                $line->addTaxItem($this->cleanDecimal(0),"T1","V001",$this->cleanDecimal(0));
+            }
+
+            $rate = $this->rate ?? 1;
+            if($rate == 'eta'){
+                $rate = $this->bldraft->voyage->exchange_rate;
+            }elseif($rate == 'etd'){
+                $rate = $this->bldraft->voyage->exchange_rate_etd;
+            }else{
+                $rate = $this->customize_exchange_rate;
+            }
+           // });
+            $line->unitType = "EA";
+            $line->itemType =  "GS1";
+            $line->setDiscount($this->cleanDecimal(0),$this->cleanDecimal(0));
+            $currency = "";
+            if($this->add_egp == "onlyegp"){
+                $line->setUnitValue(
+                    $this->cleanDecimal(round($item->size_small * $rate,5)),
+                    $this->cleanDecimal(round($item->size_small * $rate,5)),
+                    $this->cleanDecimal(1),
+                    "EGP"
+                );
+            }else{
+                $line->setUnitValue(
+                    $this->cleanDecimal(round($item->size_small * $rate,5)),
+                    $this->cleanDecimal(round($item->size_small,5)),
+                    $this->cleanDecimal($rate),
+                    "USD"
+                );
+            }
+
+            $invoice->addLine($line);
+        });
+        return $invoice;
+
     }
 
 }

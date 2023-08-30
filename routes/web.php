@@ -212,6 +212,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund', 'RefundController');
         Route::resource('creditNote', 'CreditController');
+        Route::get('get_invoice_json/{invoice}','InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
     });
     /*
     |-------------------------------------------

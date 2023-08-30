@@ -103,12 +103,19 @@ class ReceiptController extends Controller
         $total = 0;
         $total_eg = 0;
         $now = Carbon::now();
+        $vat = $invoice->vat;
+        $vat = $vat / 100;
+        $total_after_vat = 0;
+        $total_eg_after_vat = 0;
+        
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
+            $total_after_vat += ($vat * $chargeDesc->total_amount);
+            $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
         }
-        $total = $total - (($total * $invoice->tax_discount)/100);
-        $total_eg = $total_eg - (($total_eg * $invoice->tax_discount)/100);
+        $total = $total  + $vat - (($total_after_vat * $invoice->tax_discount)/100);
+        $total_eg = $total_eg + $total_eg_after_vat - (($total_eg * $invoice->tax_discount)/100);
         if($invoice->add_egp == "false"){
             if($total <= $oldPayment){
                 return redirect()->back()->with('error','Sorry You Cant Create Receipt for this invoice its already Paid')->withInput(request()->input());

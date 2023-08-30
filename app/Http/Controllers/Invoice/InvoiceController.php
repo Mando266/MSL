@@ -23,7 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class InvoiceController extends Controller
 {
-   
+
     public function index()
     {
 
@@ -85,7 +85,7 @@ class InvoiceController extends Controller
             'bldrafts'=>$bldrafts,
         ]);
     }
-    
+
     public function selectBL()
     {
         $bldrafts = BlDraft::
@@ -99,7 +99,7 @@ class InvoiceController extends Controller
     {
 
         $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        
+
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
@@ -140,10 +140,10 @@ class InvoiceController extends Controller
             $bldraft = null;
         }
         $qty = $bldraft->blDetails->count();
-        
+
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-  
-        if(optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export"){   
+
+        if(optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export"){
 
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
             ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
@@ -155,7 +155,7 @@ class InvoiceController extends Controller
                     $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                     ->orWhere('equipment_type_id', '100');
                 });
-            },'triffPriceDetailes.charge']) 
+            },'triffPriceDetailes.charge'])
             ->first();
         }else{
 
@@ -239,7 +239,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        
+
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
@@ -288,6 +288,8 @@ class InvoiceController extends Controller
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
             'notes'=>$request->notes,
+            'activity_code'=>$request->activity_code,
+
         ]);
         }else{
             $invoice = Invoice::create([
@@ -303,7 +305,8 @@ class InvoiceController extends Controller
                 'add_egp'=>'false',
                 'voyage_id'=>$request->voyage_id,
                 'notes'=>$request->notes,
-            ]); 
+                'activity_code'=>$request->activity_code,
+            ]);
         }
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
@@ -375,7 +378,7 @@ class InvoiceController extends Controller
                 'add_egp' => ['required'],
             ]);
         }
-        
+
         $totalAmount = 0;
         foreach($request->input('invoiceChargeDesc',[])  as $desc){
             $totalAmount += $desc['total'];
@@ -437,7 +440,7 @@ class InvoiceController extends Controller
 
             ]);
         }
-        
+
         $setting = Setting::find(1);
         if($request->bldraft_id != 'customize'){
             if($invoice->invoice_status == "confirm"){
@@ -478,7 +481,7 @@ class InvoiceController extends Controller
         //         $egyrate = optional($invoice->voyage)->exchange_rate_etd;
         //     }
         // }
-        
+
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
@@ -490,7 +493,7 @@ class InvoiceController extends Controller
                 'add_vat'=>$chargeDesc['add_vat'],
             ]);
         }
- 
+
         if($request->bldraft_id != 'customize'){
             $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
             $bldrafts->has_bl = 1;
@@ -507,7 +510,7 @@ class InvoiceController extends Controller
             $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
             ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
         }
-        
+
         $secondVoyagePortdis =null;
         if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null){
             $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id_second)
@@ -543,7 +546,7 @@ class InvoiceController extends Controller
             $total_eg += $chargeDesc->total_egy;
             //Tax
             $totalAftereTax = (($total * $invoice->tax_discount)/100);
-            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100); 
+            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100);
             //End Tax
            if($chargeDesc->add_vat == 1){
                 $total_after_vat += ($vat * $chargeDesc->total_amount);
@@ -575,7 +578,7 @@ class InvoiceController extends Controller
         }else{
             $EGP =  ucfirst($f->format($exp[0]));
         }
-        
+
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
@@ -583,7 +586,7 @@ class InvoiceController extends Controller
                 'total'=>$total,
                 'total_eg'=>$total_eg,
                 'firstVoyagePort'=>$firstVoyagePort,
-                'firstVoyagePortdis'=>$firstVoyagePortdis, 
+                'firstVoyagePortdis'=>$firstVoyagePortdis,
                 'secondVoyagePortdis'=>$secondVoyagePortdis,
                 'USD'=>$USD,
                 'EGP'=>$EGP,
@@ -592,7 +595,7 @@ class InvoiceController extends Controller
         }else{
             $gross_weight = 0;
             $amount = 0;
-            
+
             if($invoice->bldraft_id != 0){
                 foreach($invoice->bldraft->blDetails as $bldetail){
                     $gross_weight += $bldetail->gross_weight;
@@ -612,11 +615,11 @@ class InvoiceController extends Controller
                     }])->first();
             }
 
-            
+
             foreach($invoice->chargeDesc as $charge){
                 $amount = $amount + ( (float)$charge->size_small);
             }
-            
+
 
             return view('invoice.invoice.show_invoice',[
                 'invoice'=>$invoice,
@@ -639,7 +642,7 @@ class InvoiceController extends Controller
                 'triffDetails'=>$triffDetails,
             ]);
         }
-        
+
     }
 
     public function edit(Request $request, Invoice $invoice)
@@ -735,7 +738,7 @@ class InvoiceController extends Controller
         }
         $setting = Setting::find(1);
         $inputs = request()->all();
-        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);        
+        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
         if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){
             $setting = Setting::find(1);
             // check if this invoice is customized
@@ -761,8 +764,8 @@ class InvoiceController extends Controller
         $setting->save();
         $invoice->update($inputs);
         InvoiceChargeDesc::destroy(explode(',',$request->removed));
-        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc); 
-    
+        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc);
+
         return redirect()->route('invoice.index')->with('success',trans('Invoice.Updated.Success'));
     }
 
@@ -770,7 +773,13 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::find($id);
         InvoiceChargeDesc::where('invoice_id',$id)->delete();
-        $invoice->delete(); 
+        $invoice->delete();
         return back()->with('success',trans('Invoice.Deleted.Success'));
+    }
+
+    public function invoiceJson($id){
+        $invoice = Invoice::find($id);
+        $invoiceModel = $invoice->getTaxInvoiceModel();
+        return $invoiceModel->toJson();
     }
 }
