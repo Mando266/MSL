@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CountriesController;
 use App\Http\Controllers\API\PortController;
 use App\Http\Controllers\API\PriceController;
 use App\Http\Controllers\API\StorageContainersController;
+use App\Http\Controllers\Invoice\InvoiceController;
 use App\Models\Master\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -51,4 +52,5 @@ Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'contain
 Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
 Route::get('storage/triffs/{service}/{company_id}', [StorageContainersController::class, 'getStorageTriffs']);
 Route::get('/get-ports', [PortController::class, 'getPorts'])->name('api.get-ports');
+Route::get('get_invoice_json/{id}','Invoice\InvoiceController@invoiceJson');
 
