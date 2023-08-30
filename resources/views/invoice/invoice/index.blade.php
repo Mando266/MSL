@@ -132,7 +132,7 @@
                                         <th>Payment Status</th>
                                         <th>Receipts</th>
                                         <th class='text-center' style='width:100px;'></th>
-
+                                        <th class='text-center' style='width:100px;'>json</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -266,6 +266,13 @@
                                                     @endpermission
                                                 @endif
                                                 </ul>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($invoice->type == "invoice" && $invoice->invoice_status == "confirm")
+                                                    <a href="{{route('invoice.get_invoice_json',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                        <button type="submit" class="btn btn-primary mt-3">Confirm</button>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
