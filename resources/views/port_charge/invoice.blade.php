@@ -17,7 +17,7 @@
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form id="createForm" action="{{route('movements.store')}}" method="POST">
+                        <form id="createForm" action="{{ route('port-charges.store-invoice') }}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-12">
@@ -376,7 +376,7 @@
                                                 </select>
                                             </label>
                                             <label class="col-md-3">To
-                                                <select name="empty_import_from" class="form-control">
+                                                <select name="empty_import_to" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
@@ -543,7 +543,7 @@
             const emptyImportFromSelect = $('[name="empty_import_from"]');
             const emptyImportToSelect = $('[name="empty_import_to"]');
             
-            if (selectedValue && containerInput.val() && refNoInput.val()) {
+            if (selectedValue && selectedValue !== "Select" && containerInput.val() && refNoInput.val()) {
                 const requestData = {
                     charge_type: selectedValue,
                     container_no: containerInput.val(),
@@ -591,8 +591,8 @@
             const containerNumbers = getPastedContainerNumbers(clipboardData)
 
             const row = $(this).closest('tr')
-            const selectedCharge = row.find('.charge_type')[0].selectedIndex
-            const selectedService = row.find('.service_type')[0].selectedIndex
+            const selectedCharge = row.find('.charge_type')[0].value
+            const selectedService = row.find('.service_type')[0].value
             const tableId = row.closest('table').attr('id')
 
             const tbody = row.closest('tbody')
@@ -616,8 +616,8 @@
                 if (containerNumber !== '') {
                     const newRow = getNewRow(containerNumber)
                     tbody.append(newRow)
-                    newRow.find('.charge_type')[0].selectedIndex = selectedCharge
-                    newRow.find('.service_type')[0].selectedIndex = selectedService
+                    newRow.find('.charge_type').val(selectedCharge)
+                    newRow.find('.service_type').val(selectedService)
                     newRow.find('.container_no').trigger('change')
                     // setTimeout(function () {
                     // }, 4400)
