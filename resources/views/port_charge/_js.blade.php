@@ -17,7 +17,6 @@
         $(document).on('click', '.edit-button', function () {
             let row = $(this).closest('tr')
             let id = $(this).data('id')
-            console.log(row, id)
             toggleEdit(row, id)
         })
 
@@ -44,7 +43,7 @@
                         $(this).text(value)
                     })
 
-                    newRow.find('.save-new-button').replaceWith(`<button class="btn btn-info edit-button" data-id="${createdId}">Edit</button><button class="btn btn-danger delete-button" data-id="${createdId}">Delete</button>`);
+                    newRow.find('.save-new-button').replaceWith(`<button class="btn btn-info edit-button" data-id="${createdId}">Edit</button>`);
                 })
                 .catch(function (error) {
                     console.error(error)

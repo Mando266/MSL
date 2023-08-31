@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChargesMatrix;
+use App\Models\PortCharge;
 use Illuminate\Http\Request;
 
 class SeedingController extends Controller
@@ -106,10 +107,32 @@ class SeedingController extends Controller
                 'power_from' => 'NOT APP',
                 'power_to' => 'NOT APP',
             ],
+            [
+                'name' => 'DA-INVENTORY',
+                'empty' => false,
+                'full' => false,
+                'import' => false,
+                'export' => false,
+                'ts' => false,
+                'payer' => 'FOREIGN PAYER',
+                'currency' => 'USD',
+                'storage_free' => 0,
+                'storage_from' => 'DCTE',
+                'storage_to' => 'LOTE',
+                'power_free' => 0,
+                'power_from' => 'NOT APP',
+                'power_to' => 'NOT APP',
+            ],
         ];
 
+        $chargeMatrices = [];
         foreach ($dataSets as $data) {
-            ChargesMatrix::firstOrCreate($data);
+            $chargeMatrices[] = ChargesMatrix::updateOrCreate(['name' => $data['name']], $data);
+        }
+        foreach ($chargeMatrices as $chargeMatrix){
+            PortCharge::firstOrCreate([
+                'charge_matrix_id' => $chargeMatrix->id
+            ]);
         }
         dd('seeded Charges Matrices');
     }
