@@ -147,10 +147,10 @@ class Invoice extends Model implements PermissionSeederContract
         $qty = $this->qty;
         $this->chargeDesc->each(function($item)use(&$invoice,$qty){
             $line = new \App\ViewModel\InvoiceLine(
-                $this->cleanName($item->charge_description),
+                $this->cleanName($item->charge_description . ' ' . ($this->bldraft->ref_no ?? null)),
                 $this->cleanName(strval($item->charge->code)),
                 $this->cleanDecimal($item->enabled == "1" ? $qty : 1),
-                $this->cleanName(strval($item->charge->code)),
+                $this->cleanName($item->charge_description),
                 $this->cleanDecimal(round($item->total_egy,5)),
                 $this->cleanDecimal(round($item->total_egy,5)),
                 $this->cleanDecimal(0),
