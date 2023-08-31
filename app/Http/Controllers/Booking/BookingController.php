@@ -132,8 +132,9 @@ class BookingController extends Controller
                 'port_id',
                 $quotation->discharge_port_id
             )->get();
+//            dd($terminals,$quotation->discharge_port_id,Auth::user()->company_id);
         }
-        
+
         $agents = Agents::where('company_id', Auth::user()->company_id)->where('is_active', 1)->get();
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
         $terminal = Terminals::where('company_id', Auth::user()->company_id)->get();
@@ -197,7 +198,7 @@ class BookingController extends Controller
             'discharge_port_id.different' => 'Load Port The Same  Discharge Port',
         ]);
         // Validate Containers Unique
-    if($request->input('movement') == 'FCL/FCL'){  
+    if($request->input('movement') == 'FCL/FCL'){
         $uniqueContainers = array();
         foreach ($request->containerDetails as $container) {
             if (!in_array(
@@ -678,8 +679,8 @@ class BookingController extends Controller
         //         return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
         //         ->withInput($request->input());
         //     }
-        // } 
-    if($request->input('movement') == 'FCL/FCL'){  
+        // }
+    if($request->input('movement') == 'FCL/FCL'){
         $uniqueContainers = array();
         foreach ($request->containerDetails as $container) {
             if (!in_array(

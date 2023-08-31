@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
    */
     Route::prefix('master')->namespace('Master')->group(function () {
         Route::resource('company', 'CompanyController');
-        Route::resource('countries', 'CountryController');
+        Route::resource('countries','CountryController');
         Route::resource('port-types', 'PortTyepsController');
         Route::resource('ports', 'PortsController');
         Route::resource('agents', 'AgentsController');
@@ -251,6 +251,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('invoice', [PortChargeController::class, 'createInvoice'])->name('invoice');
         Route::post('calculateInvoiceRow', [PortChargeController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
         Route::post('store-invoice', [PortChargeController::class, 'storeInvoice'])->name('store-invoice');
+
     });
 });
 Auth::routes(['register' => false]);
