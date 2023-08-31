@@ -95,7 +95,7 @@
 <script>
         $(function(){
                 let country = $('#country');
-                let company_id = "{{optional(Auth::user())->company->id}}";
+                let company_id = "{{optional(auth()->user())->company->id}}";
                 $('#country').on('change',function(e){
                     let value = e.target.value;
                     let response =    $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){

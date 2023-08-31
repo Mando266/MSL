@@ -16,6 +16,11 @@
                 </div>
 
                 <div class="widget-content widget-content-area">
+                    @if(isset($error))
+                        <div class="error-message">
+                            {{ $error }}
+                        </div>
+                    @endif
                     @if(session('error'))
                         <div class="error-message">
                             {{ session('error') }}
@@ -86,7 +91,7 @@
                                 <select class="selectpicker form-control" data-live-search="true" name="from" data-size="10"
                                         title="{{trans('forms.select')}}">
                                     @foreach ($movementsCode as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('from'))
@@ -136,7 +141,7 @@
                                             <td class="col-md-2 text-center">{{$item['container_no']}} {{$item['container_type']}}</td>
                                             <td class="col-md-2" style="border-right-style: hidden;">
                                                 From: {{$item['from']}} <br>
-                                                From: {{$item['to']}}
+                                                To: {{$item['to']}}
                                             </td>
                                             <td class="col-md-2" style="border-right-style: hidden;">
                                                 @foreach($item['periods'] as $period)

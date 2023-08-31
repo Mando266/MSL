@@ -329,7 +329,7 @@
                     }
                     let trimmedInput = periodInput.replace(/\s/g, '');
                     let periodIsAlpha = /^[a-zA-Z0-9]+$/.test(trimmedInput);
-                    let rateIsNumeric = /^[0-9]+$/.test(rateInput);
+                    let rateIsNumeric = /^[0-9]+(\.[0-9]+)?$/.test(rateInput);
                     let daysIsNumeric = /^[0-9]+$/.test(daysInput);
                     if (!periodIsAlpha) {
                         swal({
