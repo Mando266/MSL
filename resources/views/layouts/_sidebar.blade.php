@@ -424,7 +424,7 @@
                                 <a href="{{ route('port-charges.index') }}">Port Charges Matrices</a>
                             </li>
                             <li>
-                                <a href="{{ route('port-charges.invoice') }}">Port Charges Invoice</a>
+                                <a href="{{ route('port-charge-invoices.index') }}">Port Charges Invoice</a>
                             </li>
                         </ul>
             </li>

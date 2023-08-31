@@ -17,7 +17,7 @@
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form id="createForm" action="{{ route('port-charges.store-invoice') }}" method="POST">
+                        <form id="createForm" action="{{ route('port-charge-invoices.store') }}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-12">
@@ -176,7 +176,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="country"
-                                                    name="country"
+                                                    name="country_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($countries as $item)
@@ -199,7 +199,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="ports"
-                                                    name="country"
+                                                    name="port_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($ports as $item)
@@ -222,7 +222,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="shipping_line"
-                                                    name="shipping_line"
+                                                    name="shipping_line_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($lines as $item)
@@ -325,7 +325,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" id="total_egp" readonly>
+                                            <input type="text" name="total_egp" class="form-control" id="total_egp"
+                                                   readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -337,7 +338,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" id="total_usd" readonly>
+                                            <input type="text" name="total_usd" class="form-control" id="total_usd"
+                                                   readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -346,7 +348,7 @@
                                         <div class="text-center">
                                             <label>Empty/Export</label>
                                             <label class="col-md-3">From
-                                                <select name="empty_export_from" class="form-control">
+                                                <select name="empty_export_from_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
@@ -354,7 +356,7 @@
                                                 </select>
                                             </label>
                                             <label class="col-md-3">To
-                                                <select name="empty_export_to" class="form-control">
+                                                <select name="empty_export_to_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
@@ -369,7 +371,7 @@
                                         <div class="text-center">
                                             <label>Empty/Import</label>
                                             <label class="col-md-3">From
-                                                <select name="empty_import_from" class="form-control">
+                                                <select name="empty_import_from_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
@@ -377,7 +379,7 @@
                                                 </select>
                                             </label>
                                             <label class="col-md-3">To
-                                                <select name="empty_import_to" class="form-control">
+                                                <select name="empty_import_to_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
@@ -428,8 +430,6 @@
                                 <div class="col-md-12 text-center">
                                     <button type="submit" id="submit"
                                             class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
-                                    <a href="{{route('movements.index')}}"
-                                       class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                             </div>
 
@@ -482,7 +482,7 @@
             });
 
             const options = $('#dynamic_fields option');
-            
+
             options.each(function () {
                 const optionValue = $(this).val();
                 const formattedValue = optionValue.replace(/_/g, '-');
@@ -513,11 +513,8 @@
             $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
             $(document).on('input', '.dynamic-input', calculateTotalUSD)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
-            $(document).on('click change keyup paste',() => calculateTotalUSD());
-            $('form').on('submit', function (e) {
-                addPtiTypeToSelect(e);
-                deleteEmptyOnSubmit();
-            });
+            $(document).on('click change keyup paste', () => calculateTotalUSD());
+            $('form').on('submit', deleteEmptyOnSubmit);
         }
 
         function handleRemoveRow() {
@@ -535,7 +532,7 @@
             updateChargeTypeOptions(tableId)
         }
 
-        
+
         function handleChargeTypeChange() {
             const selectedOption = $(this).find('option:selected');
             const selectedValue = $(this).val();
@@ -544,18 +541,18 @@
             const containerInput = row.find('.container_no');
             const refNoInput = row.find('.ref-no-td');
             const ptiTypeSelect = row.find('.pti-type');
-            const emptyExportFromSelect = $('[name="empty_export_from"]');
-            const emptyExportToSelect = $('[name="empty_export_to"]');
-            const emptyImportFromSelect = $('[name="empty_import_from"]');
-            const emptyImportToSelect = $('[name="empty_import_to"]');
-            
+            const emptyExportFromSelect = $('[name="empty_export_from_id"]');
+            const emptyExportToSelect = $('[name="empty_export_to_id"]');
+            const emptyImportFromSelect = $('[name="empty_import_from_id"]');
+            const emptyImportToSelect = $('[name="empty_import_to_id"]');
+
             if (selectedValue && selectedValue !== "Select" && containerInput.val() && refNoInput.val()) {
                 const requestData = {
                     charge_type: selectedValue,
                     container_no: containerInput.val(),
                     bl_no: refNoInput.val()
                 };
-                
+
                 if (selectedOption.text() === 'EMPTY-EXPORT') {
                     requestData.from = emptyExportFromSelect.find('option:selected').text();
                     requestData.to = emptyExportToSelect.find('option:selected').text();
@@ -563,7 +560,7 @@
                     requestData.from = emptyImportFromSelect.find('option:selected').text();
                     requestData.to = emptyImportToSelect.find('option:selected').text();
                 }
-                
+
 
                 axios.post('{{ route('port-charges.calculate-invoice-row') }}', requestData)
                     .then(function (response) {
@@ -590,12 +587,12 @@
         }
 
 
-        function addPtiTypeToSelect(e) {
-            const dynamicFieldsSelect = $('#dynamic_fields');
-            if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
-                dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
-            }
-        }
+        // function addPtiTypeToSelect(e) {
+        //     const dynamicFieldsSelect = $('#dynamic_fields');
+        //     if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
+        //         dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
+        //     }
+        // }
 
         function deleteEmptyOnSubmit() {
             $('form').find('tbody tr').each(function () {
@@ -748,7 +745,7 @@
                 </button>
             </td>
             <td>
-                <select name="rows[port_charge_type][]" class="form-control charge_type new_charge" required>
+                <select name="rows[port_charge_id][]" class="form-control charge_type new_charge" required>
                     <option hidden selected>Select</option>
                     @foreach($portCharges as $portCharge)
             <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>

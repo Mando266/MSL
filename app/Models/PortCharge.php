@@ -9,7 +9,13 @@ class PortCharge extends Model
     protected $guarded = [];
 
     protected $appends = ['name'];
-    public function chargeMatrix()
+    
+    protected $with = [
+        'chargeMatrix'
+    ];
+    
+    
+    public function chargeMatrix(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ChargesMatrix::class);
     }
