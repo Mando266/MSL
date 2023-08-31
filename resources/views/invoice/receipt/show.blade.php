@@ -45,7 +45,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-12  text-right">
                         <h3> <span style="font-size:22px;">{{ optional($receipt->invoice)->customer }} </span>&nbsp;&nbsp; : استلمت من<h3>
-                    </div>
+                    </div> 
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6  text-right">
@@ -103,7 +103,11 @@
                         <h3> <span style="font-size:22px;">{{ optional($receipt->invoice->bldraft)->ref_no }}</span>&nbsp;&nbsp;: بوليصة<h3>
                     </div>
                     <div class="form-group col-md-6  text-right"> 
+                    @if(optional(optional(optional($receipt->invoice->bldraft)->booking)->quotation)->shipment_type == "Import")    
+                    <h3> <span style="font-size:22px;">{{ $receipt->invoice->bldraft_id == 0 ? optional(optional(optional($receipt->invoice)->voyage)->vessel)->name : optional(optional(optional(optional($receipt->bldraft)->booking)->secondvoyage)->vessel)->name }} &nbsp; {{ $receipt->invoice->bldraft_id == 0 ? optional($receipt->voyage)->voyage_no : optional(optional(optional($receipt->bldraft)->booking)->secondvoyage)->voyage_no }}</span>&nbsp;&nbsp; : الباخرة / رحلة <h3>
+                    @else
                         <h3> <span style="font-size:22px;">{{ $receipt->invoice->bldraft_id == 0 ? optional(optional(optional($receipt->invoice)->voyage)->vessel)->name : optional(optional(optional($receipt->bldraft)->voyage)->vessel)->name }} &nbsp; {{ $receipt->invoice->bldraft_id == 0 ? optional($receipt->voyage)->voyage_no : optional(optional($receipt->bldraft)->voyage)->voyage_no }}</span>&nbsp;&nbsp; : الباخرة / رحلة <h3>
+                    @endif        
                     </div>       
                 </div>
                 <div class="form-row">

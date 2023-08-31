@@ -384,6 +384,19 @@
                         </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
+                                <label>Transportation Mode</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}"> 
+                                    <option value="vessel" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "vessel"? 'selected':''}}>Vessel</option>
+                                    <option value="trucker" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "trucker"? 'selected':''}}>Trucker</option>
+                                    <option value="train" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "train"? 'selected':''}}>Train</option>
+                                </select>
+                                @error('transportation_mode')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
                             <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}">
                                 <option value="full" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "full"? 'selected':''}}>Full</option>

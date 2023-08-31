@@ -209,6 +209,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund', 'RefundController');
         Route::resource('creditNote', 'CreditController');
+        Route::get('get_invoice_json/{invoice}','InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
     });
     /*
     |-------------------------------------------
@@ -242,14 +243,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectManifest', [XmlController::class, 'selectManifest'])->name('xml.selectManifest');
     });
 
-    Route::resource('port-charges', 'PortChargeController');
+    Route::resource('port-charges', 'PortChargeController')->except(['show']);
     Route::prefix('port-charges')->name('port-charges.')->group(function () {
         Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
+        Route::get('get-ref-no', [PortChargeController::class, 'getRefNo'])->name('get-ref-no');
+        Route::get('invoice', [PortChargeController::class, 'createInvoice'])->name('invoice');
+        Route::post('calculateInvoiceRow', [PortChargeController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
+        Route::post('store-invoice', [PortChargeController::class, 'storeInvoice'])->name('store-invoice');
+
     });
 });
 Auth::routes(['register' => false]);
-
 require 'mail.php';
 require 'dev.php';
 

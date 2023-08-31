@@ -94,7 +94,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional($VoyagePort)->eta,
-                    'etd' => optional($VoyagePort)->etd,
+                    'etd' => optional($VoyagePort)->etd, 
                     'date' => $invoice->date,
                     'type' => $invoice->type,
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
