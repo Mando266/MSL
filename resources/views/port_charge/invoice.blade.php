@@ -298,17 +298,18 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="dynamic_fields">
-                                                    Dynamic Fields
+                                                    Applied Costs
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control" id="dynamic_fields" multiple
-                                                    data-size="10">
+                                                    data-size="10" name="selected_costs[]">
                                                 @foreach ([
                                                             'thc', 'storage','power', 'shifting',
-                                                            'disinf','hand_fes_em', 'gat_lift_off',
-                                                            'gat_lift_on', 'pti', 'add_plan'
+                                                            'disinf','hand_fes_em',
+                                                            'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
+                                                            'pti', 'add_plan'
                                                         ] as $field)
                                                     <option value="{{ $field }}">{{ $field }}</option>
                                                 @endforeach
@@ -480,8 +481,8 @@
                 $('.dynamic-input[data-field*="' + selectedField + '"]').addClass('included');
             });
 
-            const options = $('#dynamic_fields option'); // Get all the options
-
+            const options = $('#dynamic_fields option');
+            
             options.each(function () {
                 const optionValue = $(this).val();
                 const formattedValue = optionValue.replace(/_/g, '-');
@@ -513,6 +514,10 @@
             $(document).on('input', '.dynamic-input', calculateTotalUSD)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
             $(document).on('click change keyup paste',() => calculateTotalUSD());
+            $('form').on('submit', function (e) {
+                addPtiTypeToSelect(e);
+                deleteEmptyOnSubmit();
+            });
         }
 
         function handleRemoveRow() {
@@ -530,6 +535,7 @@
             updateChargeTypeOptions(tableId)
         }
 
+        
         function handleChargeTypeChange() {
             const selectedOption = $(this).find('option:selected');
             const selectedValue = $(this).val();
@@ -581,6 +587,28 @@
                         console.error('Error:', error);
                     });
             }
+        }
+
+
+        function addPtiTypeToSelect(e) {
+            const dynamicFieldsSelect = $('#dynamic_fields');
+            if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
+            }
+        }
+
+        function deleteEmptyOnSubmit() {
+            $('form').find('tbody tr').each(function () {
+                const containerNoInput = $(this).find('.container_no');
+                const chargeTypeSelect = $(this).find('.charge_type');
+
+                const containerNoValue = containerNoInput.val();
+                const selectedChargeType = chargeTypeSelect.val();
+
+                if (containerNoValue === '' || selectedChargeType === 'Select') {
+                    $(this).remove();
+                }
+            });
         }
 
 
@@ -720,7 +748,7 @@
                 </button>
             </td>
             <td>
-                <select name="port_charge_type[]" class="form-control charge_type new_charge" required>
+                <select name="rows[port_charge_type][]" class="form-control charge_type new_charge" required>
                     <option hidden selected>Select</option>
                     @foreach($portCharges as $portCharge)
             <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
@@ -728,7 +756,7 @@
             </select>
         </td>
         <td>
-            <select name="service[]" class="form-control service_type" required>
+            <select name="rows[service][]" class="form-control service_type" required>
                 <option selected hidden>Select</option>
                 <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
                 <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
@@ -751,11 +779,11 @@
                 <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
             </select>
         </td>
-        <td><input type="text" name="bl_no[]" class="form-control ref-no-td"></td>
-        <td><input type="text" name="container_no[]" class="form-control container_no" value="${containerNumber}"></td>
-            <td><input type="text" name="is_transhipment[]" class="is_transhipment form-control"></td>
-            <td><input type="text" name="shipment_type[]" class="shipment_type form-control"></td>
-            <td><input type="text" name="quotation_type[]" class="quotation_type form-control"></td>
+        <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
+        <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
+            <td><input type="text" name="rows[is_transhipment][]" class="is_transhipment form-control"></td>
+            <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
+            <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
             ${generateDynamicInputsHtml()}
         </tr>
     `);
@@ -776,10 +804,10 @@
                 if (field === "pti") {
                     dynamicInputsHtml += `
                     <td data-field="${field}">
-                        <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}_cost">
+                        <input type="text" name="rows[${field}][]" class="form-control dynamic-input" data-field="${field}_cost">
                     </td>
                     <td data-field="${field}">
-                        <select style="min-width: 100px" class="form-control pti-type" name="pti_type[]">
+                        <select style="min-width: 100px" class="form-control pti-type" name="rows[pti_type][]">
                             <option value="passed" data-cost="0" selected>Passed</option>
                             <option value="failed" data-cost="0">Failed</option>
                         </select>
@@ -788,7 +816,7 @@
                 } else {
                     dynamicInputsHtml += `
                     <td data-field="${field}">
-                        <input type="text" name="${field}[]" class="form-control dynamic-input" data-field="${field}_cost">
+                        <input type="text" name="rows[${field}][]" class="form-control dynamic-input" data-field="${field}_cost">
                     </td>
                     `;
                 }

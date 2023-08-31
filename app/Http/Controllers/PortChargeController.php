@@ -241,4 +241,39 @@ class PortChargeController extends Controller
         }
         return $cost;
     }
+
+    public function storeInvoice()
+    {
+        $rows = $this->separateInputByIndex(request()->rows);
+        $selectedCosts = request()->selected_costs;
+        $identifiers = [
+            "port_charge_type",
+            "service",
+            "bl_no",
+            "container_no",
+            "is_transhipment",
+            "shipment_type",
+            "quotation_type"
+        ];
+        $selectedItems = array_merge($selectedCosts, $identifiers);
+        $rows->transform(fn($row) => $row->only($selectedItems));
+        dd($rows, request()->except('rows'));
+    }
+
+    public function separateInputByIndex($data): \Illuminate\Support\Collection
+    {
+        $details = collect();
+
+        for ($i = 0; $i < count(reset($data)); $i++) {
+            $item = collect();
+
+            foreach ($data as $key => $values) {
+                $item[$key] = $values[$i] ?? null;
+            }
+
+            $details->push($item);
+        }
+
+        return $details;
+    }
 }
