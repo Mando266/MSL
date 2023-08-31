@@ -268,9 +268,10 @@
                                                 </ul>
                                             </td>
                                             <td class="text-center">
-                                                @if($invoice->type == "invoice" && $invoice->invoice_status == "confirm")
+                                                @if($invoice->type == "invoice"  && $invoice->created_at >= '2023-08-27 10:55:28')
+
                                                     <a href="{{route('invoice.get_invoice_json',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
-                                                        <button type="submit" class="btn btn-primary mt-3">Confirm</button>
+                                                        <button type="submit" class="btn btn-primary mt-3">Json</button>
                                                     </a>
                                                 @endif
                                             </td>
