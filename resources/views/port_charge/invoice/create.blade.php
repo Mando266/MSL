@@ -57,11 +57,14 @@
                                                     name="invoice_type"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
-                                                <option value="02-VESSEL DISCHARGING AND LOADIND OPERATIONS">
-                                                    02-VESSEL DISCHARGING AND LOADIND OPERATIONS
+                                                <option value="02-VESSEL DISCHARGING AND LOADING OPERATIONS">
+                                                    02-VESSEL DISCHARGING AND LOADING OPERATIONS
                                                 </option>
                                                 <option value="03-VESSEL OUTBOUND CONTAINERS STORAGE">
                                                     03-VESSEL OUTBOUND CONTAINERS STORAGE
+                                                </option>
+                                                <option value="05-WITHDRAWAL AND STUFFING CONTAINERS">
+                                                    05-WITHDRAWAL AND STUFFING CONTAINERS
                                                 </option>
                                                 <option value="08-STORAGE OF FULL INBOUND CONTAINERS">
                                                     08-STORAGE OF FULL INBOUND CONTAINERS
@@ -304,7 +307,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control" id="dynamic_fields" multiple
-                                                    data-size="10" name="selected_costs[]">
+                                                    data-size="10" name="selected_costs[]" required>
                                                 @foreach ([
                                                             'thc', 'storage','power', 'shifting',
                                                             'disinf','hand_fes_em',
@@ -463,6 +466,7 @@
     </style>
 @endpush
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -514,7 +518,7 @@
             $(document).on('input', '.dynamic-input', calculateTotalUSD)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
             $(document).on('click change keyup paste', () => calculateTotalUSD());
-            $('form').on('submit', deleteEmptyOnSubmit);
+            $('form').on('submit', e => deleteEmptyOnSubmit(e));
         }
 
         function handleRemoveRow() {
@@ -541,6 +545,7 @@
             const containerInput = row.find('.container_no');
             const refNoInput = row.find('.ref-no-td');
             const ptiTypeSelect = row.find('.pti-type');
+            const quotationType = row.find('.quotation_type');
             const emptyExportFromSelect = $('[name="empty_export_from_id"]');
             const emptyExportToSelect = $('[name="empty_export_to_id"]');
             const emptyImportFromSelect = $('[name="empty_import_from_id"]');
@@ -550,7 +555,8 @@
                 const requestData = {
                     charge_type: selectedValue,
                     container_no: containerInput.val(),
-                    bl_no: refNoInput.val()
+                    bl_no: refNoInput.val(),
+                    quotation_type: quotationType.val(),
                 };
 
                 if (selectedOption.text() === 'EMPTY-EXPORT') {
@@ -594,18 +600,32 @@
         //     }
         // }
 
-        function deleteEmptyOnSubmit() {
+        function deleteEmptyOnSubmit(e) {
             $('form').find('tbody tr').each(function () {
                 const containerNoInput = $(this).find('.container_no');
                 const chargeTypeSelect = $(this).find('.charge_type');
 
-                const containerNoValue = containerNoInput.val();
-                const selectedChargeType = chargeTypeSelect.val();
+                const containerNoValue = containerNoInput[0].value;
+                const selectedChargeType = chargeTypeSelect[0].value;
 
-                if (containerNoValue === '' || selectedChargeType === 'Select') {
-                    $(this).remove();
+                if (containerNoValue === '') {
+                    $(this).remove()
+                } else if (selectedChargeType === 'Select') {
+                    swal({
+                        icon: 'error',
+                        text: "Please Select Charge Type"
+                    })
+                    e.preventDefault()
+
                 }
             });
+            if ($('tbody tr').length === 0) {
+                swal({
+                    icon: 'error',
+                    text: "Please Enter Rows Before Submitting"
+                })
+                e.preventDefault()
+            }
         }
 
 

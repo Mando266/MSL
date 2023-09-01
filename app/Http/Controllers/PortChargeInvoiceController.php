@@ -56,7 +56,22 @@ class PortChargeInvoiceController extends Controller
         return redirect()->route('port-charge-invoices.index');
     }
 
+    public function separateInputByIndex($data): \Illuminate\Support\Collection
+    {
+        $details = collect();
 
+        for ($i = 0; $i < count(reset($data)); $i++) {
+            $item = collect();
+
+            foreach ($data as $key => $values) {
+                $item[$key] = $values[$i] ?? null;
+            }
+
+            $details->push($item);
+        }
+
+        return $details;
+    }
 
     public function create()
     {
@@ -65,7 +80,7 @@ class PortChargeInvoiceController extends Controller
         $voyages = Voyages::where('company_id', $userCompanyId)->orderBy('id')->get();
         $lines = Lines::where('company_id', $userCompanyId)->orderBy('id')->get();
         $portCharges = PortCharge::paginate(10);
-        $possibleMovements = ContainersMovement::where('name', 'like', '%empty%')->get();
+        $possibleMovements = ContainersMovement::all();
         $countries = Country::orderBy('name')->get();
         $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
 
@@ -99,30 +114,13 @@ class PortChargeInvoiceController extends Controller
         return redirect()->route('port-charge-invoices.index');
     }
 
-    public function separateInputByIndex($data): \Illuminate\Support\Collection
-    {
-        $details = collect();
-
-        for ($i = 0; $i < count(reset($data)); $i++) {
-            $item = collect();
-
-            foreach ($data as $key => $values) {
-                $item[$key] = $values[$i] ?? null;
-            }
-
-            $details->push($item);
-        }
-
-        return $details;
-    }
-    
-    
     public function calculateInvoiceRow()
     {
 //        dd(request()->all());
         $blNo = request()->bl_no;
         $chargeType = request()->charge_type;
         $containerNo = request()->container_no;
+        $quotationType = request()->quotation_type;
         $container = Containers::firstWhere('code', $containerNo);
 
         $chargeMatrix = ChargesMatrix::find($chargeType);
@@ -130,19 +128,18 @@ class PortChargeInvoiceController extends Controller
         $storage_to = request()->to ?? $chargeMatrix->storage_to;
         $power_from = request()->from ?? $chargeMatrix->power_from;
         $power_to = request()->to ?? $chargeMatrix->power_to;
-
         $containerId = $container->id;
-        $storageFromDate = $this->getMovementDate($containerId, $storage_from, $blNo);
-        $storageToDate = $this->getMovementDate($containerId, $storage_to, $blNo);
-        $storageDaysInPort = Carbon::parse($storageFromDate)->diffInDays(Carbon::parse($storageToDate)) + 1;
-        $powerFromDate = $this->getMovementDate($containerId, $power_from, $blNo);
-        $powerToDate = $this->getMovementDate($containerId, $power_to, $blNo);
-        $powerDaysInPort = Carbon::parse($powerFromDate)->diffInDays(Carbon::parse($powerToDate)) + 1;
 
-        $portCharge = $chargeMatrix->portCharge;
+        $storageDaysInPort = $this->calculateDays($containerId, $storage_from, $blNo);
+        $powerDaysInPort = $this->calculateDays($containerId, $power_from, $blNo);
+
         $container_size = (int)$container->containersTypes->name;
+        $portCharge = $chargeMatrix->portCharge;
         $storage_cost = $this->calculateStorageCost($storageDaysInPort, $container_size, $portCharge);
-        $power_cost = $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
+        $power_cost = $quotationType === "empty" ?
+            0 :
+            $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
+
         $containerSizeSuffix = "{$container_size}ft";
         $chargeTypes = [
             'thc',
@@ -175,11 +172,25 @@ class PortChargeInvoiceController extends Controller
         return response()->json($response, 201);
     }
 
-    public function getMovementDate($containerId, $movementCode, $blNo)
+    public function calculateDays($containerId, $storage_from, $blNo)
     {
-        return Movements::where('container_id', $containerId)
-            ->whereHas('movementcode', fn($q) => $q->where('code', $movementCode))
-            ->where('bl_no', $blNo)->first()->movement_date;
+        $fromMovement = Movements::where('container_id', $containerId)
+            ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
+            ->where('bl_no', $blNo)->first();
+
+        $toMovement = Movements::where('container_id', $containerId)
+            ->whereDate('movement_date', '>', $fromMovement->movement_date)
+            ->orderBy('movement_date')
+            ->first();
+
+        if ($fromMovement && $toMovement) {
+            $fromDate = Carbon::parse($fromMovement->movement_date);
+            $toDate = Carbon::parse($toMovement->movement_date);
+
+            return $fromDate->diffInDays($toDate) + 1;
+        }
+
+        return 0;
     }
 
     public function calculateStorageCost($daysInPort, $container_size, $portCharge)
@@ -218,6 +229,13 @@ class PortChargeInvoiceController extends Controller
             $cost += $daysInSlab1 * ($container_size === 20 ? $day_20ft : $day_40ft);
         }
         return $cost;
+    }
+
+    public function getMovementDate($containerId, $movementCode, $blNo)
+    {
+        return Movements::where('container_id', $containerId)
+            ->whereHas('movementcode', fn($q) => $q->where('code', $movementCode))
+            ->where('bl_no', $blNo)->first()->movement_date;
     }
 
     public function getRefNo()
