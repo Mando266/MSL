@@ -244,14 +244,13 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::resource('port-charges', 'PortChargeController')->except(['show']);
-    Route::prefix('port-charges')->name('port-charges.')->group(function () {
+        Route::prefix('port-charges')->name('port-charges.')->group(function () {
         Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
         Route::get('get-ref-no', [PortChargeController::class, 'getRefNo'])->name('get-ref-no');
         Route::get('invoice', [PortChargeController::class, 'createInvoice'])->name('invoice');
         Route::post('calculateInvoiceRow', [PortChargeController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
         Route::post('store-invoice', [PortChargeController::class, 'storeInvoice'])->name('store-invoice');
-
     });
 });
 Auth::routes(['register' => false]);

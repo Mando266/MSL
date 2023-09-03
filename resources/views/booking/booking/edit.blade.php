@@ -48,23 +48,23 @@
                                 <div class="form-group col-md-4">
                                     <label for="ref_no">Booking Ref No</label>
                                         <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{old('ref_no',$booking->ref_no)}}"
-                                            placeholder="Booking Ref No" autocomplete="off"> 
+                                            placeholder="Booking Ref No" autocomplete="off">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label>OFR</label>
-                                    @if($booking->quotation_id == null) 
+                                    @if($booking->quotation_id == null)
                                         <input type="text" class="form-control" value="{{$quotation->ofr}}"
-                                            placeholder="OFR" autocomplete="off"> 
+                                            placeholder="OFR" autocomplete="off">
                                     @else
                                     <input type="text" class="form-control" value="{{$quotation->ofr}}"
-                                    placeholder="OFR" autocomplete="off" disabled> 
+                                    placeholder="OFR" autocomplete="off" disabled>
                                     @endif
                                 </div>
                             </div>
                             @php
                             $is_shipper = 0;
                             $is_ffw = 0;
-                            $is_consignee = 0 ; 
+                            $is_consignee = 0 ;
                             if($booking->quotation_id != null){
                                 foreach($quotation->customer->CustomerRoles ?? []  as $customerRole){
                                     if($customerRole->role->name == "Fright Forwarder"){
@@ -88,22 +88,22 @@
                                             @if($quotation->customer_id != null)
                                                 @if(in_array(1, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
                                                     <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                                @else 
+                                                @else
                                                     <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @endif
-                                            @else 
+                                            @else
                                                 <option value="{{$item->id}}" {{$item->id == old('customer_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                             @endif
                                         @else
                                             @if($booking->customer_id != null)
                                                 <option value="{{$item->id}}" {{$item->id == old('customer_id',$booking->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                            @elseif($quotation->customer_id != null) 
+                                            @elseif($quotation->customer_id != null)
                                                 @if(in_array(1, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
                                                 <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                                @else 
+                                                @else
                                                 <option value="{{$item->id}}" {{$item->id == old('customer_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @endif
-                                            @else 
+                                            @else
                                                 <option value="{{$item->id}}" {{$item->id == old('customer_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                             @endif
                                         @endif
@@ -113,7 +113,7 @@
                                         <div style="color: red;">
                                             {{$message}}
                                         </div>
-                                        @enderror 
+                                        @enderror
                                 </div>
 
                                 <div class="form-group col-md-2">
@@ -121,7 +121,7 @@
                                     <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                         @foreach ($equipmentTypes as $item)
-                                        @if($booking->quotation_id == null) 
+                                        @if($booking->quotation_id == null)
                                             <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @else
                                             <option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -150,15 +150,15 @@
                                 <div class="form-group col-md-4" style="padding-top: 30px;">
                                     <div class="form-check">
                                         <input type="checkbox" id="soc" name="soc" value="1"  onclick="return false;" readonly {{$quotation->soc == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>
-                                        
+
                                         <input type="checkbox" id="imo" name="imo" value="1"  onclick="return false;" readonly {{$quotation->imo == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> IMO </a>
-                                        
+
                                         <input type="checkbox" id="oog" name="oog" value="1"  onclick="return false;" readonly {{$quotation->oog == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> OOG </a>
-                                        
+
                                         <input type="checkbox" id="rf" name="rf" value="1"  onclick="return false;" readonly {{$quotation->rf == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> RF </a>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                             <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
@@ -167,7 +167,7 @@
                                     @foreach ($line as $item)
                                     @if($quotation->principal_name != null)
                                         <option value="{{$item->id}}" {{$item->id == old('principal_name',$quotation->principal_name) ? 'selected':'disabled'}}>{{$item->name}}</option>
-                                    @elseif($booking->quotation_id == null) 
+                                    @elseif($booking->quotation_id == null)
                                     <option value="{{$item->id}}" {{$item->id == old('principal_name',$booking->principal_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
@@ -185,7 +185,7 @@
                                     @foreach ($line as $item)
                                     @if($quotation->vessel_name != null)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_name',$quotation->vessel_name) ? 'selected':'disabled'}}>{{$item->name}}</option>
-                                    @elseif($booking->quotation_id == null) 
+                                    @elseif($booking->quotation_id == null)
                                     <option value="{{$item->id}}" {{$item->id == old('vessel_name',$booking->vessel_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endif
                                     @endforeach
@@ -208,22 +208,22 @@
                                                 @if($quotation->customer_id != null)
                                                     @if(in_array(6, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
                                                         <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                                    @else 
+                                                    @else
                                                         <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                     @endif
-                                                @else 
+                                                @else
                                                     <option value="{{$item->id}}" {{$item->id == old('ffw_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @endif
                                             @else
                                                 @if($booking->ffw_id != null)
                                                     <option value="{{$item->id}}" {{$item->id == old('ffw_id',$booking->ffw_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                                @elseif($quotation->customer_id != null) 
+                                                @elseif($quotation->customer_id != null)
                                                     @if(in_array(6, optional($quotation->customer)->CustomerRoles->pluck('role_id')->toarray()))
                                                         <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':'disabled'}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
-                                                    @else 
+                                                    @else
                                                         <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->customer_id) ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                     @endif
-                                                @else 
+                                                @else
                                                     <option value="{{$item->id}}" {{$item->id == old('ffw_id') ? 'selected':''}}>{{$item->name}} @foreach($item->CustomerRoles as $itemRole) - {{optional($itemRole->role)->name}}@endforeach</option>
                                                 @endif
                                             @endif
@@ -234,8 +234,8 @@
                                         {{$message}}
                                     </div>
                                     @enderror
-                                </div> 
-                                
+                                </div>
+
                                 <div class="form-group col-md-6">
                                     <label for="customer_consignee_id">Consignee Customer</label>
                                     <select class="selectpicker form-control" id="customer_consignee_id" data-live-search="true" name="customer_consignee_id" data-size="10"
@@ -250,8 +250,8 @@
                                     </div>
                                     @enderror
                                 </div>
-                                
-                            </div>                     
+
+                            </div>
                             <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
@@ -280,7 +280,7 @@
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id',$booking->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
-                                    @endif    
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('load_port_id')
@@ -310,7 +310,7 @@
                                     <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$booking->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
-                                    @endif    
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('place_of_delivery_id')
@@ -328,7 +328,7 @@
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$booking->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
-                                    @endif    
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('discharge_port_id')
@@ -359,7 +359,7 @@
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$booking->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endif    
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('pick_up_location')
@@ -378,7 +378,7 @@
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @else
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id',$booking->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
-                                    @endif    
+                                    @endif
                                     @endforeach
                                 </select>
                                 @error('place_return_id')
@@ -535,7 +535,7 @@
                                 @else
                                 <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$quotation->discharge_etd)}}"
                                     placeholder="Discharge ETA" autocomplete="off">
-                                @endif    
+                                @endif
                                 @error('discharge_etd')
                                 <div style="color: red;">
                                     {{$message}}
@@ -550,7 +550,7 @@
                                 @else
                                 <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$quotation->load_port_cutoff)}}"
                                     placeholder="Load Port Cutoff" autocomplete="off">
-                                @endif    
+                                @endif
                                 @error('load_port_cutoff')
                                 <div style="color: red;">
                                     {{$message}}
@@ -565,7 +565,7 @@
                                 @else
                                 <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$quotation->load_port_dayes)}}"
                                 placeholder="Load Port Days" autocomplete="off">
-                                @endif    
+                                @endif
                                 @error('load_port_dayes')
                                 <div style="color: red;">
                                     {{$message}}
@@ -592,7 +592,7 @@
                                 @else
                                 <input type="text" class="form-control" id="tariff_service" name="tariff_service" value="{{old('tariff_service',$quotation->ref_no)}}"
                                     placeholder="Tariff Service" autocomplete="off" disabled>
-                                @endif    
+                                @endif
                                 @error('tariff_service')
                                 <div style="color: red;">
                                     {{$message}}
@@ -624,12 +624,12 @@
                             @if($quotation->id != 0)
                             <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
-                                <input type="text" class="form-control" value="{{$quotation->shipment_type}}" readonly>
+                                <input type="text" class="form-control" name="shipment_type" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
                             {{-- <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required>
                                    <option value="Import" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Import"? 'selected':''}}>Import</option>
                                    <option value="Export" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Export"? 'selected':''}}>Export</option>
                                 </select>
@@ -644,7 +644,7 @@
                             @else
                             <div class="form-group col-md-4">
                                 <label>Booking Status</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required>
                                    <option value="Empty" {{$booking->id == old('booking_type') ||  $booking->booking_type == "Empty"? 'selected':''}}>Empty</option>
                                    <option value="Full" {{$booking->id == old('booking_type') ||  $booking->booking_type == "Full"? 'selected':''}}>Full</option>
                                 </select>
@@ -653,7 +653,7 @@
 
                             <div class="form-group col-md-5">
                                 <label for="details">Notes</label>
-                                <textarea class="form-control" id="notes" name="notes" 
+                                <textarea class="form-control" id="notes" name="notes"
                                  placeholder="Notes" autocomplete="off">{{ old('notes',$booking->notes) }}</textarea>
                                 @error('notes')
                                 <div class="invalid-feedback">
@@ -716,10 +716,10 @@
                                 <tr>
                                         <input type="hidden" value ="{{ $item->id }}" name="containerDetails[{{ $key }}][id]">
                                     <td>
-                                        <input type="text" id="seal_no" name="containerDetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No" value="{{old('seal_no',$item->seal_no)}}"> 
+                                        <input type="text" id="seal_no" name="containerDetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No" value="{{old('seal_no',$item->seal_no)}}">
                                     </td>
 
-                                    <td class="containertype">  
+                                    <td class="containertype">
                                         <select class="selectpicker form-control" id="container_type" data-live-search="true" name="containerDetails[{{ $key }}][container_type]" data-size="10"
                                                 title="{{trans('forms.select')}}" >
                                                 @foreach ($equipmentTypes as $equipmentType)
@@ -729,7 +729,7 @@
                                                 <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
                                                 @else
                                                 <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
-                                                @endif                                                
+                                                @endif
                                             @endforeach
                                         </select>
                                     </td>
@@ -770,7 +770,7 @@
                                                 @foreach ($oldcontainers as $container)
                                                     <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
                                                 @endforeach
-                                            @endif    
+                                            @endif
                                         </select>
                                     </td>
                                     @else
@@ -798,7 +798,7 @@
                                     </td>
                                     @endif
                                     <td>
-                                        <input type="text" id="haz" name="containerDetails[{{ $key }}][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" value="{{old('haz',$item->haz)}}">      
+                                        <input type="text" id="haz" name="containerDetails[{{ $key }}][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" value="{{old('haz',$item->haz)}}">
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" id="weight" name="containerDetails[{{ $key }}][weight]" value="{{old('weight',$item->weight)}}"
@@ -916,7 +916,7 @@ $(function(){
 </script>
 <script>
   $(document).ready(function (){
-    
+
         $(function(){
             let company_id = "{{ optional(Auth::user())->company->id }}";
             let equipment_id = "{{$quotation->equipment_type_id}}";
@@ -938,17 +938,17 @@ $(function(){
                 });
             });
         });
-  });  
+  });
 </script>
 <script src="js/jquery.js"></script>
     <script type="text/javascript">
-    function check(){  
+    function check(){
             //get the number
-            var number = $('#qyt').val();  
+            var number = $('#qyt').val();
 
-                    if(number == 0){  
-                        //show that the number is not allowed  
-                        alert("Container Qyt value Not Allowed 0"); 
+                    if(number == 0){
+                        //show that the number is not allowed
+                        alert("Container Qyt value Not Allowed 0");
                         $("#qyt").val('');
                     }
     }
@@ -956,13 +956,13 @@ $(function(){
 
 <script src="js/jquery.js"></script>
     <script type="text/javascript">
-    function check_value(){  
+    function check_value(){
             //get the number
-            var number = $('#number').val();  
+            var number = $('#number').val();
 
-                    if(number == 0){  
-                        //show that the number is not allowed  
-                        alert("Container Qyt value Not Allowed 0"); 
+                    if(number == 0){
+                        //show that the number is not allowed
+                        alert("Container Qyt value Not Allowed 0");
                         $("#number").val('');
                     }
     }
