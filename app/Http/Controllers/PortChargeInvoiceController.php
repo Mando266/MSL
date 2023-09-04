@@ -130,8 +130,12 @@ class PortChargeInvoiceController extends Controller
         $power_to = request()->to ?? $chargeMatrix->power_to;
         $containerId = $container->id;
 
-        $storageDaysInPort = $this->calculateDays($containerId, $storage_from, $blNo);
-        $powerDaysInPort = $this->calculateDays($containerId, $power_from, $blNo);
+        $storageDaysInPort = $storage_from === "Select" ?
+            0 :
+            $this->calculateDays($containerId, $storage_from, $blNo);
+        $powerDaysInPort = $storage_from === "Select" ?
+            0 :
+            $this->calculateDays($containerId, $power_from, $blNo);
 
         $container_size = (int)$container->containersTypes->name;
         $portCharge = $chargeMatrix->portCharge;
@@ -139,6 +143,12 @@ class PortChargeInvoiceController extends Controller
         $power_cost = $quotationType === "empty" ?
             0 :
             $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
+        $power_cost_plus_one = $quotationType === "empty" ?
+            0 :
+            $this->calculatePowerCost($powerDaysInPort + 1, $container_size, $portCharge);
+        $power_cost_minus_one = $quotationType === "empty" ?
+            0 :
+            $this->calculatePowerCost($powerDaysInPort - 1, $container_size, $portCharge);
 
         $containerSizeSuffix = "{$container_size}ft";
         $chargeTypes = [
@@ -159,6 +169,8 @@ class PortChargeInvoiceController extends Controller
         $response = [
             'storage' => $storage_cost,
             'power' => $power_cost,
+            'power_plus_one' => $power_cost_plus_one,
+            'power_minus_one' => $power_cost_minus_one,
             'pti_failed' => $portCharge->pti_failed,
             'pti_passed' => $portCharge->pti_passed,
             'container_size' => $container_size
@@ -260,6 +272,6 @@ class PortChargeInvoiceController extends Controller
             ], 201);
         }
 
-        return response()->json(['status' => 'failed'], 404);
+        return response()->json(['status' => 'failed'], 412);
     }
 }

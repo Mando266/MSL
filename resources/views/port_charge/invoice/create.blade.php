@@ -134,9 +134,9 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" id="exchange_rate"
+                                            <input type="number" class="form-control" id="exchange_rate"
                                                    name="exchange_rate" value="{{old('exchange_rate')}}"
-                                                   autocomplete="off">
+                                                   min="0" max="1000">
                                         </div>
                                     </div>
                                     @error('exchange_rate')
@@ -320,6 +320,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                {{--                                <div class="form-group col-md-12">--}}
+                                {{--                                    <div class="input-group">--}}
+                                {{--                                        <div class="col-md-2">--}}
+                                {{--                                            <div class="input-group-prepend">--}}
+                                {{--                                                <span class="input-group-text bg-transparent border-0">VAT (%)</span>--}}
+                                {{--                                            </div>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <div class="col-md-6">--}}
+                                {{--                                            <input type="number" class="form-control" id="vat" name="vat" min="0"--}}
+                                {{--                                                   max="100"--}}
+                                {{--                                                   autocomplete="off">--}}
+                                {{--                                        </div>--}}
+                                {{--                                    </div>--}}
+                                {{--                                </div>--}}
                                 <div class="form-group col-md-12">
                                     <div class="input-group">
                                         <div class="col-md-2">
@@ -419,7 +433,10 @@
                             </div>
 
                             <div>
-                                <button type="button" id="add-row" class="btn btn-info m-3">Add Row</button>
+                                <button type="button" id="add-many-containers" class="btn btn-info m-3">Add Many
+                                    Containers
+                                </button>
+                                <button type="button" id="add-row" class="btn btn-info my-3 mx-1">Add Row</button>
                             </div>
                             <div class="col-md-12">
                                 <div class="table-container">
@@ -472,7 +489,7 @@
         $(document).ready(function () {
             setupEventHandlers()
             switchTables()
-            calculateTotalUSD()
+            calculateTotals()
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
         })
@@ -497,14 +514,26 @@
         }
 
 
-        function calculateTotalUSD() {
+        function calculateTotals() {
+            const exchangeRate = parseFloat($('#exchange_rate').val());
+            // const vatPercentage = parseFloat($('#vat').val());
             let totalUSD = 0
+            let totalEGP = 0
 
             $('.dynamic-input.included').each(function () {
                 totalUSD += parseFloat($(this).val()) || 0
             })
 
-            $('#total_usd').val(totalUSD)
+            if (!isNaN(exchangeRate)) {
+                totalEGP = totalUSD * exchangeRate;
+                // if (!isNaN(vatPercentage)) {
+                //     const vatAmount = (totalEGP * vatPercentage) / 100;
+                //     totalEGP += vatAmount;
+                // }
+            }
+
+            $('#total_usd').val(totalUSD);
+            $('#total_egp').val(totalEGP);
         }
 
         function setupEventHandlers() {
@@ -515,15 +544,86 @@
             $(document).on('change', '.container_no', handleContainerNoChange)
             $('#vessel_id').on('change', loadVoyages)
             $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $(document).on('input', '.dynamic-input', calculateTotalUSD)
+            $(document).on('input', '.dynamic-input', calculateTotals)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
-            $(document).on('click change keyup paste', () => calculateTotalUSD());
+            $(document).on('change', '.power-days', handlePowerDaysChange);
+            $(document).on('click change keyup paste', () => calculateTotals());
             $('form').on('submit', e => deleteEmptyOnSubmit(e));
+            $("#add-many-containers").on('click', handleAddContainers);
         }
+
+        const handleAddContainers = async e => {
+            const success = await swal({
+                content: {
+                    element: "textarea",
+                    attributes: {
+                        placeholder: "Enter Containers Here",
+                        id: "containers-auto"
+                    },
+                },
+                buttons: ["no", "yes"]
+            })
+
+            if (success) {
+                let containersText = document.getElementById("containers-auto").value
+                await autoAddContainers(containersText)
+            }
+        }
+
+        const autoAddContainers = async (containersText) => {
+            const containers = containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "")
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+            console.log(containers)
+            if (containers.length > 0 && vesselId !== '' && voyage !== '') {
+                for (const container of containers) {
+                    await processContainer(container, vesselId, voyage);
+                }
+            }
+        }
+
+        const processContainer = async (container, vesselId, voyage) => {
+            try {
+                const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
+                    params: {
+                        vessel: vesselId,
+                        voyage: voyage,
+                        container: container
+                    }
+                });
+
+                const {ref_no, is_ts, shipment_type, quotation_type} = response.data;
+                let table = '';
+                let selectedCharge = null;
+
+                if (quotation_type === 'full') {
+                    table = 'table1';
+                    selectedCharge = shipment_type === 'Import' ? 1 : 2;
+                } else if (quotation_type === 'empty' && shipment_type === 'Export') {
+                    table = 'table2';
+                    selectedCharge = 4;
+                } else if (quotation_type === 'empty' && shipment_type === 'Import') {
+                    table = 'table3';
+                    selectedCharge = 3;
+                } else if (is_ts == '1') {
+                    table = 'table4';
+                }
+
+                if (table !== '') {
+                    const tbody = $(`#${table} tbody`);
+                    appendSingleRow(container, tbody, selectedCharge);
+                    updateChargeTypeOptions(table);
+                    handleDynamicFieldsChange(table);
+                }
+            } catch (error) {
+                // Handle any errors or provide error handling logic here
+                console.error(error);
+            }
+        };
 
         function handleRemoveRow() {
             $(this).closest("tr").remove()
-            calculateTotalUSD()
+            calculateTotals()
         }
 
         function handleAddRow() {
@@ -545,6 +645,7 @@
             const containerInput = row.find('.container_no');
             const refNoInput = row.find('.ref-no-td');
             const ptiTypeSelect = row.find('.pti-type');
+            const powerDaysSelect = row.find('.power-days');
             const quotationType = row.find('.quotation_type');
             const emptyExportFromSelect = $('[name="empty_export_from_id"]');
             const emptyExportToSelect = $('[name="empty_export_to_id"]');
@@ -579,12 +680,15 @@
                         dynamicFields.forEach(item => {
                             row.find(`[name*="${item}"]`).val(response.data[item]);
                         });
-
+                        
+                        powerDaysSelect.find('option[value="none"]').data('cost', response.data['power'])
+                        powerDaysSelect.find('option[value="plus"]').data('cost', response.data['power_plus_one'])
+                        powerDaysSelect.find('option[value="minus"]').data('cost', response.data['power_minus_one'])
                         ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
                         ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
                         ptiTypeSelect.trigger('change')
 
-                        calculateTotalUSD();
+                        calculateTotals();
                     })
                     .catch(function (error) {
                         console.error('Error:', error);
@@ -592,6 +696,14 @@
             }
         }
 
+        function handlePowerDaysChange() {
+            console.log($(this))
+            const powerCost = $(this).find(`option:selected`).data('cost');
+
+            const row = $(this).closest('tr');
+            const powerInput = row.find('input[name*="rows[power][]"]')
+            powerInput.val(powerCost);
+        }
 
         // function addPtiTypeToSelect(e) {
         //     const dynamicFieldsSelect = $('#dynamic_fields');
@@ -641,7 +753,7 @@
             const tableId = row.closest('table').attr('id')
 
             const tbody = row.closest('tbody')
-            appendNewRows(containerNumbers, selectedCharge, selectedService, tbody)
+            appendNewRows(containerNumbers, tbody, selectedCharge, selectedService)
             row.remove()
             handleDynamicFieldsChange()
             updateChargeTypeOptions(tableId);
@@ -656,18 +768,24 @@
             return pastedContent.split('\n').map(containerNumber => containerNumber.trim())
         }
 
-        function appendNewRows(containerNumbers, selectedCharge, selectedService, tbody) {
-            containerNumbers.forEach(containerNumber => {
-                if (containerNumber !== '') {
-                    const newRow = getNewRow(containerNumber)
-                    tbody.append(newRow)
-                    newRow.find('.charge_type').val(selectedCharge)
-                    newRow.find('.service_type').val(selectedService)
-                    newRow.find('.container_no').trigger('change')
-                    // setTimeout(function () {
-                    // }, 4400)
+        function appendNewRows(containerNumbers, tbody, selectedCharge, selectedService) {
+            containerNumbers.forEach(containerNumber => appendSingleRow(containerNumbers, tbody, selectedCharge, selectedService))
+
+        }
+
+        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null) {
+            if (containerNumber !== '') {
+                const newRow = getNewRow(containerNumber)
+                tbody.append(newRow)
+                if (selectedCharge !== null) {
+                    newRow.find('.charge_type').val(selectedCharge);
                 }
-            })
+                if (selectedService !== null) {
+                    newRow.find('.service_type').val(selectedService);
+                }
+                newRow.find('.container_no').trigger('change')
+
+            }
         }
 
         function handleContainerNoChange() {
@@ -829,6 +947,15 @@
                             <option value="failed" data-cost="0">Failed</option>
                         </select>
                     </td>
+                    `;
+                } else if (field === "power") {
+                    dynamicInputsHtml += `
+                    <td data-field="power"><input type="text" name="rows[power][]" class="form-control dynamic-input" data-field="power_cost"></td>
+                    <td data-field="power"><select class="form-control power-days">
+                        <option value="none" data-cost="0" select>Normal</option>
+                        <option value="plus" data-cost="0">Plus One Day</option>
+                        <option value="minus" data-cost="0">Minus One Day</option>
+                    </select></td>
                     `;
                 } else {
                     dynamicInputsHtml += `

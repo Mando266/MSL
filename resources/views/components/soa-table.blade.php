@@ -16,7 +16,7 @@
         <th style="min-width: 222px">QUOTATION TYPE</th>
         <th data-field="thc">THC</th>
         <th data-field="storage">STORAGE</th>
-        <th data-field="power">POWER</th>
+        <th colspan=2 data-field="power">POWER</th>
         <th data-field="shifting">SHIFTING</th>
         <th data-field="disinf">DISINF</th>
         <th data-field="hand-fes-em">HAND-FES-EM</th>
@@ -124,6 +124,13 @@
 {{--        <td data-field="thc"><input type="text" name="thc_40ft[]" class="form-control dynamic-input" data-field="thc_40ft"></td>--}}
         <td data-field="storage"><input type="text" name="rows[storage][]" class="form-control dynamic-input" data-field="storage_cost"></td>
         <td data-field="power"><input type="text" name="rows[power][]" class="form-control dynamic-input" data-field="power_cost"></td>
+        <td data-field="power">
+            <select style="min-width: 100px" class="form-control power-days">
+                <option value="none" data-cost="0" selected>Normal</option>
+                <option value="plus" data-cost="0">Plus One Day</option>
+                <option value="minus" data-cost="0">Minus One Day</option>
+            </select>
+        </td>
 {{--        <td data-field="power"><input type="text" name="power_20ft[]" class="form-control dynamic-input" data-field="power_20ft"></td>--}}
 {{--        <td data-field="power"><input type="text" name="power_40ft[]" class="form-control dynamic-input" data-field="power_40ft"></td>--}}
         <td data-field="shifting"><input type="text" name="rows[shifting][]" class="form-control dynamic-input" data-field="shifting_cost">
