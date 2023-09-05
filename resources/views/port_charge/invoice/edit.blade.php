@@ -453,7 +453,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="table-container">
-                                    <x-soa-table id="table1"/>
+                                    <x-soa-table id="table1" :rows="$rows"/>
                                     <x-soa-table id="table2" class="d-none"/>
                                     <x-soa-table id="table3" class="d-none"/>
                                     <x-soa-table id="table4" class="d-none"/>

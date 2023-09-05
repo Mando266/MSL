@@ -18,8 +18,9 @@
                     <li><strong>Vessel Name:</strong> {{ $invoice->vessel->name ?? '' }}</li>
                     <li><strong>Voyage No:</strong> {{ $invoice->voyage->voyage_no ?? '' }}</li>
                     <li><strong>Applied Costs:</strong> {{ $invoice->selected_costs }}</li>
-                    <li><strong>Total EGP:</strong> {{ $invoice->total_egp }}</li>
                     <li><strong>Total USD:</strong> {{ $invoice->total_usd }}</li>
+                    <li><strong>Invoice EGP:</strong> {{ $invoice->invoice_egp }}</li>
+                    <li><strong>Invoice USD:</strong> {{ $invoice->invoice_usd }}</li>
                 </ul>
 
                 <div class="table-container">

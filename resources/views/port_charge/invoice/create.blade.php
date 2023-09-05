@@ -338,6 +338,19 @@
                                     <div class="input-group">
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
+                                                <span class="input-group-text bg-transparent border-0">Total USD</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" name="total_usd" class="form-control" id="total_usd"
+                                                   readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
                                                 <span class="input-group-text bg-transparent border-0">Invoice EGP</span>
                                             </div>
                                         </div>
@@ -356,19 +369,6 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" name="invoice_usd" class="form-control" id="invoice_usd"
-                                                   readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <div class="input-group">
-                                        <div class="col-md-2">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text bg-transparent border-0">Total USD</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="text" name="total_usd" class="form-control" id="total_usd"
                                                    readonly>
                                         </div>
                                     </div>
@@ -518,6 +518,7 @@
             $(document).on('input', '.dynamic-input', calculateTotals)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
             $(document).on('change', '.power-days', handlePowerDaysChange);
+            $(document).on('change', '.storage-days', handleStorageDaysChange);
             $(document).on('change', '.add-plan-select', handleAddPlanChange);
             $(document).on('click change keyup paste', () => calculateTotals());
             $('form').on('submit', e => {
@@ -674,6 +675,7 @@
             const refNoInput = row.find('.ref-no-td');
             const ptiTypeSelect = row.find('.pti-type');
             const powerDaysSelect = row.find('.power-days');
+            const storageDaysSelect = row.find('.storage-days');
             const addPlanSelect = row.find('.add-plan-select');
             const quotationType = row.find('.quotation_type');
             const emptyExportFromSelect = $('[name="empty_export_from_id"]');
@@ -710,8 +712,9 @@
                             row.find(`[name*="${item}"]`).val(response.data[item]);
                         });
                         powerDaysSelect.find('option[value="none"]').data('cost', response.data['power'])
-                        powerDaysSelect.find('option[value="plus"]').data('cost', response.data['power_plus_one'])
                         powerDaysSelect.find('option[value="minus"]').data('cost', response.data['power_minus_one'])
+                        storageDaysSelect.find('option[value="none"]').data('cost', response.data['storage'])
+                        storageDaysSelect.find('option[value="minus"]').data('cost', response.data['storage_minus_one'])
                         ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
                         ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
                         addPlanSelect.find('option[value="1"]').data('cost', response.data['add_plan'])
@@ -739,6 +742,15 @@
             const row = $(this).closest('tr');
             const powerInput = row.find('input[name*="rows[power][]"]')
             powerInput.val(powerCost);
+        }
+        
+        function handleStorageDaysChange() {
+            const storageCost = $(this).find(`option:selected`).data('cost');
+            console.log('asd' + storageCost)
+
+            const row = $(this).closest('tr');
+            const storageInput = row.find('input[name*="rows[storage][]"]')
+            storageInput.val(storageCost);
         }
 
         function addPtiTypeToSelect(e) {
@@ -986,7 +998,7 @@
                 power: `
                 <select style="min-width: 100px" class="form-control power-days">
                     <option value="none" data-cost="0" selected>Normal</option>
-                    <option value="plus" data-cost="0">Plus One Day</option>
+<!--                    <option value="plus" data-cost="0">Plus One Day</option>-->
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `,
@@ -994,6 +1006,12 @@
                 <select style="min-width: 100px" class="form-control add-plan-select">
                     <option value="1" data-cost="0" selected>Added</option>
                     <option value="0" data-cost="0">Not added</option>
+                </select>
+                `,
+                storage: `
+                <select style="min-width: 100px" class="form-control storage-days">
+                    <option value="none" data-cost="0" selected>Normal</option>
+                    <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `
             };

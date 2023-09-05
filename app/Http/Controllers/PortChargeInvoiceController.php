@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bl\BlDraft;
+use App\Models\Booking\Booking;
 use App\Models\ChargesMatrix;
 use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
@@ -112,9 +112,11 @@ class PortChargeInvoiceController extends Controller
         $possibleMovements = ContainersMovement::all();
         $countries = Country::orderBy('name')->get();
         $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
-        
-        return view('port_charge.invoice.edit',
-            compact('vessels', 'voyages', 'lines', 'portCharges', 'possibleMovements', 'countries', 'ports'))
+
+        return view(
+            'port_charge.invoice.edit',
+            compact('vessels', 'voyages', 'lines', 'portCharges', 'possibleMovements', 'countries', 'ports')
+        )
             ->with([
                 'invoice' => $portChargeInvoice,
                 'rows' => $portChargeInvoice->rows
@@ -143,9 +145,7 @@ class PortChargeInvoiceController extends Controller
 
         $chargeMatrix = ChargesMatrix::find($chargeType);
         $storage_from = request()->from ?? $chargeMatrix->storage_from;
-        $storage_to = request()->to ?? $chargeMatrix->storage_to;
         $power_from = request()->from ?? $chargeMatrix->power_from;
-        $power_to = request()->to ?? $chargeMatrix->power_to;
         $containerId = $container->id;
 
         $storageDaysInPort = $storage_from === "Select" ?
@@ -158,12 +158,10 @@ class PortChargeInvoiceController extends Controller
         $container_size = (int)$container->containersTypes->name;
         $portCharge = $chargeMatrix->portCharge;
         $storage_cost = $this->calculateStorageCost($storageDaysInPort, $container_size, $portCharge);
+        $storage_cost_minus_one = $this->calculateStorageCost($powerDaysInPort - 1, $container_size, $portCharge);
         $power_cost = $quotationType === "empty" ?
             0 :
             $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
-        $power_cost_plus_one = $quotationType === "empty" ?
-            0 :
-            $this->calculatePowerCost($powerDaysInPort + 1, $container_size, $portCharge);
         $power_cost_minus_one = $quotationType === "empty" ?
             0 :
             $this->calculatePowerCost($powerDaysInPort - 1, $container_size, $portCharge);
@@ -186,8 +184,8 @@ class PortChargeInvoiceController extends Controller
 
         $response = [
             'storage' => $storage_cost,
+            'storage_minus_one' => $storage_cost_minus_one,
             'power' => $power_cost,
-            'power_plus_one' => $power_cost_plus_one,
             'power_minus_one' => $power_cost_minus_one,
             'pti_failed' => $portCharge->pti_failed,
             'pti_passed' => $portCharge->pti_passed,
@@ -204,9 +202,11 @@ class PortChargeInvoiceController extends Controller
 
     public function calculateDays($containerId, $storage_from, $blNo)
     {
+        $bookingId = Booking::where('ref_no', $blNo)->first()->id;
+        
         $fromMovement = Movements::where('container_id', $containerId)
             ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
-            ->where('bl_no', $blNo)->first();
+            ->where('booking_no', $bookingId)->first();
 
         $toMovement = Movements::where('container_id', $containerId)
             ->whereDate('movement_date', '>', $fromMovement->movement_date)
@@ -274,16 +274,16 @@ class PortChargeInvoiceController extends Controller
         $container = request()->input('container');
         $containerId = Containers::firstWhere('code', $container)->id;
 
-        $blDraft = BlDraft::with(['booking.quotation'])->where('voyage_id', $voyage)->whereHas(
-            'blDetails',
+        $booking = Booking::with(['quotation'])->where('voyage_id', $voyage)->whereHas(
+            'bookingContainerDetails',
             fn($q) => $q->where('container_id', $containerId)
         )->first();
-        if ($blDraft) {
-            $booking = $blDraft->booking;
+        
+        if ($booking) {
             $quotation = $booking->quotation;
             return response()->json([
                 'status' => 'success',
-                'ref_no' => $blDraft->ref_no,
+                'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
                 'shipment_type' => $quotation->shipment_type ?? '',
                 'quotation_type' => $quotation->quotation_type ?? '',
