@@ -505,6 +505,10 @@
             calculateTotals()
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
+            updateChargeTypeOptions('table1')
+            updateChargeTypeOptions('table2')
+            updateChargeTypeOptions('table3')
+            updateChargeTypeOptions('table4')
         })
 
         function setupEventHandlers() {
@@ -557,10 +561,10 @@
             $('#table1').find('.dynamic-input.included').each(function () {
                 USD_to_EGP += parseFloat($(this).val()) || 0
             })
-            
+
             console.log(USD_to_EGP)
             invoiceUSD = totalUSD - USD_to_EGP
-            
+
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
@@ -738,12 +742,15 @@
             powerInput.val(powerCost);
         }
 
-        // function addPtiTypeToSelect(e) {
-        //     const dynamicFieldsSelect = $('#dynamic_fields');
-        //     if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
-        //         dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
-        //     }
-        // }
+        function addPtiTypeToSelect(e) {
+            const dynamicFieldsSelect = $('#dynamic_fields');
+            if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
+            }
+            if (dynamicFieldsSelect.find('option:selected[value="power"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="power_days" selected>PTI Type</option>');
+            }
+        }
 
         function deleteEmptyOnSubmit(e) {
             $('form').find('tbody tr').each(function () {
@@ -978,7 +985,7 @@
                 </select>
                 `,
                 power: `
-                <select style="min-width: 100px" class="form-control power-days">
+                <select style="min-width: 100px" class="form-control power-days" name="power_days">
                     <option value="none" data-cost="0" selected>Normal</option>
                     <option value="plus" data-cost="0">Plus One Day</option>
                     <option value="minus" data-cost="0">Minus One Day</option>

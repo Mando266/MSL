@@ -33,6 +33,10 @@ class PortChargeInvoiceController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'invoice_no' => 'required|unique:port_charge_invoices'
+        ]);
+
         $rows = $this->separateInputByIndex(request()->rows);
         $selectedCosts = request()->selected_costs;
         $identifiers = [
@@ -100,7 +104,21 @@ class PortChargeInvoiceController extends Controller
 
     public function edit(PortChargeInvoice $portChargeInvoice)
     {
-        //
+        $userCompanyId = Auth::user()->company_id;
+        $vessels = Vessels::where('company_id', $userCompanyId)->orderBy('id')->get();
+        $voyages = Voyages::where('company_id', $userCompanyId)->orderBy('id')->get();
+        $lines = Lines::where('company_id', $userCompanyId)->orderBy('id')->get();
+        $portCharges = PortCharge::paginate(10);
+        $possibleMovements = ContainersMovement::all();
+        $countries = Country::orderBy('name')->get();
+        $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
+        
+        return view('port_charge.invoice.edit',
+            compact('vessels', 'voyages', 'lines', 'portCharges', 'possibleMovements', 'countries', 'ports'))
+            ->with([
+                'invoice' => $portChargeInvoice,
+                'rows' => $portChargeInvoice->rows
+            ]);
     }
 
     public function update(Request $request, PortChargeInvoice $portChargeInvoice)

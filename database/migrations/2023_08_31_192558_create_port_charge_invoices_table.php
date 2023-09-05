@@ -29,7 +29,8 @@ class CreatePortChargeInvoicesTable extends Migration
             $table->string('voyage_id');
             $table->string('selected_costs');
             $table->decimal('total_usd', 10, 2)->nullable();
-            $table->decimal('total_egp', 10, 2)->nullable();
+            $table->decimal('invoice_egp', 10, 2)->nullable();
+            $table->decimal('invoice_usd', 10, 2)->nullable();
             $table->bigInteger('empty_export_from_id')->nullable();
             $table->bigInteger('empty_export_to_id')->nullable();
             $table->bigInteger('empty_import_from_id')->nullable();
