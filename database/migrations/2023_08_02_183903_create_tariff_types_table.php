@@ -13,12 +13,12 @@ class CreateTariffTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tariff_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('code');
-            $table->string('description');
-            $table->timestamps();
-        });
+//        Schema::create('tariff_types', function (Blueprint $table) {
+//            $table->id();
+//            $table->string('code');
+//            $table->string('description');
+//            $table->timestamps();
+//        });
     }
 
     /**

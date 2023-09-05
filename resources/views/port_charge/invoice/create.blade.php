@@ -520,7 +520,10 @@
             $(document).on('change', '.power-days', handlePowerDaysChange);
             $(document).on('change', '.add-plan-select', handleAddPlanChange);
             $(document).on('click change keyup paste', () => calculateTotals());
-            $('form').on('submit', e => deleteEmptyOnSubmit(e));
+            $('form').on('submit', e => {
+                deleteEmptyOnSubmit(e)
+                addPtiTypeToSelect(e)
+            });
             $("#add-many-containers").on('click', handleAddContainers);
         }
 
@@ -738,12 +741,15 @@
             powerInput.val(powerCost);
         }
 
-        // function addPtiTypeToSelect(e) {
-        //     const dynamicFieldsSelect = $('#dynamic_fields');
-        //     if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
-        //         dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
-        //     }
-        // }
+        function addPtiTypeToSelect(e) {
+            const dynamicFieldsSelect = $('#dynamic_fields');
+            if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
+            }
+            if (dynamicFieldsSelect.find('option:selected[value="power"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="power_days" selected>PTI Type</option>');
+            }
+        }
 
         function deleteEmptyOnSubmit(e) {
             $('form').find('tbody tr').each(function () {

@@ -13,33 +13,32 @@ class CreatePortChargeInvoiceRowsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('port_charge_invoice_rows');
-
-        Schema::create('port_charge_invoice_rows', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('port_charge_invoice_id');
-            $table->unsignedBigInteger('port_charge_id');
-            $table->string('service');
-            $table->string('bl_no');
-            $table->string('container_no');
-            $table->boolean('is_transhipment');
-            $table->string('shipment_type');
-            $table->string('quotation_type');
-            $table->decimal('thc', 10, 2);
-            $table->decimal('storage', 10, 2);
-            $table->decimal('power', 10, 2);
-            $table->decimal('shifting', 10, 2);
-            $table->decimal('disinf', 10, 2);
-            $table->decimal('hand_fes_em', 10, 2);
-            $table->decimal('gat_lift_off_inbnd_em_ft40', 10, 2);
-            $table->decimal('gat_lift_on_inbnd_em_ft40', 10, 2);
-            $table->decimal('pti', 10, 2);
-            $table->decimal('add_plan', 10, 2);
-//            $table->string('pti_type');
-            $table->timestamps();
-
-            $table->foreign('port_charge_invoice_id')->references('id')->on('port_charge_invoices')->onDelete('cascade');
-        });
+//        Schema::dropIfExists('port_charge_invoice_rows');
+//
+//        Schema::create('port_charge_invoice_rows', function (Blueprint $table) {
+//            $table->id();
+//            $table->unsignedBigInteger('port_charge_invoice_id');
+//            $table->unsignedBigInteger('port_charge_id');
+//            $table->string('service');
+//            $table->string('bl_no');
+//            $table->string('container_no');
+//            $table->boolean('is_transhipment');
+//            $table->string('shipment_type');
+//            $table->string('quotation_type');
+//            $table->decimal('thc', 10, 2);
+//            $table->decimal('storage', 10, 2);
+//            $table->decimal('power', 10, 2);
+//            $table->decimal('shifting', 10, 2);
+//            $table->decimal('disinf', 10, 2);
+//            $table->decimal('hand_fes_em', 10, 2);
+//            $table->decimal('gat_lift_off_inbnd_em_ft40', 10, 2);
+//            $table->decimal('gat_lift_on_inbnd_em_ft40', 10, 2);
+//            $table->decimal('pti', 10, 2);
+//            $table->decimal('add_plan', 10, 2);
+////            $table->string('pti_type');
+//            $table->timestamps();
+//
+//        });
     }
 
     /**
