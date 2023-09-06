@@ -202,6 +202,8 @@ class PortChargeInvoiceController extends Controller
 
     public function calculateDays($containerId, $storage_from, $blNo)
     {
+//        dd($containerId, $storage_from, $blNo);
+        
         $bookingId = Booking::where('ref_no', $blNo)->first()->id;
         
         $fromMovement = Movements::where('container_id', $containerId)
@@ -273,11 +275,17 @@ class PortChargeInvoiceController extends Controller
         $voyage = request()->input('voyage');
         $container = request()->input('container');
         $containerId = Containers::firstWhere('code', $container)->id;
+//        dd($voyage,$container);
 
-        $booking = Booking::with(['quotation'])->where('voyage_id', $voyage)->whereHas(
-            'bookingContainerDetails',
-            fn($q) => $q->where('container_id', $containerId)
-        )->first();
+        $booking = Booking::with(['quotation'])
+            ->where(function ($query) use ($voyage) {
+                $query->where('voyage_id', $voyage)
+                    ->orWhere('voyage_id_second', $voyage);
+            })
+            ->whereHas('bookingContainerDetails', function ($q) use ($containerId) {
+                $q->where('container_id', $containerId);
+            })
+            ->latest()->first();
         
         if ($booking) {
             $quotation = $booking->quotation;

@@ -85,14 +85,14 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="invoice_no">
-                                                    Invoice No
+                                                    Invoice No *
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_no"
                                                    name="invoice_no" value="{{old('invoice_no')}}"
-                                                   autocomplete="off">
+                                                   autocomplete="off" required>
                                         </div>
                                     </div>
                                     @error('invoice_no')
@@ -246,7 +246,7 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="vessel_id">
-                                                    Vessel Name
+                                                    Vessel Name *
                                                 </label>
                                             </div>
                                         </div>
@@ -254,7 +254,7 @@
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
                                                     name="vessel_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($vessels as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -273,7 +273,7 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="voyage_id">
-                                                    Voyage No
+                                                    Voyage No *
                                                 </label>
                                             </div>
                                         </div>
@@ -281,7 +281,7 @@
                                             <select class="selectpicker form-control rounded-0" id="voyage"
                                                     name="voyage_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($voyages as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -499,6 +499,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        var failedContainers = []
         $(document).ready(function () {
             setupEventHandlers()
             switchTables()
@@ -561,10 +562,10 @@
             $('#table1').find('.dynamic-input.included').each(function () {
                 USD_to_EGP += parseFloat($(this).val()) || 0
             })
-            
+
             console.log(USD_to_EGP)
             invoiceUSD = totalUSD - USD_to_EGP
-            
+
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
@@ -576,21 +577,31 @@
 
 
         const handleAddContainers = async e => {
-            const success = await swal({
-                content: {
-                    element: "textarea",
-                    attributes: {
-                        placeholder: "Enter Containers Here",
-                        id: "containers-auto"
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+            if (vesselId === '' && voyage === '') {
+                swal('Select Voyage First')
+            } else {
+                const success = await swal({
+                    content: {
+                        element: "textarea",
+                        attributes: {
+                            placeholder: "Enter Containers Here",
+                            id: "containers-auto"
+                        },
                     },
-                },
-                buttons: ["no", "yes"]
-            })
+                    buttons: ["no", "yes"]
+                })
 
-            if (success) {
-                let containersText = document.getElementById("containers-auto").value
-                $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
-                await autoAddContainers(containersText)
+                if (success) {
+                    let containersText = document.getElementById("containers-auto").value
+                    $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
+                    await autoAddContainers(containersText)
+                    if (failedContainers.length > 0){
+                        swal("Failed To Get Details For These Containers :" + failedContainers)
+                        failedContainers = []
+                    }
+                }
             }
         }
 
@@ -646,7 +657,7 @@
                     handleDynamicFieldsChange(table);
                 }
             } catch (error) {
-                console.error(error);
+                failedContainers.push(container)
             }
         };
 
@@ -743,7 +754,7 @@
             const powerInput = row.find('input[name*="rows[power][]"]')
             powerInput.val(powerCost);
         }
-        
+
         function handleStorageDaysChange() {
             const storageCost = $(this).find(`option:selected`).data('cost');
             console.log('asd' + storageCost)
