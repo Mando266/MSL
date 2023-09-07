@@ -17,19 +17,19 @@
 
                     <form id="createForm" action="{{route('invoice.store_invoice')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-                        <div class="form-row">
-                            <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
+                            <div class="form-row">
+                                <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                                 <div class="form-group col-md-6">
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" name="customer_id" id="customer" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}" required>
-                                    @if($bldraft != null)
+                                    @if( optional($bldraft->customerNotify)->name != null && optional($bldraft->booking)->quotation->shipment_type == "Import")
+                                        @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
                                         <option value="{{optional($bldraft->booking)->ffw_id}}">{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
                                         @elseif(optional($bldraft->booking->consignee)->name != null)
                                         <option value="{{optional($bldraft->booking)->customer_consignee_id}}">{{ optional($bldraft->booking->consignee)->name }} Consignee</option>
                                         @endif
-                                        @if(optional($bldraft->customerNotify)->name != null)
                                         <option value="{{optional($bldraft)->customer_notifiy_id}}">{{ optional($bldraft->customerNotify)->name }} Notify</option>
                                         @endif
                                         <option value="{{optional($bldraft)->customer_id}}">{{ optional($bldraft->customer)->name }} Shipper</option>
@@ -55,7 +55,7 @@
                                         @endif
                                 </div>
 
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-3">
                                     <label>Load Port</label>
                                         @if(optional($bldraft)->load_port_id != null)
                                         <input type="text" class="form-control" placeholder="Load Port" autocomplete="off" value="{{(optional($bldraft->loadPort)->code)}}" style="background-color:#fff" disabled>
@@ -64,7 +64,9 @@
                             <div class="form-group col-md-3" >
                                 <label for="Date">Booking Ref</label>
                                     @if(optional($bldraft)->booking_id != null)
-                                    <input type="text" class="form-control" placeholder="Booking Ref" autocomplete="off" value="{{(optional($bldraft->booking)->ref_no)}}" style="background-color:#fff" disabled>
+                                        <input type="text" class="form-control" placeholder="Booking Ref"
+                                               autocomplete="off" value="{{(optional($bldraft->booking)->ref_no)}}"
+                                               style="background-color:#fff" disabled>
                                     @endif
                             </div>
                             <div class="form-group col-md-3">
@@ -90,7 +92,7 @@
                                         @endif
                                 </div>
 
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-3">
                                     <label>Port of Delivery</label>
                                         @if(optional($bldraft)->place_of_delivery_id != null)
                                         <input type="text" class="form-control" placeholder="Port of Delivery" autocomplete="off" value="{{(optional($bldraft->placeOfDelivery)->code)}}" style="background-color:#fff" disabled>
@@ -104,10 +106,11 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
-                                    <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
+                                    <select class="form-control" data-live-search="true" name="invoice_status"
+                                            title="{{trans('forms.select')}}" required>
                                         <option value="draft">Draft</option>
                                         @if($bldraft->bl_status == 1)
-                                        <option value="confirm">Confirm</option>
+                                            <option value="confirm">Confirm</option>
                                         @endif
                                     </select>
                                     @error('invoice_status')
@@ -143,19 +146,22 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-2" >
+                                <div class="form-group col-md-2">
                                     <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp"
+                                               value="true" checked>
                                         <label class="form-check-label" for="add_egp">
                                             EGP AND USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp"
+                                               value="false">
                                         <label class="form-check-label" for="add_egp">
-                                          USD
+                                            USD
                                         </label>
                                         <br>
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="onlyegp">
+                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp"
+                                               value="onlyegp">
                                         <label class="form-check-label" for="add_egp">
                                           EGP
                                         </label>
@@ -165,7 +171,7 @@
                             <div class="form-row">
                                 <div class="col-md-3 form-group">
                                     <label> VAT % </label>
-                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off" value="0" style="background-color:#fff" required>
+                                    <input type="text" class="form-control" placeholder="VAT %" name="vat" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -195,9 +201,9 @@
                                             <tr>
                                                 <td>
                                                     <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[{{ $key }}][charge_description]" data-size="10"
-                                                        title="{{trans('forms.select')}}" disabled>
+                                                        title="{{trans('forms.select')}}">
                                                         @foreach ($charges as $item)
-                                                            <option value="{{$item->name}}" {{$detail->charge_type == old('charge_description',$item->id) ? 'selected':''}}>{{$item->name}}</option>
+                                                            <option value="{{$item->id}}" {{$detail->charge_type == old('charge_description',$item->id) ? 'selected':''}}>{{$item->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -240,28 +246,42 @@
                                                 </td>
                                                 @elseif($detail->unit == "Document")
                                                 <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][egy_amount]" value="{{$detail->selling_price * optional($bldraft->voyage)->exchange_rate}}"
-                                                    placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
+                                                           placeholder="Egp Amount  " autocomplete="off" disabled
+                                                           style="background-color: white;" disabled>
                                                 </td>
-                                                @endif
-                                                <td><input type="text" name="invoiceChargeDesc[{{ $key }}][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
+                                                    @endif
+                                                    <td><input type="text" name="invoiceChargeDesc[{{ $key }}][egp_vat]"
+                                                               class="form-control" autocomplete="off"
+                                                               placeholder="Egp After VAT" disabled></td>
 
                                                     <td style="width:85px;">
-                                                        <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
+                                                        <button type="button" class="btn btn-danger remove"><i
+                                                                class="fa fa-trash"></i></button>
                                                     </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td>
-                                                <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Storage" >
-                                            </td>
-                                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{ $total_storage }}"
-                                                placeholder="Amount" autocomplete="off" disabled style="background-color: white;">
-                                            </td>
-                                            <td>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][add_vat]" id="item_0_enabled_yes" value="1" disabled>
-                                                    <label class="form-check-label" for="item_0_enabled_yes">Yes</label>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            @foreach($cartData as $cart)
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" id="Charge Description"
+                                                               name="invoiceChargeDesc[0][charge_description]"
+                                                               class="form-control" autocomplete="off"
+                                                               placeholder="Charge Description" value="{{$cart->triffText}}">
+                                                    </td>
+                                                    <td><input type="text" class="form-control" id="size_small"
+                                                               name="invoiceChargeDesc[0][size_small]"
+                                                               value="{{ $cart->calculationData->grandTotal }}"
+                                                               placeholder="Amount" autocomplete="off" disabled
+                                                               style="background-color: white;">
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                   name="invoiceChargeDesc[0][add_vat]"
+                                                                   id="item_0_enabled_yes" value="1" disabled>
+                                                            <label class="form-check-label"
+                                                                   for="item_0_enabled_yes">Yes</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="invoiceChargeDesc[0][add_vat]" id="item_0_enabled_no" value="0" checked disabled>
@@ -278,7 +298,7 @@
                                                     <label class="form-check-label" for="item_0_enabled_no">No</label>
                                                 </div>
                                             </td>
-                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total]" value="{{$total_storage}}"
+                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total]" value="{{$cart->calculationData->grandTotal}}"
                                                 placeholder="Total" autocomplete="off" disabled style="background-color: white;">
                                             </td>
                                             <td><input type="text" name="invoiceChargeDesc[0][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
@@ -288,21 +308,25 @@
                                             </td>
                                             <td><input type="text" name="invoiceChargeDesc[0][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>
 
-                                                <td style="width:85px;">
-                                                    <button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button>
-                                                </td>
-                                        </tr>
-                                    @endif
-                            </tbody>
-                        </table>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
-                                    <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
-                                </div>
-                           </div>
-                    </form>
-                </div>
+                                                    <td style="width:85px;">
+                                                        <button type="button" class="btn btn-danger remove"><i
+                                                                class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button type="submit"
+                                                    class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
+                                            <a href="{{route('invoice.index')}}"
+                                               class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                                        </div>
+                                    </div>
+                        </form>
+                    </div>
             </div>
 
         </div>
@@ -483,7 +507,7 @@ $(document).ready(function(){
     var counter  = '<?= isset($key)? ++$key : 0 ?>';
     $("#add").click(function(){
        var tr = '<tr>'+
-           '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+           '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
            '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1"><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
