@@ -6,24 +6,25 @@ use App\Filters\Invoice\InvoiceIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Booking\Booking;
+use App\Models\Containers\Demurrage;
 use App\Models\Invoice\ChargesDesc;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceChargeDesc;
+use App\Models\Master\ContainersTypes;
+use App\Models\Master\Customers;
+use App\Models\Master\Ports;
 use App\Models\Quotations\LocalPortTriff;
 use App\Models\Voyages\VoyagePorts;
-use App\Models\Master\ContainersTypes;
-use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
+use App\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Setting;
-use App\Models\Master\Customers;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
-   
+
     public function index()
     {
 
@@ -85,7 +86,7 @@ class InvoiceController extends Controller
             'bldrafts'=>$bldrafts,
         ]);
     }
-    
+
     public function selectBL()
     {
         $bldrafts = BlDraft::
@@ -97,17 +98,16 @@ class InvoiceController extends Controller
     }
     public function create_invoice()
     {
-
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-        
-        if(request('bldraft_id') == "customize"){
-            $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+        $charges = ChargesDesc::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $cartData = json_decode(request('cart_data_for_invoice'));
+        if (request('bldraft_id') == "customize") {
+            $ffws = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
             })->with('CustomerRoles.role')->get();
-            $shippers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            $shippers = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 1);
             })->with('CustomerRoles.role')->get();
-            $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            $suppliers = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
             $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
@@ -135,26 +135,26 @@ class InvoiceController extends Controller
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
-        if($bl_id != null){
-            $bldraft = BlDraft::where('id',$bl_id)->with('blDetails')->first();
-        }else{
+        if ($bl_id != null) {
+            $bldraft = BlDraft::where('id', $bl_id)->with('blDetails')->first();
+        } else {
             $bldraft = null;
         }
         $qty = $bldraft->blDetails->count();
-        
-        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
-  
-        if(optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export"){   
+
+        $voyages = Voyages::with('vessel')->where('company_id', Auth::user()->company_id)->get();
+
+        if (optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export") {
 
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
-            ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
-            ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                $q->where("is_import_or_export", 1)
-                ->where(function($query) use($bldraft) {
-                    $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
-                    ->orWhere('equipment_type_id', '100');
-                });
-            },'triffPriceDetailes.charge']) 
+                ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
+                ->with(["triffPriceDetailes" => function ($q) use ($bldraft) {
+                    $q->where("is_import_or_export", 1)
+                        ->where(function ($query) use ($bldraft) {
+                            $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
+                                ->orWhere('equipment_type_id', '100');
+                        });
+                }, 'triffPriceDetailes.charge'])
             ->first();
         }else{
 
@@ -169,14 +169,23 @@ class InvoiceController extends Controller
             },'triffPriceDetailes.charge'])
             ->first();
         }
-        return view('invoice.invoice.create_invoice',[
-            'bldrafts'=>$bldrafts,
-            'total_storage'=>request('total_storage'),
-            'qty'=>$qty,
-            'bldraft'=>$bldraft,
-            'triffDetails'=>$triffDetails,
-            'voyages'=>$voyages,
-            'charges'=>$charges,
+        // id's of triff type export and import power charge
+        $powerTriffs = [7,8];
+        foreach ($cartData as $cart){
+            if(in_array(Demurrage::where('id',$cart->triffValue)->pluck('tariff_type_id')->first(),$powerTriffs)){
+                $cart->triffText = "Power Charge";
+            }else{
+                $cart->triffText = "Port Storage";
+            }
+        }
+        return view('invoice.invoice.create_invoice', [
+            'bldrafts' => $bldrafts,
+            'cartData' => $cartData ?? null,
+            'qty' => $qty,
+            'bldraft' => $bldraft,
+            'triffDetails' => $triffDetails,
+            'voyages' => $voyages,
+            'charges' => $charges,
         ]);
     }
 
@@ -237,7 +246,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        
+
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
@@ -293,17 +302,17 @@ class InvoiceController extends Controller
             $invoice = Invoice::create([
                 'bldraft_id'=>$request->bldraft_id,
                 'customer'=>$request->customer,
-                'customer_id'=>$request->customer_id,
-                'company_id'=>Auth::user()->company_id,
-                'invoice_no'=>'',
-                'date'=>$request->date,
-                'invoice_kind'=>$blkind,
-                'type'=>'debit',
-                'invoice_status'=>$request->invoice_status,
-                'add_egp'=>'false',
-                'voyage_id'=>$request->voyage_id,
-                'notes'=>$request->notes,
-            ]); 
+                'customer_id' => $request->customer_id,
+                'company_id' => Auth::user()->company_id,
+                'invoice_no' => '',
+                'date' => $request->date,
+                'invoice_kind' => $blkind,
+                'type' => 'debit',
+                'invoice_status' => $request->invoice_status,
+                'add_egp' => 'false',
+                'voyage_id' => $request->voyage_id,
+                'notes' => $request->notes,
+            ]);
         }
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
@@ -362,6 +371,7 @@ class InvoiceController extends Controller
 
     public function storeInvoice(Request $request)
     {
+
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
@@ -375,7 +385,7 @@ class InvoiceController extends Controller
                 'add_egp' => ['required'],
             ]);
         }
-        
+
         $totalAmount = 0;
         foreach($request->input('invoiceChargeDesc',[])  as $desc){
             $totalAmount += $desc['total'];
@@ -435,7 +445,7 @@ class InvoiceController extends Controller
                 'invoice_status'=>$request->invoice_status,
             ]);
         }
-        
+
         $setting = Setting::find(1);
         if($request->bldraft_id != 'customize'){
             if($invoice->invoice_status == "confirm"){
@@ -476,7 +486,7 @@ class InvoiceController extends Controller
         //         $egyrate = optional($invoice->voyage)->exchange_rate_etd;
         //     }
         // }
-        
+
         foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
             InvoiceChargeDesc::create([
                 'invoice_id'=>$invoice->id,
@@ -488,7 +498,7 @@ class InvoiceController extends Controller
                 'add_vat'=>$chargeDesc['add_vat'],
             ]);
         }
- 
+
         if($request->bldraft_id != 'customize'){
             $bldrafts = BlDraft::where('id',$request->input('bldraft_id'))->first();
             $bldrafts->has_bl = 1;
@@ -505,7 +515,7 @@ class InvoiceController extends Controller
             $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
             ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
         }
-        
+
         $secondVoyagePortdis =null;
         if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null){
             $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id_second)
@@ -540,8 +550,8 @@ class InvoiceController extends Controller
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
             //Tax
-            $totalAftereTax = (($total * $invoice->tax_discount)/100);
-            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100); 
+            $totalAftereTax = (($total * $invoice->tax_discount) / 100);
+            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount) / 100);
             //End Tax
            if($chargeDesc->add_vat == 1){
                 $total_after_vat += ($vat * $chargeDesc->total_amount);
@@ -573,26 +583,25 @@ class InvoiceController extends Controller
         }else{
             $EGP =  ucfirst($f->format($exp[0]));
         }
-        
-        
+
 
         if($invoice->type == 'debit'){
-            return view('invoice.invoice.show_debit',[
-                'invoice'=>$invoice,
-                'qty'=>$qty,
-                'total'=>$total,
-                'total_eg'=>$total_eg,
-                'firstVoyagePort'=>$firstVoyagePort,
-                'firstVoyagePortdis'=>$firstVoyagePortdis, 
-                'secondVoyagePortdis'=>$secondVoyagePortdis,
-                'USD'=>$USD,
-                'EGP'=>$EGP,
+            return view('invoice.invoice.show_debit', [
+                'invoice' => $invoice,
+                'qty' => $qty,
+                'total' => $total,
+                'total_eg' => $total_eg,
+                'firstVoyagePort' => $firstVoyagePort,
+                'firstVoyagePortdis' => $firstVoyagePortdis,
+                'secondVoyagePortdis' => $secondVoyagePortdis,
+                'USD' => $USD,
+                'EGP' => $EGP,
 
             ]);
         }else{
             $gross_weight = 0;
             $amount = 0;
-            
+
             if($invoice->bldraft_id != 0){
                 foreach($invoice->bldraft->blDetails as $bldetail){
                     $gross_weight += $bldetail->gross_weight;
@@ -612,11 +621,11 @@ class InvoiceController extends Controller
                     }])->first();
             }
 
-            
+
             foreach($invoice->chargeDesc as $charge){
                 $amount = $amount + ( (float)$charge->size_small);
             }
-            
+
 
             return view('invoice.invoice.show_invoice',[
                 'invoice'=>$invoice,
@@ -639,7 +648,7 @@ class InvoiceController extends Controller
                 'triffDetails'=>$triffDetails,
             ]);
         }
-        
+
     }
 
     public function edit(Request $request, Invoice $invoice)
@@ -735,7 +744,7 @@ class InvoiceController extends Controller
         }
         $setting = Setting::find(1);
         $inputs = request()->all();
-        unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);        
+        unset($inputs['invoiceChargeDesc'], $inputs['_token'], $inputs['removed']);
         if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){
             $setting = Setting::find(1);
             // check if this invoice is customized
@@ -753,24 +762,24 @@ class InvoiceController extends Controller
                 }
             }
             $setting->invoice_confirm += 1;
-        }elseif($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit"){
+        } elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit") {
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 23';
+            $inputs['invoice_no'] = 'DN' . ' ' . '/' . ' ' . $setting->debit_confirm . ' / 23';
             $setting->debit_confirm += 1;
         }
         $setting->save();
         $invoice->update($inputs);
-        InvoiceChargeDesc::destroy(explode(',',$request->removed));
-        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc); 
-    
-        return redirect()->route('invoice.index')->with('success',trans('Invoice.Updated.Success'));
+        InvoiceChargeDesc::destroy(explode(',', $request->removed));
+        $invoice->createOrUpdateInvoiceChargeDesc($request->invoiceChargeDesc);
+
+        return redirect()->route('invoice.index')->with('success', trans('Invoice.Updated.Success'));
     }
 
     public function destroy($id)
     {
         $invoice = Invoice::find($id);
-        InvoiceChargeDesc::where('invoice_id',$id)->delete();
-        $invoice->delete(); 
+        InvoiceChargeDesc::where('invoice_id', $id)->delete();
+        $invoice->delete();
         return back()->with('success',trans('Invoice.Deleted.Success'));
     }
 }
