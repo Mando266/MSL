@@ -720,16 +720,18 @@
                             'gat_lift_on_inbnd_em_ft40', 'add_plan'
                         ]
                         dynamicFields.forEach(item => {
-                            row.find(`[name*="${item}"]`).val(response.data[item]);
+                            row.find(`[name*="[${item}]"]`).val(response.data[item]);
                         });
-                        powerDaysSelect.find('option[value="none"]').data('cost', response.data['power'])
+                        powerDaysSelect.find('option[value="normal"]').data('cost', response.data['power'])
                         powerDaysSelect.find('option[value="minus"]').data('cost', response.data['power_minus_one'])
-                        storageDaysSelect.find('option[value="none"]').data('cost', response.data['storage'])
+                        storageDaysSelect.find('option[value="normal"]').data('cost', response.data['storage'])
                         storageDaysSelect.find('option[value="minus"]').data('cost', response.data['storage_minus_one'])
                         ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
                         ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
                         addPlanSelect.find('option[value="1"]').data('cost', response.data['add_plan'])
                         ptiTypeSelect.trigger('change')
+                        addPlanSelect.trigger('change')
+                        storageDaysSelect.trigger('change')
 
                         calculateTotals();
                     })
@@ -757,7 +759,6 @@
 
         function handleStorageDaysChange() {
             const storageCost = $(this).find(`option:selected`).data('cost');
-            console.log('asd' + storageCost)
 
             const row = $(this).closest('tr');
             const storageInput = row.find('input[name*="rows[storage][]"]')
@@ -770,7 +771,10 @@
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
             }
             if (dynamicFieldsSelect.find('option:selected[value="power"]').length > 0) {
-                dynamicFieldsSelect.append('<option value="power_days" selected>PTI Type</option>');
+                dynamicFieldsSelect.append('<option value="power_days" selected>power days</option>');
+            }
+            if (dynamicFieldsSelect.find('option:selected[value="storage"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="storage_days" selected>power days</option>');
             }
         }
 
@@ -1007,9 +1011,8 @@
                 </select>
                 `,
                 power: `
-                <select style="min-width: 100px" class="form-control power-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
-<!--                    <option value="plus" data-cost="0">Plus One Day</option>-->
+                <select style="min-width: 100px" class="form-control power-days" name="rows[power_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `,
@@ -1020,8 +1023,8 @@
                 </select>
                 `,
                 storage: `
-                <select style="min-width: 100px" class="form-control storage-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
+                <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `

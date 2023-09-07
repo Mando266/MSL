@@ -34,16 +34,14 @@
                             <th style="min-width: 222px">TS</th>
                             <th style="min-width: 222px">SHIPMENT TYPE</th>
                             <th style="min-width: 222px">QUOTATION TYPE</th>
-                            <th data-field="thc">THC</th>
-                            <th data-field="storage">STORAGE</th>
-                            <th data-field="power">POWER</th>
-                            <th data-field="shifting">SHIFTING</th>
-                            <th data-field="disinf">DISINF</th>
-                            <th data-field="hand-fes-em">HAND-FES-EM</th>
-                            <th data-field="gat-lift-off-inbnd-em-ft40">GAT-LIFT OFF-INBND-EM-FT40</th>
-                            <th data-field="gat-lift-on-inbnd-em-ft40">GAT-LIFT ON-INBND-EM-FT40</th>
-                            <th data-field="pti">PTI</th>
-                            <th data-field="add-plan">ADD-PLAN</th>
+                            @foreach(['thc', 'storage', 'storage_days', 'power', 'power_days', 'shifting',
+                                      'disinf','hand-fes-em',
+                                      'gat-lift-off-inbnd-em-ft40', 'gat-lift-on-inbnd-em-ft40',
+                                      'pti', 'pti_type', 'add-plan'] as $field)
+                                @if(in_array($field, $selected))
+                                    <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
+                                @endif
+                            @endforeach
                         </tr>
                         </thead>
                         <tbody>
@@ -56,22 +54,20 @@
                                 <td>{{ $row->ts }}</td>
                                 <td>{{ $row->shipment_type }}</td>
                                 <td>{{ $row->quotation_type }}</td>
-                                <td>{{ $row->thc }}</td>
-                                <td>{{ $row->storage }}</td>
-                                <td>{{ $row->power }}</td>
-                                <td>{{ $row->shifting }}</td>
-                                <td>{{ $row->disinf }}</td>
-                                <td>{{ $row->hand_fes_em }}</td>
-                                <td>{{ $row->gat_lift_off_inbnd_em_ft40 }}</td>
-                                <td>{{ $row->gat_lift_on_inbnd_em_ft40 }}</td>
-                                <td>{{ $row->pti }}</td>
-                                <td>{{ $row->add_plan }}</td>
+                                @foreach(['thc', 'storage', 'storage_days', 'power', 'power_days', 'shifting',
+                                          'disinf','hand-fes-em',
+                                          'gat-lift-off-inbnd-em-ft40', 'gat-lift-on-inbnd-em-ft40',
+                                          'pti', 'pti_type', 'add-plan'] as $field)
+                                    @if(in_array($field, $selected))
+                                        <td>{{ $row->{$field} }}</td>
+                                    @endif
+                                @endforeach
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="col-md-12 text-center">
                     <a href="{{ route('port-charge-invoices.index') }}" class="btn btn-primary mt-3">Back</a>
                 </div>

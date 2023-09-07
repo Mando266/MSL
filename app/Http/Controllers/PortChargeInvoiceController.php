@@ -33,6 +33,7 @@ class PortChargeInvoiceController extends Controller
 
     public function store(Request $request)
     {
+//        dd(request()->all());
         $request->validate([
             'invoice_no' => 'required|unique:port_charge_invoices'
         ]);
@@ -54,6 +55,7 @@ class PortChargeInvoiceController extends Controller
         $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
         $portCharge = PortChargeInvoice::create($invoiceData);
 
+//        dd($rows);
         foreach ($rows as $row) {
             $portCharge->rows()->create($row->toArray());
         }
@@ -99,6 +101,7 @@ class PortChargeInvoiceController extends Controller
         return view('port_charge.invoice.show')
             ->with([
                 'invoice' => $portChargeInvoice->load('rows'),
+                'selected' => explode(',', $portChargeInvoice->selected_costs),
             ]);
     }
 
@@ -203,17 +206,19 @@ class PortChargeInvoiceController extends Controller
     public function calculateDays($containerId, $storage_from, $blNo)
     {
 //        dd($containerId, $storage_from, $blNo);
-        
+
         $bookingId = Booking::where('ref_no', $blNo)->first()->id;
-        
+
         $fromMovement = Movements::where('container_id', $containerId)
             ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
             ->where('booking_no', $bookingId)->first();
 
-        $toMovement = Movements::where('container_id', $containerId)
-            ->whereDate('movement_date', '>', $fromMovement->movement_date)
-            ->orderBy('movement_date')
-            ->first();
+        if ($fromMovement) {
+            $toMovement = Movements::where('container_id', $containerId)
+                ->whereDate('movement_date', '>', $fromMovement->movement_date)
+                ->orderBy('movement_date')
+                ->first();
+        }
 
         if ($fromMovement && $toMovement) {
             $fromDate = Carbon::parse($fromMovement->movement_date);
@@ -275,18 +280,21 @@ class PortChargeInvoiceController extends Controller
         $voyage = request()->input('voyage');
         $container = request()->input('container');
         $containerId = Containers::firstWhere('code', $container)->id;
-//        dd($voyage,$container);
 
         $booking = Booking::with(['quotation'])
-            ->where(function ($query) use ($voyage) {
+            ->where(function ($query) use ($voyage, $containerId) {
                 $query->where('voyage_id', $voyage)
-                    ->orWhere('voyage_id_second', $voyage);
+                    ->orWhere(function ($subquery) use ($voyage, $containerId) {
+                        $subquery->where('voyage_id_second', $voyage)
+                            ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
+                    });
             })
             ->whereHas('bookingContainerDetails', function ($q) use ($containerId) {
                 $q->where('container_id', $containerId);
             })
-            ->latest()->first();
-        
+            ->latest()
+            ->first();
+
         if ($booking) {
             $quotation = $booking->quotation;
             return response()->json([
@@ -300,4 +308,5 @@ class PortChargeInvoiceController extends Controller
 
         return response()->json(['status' => 'failed'], 412);
     }
+
 }

@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Dev;
 
 use App\Http\Controllers\Controller;
 use DB;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-class DevController extends Controller
+class   DevController extends Controller
 {
 
     private $devPass = 414141;
@@ -34,13 +33,13 @@ class DevController extends Controller
     public function selectSqlPost()
     {
         $sql = request()->sql;
-        $selectStatements = preg_match('/^\s*SELECT.*\bFROM\b/i', $sql);
-
-        if ($selectStatements) {
-            return DB::select($sql);
-        } else {
-            return 'BETHABEB EH FL DATABASEEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!!!!';
-        }
+        return DB::select($sql);
+//        $selectStatements = preg_match('/^\s*SELECT.*\bFROM\b/i', $sql);
+//
+//        if ($selectStatements) {
+//        } else {
+//            return 'BETHABEB EH FL DATABASEEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!!!!';
+//        }
     }
 
 
