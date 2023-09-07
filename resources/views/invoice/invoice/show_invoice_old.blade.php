@@ -50,7 +50,7 @@
                             <td class="col-md-3 tableStyle text-center"><span class="entry">Invoice Number</span></td>
                             <td class="col-md-3 tableStyle text-center"><span class="user">{{ $invoice->invoice_no }}</span></td>
                             <td class="col-md-3 tableStyle text-center"><span class="entry">Date</span></td>
-                            <td class="col-md-3 tableStyle text-center"><span class="user">{{ $invoice->date->format('Y-m-d') }}</span></td>
+                            <td class="col-md-3 tableStyle text-center"><span class="user">{{ optional($invoice->date)->format('Y-m-d') == null ? $invoice->date: optional($invoice->date)->format('Y-m-d')}}</span></td>
                         </tr>
                     </tbody>
                 </table>

@@ -7,6 +7,7 @@ use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Invoice\ReceiptController;
 use App\Http\Controllers\PortChargeController;
+use App\Http\Controllers\PortChargeInvoiceController;
 use App\Http\Controllers\Quotations\LocalPortTriffDetailesController;
 use App\Http\Controllers\Quotations\QuotationsController;
 use App\Http\Controllers\Trucker\TruckerGateController;
@@ -209,6 +210,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund', 'RefundController');
         Route::resource('creditNote', 'CreditController');
+        Route::get('get_invoice_json/{invoice}','InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
     });
     /*
     |-------------------------------------------
@@ -242,14 +244,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectManifest', [XmlController::class, 'selectManifest'])->name('xml.selectManifest');
     });
 
-    Route::resource('port-charges', 'PortChargeController');
+    Route::resource('port-charges', 'PortChargeController')->except(['show']);
     Route::prefix('port-charges')->name('port-charges.')->group(function () {
         Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
+        Route::get('get-ref-no', [PortChargeInvoiceController::class, 'getRefNo'])->name('get-ref-no');
+        Route::post('calculateInvoiceRow', [PortChargeInvoiceController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
     });
+    Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
 });
 Auth::routes(['register' => false]);
-
 require 'mail.php';
 require 'dev.php';
 

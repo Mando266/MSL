@@ -57,7 +57,7 @@ class Voyages extends Model implements PermissionSeederContract
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class ,'voyage_id','id')->where('booking_confirm',1);
+        return $this->hasMany(Booking::class ,'voyage_id','id');
     }
 
     public function createOrUpdatevoyageport($inputs)

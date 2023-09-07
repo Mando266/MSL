@@ -32,6 +32,9 @@
                                         @foreach($suppliers as $supplier)
                                             <option value="{{$supplier->id}}">{{ $supplier->name }} Supplier</option>
                                         @endforeach
+                                        @foreach($notify as $notifys)
+                                            <option value="{{$notifys->id}}">{{ $notifys->name }} Notify</option>
+                                        @endforeach
                                 </select>
                                 @error('customer_id')
                                 <div style="color: red;">

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Master\Company;
+use App\Models\PortCharge;
 use App\Models\ViewModel\RootMenuNode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -28,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        view()->composer('components.soa-table', function ($view) {
+            $portCharges = PortCharge::all();
+            $view->with('portCharges', $portCharges);
+        });
+        
         Blade::directive('permission', function ($expression) {
             $permissionName = ucwords($expression);
             return "<?php if (Auth::user()->is_super_admin || app('laratrust')->can({$permissionName})) : ?>";

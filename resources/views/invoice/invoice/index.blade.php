@@ -12,7 +12,7 @@
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
-                    </div> 
+                    </div>
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
                             @permission('Invoice-Create')
@@ -27,28 +27,28 @@
                         </div>
                     </br>
                     <form>
-                        <div class="form-row"> 
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                        <option value="debit">Debit</option>
-                                        <option value="invoice">Invoice</option>
+                                        <option value="debit" {{ request()->input('type') == "debit" ? 'selected':'' }}>Debit</option>
+                                        <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
-                            
+
                             <div class="form-group col-md-4">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
-                                    <option value="draft">Draft</option>
-                                    <option value="confirm">Confirm</option>
+                                    <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
+                                    <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="invoice">Invoice No</label>
                                 <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($invoiceRef as $item)     
+                                    @foreach ($invoiceRef as $item)
                                         <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
                                     @endforeach
                                 </select>
@@ -60,7 +60,7 @@
                                 <label for="Bldraft">Bl Number</label>
                                 <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($bldrafts as $item)    
+                                    @foreach ($bldrafts as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
                                 </select>
@@ -78,8 +78,8 @@
                             <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
-                                    <option value="Prepaid">Prepaid </option>
-                                    <option value="Collect">Collect</option>
+                                    <option value="Prepaid" {{ request()->input('payment_kind') == "Prepaid" ? 'selected':'' }}>Prepaid </option>
+                                    <option value="Collect" {{ request()->input('payment_kind') == "Collect" ? 'selected':'' }}>Collect</option>
                                 </select>
                                 @error('payment_kind')
                                 <div style="color:red;">
@@ -94,7 +94,7 @@
                                 @foreach ($voyages as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} {{optional($item->vessel)->name }} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
-                            </select> 
+                            </select>
                         </div>
                         </div>
 
@@ -132,7 +132,7 @@
                                         <th>Payment Status</th>
                                         <th>Receipts</th>
                                         <th class='text-center' style='width:100px;'></th>
-
+                                        <th class='text-center' style='width:100px;'>json</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -166,7 +166,9 @@
                                     if($total_after_vat != 0){
                                         $total = $total + $total_after_vat;
                                     }
-
+                                    if($total_eg_after_vat != 0){
+                                        $total_eg = $total_eg + $total_eg_after_vat;
+                                    }
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
                                             ->where('port_from_name',optional(optional($invoice->booking)->loadPort)->id)->first();
@@ -176,27 +178,32 @@
                                         }
 
                                     @endphp
-                                
+
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($invoices,$loop)}}</td>
                                             <td>{{optional($invoice)->invoice_no}}</td>
                                             <td>{{$invoice->customer}}</td>
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{optional($invoice->bldraft)->ref_no ?? "Customize"}}</td>
+                                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional($invoice->bldraft->booking)->secondvoyage)->voyage_no }}</td>
+                                            <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</td>
+                                            @else
                                             <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</td>
+                                            @endif
                                             <td>{{optional($VoyagePort)->eta}}</td>
                                             <td>{{optional($VoyagePort)->etd}}</td>
                                             <td>{{optional($invoice)->date}}</td>
                                             <td>{{optional($invoice)->type}}</td>
                                             <td>{{optional($invoice->bldraft)->payment_kind}}</td>
                                             @if( $invoice->add_egp != 'onlyegp')
-                                            <td>{{$total - $totalAftereTax}}</td>
+                                            <td>{{$total}}</td>
                                             @else
                                             <td></td>
                                             @endif
                                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                                            <td>{{$total_eg - $totalAftereTax_eg}}</td>
+                                            <td>{{$total_eg}}</td>
                                             @else
                                             <td></td>
                                             @endif
@@ -208,7 +215,7 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
-           
+
                                             <td class="text-center">
                                                 @if($invoice->paymentstauts == 1)
                                                     <span class="badge badge-info"> Paid </span>
@@ -238,7 +245,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                @endif 
+                                                @endif
 
                                                     @permission('Invoice-Show')
                                                     <li>
@@ -246,20 +253,27 @@
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission 
+                                                    @endpermission
                                                 @if($invoice->paymentstauts == 0)
-
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('invoice.destroy',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                 @endif
                                                 </ul>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($invoice->type == "invoice"  && $invoice->created_at >= '2023-08-27 10:55:28')
+
+                                                    <a href="{{route('invoice.get_invoice_json',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
+                                                        <button type="submit" class="btn btn-primary mt-3">Json</button>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -286,7 +300,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
@@ -303,6 +317,6 @@
             }
           });
       });
-  
+
 </script>
 @endpush

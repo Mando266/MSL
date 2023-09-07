@@ -402,6 +402,19 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-3">
+                                <label>Transportation Mode</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}"> 
+                                    <option value="vessel">Vessel</option>
+                                    <option value="trucker">Trucker</option>
+                                    <option value="train">Train</option>
+                                </select>
+                                @error('transportation_mode')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="status">Quotation Type</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required> 
                                     <option value="full">Full</option>
