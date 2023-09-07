@@ -18,13 +18,12 @@
                 <div class="widget-content widget-content-area">
                 <form id="createForm" action="{{route('users.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="agent_id">Agent</label>
                                 <select class="selectpicker form-control" id="agent_id" data-live-search="true" name="agent_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($agents as $item)
+                                    @foreach ($user_agent as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
@@ -35,9 +34,7 @@
                                 @enderror
                             </div>
                         </div>
-                        @else
-                        <input type="text" class="form-control" id="agent" name="agent_id" value="{{$user_agent}}">
-                        @endif
+                        
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>
@@ -101,6 +98,36 @@
                             </div>
                         </div>
                         <hr/>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="lessor_id">Lessor or Seller</label>
+                                <select class="selectpicker show-tick form-control" id="lessor_id" data-live-search="true" name="lessor_id" title="{{trans('forms.select')}}">
+                                    <option value="0">All</option>
+                                    @foreach ($lessors as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('lessor_id') ? 'selected' :''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('lessor_id')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="operator_id">Vessel Operator</label>
+                                <select class="selectpicker show-tick form-control" id="operator_id" data-live-search="true" name="operator_id" title="{{trans('forms.select')}}">
+                                    <option value="0">All</option>
+                                    @foreach ($operators as $item)
+                                    <option value="{{$item->id}}" {{$item->id == old('operator_id') ? 'selected' :''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('operator_id')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="form-row">
 

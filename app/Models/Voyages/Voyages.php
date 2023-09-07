@@ -2,7 +2,10 @@
 
 namespace App\Models\Voyages;
 
+use App\Models\Bl\BlDraft;
+use App\Models\Containers\Movements;
 use App\Models\Master\Vessels;
+use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -38,5 +41,39 @@ class Voyages extends Model implements PermissionSeederContract
     public function voyagePorts()
     {
         return $this->hasMany(VoyagePorts::class ,'voyage_id','id');
+    }
+    public function bldrafts()
+    {
+        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
+            $q->where('is_transhipment',0);
+        });;
+    }
+    public function transhipmentBldrafts()
+    {
+        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
+            $q->where('is_transhipment',1);
+        });;
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class ,'voyage_id','id');
+    }
+
+    public function createOrUpdatevoyageport($inputs)
+    {
+
+        if (is_array($inputs) || is_object($inputs)){
+            foreach($inputs as $input){
+                $input['voyage_id'] = $this->id;
+                if( isset($input['id']) ){
+                    VoyagePorts::find($input['id'])
+                    ->update($input);
+                }
+                else{
+                    VoyagePorts::create($input);
+                }
+            }
+        }
     }
 }

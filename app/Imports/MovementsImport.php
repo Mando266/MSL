@@ -4,15 +4,22 @@ namespace App\Imports;
 
 use Illuminate\Support\Facades\Session;
 use App\Models\Containers\Movements;
+use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
+use App\Models\Master\ContainerStatus;
 use App\Models\Master\ContainersTypes;
+use App\Models\Master\Vessels;
 use App\MovementImportErrors;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Models\Voyages\Voyages;
+use App\Models\Voyages\Legs;
+use App\Models\Master\Ports;
+use App\Models\Booking\Booking;
 
 
 class MovementsImport implements ToModel,WithHeadingRow
@@ -32,13 +39,29 @@ class MovementsImport implements ToModel,WithHeadingRow
 
         $containerId = $row['container_id'];
         $containertype = $row['container_type_id'];
+        $voyage = $row['voyage_id'];
+        $leg = $row['leg'];
+        $activitylocation = $row['port_location_id'];
+        $pol = $row['pol_id'];
+        $pod = $row['pod_id'];
+        $booking = $row['booking_no'];
 
         $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
-        
+        $row['leg'] = Legs::where('name',$row['leg'])->pluck('id')->first();
+        $row['voyage_id'] = Voyages::where('company_id',Auth::user()->company_id)->where('voyage_no',$row['voyage_id'])->where('leg_id',$row['leg'])->pluck('id')->first();
+        $row['port_location_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['port_location_id'])->pluck('id')->first();
+        $row['pol_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['pol_id'])->pluck('id')->first();
+        $row['pod_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['pod_id'])->pluck('id')->first();
+
         // Validation
         if($row['port_location_id'] == null || $row['movement_date'] == null || $row['movement_id'] == null){
             return Session::flash('message', "This Container Number: {$containerId} Must have Movement Code and Activity location and Movement Date");
         }
+        if(!$row['voyage_id']){
+            
+            return session()->flash('message',"This Voyage Number: {$voyage} or leg: {$leg} Not found");
+        }
+
         if(!$row['container_id']){
             
             return session()->flash('message',"This container Number: {$containerId} Not found ");
@@ -47,7 +70,25 @@ class MovementsImport implements ToModel,WithHeadingRow
             
             return session()->flash('message',"This Container Type: {$containertype} Not found ");
         } 
-        
+
+        if(!$row['port_location_id']){
+            
+            return session()->flash('message',"This Activity Location Code: {$activitylocation} Not found");
+        }
+
+        if(!$row['pol_id']){
+            
+            return session()->flash('message',"This POL Code: {$pol} Not found");
+        }
+
+        if(!$row['pod_id']){
+            
+            return session()->flash('message',"This POD Code: {$pod} Not found");
+        }
+        if(!$row['booking_no']){
+            
+            return session()->flash('message',"This Booking NO: {$booking} Not found");
+        }
         try {
             // code that triggers a pdo exception
             $dateConvertion = Date::excelToDateTimeObject($row['movement_date'])->format('Y-m-d');
@@ -59,7 +100,6 @@ class MovementsImport implements ToModel,WithHeadingRow
         // Get All movements and sort it and get the last movement before this movement 
 
         $movements = Movements::where('container_id',$row['container_id'])->orderBy('movement_date','desc')->with('movementcode')->get();
-                
         $new = $movements;
         $new = $new->groupBy('movement_date');
         
@@ -70,21 +110,34 @@ class MovementsImport implements ToModel,WithHeadingRow
         $new = $new->collapse();
         
         $movements = $new;
-        $lastMove = $movements->where('movement_date','<',$row['movement_date'])->pluck('movement_id')->first();
+        $lastMove = $movements->where('movement_date','<=',$row['movement_date'])->first();
         // End Get All movements and sort it and get the last movement before this movement
         
         $lastMoveCode = ContainersMovement::where('id',$lastMove)->pluck('code')->first();
         $nextMoves = ContainersMovement::where('id',$lastMove)->pluck('next_move')->first();
         $nextMoves = explode(', ',$nextMoves);
         $movementCode = $row['movement_id'];
-        $moveType = $movements->first()->container_type_id;
+        
         // dd($lastMoveCode);
         $row['movement_id'] =  ContainersMovement::where('code',$row['movement_id'])->pluck('id')->first();
         $row['container_type_id'] = ContainersTypes::where('name',$row['container_type_id'])->pluck('id')->first();
+        $row['container_status'] = ContainerStatus::where('name',$row['container_status'])->pluck('id')->first();
+        $row['vessel_id'] = Vessels::where('name',$row['vessel_id'])->where('company_id',Auth::user()->company_id)->pluck('id')->first();
+        $row['booking_agent_id'] = Agents::where('name',$row['booking_agent_id'])->pluck('id')->first();
+        $row['import_agent'] = Agents::where('name',$row['import_agent'])->pluck('id')->first();
+        $row['booking_no'] = Booking::where('ref_no',$row['booking_no'])->pluck('id')->first();
         
-        // Check same move type
-        if(  $row['container_type_id'] != $moveType){
-        return session()->flash('message',"This Container Type: {$containertype} Must be Same as Movements Container Type ");
+        if(!$row['movement_id']){
+            
+            return session()->flash('message',"This Movement Code: {$movementCode} Not found ");
+        } 
+        
+        if($movements->first() != null){
+            $moveType = $movements->first()->container_type_id;
+            // Check same move type
+            if(  $row['container_type_id'] != $moveType){
+            return session()->flash('message',"This Container Type: {$containertype} Must be Same as Movements Container Type");
+            }
         }
 
         // Check same move type
@@ -161,7 +214,6 @@ class MovementsImport implements ToModel,WithHeadingRow
             ]);
             return Session::flash('message', 'Error in Allowed Next Movement');
         }
-        
 
         return $movement;
     }

@@ -54,6 +54,7 @@
                                         <th>DWT</th>
                                         <!-- <th>Vessel Type</th> -->
                                         <!-- <th>Vessel Operator</th> -->
+                                        <th class='text-center' style='width:100px;'></th>
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
@@ -73,7 +74,6 @@
                                             <td>{{$item->dwt_no}}</td>
                                             <!-- <td>{{optional($item->VesselType)->name}}</td> -->
                                             <!-- <td>{{{optional($item->VesselOperators)->name}}}</td> -->
-
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @if($item->certificat == !null)
@@ -83,6 +83,10 @@
                                                         </a>
                                                     </li>
                                                     @endif
+                                                    </ul>
+                                            </td>
+                                            <td class="text-center">
+                                                <ul class="table-controls">
                                                     @permission('Vessels-Edit')
                                                     <li>
                                                         <a href="{{route('vessels.edit',['vessel'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">

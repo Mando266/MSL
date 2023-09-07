@@ -61,7 +61,7 @@
                                 <select class="selectpicker form-control" id="stock_type_idInput" data-live-search="true" name="stock_type_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_stock as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('stock_type_id') ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('stock_type_id') ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                                 @error('stock_type_id')
@@ -69,7 +69,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
+                        </div>
                         <div class="form-group col-md-8">
                                 <label for="ContainerInput">ALLOWED NEXT MOVES</label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="movement[][code]" data-size="10"

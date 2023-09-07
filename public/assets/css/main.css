@@ -1536,7 +1536,7 @@ select.form-control.form-custom {
 input[disabled], select[disabled], textarea[disabled], input[readonly], select[readonly], textarea[readonly] {
   cursor: not-allowed;
   background-color: #f9f9f9 ;
-  color: #343a40;
+  color: #000;
 }
 
 .help-block, .help-inline {

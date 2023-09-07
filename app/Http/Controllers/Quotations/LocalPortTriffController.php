@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use App\Filters\Quotation\QuotationIndexFilter;
 use App\Models\Master\Currency;
 use App\Models\Master\Agents;
+use App\Models\Invoice\ChargesDesc;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,8 @@ class LocalPortTriffController extends Controller
     {
         $this->authorize(__FUNCTION__,LocalPortTriff::class);
 
-            $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+            $localporttriff = LocalPortTriff::where('company_id',Auth::user()->company_id)->filter(new QuotationIndexFilter(request()))
+                ->with('triffPriceDetailes.charge')->orderBy('id','desc')->paginate(30);
             $localport = LocalPortTriff::where('company_id',Auth::user()->company_id)->get();
             
             return view('quotations.localporttriff.index',[
@@ -48,6 +50,7 @@ class LocalPortTriffController extends Controller
             $country = Country::orderBy('id')->get();
             $currency = Currency::all();
             $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
 
             return view('quotations.localporttriff.create',[
                 'ports'=>$ports,
@@ -56,7 +59,7 @@ class LocalPortTriffController extends Controller
                 'country'=>$country,
                 'currency'=>$currency,
                 'agents'=>$agents,
-
+                'charges'=>$charges,
             ]);
 
     }
@@ -105,6 +108,7 @@ class LocalPortTriffController extends Controller
                 'currency'=> $triffPriceDetailes['currency'],
                 'equipment_type_id'=> $triffPriceDetailes['equipment_type_id'],
                 'is_import_or_export'=> $triffPriceDetailes['is_import_or_export'],
+                'standard_or_customise'=>$triffPriceDetailes['standard_or_customise'],
             ]);
             $triff_no .=$localporttriff->id;
             $localporttriff->triff_no = $triff_no;
@@ -138,6 +142,7 @@ class LocalPortTriffController extends Controller
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('id')->get();
         $currency = Currency::all();
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         
         return view('quotations.localporttriff.edit',[
@@ -148,6 +153,7 @@ class LocalPortTriffController extends Controller
             'country'=>$country,
             'currency'=>$currency,
             'agents'=>$agents,
+            'charges'=>$charges,
         ]);
     }
 

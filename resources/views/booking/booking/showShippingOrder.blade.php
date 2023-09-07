@@ -18,7 +18,12 @@
                         <div class="col-md-6 text-center">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                         </div>
-                        <table class="col-md-6 " style="    height: 20px;">
+                        <div class="col-md-6 tableStyle text-right underline" style="font-size: 30px; font-weight:bold !important">
+                            {{optional($booking->principal)->name}}
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                        <table class="col-md-6 " style="height: 20px;">
                         
                             <tbody>
                             <tr>
@@ -43,11 +48,15 @@
                     $containerType = optional($detail->containerType)->name;
                 }
                 @endphp
+                @php
+                    $data = $haz;
+                    $hazformat = implode(",<br>", explode(", ", $data));
+                @endphp
                 <table class="col-md-12 tableStyle" >
                     <tbody>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >IMO No.</td>
-                            <td class="col-md-4 tableStyle text-right underline" >560-161-094</td>
+                            <td class="col-md-4 tableStyle text-right underline" >560-161-093</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" > الرقم الضريبي</td>
                         </tr>
                         <tr>
@@ -68,12 +77,11 @@
                         <tr>
                             <td class="col-md-4 tableStyle underline" >ETA</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($firstVoyagePort)->eta}}</td>
-                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >المتوقع وصولها في</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">المتوقع وصولها في</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Shipper</td>
-                            <td class="col-md-4 tableStyle text-center" >{{optional($booking->customer)->name}} <br>
-                            {{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{{optional($booking->customer)->name}} </td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الشاحن</td>
                         </tr>
                         <tr>
@@ -98,9 +106,21 @@
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" ></td>
-                            <td class="col-md-4 tableStyle text-center" >{{$haz}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{!! nl2br(e($haz)) !!}</td>
                             <td class="col-md-4 tableStyle text-right underline" ></td>
                         </tr>
+
+                        {{-- <tr>
+                            @if(optional($booking->principal)->code == 'PLS')
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}} SOC</td>
+                            @elseif(optional($booking->principal)->code == 'MAS')
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}} COC</td>
+                            @else
+                            <td class="col-md-4 tableStyle">Container Operator : {{optional($booking->principal)->code}}</td>
+                            @endif
+                            <td class="col-md-4 tableStyle text-center">Pick Up Location : {{optional($booking->pickUpLocation)->code}}</td>
+                            <td class="col-md-4 tableStyle text-right">Return Location : {{optional($booking->placeOfReturn)->code}}</td>
+                        </tr> --}}
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle" >

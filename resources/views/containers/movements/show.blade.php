@@ -235,15 +235,15 @@ if(request()->input('container_id') != null){
                                         <tr>
                                             <td>{{{optional($items->movementcode)->code}}}</td>
                                             <td>{{$items->movement_date}}</td>
-                                            <td>{{$items->port_location_id}}</td>
-                                            <td>{{$items->pol_id}}</td>
-                                            <td>{{$items->pod_id}}</td>
-                                            <td>{{$items->vessel_id}} {{$items->voyage_id}}</td>
-                                            <td>{{$items->booking_no}}</td>
+                                            <td>{{optional($items->activitylocation)->code}}</td>
+                                            <td>{{optional($items->pol)->code}}</td>
+                                            <td>{{optional($items->pod)->code}}</td>
+                                            <td>{{{optional($items->vessels)->name}}} {{optional($items->voyage)->voyage_no}}</td>
+                                            <td>{{optional($items->booking)->ref_no}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
-                                            <td>{{$items->import_agent}}</td>
-                                            <td>{{$items->booking_agent_id}}</td>
+                                            <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
                                             <td>{{$items->remarkes}}</td>
                                             <td></td>
                                             
@@ -278,15 +278,15 @@ if(request()->input('container_id') != null){
                                         <tr>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{$item->movement_date}}</td>
-                                            <td>{{$item->port_location_id}}</td>
-                                            <td>{{$item->pol_id}}</td>
-                                            <td>{{$item->pod_id}}</td>
-                                            <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
-                                            <td>{{$item->booking_no}}</td>
+                                            <td>{{optional($item->activitylocation)->code}}</td>
+                                            <td>{{optional($item->pol)->code}}</td>
+                                            <td>{{optional($item->pod)->code}}</td>
+                                            <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
+                                            <td>{{optional($item->booking)->ref_no}}</td>
                                             <td>{{$item->bl_no}}</td>
                                             <td>{{$item->free_time}}</td>
-                                            <td>{{$item->import_agent}}</td>
-                                            <td>{{$item->booking_agent_id}}</td>
+                                            <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
                                             <td>{{$item->remarkes}}</td>
 
                                             @if( ($item->bl_no !=null || $item->booking_no !=null)&& optional($item->movementcode)->code == 'RCVC')

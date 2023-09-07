@@ -26,7 +26,7 @@
                         @if($booking->booking_confirm == 1)
                             <th class="text-center thstyle">Booking Confirmation</th>
                         @else
-                            <th class="text-center thstyle">Draft Booking</th>
+                            <th class="text-center thstyle">Booking Aknoledgment</th>
                         @endif
                         </tr>
                     </thead>
@@ -35,7 +35,7 @@
                     <tbody>
                         <tr>
                             <td class="tableStyle" style="width: 50%;" style="width: 50%;">Booking Ref N : {{$booking->ref_no}}</td>
-                            <td class="tableStyle" style="width: 50%;">Issue Date : {{$booking->created_at}}</td>
+                            <td class="tableStyle" style="width: 50%;">Issue Date : {{Carbon\Carbon::parse($booking->created_at)->format('Y-m-d')}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -91,14 +91,20 @@
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle" style="width: 50%;">Discharge Terminal : {{optional($booking->terminals)->name}}</td>
+                            <td class="tableStyle" >Pick Up Location : @foreach($booking->bookingContainerDetails->unique('activity_location_id') as $bookingContainerDetail)
+                               - {{ optional($bookingContainerDetail->activityLocation)->pick_up_location }}
+                            @endforeach
+                            </td>
+                            <td class="tableStyle" >Return Location : {{optional($booking->placeOfReturn)->name}}</td>
+                            <td class="tableStyle" >Container Operator : {{optional($booking->principal)->name}}</td>
+
                         </tr>
                     </tbody>
                 </table>
                 <table class="col-md-12 tableStyle">
                     <tbody>
                         <tr>
-                            <td class="tableStyle" style="width: 50%;">Discharge Port ETD : {{$booking->discharge_etd}}</td>
+                            <td class="tableStyle" style="width: 50%;">Discharge Port ETA : {{$booking->discharge_etd}}</td>
                             <td class="tableStyle" style="width: 50%;">Load Port Cutoff : {{$booking->load_port_cutoff}}</td>
                         </tr>
                     </tbody>
@@ -123,6 +129,8 @@
                     <tbody>
                         <tr>
                             <td class="tableStyle" style="width: 50%;">Commodity Description : {{$booking->commodity_description}}</td>
+                            <td class="tableStyle" style="width: 50%;">Notes  : {{$booking->notes}}</td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -136,6 +144,7 @@
                             <td class="tableStyle thstyle">Seal No</td>
                             <td class="tableStyle thstyle">QTY</td>
                             <td class="tableStyle thstyle">Container No</td>
+                            <td class="tableStyle thstyle">Weight</td>
                             <td class="tableStyle thstyle">Haz / Reefer / OOG Details / Haz Approval Ref.</td>
                         </tr>
                         @foreach($booking->bookingContainerDetails as $details)
@@ -145,7 +154,8 @@
                             <td class="tableStyle">{{ $details->seal_no }}</td>
                             <td class="tableStyle">{{ $details->qty }}</td>
                             <td class="tableStyle">{{ optional($details->container)->code }}</td>
-                            <td class="tableStyle">{{ $details->haz}}</td>
+                            <td class="tableStyle">{{ $details->weight}}</td>
+                            <td class="col-md-4 tableStyle text-center" >{!! $hazformat !!}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -189,3 +199,4 @@
         font-weight: bolder !important;
     }
 </style>
+@endpush

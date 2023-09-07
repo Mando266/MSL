@@ -3,6 +3,7 @@
 namespace App\Models\Bl;
 
 use App\Models\Booking\Booking;
+use App\Models\Invoice\Invoice;
 use App\Models\Master\ContainersTypes;
 use App\Models\Master\Customers;
 use App\Models\Master\Ports;
@@ -10,6 +11,7 @@ use App\Models\Voyages\Voyages;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
+use App\Models\Master\Lines;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,6 +39,9 @@ class BlDraft extends Model implements PermissionSeederContract
     public function customer(){
         return $this->belongsTo(Customers::class,'customer_id','id');
     }
+    public function additionalNotify(){
+        return $this->belongsTo(Customers::class,'additional_notify_id','id');
+    }
     public function customerNotify(){
         return $this->belongsTo(Customers::class,'customer_notifiy_id','id');
     }
@@ -58,9 +63,20 @@ class BlDraft extends Model implements PermissionSeederContract
     public function dischargePort(){
         return $this->belongsTo(Ports::class,'discharge_port_id','id');
     }
+    public function principal(){
+        return $this->belongsTo(Lines::class,'principal_name','id');
+    }
+    public function childs()
+    {
+        return $this->hasMany(BlDraft::class ,'parent_id','id');
+    }
     public function blDetails()
     {
         return $this->hasMany(BlDraftDetails::class ,'bl_id','id');
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class ,'bldraft_id','id');
     }
 
     public function UpdateBlDetails($inputs)

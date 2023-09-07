@@ -77,7 +77,6 @@
                             </div>
                         </div>
                         @endif
-                        @if($isSuperAdmin)
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
@@ -108,10 +107,10 @@
                                 @enderror
                             </div>
                         </div>
-                        @endif
+                        
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_id">Customer <span class="text-warning"> * (Required.) </span></label>
+                                <label for="customer_id">Agreement Party <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                  title="{{trans('forms.select')}}" require>
                                     @foreach ($customers as $item)
@@ -124,6 +123,20 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="ffw_id">Forwarder Customer</label>
+                                <select class="selectpicker form-control" id="ffw_id" data-live-search="true" name="ffw_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($ffw as $item)
+                                            <option value="{{$item->id}}" {{$item->id == old('ffw_id',$quotation->ffw_id) ? 'selected':''}}>{{$item->name}} </option>
+                                    @endforeach
+                                </select>
+                                @error('ffw_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div> 
                             @if($isSuperAdmin)
                             <div class="form-group col-md-2">
                                 <label for="rate">Show Import Triff</label><br>
@@ -270,7 +283,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="equipment_type_id">Equipment Type <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="equipment_type_id" data-live-search="true" name="equipment_type_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
@@ -284,7 +297,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="export_detention">Export Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="export_detention" name="export_detention" value="{{old('export_detention',$quotation->export_detention)}}"
                                     placeholder="Export Detention" autocomplete="off" required>
@@ -294,7 +307,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="import_detention">Import Free Time <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="import_detention" name="import_detention" value="{{old('import_detention',$quotation->import_detention)}}"
                                     placeholder="Import Free Time" autocomplete="off" required>
@@ -304,16 +317,16 @@
                                 </div>
                                 @enderror
                             </div>
-                            <!-- <div class="form-group col-md-3">
-                                <label for="import_storage">Import Storage</label>
-                                <input type="text" class="form-control" id="import_storage" name="import_storage" value="{{old('import_storage',$quotation->import_storage)}}"
-                                    placeholder="Import Storage" autocomplete="off">
-                                @error('import_storage')
+                            <div class="form-group col-md-3">
+                                <label for="power_charges ">Power Charges Free Dayes</label>
+                                <input type="text" class="form-control" id="power_charges" name="power_charges" value="{{old('power_charges',$quotation->power_charges)}}"
+                                    placeholder="Power Charges Free Dayes" autocomplete="off">
+                                @error('power_charges ')
                                 <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> -->
+                            </div>
                         </div>
                         <div class="form-row">
                             <!-- <div class="form-group col-md-3">
@@ -326,8 +339,8 @@
                                 </div>
                                 @enderror
                             </div> -->
-                            <div class="form-group col-md-4">
-                                <label for="oog_dimensions">HAZ / Reefer/ OOG Details / Haz Approval Ref</label>
+                            <div class="form-group col-md-3">
+                                <label for="oog_dimensions">HAZ / Reefer/ OOG Details </label>
                                 <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions',$quotation->oog_dimensions)}}"
                                     placeholder="HAZ / Reefer/ OOG Details / Haz Approval Ref" autocomplete="off">
                                 @error('oog_dimensions')
@@ -336,7 +349,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_code">Commodity Code</label>
                                 <input type="text" class="form-control" id="commodity_code" name="commodity_code" value="{{old('commodity_code',$quotation->commodity_code)}}"
                                     placeholder="Commodity Code" autocomplete="off">
@@ -346,7 +359,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="commodity_des">Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_des" name="commodity_des" value="{{old('commodity_des',$quotation->commodity_des)}}"
                                     placeholder="Commodity Description" autocomplete="off" required>
@@ -356,7 +369,46 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="status">Payment kind<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required>
+                                    <option value="Prepaid" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
+                                    <option value="Collect" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Collect"? 'selected':''}}>Collect</option>
+                                </select>
+                                @error('payment_kind')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label>Transportation Mode</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}"> 
+                                    <option value="vessel" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "vessel"? 'selected':''}}>Vessel</option>
+                                    <option value="trucker" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "trucker"? 'selected':''}}>Trucker</option>
+                                    <option value="train" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "train"? 'selected':''}}>Train</option>
+                                </select>
+                                @error('transportation_mode')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}">
+                                <option value="full" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "full"? 'selected':''}}>Full</option>
+                                <option value="empty" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "empty"? 'selected':''}}>Empty</option>
+                            </select>
+                            @error('quotation_type')
+                            <div style="color:red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
 
                         <h4>Export Price</h4>
                             <table id="quotationTriffDischarge" class="table table-bordered">
@@ -711,7 +763,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffLoadRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"  && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -773,7 +825,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -845,7 +897,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -893,7 +945,7 @@ function removeLoad( item )
                             row.setAttribute("id", "quotationTriffDischargeRow");
                             for(x in agentTriff[i])
                             {
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");
@@ -945,7 +997,7 @@ function removeLoad( item )
                             for(x in agentTriff[i])
                             {
                                 
-                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner"){
+                                if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
                                     input.setAttribute("type", "text");

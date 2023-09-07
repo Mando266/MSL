@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Master;
 
-use App\Filters\User\UserIndexFilter;
+use App\ContactPerson;
+use App\Filters\Customers\UserIndexFilter;
 use App\Models\Master\Country;
 use App\Models\Master\CustomerRoles;
 use App\Models\Master\Customers;
@@ -18,9 +19,8 @@ class CustomersController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Customers::class);
-
-            $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(10);
-            $exportCustomers = Customers::select('id','name','contact_person','phone','landline','country_id','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
+            $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(30);
+            $exportCustomers = Customers::select('id','name','contact_person','phone','tax_card_no','landline','country_id','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
             $customer = Customers::where('company_id',Auth::user()->company_id)->get();
             $countries = Country::orderBy('name')->get();
             session()->flash('customers',$exportCustomers);
@@ -49,7 +49,6 @@ class CustomersController extends Controller
 
     public function store(Request $request)
     {
-       // dd(request()->input());
         $this->authorize(__FUNCTION__,Customers::class);
         if ($request->input('customer_kind') == 1){
         $request->validate([ 
@@ -104,6 +103,7 @@ class CustomersController extends Controller
             'company_id'=>$user->company_id,
             'customer_kind'=>$request->input('customer_kind'),
         ]);
+        $customers->storeContactPeople(request()->contactPeople);
         foreach($request->input('customerRole',[]) as $customerRole){
             CustomerRoles::create([
                 'customer_id'=>$customers->id,
@@ -151,11 +151,13 @@ class CustomersController extends Controller
             'users'=>$users,
             'currency'=>$currency,
             'customer_role_id'=>$customer_role_id,
+            'contactPeople' => $customer->contactPeople
         ]); 
     }
 
     public function update(Request $request, Customers $customer)
     {
+        $customer->storeContactPeople(request()->contactPeople);
         if ($request->input('customer_kind') == 1){
         $request->validate([ 
             'name' => 'required', 
@@ -185,8 +187,7 @@ class CustomersController extends Controller
             return back()->with('alert','Customer Name Already Exists');
         }
         $this->authorize(__FUNCTION__,Customers::class);
-        $inputs = request()->all();
-        unset($inputs['customerRole'],$inputs['_token'],$inputs['removed']);
+        $inputs = request()->except('customerRole', 'contactPeople', '_token', 'removed');
         $customer->update($inputs);
         CustomerRoles::destroy(explode(',',$request->removed));
         $customer->createOrUpdateRoles($request->customerRole);
@@ -205,4 +206,5 @@ class CustomersController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with('success',trans('customer.deleted.success'));
     }
+
 }

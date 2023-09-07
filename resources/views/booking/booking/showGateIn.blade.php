@@ -19,7 +19,8 @@
                         <div class="col-md-6">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 tableStyle text-right underline" style="font-size: 30px; font-weight:bold !important">
+                            {{optional($booking->principal)->name}}
                         </div>
                         <div class="col-md-3">
                         </div>
@@ -55,7 +56,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >شركة الاسكندرية لتداول الحاويات - الدخيلة</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfReturn)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>
@@ -63,8 +64,14 @@
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" ></td>
-                            <td class="col-md-3 tableStyle text-right underline" ></td>
+                        <td class="col-md-9 tableStyle text-right underline"></td>
+                            @if(optional($booking->principal)->code == 'PLS')
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} SOC</td>
+                            @elseif(optional($booking->principal)->code == 'MAS')
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
+                            @else
+                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} </td>
+                            @endif
                         </tr>
                         <tr>
                             <td class=" tableStyle text-right underline" colspan="2">برجاء من سيادتكم بالموافقة على دخول وتعتيق الحاويات أدناه وذلك لشحنها</td>
@@ -77,24 +84,24 @@
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->name}} <br>
-                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->customer)->name}} <br>
+                            {{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}} &nbsp {{optional($booking->customer)->landline}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->ref_no }}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->ref_no }}</td>
                             <td class="col-md-3 tableStyle text-right underline" >إذن شحن</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($firstVoyagePort)->eta}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($firstVoyagePort)->eta}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >متوقع الوصول</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{$containerCount}} X {{$containerType}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{$containerCount}} X {{$containerType}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
                     </tbody>
@@ -123,13 +130,11 @@
             </td>
         </tr>
         @foreach($booking->bookingContainerDetails as $detail)
+        @if($detail->qty == 1)
         <tr>
+
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
-                @if($detail->qty == 1)
                 {{optional($detail->container)->code}}
-                @else
-                {{$detail->qty}}  Containers
-                @endif
             </td>
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
             {{substr(optional($detail->containerType)->name, 0, 2)}}
@@ -141,9 +146,34 @@
                 {{$detail->seal_no}}
             </td>
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                
+                {{$detail->weight}}
             </td>
+            </tr>
+
+            @elseif($detail->container == 000 )
+                @for($i=0 ; $i <$detail->qty ; $i++)
+                <tr>
+
+                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
+                {{optional($detail->container)->code}}
+                </td>
+                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+            {{substr(optional($detail->containerType)->name, 0, 2)}}
+            </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+                {{optional($detail->containerType)->code}}
+            </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+                {{$detail->seal_no}}
+            </td>
+            <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
+            {{$detail->weight}}
+            </td>
+                <!-- {{$detail->qty}}  Containers -->
+  
         </tr>
+        @endfor
+        @endif
         @endforeach
     </tbody>
 </table>

@@ -59,7 +59,7 @@
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
                                             <td>{{{optional($item->containerstatus)->name}}}</td>
-                                            <td>{{{optional($item->containerstock)->name}}}</td>
+                                            <td>{{{optional($item->containerstock)->code}}}</td>
                                             <td>{{$item->next_move}}</td>
                                     
                                             <td class="text-center">

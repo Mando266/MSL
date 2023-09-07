@@ -46,6 +46,7 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Code</th>
+                                        <th>Pickup / Return Location</th>
                                         <th>via port</th>
                                         <th>Country</th>
                                         <th>Terminal</th>
@@ -61,6 +62,7 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
                                             <td>{{$item->code}}</td>
+                                            <td>{{$item->pick_up_location}}</td>
                                             <td>{{$item->via_port}}</td>
                                             <td>{{optional($item->country)->name}}</td>
                                             <td>{{optional($item->Terminal)->name}}</td>

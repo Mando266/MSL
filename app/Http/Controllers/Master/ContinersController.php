@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\LessorSeller;
 use Illuminate\Http\Request;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersTypes;
@@ -29,6 +30,8 @@ class ContinersController extends Controller
             'containers'=>$containers,
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
+
         ]);
     }
 
@@ -41,6 +44,7 @@ class ContinersController extends Controller
         return view('master.containers.create',[
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
         ]);
     }
 
@@ -54,11 +58,12 @@ class ContinersController extends Controller
             'tar_weight' => 'integer|nullable',
             'max_payload' => 'integer|nullable',
             'production_year' => 'integer|nullable',
+            'SOC_COC' => 'required|in:SOC,COC'
             ],[
             'code.regex'=>'Invalid Container Number Format', 
             'code.min'=>'Invalid Container Number Format', 
             'code.max'=>'Invalid Container Number Format', 
-            'code.required'=>'Container Number Field is Required', 
+            'code.required'=>'Container Number Field is Required',
 
         ]);
         $user = Auth::user();
@@ -94,6 +99,7 @@ class ContinersController extends Controller
             'container'=>$container,
             'container_types'=>$container_types,
             'container_ownership'=>$container_ownership,
+            'sellers' => LessorSeller::where('company_id',Auth::user()->company_id)->get()
         ]);
 
     }

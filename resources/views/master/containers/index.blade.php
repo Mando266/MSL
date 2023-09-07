@@ -36,6 +36,13 @@
                                     <button  id="buttonSubmit" class="btn btn-success  mt-3" disabled>Import</button>
                                 </form>
                                 @endpermission
+                                @permission('Containers-List')
+                                <form action="{{ route('overwritecont') }}" method="POST" enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <input type="file" name="file" onchange="unlockupdate();">
+                                    <button  id="updatebuttonSubmit" class="btn btn-danger  mt-3" disabled>Overwrite</button>
+                                </form>
+                                @endpermission
                             </div>
                         </div>  
                             </br>
@@ -81,8 +88,12 @@
                             </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Lessor/Seller Refrence</label>
-                                    <input type="text" class="form-control" id="description" name="description" value="{{request()->input('description')}}"
-                                    placeholder="Lessor/Seller Refrence" autocomplete="off">
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($sellers as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('description',request()->input('description')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
@@ -98,12 +109,13 @@
                                         <th>#</th>
                                         <th>Number</th>
                                         <th>Type</th>
-                                        <!-- <th>Code</th> -->
+                                        <th>ISO</th>
                                         <th>Ownership</th>
                                         <th>tar weight</th>
                                         <th>max payload</th>
                                         <th>production year</th>
                                         <th>Lessor/Seller Refrence</th>
+                                        <th>SOC_COC</th>
                                         <th class='text-center' style='width:100px;'></th>
 
                                     </tr>
@@ -114,12 +126,13 @@
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->code}}</td>
                                             <td>{{{optional($item->containersTypes)->name}}}</td>
-                                            <!-- <td>{{{optional($item->containersTypes)->code}}}</td> -->
+                                            <td>{{$item->iso}}</td>
                                             <td>{{{optional($item->containersOwner)->name}}}</td>
                                             <td>{{$item->tar_weight}}</td>
                                             <td>{{$item->max_payload}}</td>
                                             <td>{{$item->production_year}}</td>
-                                            <td>{{$item->description}}</td>
+                                            <td>{{$item->seller->name ?? $item->description }}</td>
+                                            <td>{{$item->SOC_COC}}</td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

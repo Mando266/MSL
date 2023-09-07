@@ -34,7 +34,7 @@
                                     <div class="invalid-feedback">
                                         {{$message}}
                                     </div>
-                                    @enderror   
+                                    @enderror
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="countryInput">{{trans('company.country')}}</label>
@@ -51,6 +51,7 @@
                                     title="{{trans('forms.select')}}" autofocus>
                                             <option value="Detention">Detention</option>
                                             <option value="Storage">Storage</option>
+                                            <option value="power charges">power charges</option>
                                     </select>
                                     @error('is_storge')
                                     <div class="invalid-feedback">
@@ -73,9 +74,9 @@
                                             <th>Tariff Ref No</th>
                                             <th>validity from</th>
                                             <th>validity to</th>
-                                            <th>Container Type/Size</th>
-                                            <th>Detention OR Storage</th>
-                                            <th>period Details</th>
+{{--                                            <th>Container Type/Size</th>--}}
+{{--                                            <th>Detention OR Storage</th>--}}
+{{--                                            <th>period Details</th>--}}
                                             {{-- <th>period</th>
                                             <th>calendar days</th>
                                             <th>rate per day</th> --}}
@@ -89,30 +90,30 @@
                                             <td>{{$item->is_storge}} {{{optional($item->bound)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->containersType)->name}}} </td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
-                                            <td>{{{optional($item->containersType)->name}}}</td>
-                                            <td>{{$item->is_storge}}</td>
+{{--                                            <td>{{{optional($item->containersType)->name}}}</td>--}}
+{{--                                            <td>{{$item->is_storge}}</td>--}}
                                             {{-- <td>{{$item->period}}</td>
                                             <td>{{$item->number_off_dayes}}</td>
                                             <td>{{$item->rate}}</td> --}}
 
-                                            <td class="text-center">
-                                                <ul class="table-controls">
-                                                    @permission('Demurrage-Show')
-                                                    <li>
-                                                        <a href="{{route('demurrage.show',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
-                                                    </li>
-                                                    @endpermission
-                                                    @permission('Demurrage-Edit')
-                                                    <li>
-                                                        <a href="{{route('demurrage.edit',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
-                                                            <i class="far fa-edit text-success"></i>
-                                                        </a>
-                                                    </li>
-                                                    @endpermission
-                                                </ul>
-                                            </td>
+{{--                                            <td class="text-center">--}}
+{{--                                                <ul class="table-controls">--}}
+{{--                                                    @permission('Demurrage-Show')--}}
+{{--                                                    <li>--}}
+{{--                                                        <a href="{{route('demurrage.show',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">--}}
+{{--                                                            <i class="far fa-eye text-primary"></i>--}}
+{{--                                                        </a>--}}
+{{--                                                    </li>--}}
+{{--                                                    @endpermission--}}
+{{--                                                    @permission('Demurrage-Edit')--}}
+{{--                                                    <li>--}}
+{{--                                                        <a href="{{route('demurrage.edit',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">--}}
+{{--                                                            <i class="far fa-edit text-success"></i>--}}
+{{--                                                        </a>--}}
+{{--                                                    </li>--}}
+{{--                                                    @endpermission--}}
+{{--                                                </ul>--}}
+{{--                                            </td>--}}
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Demurrage-Delete')

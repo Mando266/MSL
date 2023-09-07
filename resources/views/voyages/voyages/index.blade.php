@@ -18,7 +18,6 @@
                             @permission('Voyages-Create')
                             <a href="{{route('voyages.create')}}" class="btn btn-primary">Add New Voyage</a>
                             @endpermission
-
                             </div>
                         </div>
                     </div>
@@ -71,12 +70,14 @@
                                         <th>Vessel Code</th>
                                         <th>Vessel Name</th>
                                         <th>Voyage No</th>
+                                        <th>Job No</th>
                                         <th>Leg</th>
                                         <th>PORT</th>
                                         <th>ETA</th>
                                         <th>ETD</th>
                                         <th>terminal name</th>
                                         <th>road no</th>
+                                        <th>Bl Engaged</th>
                                         <th class='text-center'></th>
                                         <th class='text-center'>Add Port</th>
                                         <th class='text-center'></th>
@@ -89,6 +90,7 @@
                                             <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
                                             <td>{{$item->voyage_no}}</td>
+                                            <td>{{$item->job_no}}</td>
                                             <td>{{{optional($item->leg)->name}}}</td>
                                             <td>
                                                 @foreach($item->voyagePorts as $voyagePort)
@@ -125,23 +127,20 @@
                                                 </table>
                                                 @endforeach
                                             </td>
-
                                             <td>
-                                                @foreach($item->voyagePorts as $voyagePort)
-                                                <table style="border: hidden;">
+                                                {{ $item->bldrafts->count() == 0 ? $item->transhipmentBldrafts->count() : $item->bldrafts->count() }}
+                                            </td>
+                                            <td class="text-center">
+                                                <ul class="table-controls"> 
                                                 @permission('Voyages-Edit')
-                                                <td>
-                                                    <a href="{{route('voyages.edit',['voyage'=>$voyagePort->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                    <li>
+                                                    <a href="{{route('voyages.edit',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                         <i class="far fa-edit text-success"></i>
                                                     </a>
-                                                    </td>
+                                                    </li>
                                                 @endpermission
-
-                                                </table>
-
-                                                @endforeach
-
                                             </td>
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                 @permission('Voyages-Create')

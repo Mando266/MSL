@@ -96,9 +96,9 @@
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
-        
-                            <table id="triffPriceDetailes" class="table table-bordered">
+                            </div> 
+                            <div class="table-responsive">
+                            <table  id="triffPriceDetailes" class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
                                     <tr>
                                         <th>charge type</th>
@@ -112,6 +112,8 @@
                                         <th>payer</th>
                                         <th>Import or Export</th>
                                         <th>add to quotation</th>
+                                        <th>standard Or customise</th>
+
                                         <th>
                                             <a id="add"> Add <i class="fas fa-plus"></i></a>
                                         </th>
@@ -120,16 +122,17 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <input type="text" id="triffPriceDetailes" name="triffPriceDetailes[0][charge_type]" class="form-control" autocomplete="off"  value="{{old('charge_type')}}" required>
-                                            @error('charge_type')
-                                            <div style="color:red;">
-                                                {{$message}}
-                                            </div>
-                                            @enderror
+                                        <select class="form-control" id="triffPriceDetailes" data-live-search="true" name="triffPriceDetailes[0][charge_type]" data-size="10"
+                                            title="{{trans('forms.select')}}" required>
+                                            <option>select...</option>
+                                            @foreach ($charges as $item)
+                                                <option value="{{$item->id}}" {{$item->id == old('charge_type') ? 'selected':''}}>{{$item->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     
                                     <td>
-                                        <select class="selectpicker form-control" id="equipment_types" data-live-search="true" name="triffPriceDetailes[0][equipment_type_id]" data-size="10"
+                                        <select class="form-control" id="equipment_types" data-live-search="true" name="triffPriceDetailes[0][equipment_type_id]" data-size="10"
                                         title="{{trans('forms.select')}}">
                                             <option value="100">All</option>
                                             @foreach ($equipment_types as $item)
@@ -227,10 +230,22 @@
                                             </div>
                                             @enderror
                                     </td>
+                                    <td>
+                                        <label>S</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[0][standard_or_customise]" required  value="1">
+                                        <label for="rate_sh">C</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[0][standard_or_customise]"  value="0" >
+                                            @error('standard_or_customise')
+                                            <div style="color:red;">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                    </td>
                                     <td></td>
                                 </tr>
                                 </tbody>
                             </table>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
@@ -253,7 +268,7 @@
     var counter  = 1;
     $("#add").click(function(){
             var tr = '<tr>'+
-        '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off" required></td>'+
+        '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][charge_type]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="100">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document">Document</option></select></td>'+
         '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][currency]" data-size="10"><option>Select</option>@foreach ($currency as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
@@ -264,6 +279,7 @@
         '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
         '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0" >Import</option><option value="1" >Export</option><option value="2" >Empty</option><option value="3" >Transshipment</option></select></td>'+
         '<td><label for="rate_sh">Y</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][add_to_quotation]" value="1">&nbsp;<label for="rate_sh">N</label>&nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][add_to_quotation]" value="0"></td>'+
+        '<td><label for="rate_sh">S</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][standard_or_customise]" value="1">&nbsp;<label for="rate_sh">C</label>&nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][standard_or_customise]" value="0"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
         counter++;

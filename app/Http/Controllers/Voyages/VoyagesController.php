@@ -37,6 +37,7 @@ class VoyagesController extends Controller
             ->filter(new VoyagesIndexFilter(request()))->where('company_id',$user->company_id)
             ->orderBy('eta', 'DESC')
             ->groupBy('id')
+            ->with('bldrafts')
             ->paginate(30);
             // dd($voyages);
         $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
@@ -60,6 +61,7 @@ class VoyagesController extends Controller
                     ->orderBy('eta', 'DESC')
                     ->where('port_from_name','>=', $FromPort)
                     ->groupBy('id')
+                    ->with('bldrafts')
                     ->paginate(30);
                 $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no','voyage_port.eta')
@@ -99,6 +101,7 @@ class VoyagesController extends Controller
                         ->orWhere('port_from_name','<=', $ToPort);
                     })
                     ->groupBy('id')
+                    ->with('bldrafts')
                     ->paginate(30);
                 $voyagesExport = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
                 ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no','voyage_port.eta')
@@ -178,7 +181,17 @@ class VoyagesController extends Controller
             'voyage_no' => 'required',
             'vessel_id' => 'required',
         ]);
-        
+        foreach($request->voyageport as $voyagePort){
+            if($voyagePort['etd'] < $voyagePort['eta']){
+                return back()->with('error','Voyage ETD Must Be Bigger Than or Equal ETA');
+            }
+        }
+
+        $VoyagesDublicate  = Voyages::where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
+            if($VoyagesDublicate != null && $VoyagesDublicate->vessel_id != null && $VoyagesDublicate->voyage_no != null && $VoyagesDublicate->leg_id != null ){
+                return back()->with('error','This Voyage Already Exists');
+        }
+
         $voyages = Voyages::create([
             'vessel_id'=> $request->input('vessel_id'),
             'voyage_no'=> $request->input('voyage_no'),
@@ -186,6 +199,8 @@ class VoyagesController extends Controller
             'line_id'=> $request->input('line_id'),
             'notes'=> $request->input('notes'),
             'principal_name'=> $request->input('principal_name'),
+            'exchange_rate'=> $request->input('exchange_rate'),
+            'job_no'=> $request->input('job_no'),
             'company_id'=>$user->company_id,
         ]);
 
@@ -252,37 +267,58 @@ class VoyagesController extends Controller
         ]);
     }
 
-    public function edit(VoyagePorts $voyage)
+    public function edit(Voyages $voyage)
     {
-        $this->authorize(__FUNCTION__,VoyagePorts::class);
+        $this->authorize(__FUNCTION__,Voyages::class);
+        $voyage_ports = VoyagePorts::where('voyage_id',$voyage->id)->with('voyage')->get();
+        //dd($voyage_ports);
         $vessels = Vessels::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         $legs = Legs::orderBy('id')->get();
         $lines = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-
+ 
         return view('voyages.voyages.edit',[
+            'voyage_ports'=>$voyage_ports,
             'voyage'=>$voyage,
             'vessels'=>$vessels,
             'legs'=>$legs,
             'lines'=>$lines,
             'terminals'=>$terminals,
             'ports'=>$ports,
-
         ]);
     }
 
-    public function update(Request $request, VoyagePorts $voyage)
+    public function update(Request $request, Voyages $voyage)
     {
-        $request->validate([
-            'eta' => 'required',
-            'etd' => ['required','after_or_equal:eta'],
-        ],[
-            'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
-        ]);
-
+        // $request->validate([
+        //     'eta' => 'required',
+        //     'etd' => ['required','after_or_equal:eta'],
+        // ],[
+        //     'etd.after_or_equal'=>'ETD Should Be After Or Equal ETA',
+        // ]);
+        //dd($request->input());
+        $user = Auth::user();
+        $VoyageDublicate  = Voyages::where('id','!=',$voyage->id)->where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
+        
+        foreach($request->voyageport as $voyagePort){
+            if($voyagePort['etd'] < $voyagePort['eta']){
+                return back()->with('error','Voyage ETD Must Be Bigger Than or Equal ETA');
+            }
+        }  
+        if($VoyageDublicate != null){
+            if($VoyageDublicate->count() > 0){
+                    if($VoyageDublicate->vessel_id != null && $VoyageDublicate->voyage_no != null && $VoyageDublicate->leg_id != null){
+                        return back()->with('error','This Voyage Already Exists');
+                    }
+                }
+        }
         $this->authorize(__FUNCTION__,VoyagePorts::class);
-        $voyage->update($request->except('_token'));
+        $inputs = request()->all();
+        unset($inputs['voyageport'],$inputs['_token'],$inputs['removed']);
+        $voyage->update($inputs);
+        VoyagePorts::destroy(explode(',',$request->removed));
+        $voyage->createOrUpdatevoyageport($request->voyageport);
         return redirect()->route('voyages.index')->with('success',trans('voyage.updated.success'));
     }
 

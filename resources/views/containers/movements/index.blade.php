@@ -22,18 +22,23 @@
                         @permission('Movements-List')
                         <div class="row">
                             <div class="col-md-12 text-right mb-6">
+                            @permission('Booking-Create')
+                            <a href="{{route('containerRefresh')}}" class="btn btn-success">Refresh Container Status</a>
+                            @endpermission
                             @if(!$items->isEmpty())
-                                        <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                        'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
-                            @endif
-                        @endpermission
-                        @permission('Movements-List')
-                                <a class="btn btn-warning" href="{{ route('export.all') }}">Export All Data</a>
-                        @endpermission
-                        @permission('Movements-Create')
+                                    <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a>
+                                    <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
 
-                                <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
-                        @endpermission
+                                @endif
+                                @endpermission
+                                @permission('Movements-List')
+                                        <a class="btn btn-warning" href="{{ route('export.all') }}">Export All Data</a>
+                                @endpermission
+                                @permission('Movements-Create')
+
+                                        <a href="{{route('movements.create')}}" class="btn btn-primary">Add New Movement</a>
+                                @endpermission
 
                             </div>
                         </div>
@@ -86,7 +91,7 @@
                                 <div class ="invalid-feedback">
                                     {{$message}}
                                 </div>
-                                @enderror
+                                @enderror 
                             </div>
                     
                             <div class="form-group col-md-3">
@@ -94,7 +99,7 @@
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->code}}" {{$item->code == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -102,7 +107,7 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="vessel_port_idInput">Vessel Name</label>
-                                <select class="selectpicker form-control" id="vessel_port_idInput" data-live-search="true" name="vessel_id" data-size="10"
+                                <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($vessels as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_id',request()->input('vessel_id')) ? 'selected':''}}>{{$item->name}}</option>
@@ -114,10 +119,10 @@
                                 <select class="selectpicker form-control" id="voyage" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->voyage_no}}" {{$item->voyage_no == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> 
                             <!-- <div class="form-group col-md-3">
                             <label for="Movement">Movement Date</label>
                                 <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
@@ -126,8 +131,9 @@
                                 <label for="containersMovementsInput">Movement </label>
                                 <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
                                  title="{{trans('forms.select')}}">
+                                    <option value="">Select...</option>
                                     @foreach ($containersMovements as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -147,13 +153,45 @@
                         <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
-                                <input type="text" class="form-control" id="BookingNoInput" name="booking_no" value="{{request()->input('booking_no')}}"
-                                placeholder="Booking No" autocomplete="off">
+                                <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="booking_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($bookings as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_no',request()->input('booking_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                    @endforeach
+                                </select> 
                             </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Remarkes</label>
                                     <input type="text" class="form-control" id="remarkes" name="remarkes" value="{{request()->input('remarkes')}}"
                                     placeholder="Remarkes" autocomplete="off">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput"> Container Ownership </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_id',request()->input('container_ownership_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_id')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="countryInput"> LESSOR/SELLER REFRENCE </label>
+                                <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($lessor as $item)
+                                        <option value="{{optional($item->seller)->id}}" {{$item->description == old('description',request()->input('description')) ? 'selected':''}}>{{optional($item->seller)->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('description')
+                                <div class="invalid-feedback">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
                         </div>
 
@@ -174,6 +212,7 @@
                                         <th>Container Type</th>
                                         <th>movement code</th>
                                         <th>Ownership</th>
+                                        <th>Lessor/Seller Refrence</th>
                                         <th>movement date</th>
                                         <th>movement status</th>
                                         <th>bl no</th>
@@ -182,8 +221,8 @@
                                         <th>Pol</th>
                                         <th>Pod</th>   
                                         <th>free time destination</th>
-                                        <th>import agent</th>   
-                                        <th>booking agent</th>   
+                                        {{-- <th>import agent</th>   
+                                        <th>booking agent</th>    --}}
                                         <th>remarkes</th>
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
@@ -196,23 +235,23 @@
                                             <td>{{{optional($item->containersType)->name}}}</td>
                                             <td>{{{optional($item->movementcode)->code}}}</td>
                                             <td>{{{optional($item->container->containersOwner)->name}}}</td>
+                                            <td>{{{optional($item->container)->seller->name ?? optional($item->container)->description}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
-                                            <td>{{$item->bl_no}}</td>
-                                            <td>{{$item->vessel_id}} {{$item->voyage_id}}</td>
-                                            <td>{{$item->port_location_id}}</td>
-                                            <td>{{$item->pol_id}}</td>
-                                            <td>{{$item->pod_id}}</td>
+                                            <td>{{$item->bl_no}}</td> 
+                                            <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
+                                            <td>{{optional($item->activitylocation)->code}}</td>
+                                            <td>{{optional($item->pol)->code}}</td>
+                                            <td>{{optional($item->pod)->code}}</td>
                                             <td>{{$item->free_time}}</td>
-                                            <td>{{$item->import_agent}}</td>
-                                            <td>{{$item->booking_agent_id}}</td>
+                                            {{-- <td>{{{optional($item->importAgent)->name}}}</td>
+                                            <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
                                             <td>{{$item->remarkes}}</td>
                                             
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Movements-Show')
                                                     <li>
-                                                        
                                                         <a href="{{route('movements.show',['movement'=>$item->container_id,'bl_no' => $plNo,'port_location_id' => request()->input('port_location_id'),'booking_no' => request()->input('booking_no'),'movement_id' => request()->input('movement_id'),'voyage_id' => request()->input('voyage_id')])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show" target="blank">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
@@ -255,5 +294,23 @@ function unlock(){
 function unlockupdate(){
     document.getElementById('updatebuttonSubmit').removeAttribute("disabled");
 }
+</script>
+<script>
+         $(function(){
+                    let vessel = $('#vessel_id');
+                    $('#vessel_id').on('change',function(e){
+                        let value = e.target.value;
+                        let response =    $.get(`/api/vessel/voyages/${vessel.val()}`).then(function(data){
+                            let voyages = data.voyages || '';
+                            let list2 = [];
+                            for(let i = 0 ; i < voyages.length; i++){
+                                list2.push(`<option value='${voyages[i].id}'>${voyages[i].voyage_no} - ${voyages[i].leg}</option>`);
+                            }
+                    let voyageno = $('#voyage');
+                    voyageno.html(list2.join(''));
+                    $('.selectpicker').selectpicker('refresh');
+                        });
+                    });
+                });
 </script>
 @endpush

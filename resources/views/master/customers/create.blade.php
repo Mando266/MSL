@@ -243,7 +243,7 @@
                                 @enderror
                             </div>
                     </div>
- 
+                    <x-contact-people-table></x-contact-people-table>
                     <table id="customerRole" class="table table-bordered">
                             <thead>
                                 <tr>

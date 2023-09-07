@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
-use App\Filters\Containers\ContainersIndexFilter;
+use App\Filters\Movements\ContainersIndexFilter;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
@@ -41,7 +41,6 @@ class TrackingController extends Controller
 
     public function create()
     {
-        $this->authorize(__FUNCTION__,Movements::class);
         $containers = Containers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $voyages = Voyages::where('company_id',Auth::user()->company_id)->orderBy('id')->get();

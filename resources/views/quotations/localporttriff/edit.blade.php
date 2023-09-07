@@ -99,7 +99,8 @@
                                     @enderror
                                 </div>
                             </div>
-       
+
+                        <div class="table-responsive">
                             <table id="triffPriceDetailes" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -114,6 +115,7 @@
                                         <th>payer</th>
                                         <th>Import or Export</th>
                                         <th>add to quotation</th>
+                                        <th>standard Or customise</th>
                                         <th>
                                             <a id="add"> Add <i class="fas fa-plus"></i></a>
                                         </th>
@@ -124,12 +126,12 @@
                                 <tr> 
                                 <input type="hidden" value ="{{ $item->id }}" name="triffPriceDetailes[{{ $key }}][id]">
                                     <td>
-                                        <input type="text" id="triffPriceDetailes" name="triffPriceDetailes[{{$key}}][charge_type]" class="form-control" autocomplete="off"  value="{{old('charge_type',$item->charge_type)}}">
-                                            @error('charge_type')
-                                            <div style="color:red;">
-                                                {{$message}}
-                                            </div>
-                                            @enderror
+                                        <select class="selectpicker form-control" id="triffPriceDetailes" data-live-search="true" name="triffPriceDetailes[{{$key}}][charge_type]" data-size="10"
+                                            title="{{trans('forms.select')}}" autofocus>
+                                            @foreach ($charges as $charge)
+                                                <option value="{{$charge->id}}" {{$item->id == old('charge_type') ||  $item->charge_type == $charge->id? 'selected':''}}>{{$charge->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     
                                     <td>
@@ -230,6 +232,17 @@
                                             </div>
                                             @enderror
                                     </td>
+                                    <td>
+                                        <label>S</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[{{$key}}][standard_or_customise]"  value="1" {{$item->standard_or_customise == 1 ? 'checked="checked"' :''}}>
+                                        <label>C</label>&nbsp;
+                                            <input type="radio" id="standard_or_customise" name="triffPriceDetailes[{{$key}}][standard_or_customise]"  value="0" {{$item->standard_or_customise == 0 ? 'checked="checked"' :''}}>
+                                            @error('standard_or_customise')
+                                            <div style="color:red;">
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                                    </td>
                                     <td style="width:85px;">
                                     <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
                                 </td>
@@ -237,7 +250,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            
+                        </div>    
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">{{trans('forms.edit')}}</button>
@@ -259,7 +272,6 @@ var removed = [];
 function removeItem( item )
 {
     removed.push(item);
-    console.log(removed);
     document.getElementById("removed").value = removed;
 }
 $(document).ready(function(){
@@ -270,7 +282,7 @@ $(document).ready(function(){
 
     $("#add").click(function(){
             var tr = '<tr>'+
-        '<td><input type="text" name="triffPriceDetailes['+counter+'][charge_type]" class="form-control" autocomplete="off"></td>'+
+        '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][charge_type]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][equipment_type_id]" data-size="10"><option>Select</option><option value="All">All</option>@foreach ($equipment_types as $item)<option value="{{$item->id}}">{{$item->name}}</option>@endforeach</select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][unit]"><option>Select</option><option value="Container">Container</option><option value="Document" >Document</option></select></td>'+
         '<td><input type="text" name="triffPriceDetailes['+counter+'][selling_price]" class="form-control" autocomplete="off"></td>'+
@@ -281,6 +293,7 @@ $(document).ready(function(){
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][payer]"><option>Select</option><option value="Liner" >Liner</option><option value="Shipper" >Shipper</option><option value="Conee" >Conee</option><option value="Else" >Else</option></select></td>'+
         '<td><select class="form-control" data-live-search="true" name="triffPriceDetailes['+counter+'][is_import_or_export]"><option>Select</option><option value="0">IMPORT</option><option value="1" >EXPORT</option><option value="2" >Empty</option><option value="3" >Transshipment</option></select></td>'+
         '<td><label for="rate_sh">Y</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][add_to_quotation]" value="1">&nbsp;<label for="rate_sh">N</label> &nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][add_to_quotation]" value="0"></td>'+
+        '<td><label for="rate_sh">S</label>&nbsp;<input type="radio" required name="triffPriceDetailes['+counter+'][standard_or_customise]" value="1">&nbsp;<label for="rate_sh">C</label> &nbsp;<input type="radio" name="triffPriceDetailes['+counter+'][standard_or_customise]" value="0"></td>'+
         '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
         '</tr>';
         counter++;

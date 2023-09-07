@@ -24,15 +24,17 @@
                     </div>
             <form>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                             <label for="name">Customer</label>
-                            <select class="selectpicker form-control" id="name" data-live-search="true" name="name" data-size="10"
-                                title="{{trans('forms.select')}}">
+                            <select class="selectpicker form-control" id="name" data-live-search="true" name="name[]" data-size="10"
+                                title="{{trans('forms.select')}}"  multiple="multiple">
                                 @foreach ($customer as $item)
                                     <option value="{{$item->name}}" {{$item->name == old('name',request()->input('name')) ? 'selected':''}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="countryInput">{{trans('company.country')}}</label>
                         <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
@@ -41,6 +43,11 @@
                                 <option value="{{$item->id}}" {{$item->id == old('country_id',request()->input('country_id')) ? 'selected':''}}>{{$item->name}}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="tax_card_noInput">Tax Card</label>
+                            <input type="text" class="form-control" id="tax_card_noInput" name="tax_card_no" value="{{old('tax_card_no',request()->input('tax_card_no'))}}"
+                                placeholder="Tax Card" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-row">
@@ -67,6 +74,8 @@
                                         <th>address</th>
                                         <th>sales person</th>
                                         <th>Role</th>
+                                        <th style="width: 100px;">EGP</th>
+                                        <th style="width: 100px;">USD</th>
                                         <th>Status</th>
 
                                         <th class='text-center' style='width:100px;'></th>
@@ -92,6 +101,12 @@
                                                     <li>{{optional($customerRole->role)->name}} </li>
                                                     @endforeach
                                                 </ul>
+                                            </td>
+                                            <td>Credit: {{$item->credit_egp}} <br>
+                                                Debit:  &nbsp;{{$item->debit_egp}} 
+                                            </td>
+                                            <td>Credit: {{$item->credit}} <br>
+                                                Debit:  &nbsp;{{$item->debit}} 
                                             </td>
                                             <td class="text-center">
                                                 @if($item->customer_kind == 0)

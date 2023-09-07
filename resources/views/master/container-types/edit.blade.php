@@ -39,7 +39,20 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div>   
+                            <div class="form-group col-md-4">
+                                <label for="Category"> Category </label>
+                                <select class="selectpicker form-control" id="Category" data-live-search="true" name="category" data-size="10"
+                                 title="{{trans('forms.select')}}" Required>
+                                        <option value="General" {{$container_type->category == old('category') ||  $container_type->category == "General"? 'selected':''}}>General</option>
+                                        <option value="Reefer" {{$container_type->category == old('category') ||  $container_type->category == "Reefer"? 'selected':''}}>Reefer</option>
+                                        <option value="Special Equipment" {{$container_type->category == old('category') ||  $container_type->category == "Special Equipment"? 'selected':''}}>Special Equipment</option>
+                                </select>
                             </div>
+                
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="iso_noInput">Iso No</label>
                                 <input type="text" class="form-control" id="iso_noInput" name="iso_no" value="{{old('iso_no',$container_type->iso_no)}}"
@@ -50,10 +63,7 @@
                                 </div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-row">
-                        <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label for="widthInput">Width</label>
                                 <input type="text" class="form-control" id="widthInput" name="width" value="{{old('width',$container_type->width)}}"
                                     placeholder="Width" autocomplete="off">
@@ -73,6 +83,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="lenghtInput">Lenght</label>
                                 <input type="text" class="form-control" id="lenghtInput" name="lenght" value="{{old('lenght',$container_type->lenght)}}"

@@ -85,6 +85,11 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="components" data-parent="#accordionExample">
+                        @permission('Setting-Edit')
+                            <li>
+                                    <a href="{{route('settings.edit',1)}}">Settings</a>
+                                </li>
+                        @endpermission
                         @permission('Ports-List')
                         <li>
                             <a href="#pages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Ports & Terminals<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
@@ -158,6 +163,12 @@
                                 @permission('Suppliers-List')
                                     <li>
                                         <a href="{{route('suppliers.index')}}"> Suppliers</a>
+                                    </li>
+                                @endpermission
+
+                                @permission('Suppliers-List')
+                                    <li>
+                                        <a href="{{route('seller.index')}}">Lessor or Seller</a>
                                     </li>
                                 @endpermission
 
@@ -242,10 +253,13 @@
                                         <a href="{{route('container-types.index')}}"> Container Types </a>
                                     </li>
                                 @endpermission
+                                
+                                @permission('Movements-List')
                                     <li>
                                         <a href="{{route('tracking.create')}}"> Containers Tracking</a>
                                     </li>
- 
+                                @endpermission
+
                                 @permission('Movements-List')
                                     <li>
                                         <a href="{{route('movements.index')}}"> Movements</a>
@@ -262,7 +276,7 @@
                                         <a href="{{route('stock-types.index')}}"> Stock Types </a>
                                     </li>
                                 @endpermission
-<!-- 
+                                <!-- 
                                 @permission('Demurrage-List')
                                 <li>
                                     <a href="{{route('demurrage.index')}}">Demurrage & Dentention</a>
@@ -309,6 +323,11 @@
                                         <a href="{{route('detention.view')}}"> Dentention Calculation </a>
                                     </li>
                                 @endpermission
+                                @permission('Invoice-List')
+                                    <li>
+                                        <a href="{{route('storage.index')}}">Storage Calculation</a>
+                                    </li>
+                                @endpermission
                         </ul>
             </li>
             @endpermission
@@ -317,7 +336,8 @@
             <li class="menu">
                         <a href="#component8" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>      <span>Quotations</span>
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                             <span>Quotations</span>
                             </div>
                             <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -330,21 +350,22 @@
                                 </li>
                                 @endpermission
 
-                                @permission('Quotation-Create')
+                                <!-- @permission('Quotation-Create')
                                     <li>
                                         <a href="{{route('quotations.create')}}">Create New Quotation</a>
                                     </li>
-                                @endpermission
+                                @endpermission -->
                         </ul>
             </li>
             @endpermission
 
+
             <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
             <li class="menu">
                         <a href="#booking" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
-                            <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-                            <span>Documentation</span>
+                            <div>
+                                <svg style="color: ; fill: #fff;" xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 24 24"><path d="M8,8a1,1,0,0,0,0,2H9A1,1,0,0,0,9,8Zm5,12H6a1,1,0,0,1-1-1V5A1,1,0,0,1,6,4h5V7a3,3,0,0,0,3,3h3v2a1,1,0,0,0,2,0V9s0,0,0-.06a1.31,1.31,0,0,0-.06-.27l0-.09a1.07,1.07,0,0,0-.19-.28h0l-6-6h0a1.07,1.07,0,0,0-.28-.19.29.29,0,0,0-.1,0A1.1,1.1,0,0,0,12.06,2H6A3,3,0,0,0,3,5V19a3,3,0,0,0,3,3h7a1,1,0,0,0,0-2ZM13,5.41,15.59,8H14a1,1,0,0,1-1-1ZM14,12H8a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2Zm6.71,6.29a1,1,0,0,0-1.42,0l-.29.3V16a1,1,0,0,0-2,0v2.59l-.29-.3a1,1,0,0,0-1.42,1.42l2,2a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l2-2A1,1,0,0,0,20.71,18.29ZM12,18a1,1,0,0,0,0-2H8a1,1,0,0,0,0,2Z"/></svg>
+                                    <span>Documentation</span>
                             </div>
                             <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -353,44 +374,107 @@
                         <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
                
                         @permission('Booking-List')
-                        <li>
-                            <a href="#booking2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Booking <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                                <ul class="collapse list-unstyled sub-submenu" id="booking2" data-parent="#booking">
+                 
                                 @permission('Booking-List')
                                 <li>
                                     <a href="{{route('booking.index')}}">Booking Gates</a>
                                 </li>
                                 @endpermission
 
-                                @permission('Booking-Create')
-                                    <li>
-                                        <a href="{{route('booking.selectQuotation')}}">New Booking</a>
-                                    </li>
-                                @endpermission
-                                </ul>
-                        </li>
-                        @endpermission
-                        @permission('Ports-List')
-                        <li>
-                            <a href="#bl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> Bl Draft<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                                <ul class="collapse list-unstyled sub-submenu" id="bl" data-parent="#bl">
-                    
+            
                                 @permission('BlDraft-List')
-                                    <li>
-                                        <a href="{{route('bldraft.index')}}"> Bl Gates </a>
-                                    </li>
+                                <li>
+                                    <a href="{{route('bldraft.index')}}"> Bl Gates </a>
+                                </li>
                                 @endpermission
-                                @permission('BlDraft-Create')
-                                    <li>
-                                        <a href="{{route('bldraft.selectbooking')}}"> New BL Draft </a>
-                                    </li>
+
+                                @permission('XML-List')
+                                <li>
+                                    <a href="{{route('xml.index')}}"> Manifest XML Gates </a>
+                                </li>
                                 @endpermission
                                 </ul>
                         </li>
-                        @endpermission
+                        @endpermission                        
             </li>
         </ul>
+        @permission('Trucker-List')
+            <li class="menu">
+                        <a href="#component9" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                            <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                             <span>Operations</span>
+                            </div>
+                            <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="component9" data-parent="#accordionExample">
+                            @permission('Trucker-List')
+                            <li>
+                                <a href="{{route('trucker.index')}}">Truckers List</a>
+                            </li>
+                            @endpermission
+                            @permission('TruckerGates-List')
+                            <li>
+                                <a href="{{route('truckergate.index')}}">Trucker Gates</a>
+                            </li>
+                            @endpermission
+                            <li>
+                                <a href="{{ route('port-charges.index') }}">Port Charges Matrices</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('port-charges.invoice') }}">Port Charges Invoice</a>
+                            </li>
+                        </ul>
+            </li>
+            @endpermission
+            @permission('Invoice-List')
+                <li class="menu">
+                        <a href="#component10" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                            <div class="">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                             <span>Accounting</span>
+                            </div>
+                            <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('chargesDesc.index')}}">Charges Gates</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('invoice.index')}}">Invoice Gates</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('receipt.index')}}">Receipt Gates</a>
+                                </li>
+                                @endpermission
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('creditNote.index')}}">Credit Note</a>
+                                </li>
+                                @endpermission
+                                @permission('Refund-List')
+                                <li>
+                                    <a href="{{route('refund.index')}}">Refund Gates</a>
+                                </li>
+                                @endpermission 
+                                @permission('Invoice-List')
+                                <li>
+                                    <a href="{{route('statements.index')}}">Customer Statements</a>
+                                </li>
+                                @endpermission
 
+                        </ul>
+            </li>
+            @endpermission
     </nav>
 </div>
 <style>

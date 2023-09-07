@@ -11,14 +11,18 @@
         "php": "^7.2.5|8.1",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
-        "guzzlehttp/guzzle": "^6.5",
+        "guzzlehttp/guzzle": "^7.7",
+        "itsgoingd/clockwork": "^5.1",
         "joedixon/laravel-translation": "^1.1",
         "laravel/framework": "^7.0",
         "laravel/sanctum": "^2.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "maatwebsite/excel": "^3.1",
-        "santigarcor/laratrust": "5.2.*"
+        "santigarcor/laratrust": "5.2.*",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.3",
+        "tecnickcom/tcpdf": "^6.6"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
@@ -55,6 +59,7 @@
             "Tests\\": "tests/"
         }
     },
+
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
@@ -69,4 +74,5 @@
             "@php artisan key:generate --ansi"
         ]
     }
+
 }

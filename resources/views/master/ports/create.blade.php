@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="terminalInput">Terminal</label>
                             <select class="selectpicker form-control" id="terminalInput" data-live-search="true" name="terminal_id" data-size="10"
                                 title="{{trans('forms.select')}}">
@@ -114,7 +114,30 @@
                             </div>
                             @enderror
                         </div>
+                        <div class="form-group col-md-6">
+                            <label for="pick_up_locationInput">Pickup / Return Location</label>
+                            <input type="text" class="form-control" id="pick_up_locationInput" name="pick_up_location" value="{{old('pick_up_location')}}"
+                                placeholder="Pickup / Return Location" autocomplete="off">
+                            @error('pick_up_location')
+                            <div style="color: red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="Notes">Notes</label>
+                            <textarea class="form-control" id="Notes" name="notes" value="{{old('notes')}}"
+                             placeholder="Notes" autocomplete="off"></textarea>
+                            @error('notes')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+
 
                        <div class="row">
                             <div class="col-md-12 text-center">

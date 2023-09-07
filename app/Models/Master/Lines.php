@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Traits\HasContactPeople;
 use Illuminate\Database\Eloquent\Model;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
@@ -10,10 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class Lines extends Model implements PermissionSeederContract
 {
+    use HasContactPeople;
+    use PermissionSeederTrait;
+    
     protected $table = 'line';
     protected $guarded = [];
-
-    use PermissionSeederTrait;
+    
     public function getPermissionActions(){
         return config('permission_seeder.actions',[
             'List',
@@ -34,6 +37,12 @@ class Lines extends Model implements PermissionSeederContract
     public function types(){
         return $this->hasMany(LinesWithType::class,'line_id','id');
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+    
     public function scopeUserLines($query){
         if(is_null(Auth::user()->company_id))
         {

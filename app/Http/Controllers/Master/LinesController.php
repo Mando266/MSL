@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\Country;
 use Illuminate\Http\Request;
 use App\Models\Master\Lines;
 use App\Models\Master\LinesType;
@@ -28,6 +29,7 @@ class LinesController extends Controller
         $line_types = LinesType::where('company_id',Auth::user()->company_id)->orderBy('name')->get();
         return view('master.lines.create',[
             'line_types'=>$line_types,
+            'countries' => Country::orderBy('name')->get(),
         ]); 
     }
 
@@ -37,6 +39,7 @@ class LinesController extends Controller
         $request->validate([ 
             'code' => 'required', 
             'name' => 'required', 
+            'country_id' => 'required'
         ]);
         $user = Auth::user();
 
@@ -48,9 +51,10 @@ class LinesController extends Controller
         if($NameDublicate != null){
             return back()->with('alert','This Line Name Already Exists');
         }
-        $line = Lines::create($request->except('_token','line_type_id'));
+        $line = Lines::create($request->except('_token', 'line_type_id', 'contactPeople'));
         $line->company_id = $user->company_id;
         $line->save();
+        $line->storeContactPeople(request()->contactPeople);
         if(isset($request->line_type_id)){
             if(count($request->line_type_id) > 0){
                 foreach($request->line_type_id as $lineType){
@@ -78,12 +82,21 @@ class LinesController extends Controller
             'types'=>$types,
             'line'=>$line,
             'line_types'=>$line_types,
+            'countries' => Country::orderBy('name')->get(),
+            'contactPeople' => $line->contactPeople
         ]);     
     }
 
     public function update(Request $request,Lines $line)
     {
         $user = Auth::user();
+
+        $request->validate([
+            'code' => 'required',
+            'name' => 'required',
+            'country_id' => 'required'
+        ]);
+        $line->storeContactPeople(request()->contactPeople);
 
         $CodeDublicate  = Lines::where('id','!=',$line->id)->where('company_id',$user->company_id)->where('code',$request->code)->count();
         if($CodeDublicate > 0){
@@ -95,7 +108,7 @@ class LinesController extends Controller
         }
 
         $this->authorize(__FUNCTION__,Lines::class);
-        $line->update($request->except('_token','line_type_id'));
+        $line->update($request->except('_token', 'line_type_id', 'contactPeople'));
         $newTypes = [];
         foreach($request->line_type_id as $item){
             array_push($newTypes,$item['type_id']);

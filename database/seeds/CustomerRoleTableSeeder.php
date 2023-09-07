@@ -11,7 +11,7 @@ class CustomerRoleTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('customers_role')->truncate();
+        DB::table('role_cutomer')->truncate();
         $customer_roles = [
             ['name' => 'Shipper'],
             ['name' => 'Consignee'],
@@ -20,6 +20,6 @@ class CustomerRoleTableSeeder extends Seeder
             ['name' => 'Agreement Party'],        
         ];
 
-		DB::table('customers_role')->insert($customer_roles);
+		DB::table('role_cutomer')->insert($customer_roles);
         }
 }
