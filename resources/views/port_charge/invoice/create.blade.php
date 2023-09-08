@@ -85,14 +85,14 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="invoice_no">
-                                                    Invoice No
+                                                    Invoice No *
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_no"
                                                    name="invoice_no" value="{{old('invoice_no')}}"
-                                                   autocomplete="off">
+                                                   autocomplete="off" required>
                                         </div>
                                     </div>
                                     @error('invoice_no')
@@ -246,7 +246,7 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="vessel_id">
-                                                    Vessel Name
+                                                    Vessel Name *
                                                 </label>
                                             </div>
                                         </div>
@@ -254,7 +254,7 @@
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
                                                     name="vessel_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($vessels as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -273,7 +273,7 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="voyage_id">
-                                                    Voyage No
+                                                    Voyage No *
                                                 </label>
                                             </div>
                                         </div>
@@ -281,7 +281,7 @@
                                             <select class="selectpicker form-control rounded-0" id="voyage"
                                                     name="voyage_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($voyages as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -499,6 +499,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        var failedContainers = []
         $(document).ready(function () {
             setupEventHandlers()
             switchTables()
@@ -561,10 +562,10 @@
             $('#table1').find('.dynamic-input.included').each(function () {
                 USD_to_EGP += parseFloat($(this).val()) || 0
             })
-            
+
             console.log(USD_to_EGP)
             invoiceUSD = totalUSD - USD_to_EGP
-            
+
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
@@ -576,35 +577,49 @@
 
 
         const handleAddContainers = async e => {
-            const success = await swal({
-                content: {
-                    element: "textarea",
-                    attributes: {
-                        placeholder: "Enter Containers Here",
-                        id: "containers-auto"
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+            if (vesselId === '' && voyage === '') {
+                swal('Select Voyage First')
+            } else {
+                const success = await swal({
+                    content: {
+                        element: "textarea",
+                        attributes: {
+                            placeholder: "Enter Containers Here",
+                            id: "containers-auto"
+                        },
                     },
-                },
-                buttons: ["no", "yes"]
-            })
+                    buttons: ["no", "yes"]
+                })
 
-            if (success) {
-                let containersText = document.getElementById("containers-auto").value
-                $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
-                await autoAddContainers(containersText)
+                if (success) {
+                    let containersText = document.getElementById("containers-auto").value
+                    $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
+                    await autoAddContainers(containersText)
+                    if (failedContainers.length > 0){
+                        swal("Failed To Get Details For These Containers :" + failedContainers)
+                        failedContainers = []
+                    }
+                }
             }
         }
 
         const autoAddContainers = async (containersText) => {
-            const containers = containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "")
+            const containers = Array.isArray(containersText)
+                ? containersText
+                : containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "");
+
             const vesselId = $('#vessel_id').val();
             const voyage = $('#voyage').val();
-            if (containers.length > 0 && vesselId !== '' && voyage !== '') {
+
+            if (containers.length > 0 && vesselId && voyage) {
                 for (const container of containers) {
                     await processContainer(container, vesselId, voyage);
                 }
-
             }
-        }
+        };
+
 
         const processContainer = async (container, vesselId, voyage) => {
             try {
@@ -646,7 +661,7 @@
                     handleDynamicFieldsChange(table);
                 }
             } catch (error) {
-                console.error(error);
+                failedContainers.push(container)
             }
         };
 
@@ -709,16 +724,18 @@
                             'gat_lift_on_inbnd_em_ft40', 'add_plan'
                         ]
                         dynamicFields.forEach(item => {
-                            row.find(`[name*="${item}"]`).val(response.data[item]);
+                            row.find(`[name*="[${item}]"]`).val(response.data[item]);
                         });
-                        powerDaysSelect.find('option[value="none"]').data('cost', response.data['power'])
+                        powerDaysSelect.find('option[value="normal"]').data('cost', response.data['power'])
                         powerDaysSelect.find('option[value="minus"]').data('cost', response.data['power_minus_one'])
-                        storageDaysSelect.find('option[value="none"]').data('cost', response.data['storage'])
+                        storageDaysSelect.find('option[value="normal"]').data('cost', response.data['storage'])
                         storageDaysSelect.find('option[value="minus"]').data('cost', response.data['storage_minus_one'])
                         ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
                         ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
                         addPlanSelect.find('option[value="1"]').data('cost', response.data['add_plan'])
                         ptiTypeSelect.trigger('change')
+                        addPlanSelect.trigger('change')
+                        storageDaysSelect.trigger('change')
 
                         calculateTotals();
                     })
@@ -743,10 +760,9 @@
             const powerInput = row.find('input[name*="rows[power][]"]')
             powerInput.val(powerCost);
         }
-        
+
         function handleStorageDaysChange() {
             const storageCost = $(this).find(`option:selected`).data('cost');
-            console.log('asd' + storageCost)
 
             const row = $(this).closest('tr');
             const storageInput = row.find('input[name*="rows[storage][]"]')
@@ -759,7 +775,10 @@
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
             }
             if (dynamicFieldsSelect.find('option:selected[value="power"]').length > 0) {
-                dynamicFieldsSelect.append('<option value="power_days" selected>PTI Type</option>');
+                dynamicFieldsSelect.append('<option value="power_days" selected>power days</option>');
+            }
+            if (dynamicFieldsSelect.find('option:selected[value="storage"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="storage_days" selected>power days</option>');
             }
         }
 
@@ -829,17 +848,29 @@
             containerNumbers.forEach(containerNumber => appendSingleRow(containerNumber, tbody, selectedCharge, selectedService))
         }
 
-        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null) {
+        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) {
             if (containerNumber !== '') {
                 const newRow = getNewRow(containerNumber)
                 tbody.append(newRow)
-                if (selectedCharge !== null) {
-                    newRow.find('.charge_type').val(selectedCharge);
-                }
-                if (selectedService !== null) {
-                    newRow.find('.service_type').val(selectedService);
-                }
+                setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
                 newRow.find('.container_no').trigger('change')
+            }
+        }
+
+        function setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan) {
+            const selectors = {
+                '.charge_type': selectedCharge,
+                '.service_type': selectedService,
+                '.pti-type': selectedPtiType,
+                '.power-days': selectedPowerDay,
+                '.storage-days': selectedStorageDay,
+                '.add-plan-select': selectedAddPlan,
+            };
+
+            for (const selector in selectors) {
+                if (selectors[selector] !== null) {
+                    newRow.find(selector).val(selectors[selector]);
+                }
             }
         }
 
@@ -996,9 +1027,8 @@
                 </select>
                 `,
                 power: `
-                <select style="min-width: 100px" class="form-control power-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
-<!--                    <option value="plus" data-cost="0">Plus One Day</option>-->
+                <select style="min-width: 100px" class="form-control power-days" name="rows[power_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `,
@@ -1009,8 +1039,8 @@
                 </select>
                 `,
                 storage: `
-                <select style="min-width: 100px" class="form-control storage-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
+                <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `

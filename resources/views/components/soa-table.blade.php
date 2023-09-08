@@ -102,16 +102,16 @@
             <td data-field="storage"><input type="text" name="rows[storage][]" class="form-control dynamic-input"
                                             data-field="storage_cost"></td>
             <td data-field="storage">
-                <select style="min-width: 100px" class="form-control storage-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
+                <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
             </td>
             <td data-field="power"><input type="text" name="rows[power][]" class="form-control dynamic-input"
                                           data-field="power_cost"></td>
             <td data-field="power">
-                <select style="min-width: 100px" class="form-control power-days">
-                    <option value="none" data-cost="0" selected>Normal</option>
+                <select style="min-width: 100px" class="form-control power-days" name="rows[power_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
             </td>

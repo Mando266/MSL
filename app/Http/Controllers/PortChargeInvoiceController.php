@@ -16,11 +16,10 @@ use App\Models\PortChargeInvoice;
 use App\Models\Voyages\Voyages;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class PortChargeInvoiceController extends Controller
 {
-
     public function index()
     {
         $invoices = PortChargeInvoice::paginate(20);
@@ -31,13 +30,75 @@ class PortChargeInvoiceController extends Controller
             ]);
     }
 
+    public function create()
+    {
+        $formViewData = $this->getFormViewData();
+
+        return view('port_charge.invoice.create', $formViewData);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'invoice_no' => 'required|unique:port_charge_invoices'
+            'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
 
-        $rows = $this->separateInputByIndex(request()->rows);
+        $rows = $this->prepareInvoiceRows(request()->rows);
+        $invoiceData = $this->extractInvoiceData(request()->except('_token', 'rows'));
+
+        $portChargeInvoice = PortChargeInvoice::create($invoiceData);
+
+        foreach ($rows as $row) {
+            $portChargeInvoice->rows()->create($row);
+        }
+
+        return redirect()->route('port-charge-invoices.index');
+    }
+
+    public function show(PortChargeInvoice $portChargeInvoice)
+    {
+        return view('port_charge.invoice.show', [
+            'invoice' => $portChargeInvoice->load('rows'),
+            'selected' => explode(',', $portChargeInvoice->selected_costs),
+        ]);
+    }
+
+    public function edit(PortChargeInvoice $portChargeInvoice)
+    {
+        $formViewData = $this->getFormViewData();
+
+        return view('port_charge.invoice.edit', $formViewData)
+            ->with([
+                'invoice' => $portChargeInvoice,
+                'rows' => $portChargeInvoice->rows,
+                'selected' => explode(',', $portChargeInvoice->selected_costs),
+            ]);
+    }
+
+    public function update(PortChargeInvoice $portChargeInvoice)
+    {
+        $rows = $this->prepareInvoiceRows(request()->rows);
+        $invoiceData = $this->extractInvoiceData(request()->except('_token', 'rows'));
+
+        $portChargeInvoice->update($invoiceData);
+        $portChargeInvoice->rows()->delete();
+
+        foreach ($rows as $row) {
+            $portChargeInvoice->rows()->create($row);
+        }
+
+        return redirect()->route('port-charge-invoices.index');
+    }
+
+    public function destroy(PortChargeInvoice $portChargeInvoice)
+    {
+        $portChargeInvoice->delete();
+        return redirect()->route('port-charge-invoices.index');
+    }
+
+    public function prepareInvoiceRows($rawRows)
+    {
+        $rows = $this->separateInputByIndex($rawRows);
         $selectedCosts = request()->selected_costs;
         $identifiers = [
             "port_charge_id",
@@ -49,18 +110,10 @@ class PortChargeInvoiceController extends Controller
             "quotation_type"
         ];
         $selectedItems = array_merge($selectedCosts, $identifiers);
-        $rows->transform(fn($row) => $row->only($selectedItems));
-        $invoiceData = request()->except('_token', 'rows');
-        $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
-        $portCharge = PortChargeInvoice::create($invoiceData);
-
-        foreach ($rows as $row) {
-            $portCharge->rows()->create($row->toArray());
-        }
-        return redirect()->route('port-charge-invoices.index');
+        return $rows->transform(fn($row) => $row->only($selectedItems))->toArray();
     }
 
-    public function separateInputByIndex($data): \Illuminate\Support\Collection
+    public function separateInputByIndex($data): Collection
     {
         $details = collect();
 
@@ -77,9 +130,15 @@ class PortChargeInvoiceController extends Controller
         return $details;
     }
 
-    public function create()
+    public function extractInvoiceData($invoiceData)
     {
-        $userCompanyId = Auth::user()->company_id;
+        $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
+        return $invoiceData;
+    }
+
+    public function getFormViewData()
+    {
+        $userCompanyId = auth()->user()->company_id;
         $vessels = Vessels::where('company_id', $userCompanyId)->orderBy('id')->get();
         $voyages = Voyages::where('company_id', $userCompanyId)->orderBy('id')->get();
         $lines = Lines::where('company_id', $userCompanyId)->orderBy('id')->get();
@@ -88,50 +147,15 @@ class PortChargeInvoiceController extends Controller
         $countries = Country::orderBy('name')->get();
         $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
 
-        return view(
-            'port_charge.invoice.create',
-            compact('vessels', 'voyages', 'lines', 'portCharges', 'possibleMovements', 'countries', 'ports')
+        return compact(
+            'vessels',
+            'voyages',
+            'lines',
+            'portCharges',
+            'possibleMovements',
+            'countries',
+            'ports'
         );
-    }
-
-    public function show(PortChargeInvoice $portChargeInvoice)
-    {
-        return view('port_charge.invoice.show')
-            ->with([
-                'invoice' => $portChargeInvoice->load('rows'),
-            ]);
-    }
-
-    public function edit(PortChargeInvoice $portChargeInvoice)
-    {
-        $userCompanyId = Auth::user()->company_id;
-        $vessels = Vessels::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $voyages = Voyages::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $lines = Lines::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $portCharges = PortCharge::paginate(10);
-        $possibleMovements = ContainersMovement::all();
-        $countries = Country::orderBy('name')->get();
-        $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
-
-        return view(
-            'port_charge.invoice.edit',
-            compact('vessels', 'voyages', 'lines', 'portCharges', 'possibleMovements', 'countries', 'ports')
-        )
-            ->with([
-                'invoice' => $portChargeInvoice,
-                'rows' => $portChargeInvoice->rows
-            ]);
-    }
-
-    public function update(Request $request, PortChargeInvoice $portChargeInvoice)
-    {
-        //
-    }
-
-    public function destroy(PortChargeInvoice $portChargeInvoice)
-    {
-        $portChargeInvoice->delete();
-        return redirect()->route('port-charge-invoices.index');
     }
 
     public function calculateInvoiceRow()
@@ -141,12 +165,14 @@ class PortChargeInvoiceController extends Controller
         $chargeType = request()->charge_type;
         $containerNo = request()->container_no;
         $quotationType = request()->quotation_type;
-        $container = Containers::firstWhere('code', $containerNo);
-
         $chargeMatrix = ChargesMatrix::find($chargeType);
         $storage_from = request()->from ?? $chargeMatrix->storage_from;
         $power_from = request()->from ?? $chargeMatrix->power_from;
+
+        $container = Containers::firstWhere('code', $containerNo);
         $containerId = $container->id;
+        $container_size = (int)$container->containersTypes->name;
+        $portCharge = $chargeMatrix->portCharge;
 
         $storageDaysInPort = $storage_from === "Select" ?
             0 :
@@ -155,16 +181,16 @@ class PortChargeInvoiceController extends Controller
             0 :
             $this->calculateDays($containerId, $power_from, $blNo);
 
-        $container_size = (int)$container->containersTypes->name;
-        $portCharge = $chargeMatrix->portCharge;
-        $storage_cost = $this->calculateStorageCost($storageDaysInPort, $container_size, $portCharge);
-        $storage_cost_minus_one = $this->calculateStorageCost($powerDaysInPort - 1, $container_size, $portCharge);
-        $power_cost = $quotationType === "empty" ?
-            0 :
+        [$storage_cost, $storage_cost_minus_one] = $this->calculateStorageCost(
+            $storageDaysInPort,
+            $container_size,
+            $portCharge
+        );
+
+        [$power_cost, $power_cost_minus_one] = $quotationType === 'empty' ?
+            [0, 0] :
             $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
-        $power_cost_minus_one = $quotationType === "empty" ?
-            0 :
-            $this->calculatePowerCost($powerDaysInPort - 1, $container_size, $portCharge);
+
 
         $containerSizeSuffix = "{$container_size}ft";
         $chargeTypes = [
@@ -202,16 +228,20 @@ class PortChargeInvoiceController extends Controller
 
     public function calculateDays($containerId, $storage_from, $blNo)
     {
+//        dd($containerId, $storage_from, $blNo);
+
         $bookingId = Booking::where('ref_no', $blNo)->first()->id;
-        
+
         $fromMovement = Movements::where('container_id', $containerId)
             ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
             ->where('booking_no', $bookingId)->first();
 
-        $toMovement = Movements::where('container_id', $containerId)
-            ->whereDate('movement_date', '>', $fromMovement->movement_date)
-            ->orderBy('movement_date')
-            ->first();
+        if ($fromMovement) {
+            $toMovement = Movements::where('container_id', $containerId)
+                ->whereDate('movement_date', '>', $fromMovement->movement_date)
+                ->orderBy('movement_date')
+                ->first();
+        }
 
         if ($fromMovement && $toMovement) {
             $fromDate = Carbon::parse($fromMovement->movement_date);
@@ -223,7 +253,7 @@ class PortChargeInvoiceController extends Controller
         return 0;
     }
 
-    public function calculateStorageCost($daysInPort, $container_size, $portCharge)
+    public function calculateStorageCost($daysInPort, $container_size, $portCharge, $isMinus = false)
     {
         $free_days = $portCharge->storage_free;
         $slab1_period = $portCharge->storage_slab1_period;
@@ -232,6 +262,7 @@ class PortChargeInvoiceController extends Controller
         $slab2_20ft = $portCharge->storage_slab2_20ft;
         $slab2_40ft = $portCharge->storage_slab2_40ft;
         $cost = 0;
+
         if ($daysInPort > $free_days) {
             if ($daysInPort <= ($free_days + $slab1_period)) {
                 $daysInSlab1 = $daysInPort - $free_days;
@@ -244,10 +275,16 @@ class PortChargeInvoiceController extends Controller
                 $cost += $daysInSlab2 * ($container_size === 20 ? $slab2_20ft : $slab2_40ft);
             }
         }
-        return $cost;
+
+        if ($isMinus) {
+            return $cost;
+        }
+        $cost_minus_one = $this->calculateStorageCost($daysInPort - 1, $container_size, $portCharge, true);
+
+        return [$cost, $cost_minus_one];
     }
 
-    public function calculatePowerCost($daysInPort, $container_size, $portCharge)
+    public function calculatePowerCost($daysInPort, $container_size, $portCharge, $isMinus = false)
     {
         $free_days = $portCharge->power_free;
         $day_20ft = $portCharge->power_20ft;
@@ -258,7 +295,13 @@ class PortChargeInvoiceController extends Controller
             $daysInSlab1 = $daysInPort - $free_days;
             $cost += $daysInSlab1 * ($container_size === 20 ? $day_20ft : $day_40ft);
         }
-        return $cost;
+
+        if ($isMinus) {
+            return $cost;
+        }
+        $cost_minus_one = $this->calculatePowerCost($daysInPort - 1, $container_size, $portCharge, true);
+
+        return [$cost, $cost_minus_one];
     }
 
     public function getMovementDate($containerId, $movementCode, $blNo)
@@ -274,11 +317,20 @@ class PortChargeInvoiceController extends Controller
         $container = request()->input('container');
         $containerId = Containers::firstWhere('code', $container)->id;
 
-        $booking = Booking::with(['quotation'])->where('voyage_id', $voyage)->whereHas(
-            'bookingContainerDetails',
-            fn($q) => $q->where('container_id', $containerId)
-        )->first();
-        
+        $booking = Booking::with(['quotation'])
+            ->where(function ($query) use ($voyage, $containerId) {
+                $query->where('voyage_id', $voyage)
+                    ->orWhere(function ($subquery) use ($voyage, $containerId) {
+                        $subquery->where('voyage_id_second', $voyage)
+                            ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
+                    });
+            })
+            ->whereHas('bookingContainerDetails', function ($q) use ($containerId) {
+                $q->where('container_id', $containerId);
+            })
+            ->latest()
+            ->first();
+
         if ($booking) {
             $quotation = $booking->quotation;
             return response()->json([
@@ -292,4 +344,5 @@ class PortChargeInvoiceController extends Controller
 
         return response()->json(['status' => 'failed'], 412);
     }
+
 }

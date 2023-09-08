@@ -17,7 +17,9 @@
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form id="createForm" action="{{ route('port-charge-invoices.store') }}" method="POST">
+                        <form id="createForm" action="{{ route('port-charge-invoices.update', $invoice->id) }}"
+                              method="POST">
+                            @method('patch')
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-12">
@@ -32,7 +34,8 @@
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <input type="text" class="form-control" id="payment_type"
-                                                   name="payment_type" value="{{old('payment_type')}}"
+                                                   name="payment_type"
+                                                   value="{{old('payment_type', $invoice->payment_type)}}"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -57,19 +60,16 @@
                                                     name="invoice_type"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
-                                                <option value="02-VESSEL DISCHARGING AND LOADING OPERATIONS">
-                                                    02-VESSEL DISCHARGING AND LOADING OPERATIONS
-                                                </option>
-                                                <option value="03-VESSEL OUTBOUND CONTAINERS STORAGE">
-                                                    03-VESSEL OUTBOUND CONTAINERS STORAGE
-                                                </option>
-                                                <option value="05-WITHDRAWAL AND STUFFING CONTAINERS">
-                                                    05-WITHDRAWAL AND STUFFING CONTAINERS
-                                                </option>
-                                                <option value="08-STORAGE OF FULL INBOUND CONTAINERS">
-                                                    08-STORAGE OF FULL INBOUND CONTAINERS
-                                                </option>
-
+                                                @foreach ([
+                                                    '02-VESSEL DISCHARGING AND LOADING OPERATIONS',
+                                                    '03-VESSEL OUTBOUND CONTAINERS STORAGE',
+                                                    '05-WITHDRAWAL AND STUFFING CONTAINERS',
+                                                    '08-STORAGE OF FULL INBOUND CONTAINERS'
+                                                ] as $option)
+                                                    <option value="{{ $option }}" {{ $invoice->invoice_type === $option ? 'selected' : '' }}>
+                                                        {{ $option }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_no"
-                                                   name="invoice_no" value="{{old('invoice_no')}}"
+                                                   name="invoice_no" value="{{old('invoice_no', $invoice->invoice_no)}}"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -113,7 +113,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="date" class="form-control" id="invoice_date"
-                                                   name="invoice_date" value="{{old('invoice_date')}}"
+                                                   name="invoice_date"
+                                                   value="{{old('invoice_date', $invoice->invoice_date)}}"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -135,7 +136,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="number" class="form-control" id="exchange_rate"
-                                                   name="exchange_rate" value="{{old('exchange_rate')}}"
+                                                   name="exchange_rate"
+                                                   value="{{old('exchange_rate', $invoice->exchange_rate)}}"
                                                    min="0" max="1000" step="0.01">
                                         </div>
                                     </div>
@@ -157,7 +159,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_status"
-                                                   name="invoice_status" value="{{old('invoice_status')}}"
+                                                   name="invoice_status"
+                                                   value="{{old('invoice_status', $invoice->invoice_status)}}"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -181,12 +184,14 @@
                                             <select class="selectpicker form-control rounded-0" id="country"
                                                     name="country_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{ trans('forms.select') }}">
                                                 @foreach ($countries as $item)
-                                                    <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                    <option value="{{ $item->id }}" {{ $invoice->country_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>
@@ -204,10 +209,11 @@
                                             <select class="selectpicker form-control rounded-0" id="ports"
                                                     name="port_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{ trans('forms.select') }}">
                                                 @foreach ($ports as $item)
-                                                    <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                    <option value="{{ $item->id }}" {{ $invoice->port_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -227,10 +233,11 @@
                                             <select class="selectpicker form-control rounded-0" id="shipping_line"
                                                     name="shipping_line_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{ trans('forms.select') }}">
                                                 @foreach ($lines as $item)
-                                                    <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                    <option value="{{ $item->id }}" {{ $invoice->shipping_line_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -254,10 +261,11 @@
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
                                                     name="vessel_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{ trans('forms.select') }}">
                                                 @foreach ($vessels as $item)
-                                                    <option
-                                                            value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    <option value="{{ $item->id }}" {{ $invoice->vessel_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -281,10 +289,11 @@
                                             <select class="selectpicker form-control rounded-0" id="voyage"
                                                     name="voyage_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{ trans('forms.select') }}">
                                                 @foreach ($voyages as $item)
-                                                    <option
-                                                            value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                    <option value="{{ $item->id }}" {{ $invoice->voyage_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -308,32 +317,15 @@
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control" id="dynamic_fields" multiple
                                                     data-size="10" name="selected_costs[]" required>
-                                                @foreach ([
-                                                            'thc', 'storage','power', 'shifting',
-                                                            'disinf','hand_fes_em',
-                                                            'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
-                                                            'pti', 'add_plan'
-                                                        ] as $field)
-                                                    <option value="{{ $field }}">{{ $field }}</option>
+                                                @foreach (['thc', 'storage', 'power', 'shifting', 'disinf', 'hand_fes_em', 'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40', 'pti', 'add_plan'] as $field)
+                                                    <option value="{{ $field }}" {{ in_array($field, $selected) ? 'selected' : '' }}>
+                                                        {{ $field }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                {{--                                <div class="form-group col-md-12">--}}
-                                {{--                                    <div class="input-group">--}}
-                                {{--                                        <div class="col-md-2">--}}
-                                {{--                                            <div class="input-group-prepend">--}}
-                                {{--                                                <span class="input-group-text bg-transparent border-0">VAT (%)</span>--}}
-                                {{--                                            </div>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-md-6">--}}
-                                {{--                                            <input type="number" class="form-control" id="vat" name="vat" min="0"--}}
-                                {{--                                                   max="100"--}}
-                                {{--                                                   autocomplete="off">--}}
-                                {{--                                        </div>--}}
-                                {{--                                    </div>--}}
-                                {{--                                </div>--}}
                                 <div class="form-group col-md-12">
                                     <div class="input-group">
                                         <div class="col-md-2">
@@ -343,7 +335,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" name="invoice_egp" class="form-control" id="invoice_egp"
-                                                   readonly>
+                                                   value="{{ $invoice->invoice_egp }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -356,7 +348,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" name="invoice_usd" class="form-control" id="invoice_usd"
-                                                   readonly>
+                                                   value="{{ $invoice->invoice_usd }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -369,6 +361,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" name="total_usd" class="form-control" id="total_usd"
+                                                   value="{{ $invoice->total_usd }}"
                                                    readonly>
                                         </div>
                                     </div>
@@ -381,7 +374,7 @@
                                                 <select name="empty_export_from_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
-                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_export_from_id ? 'selected' : '' }}>{{ $movement->code }}</option>
                                                     @endforeach
                                                 </select>
                                             </label>
@@ -389,7 +382,7 @@
                                                 <select name="empty_export_to_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
-                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_export_to_id ? 'selected' : '' }}>{{ $movement->code }}</option>
                                                     @endforeach
                                                 </select>
                                             </label>
@@ -404,7 +397,7 @@
                                                 <select name="empty_import_from_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
-                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_import_from_id ? 'selected' : '' }}>{{ $movement->code }}</option>
                                                     @endforeach
                                                 </select>
                                             </label>
@@ -412,7 +405,7 @@
                                                 <select name="empty_import_to_id" class="form-control">
                                                     <option hidden selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
-                                                        <option value="{{ $movement->id }}">{{ $movement->code }}</option>
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_import_to_id ? 'selected' : '' }}>{{ $movement->code }}</option>
                                                     @endforeach
                                                 </select>
                                             </label>
@@ -453,7 +446,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="table-container">
-                                    <x-soa-table id="table1" :rows="$rows"/>
+                                    <x-soa-table id="table1"/>
                                     <x-soa-table id="table2" class="d-none"/>
                                     <x-soa-table id="table3" class="d-none"/>
                                     <x-soa-table id="table4" class="d-none"/>
@@ -462,7 +455,7 @@
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" id="submit"
-                                            class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
+                                            class="btn btn-primary mt-3">{{trans('forms.update')}}</button>
                                 </div>
                             </div>
 
@@ -499,16 +492,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        var failedContainers = []
         $(document).ready(function () {
+            $(".selectpicker").selectpicker('refresh')
+            $('form').find('tbody tr').remove()
+            addCurrentInvoiceRows()
             setupEventHandlers()
             switchTables()
             calculateTotals()
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
-            updateChargeTypeOptions('table1')
-            updateChargeTypeOptions('table2')
-            updateChargeTypeOptions('table3')
-            updateChargeTypeOptions('table4')
         })
 
         function setupEventHandlers() {
@@ -522,10 +515,25 @@
             $(document).on('input', '.dynamic-input', calculateTotals)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
             $(document).on('change', '.power-days', handlePowerDaysChange);
+            $(document).on('change', '.storage-days', handleStorageDaysChange);
             $(document).on('change', '.add-plan-select', handleAddPlanChange);
             $(document).on('click change keyup paste', () => calculateTotals());
-            $('form').on('submit', e => deleteEmptyOnSubmit(e));
+            $('form').on('submit', e => {
+                deleteEmptyOnSubmit(e)
+                addPtiTypeToSelect(e)
+            });
             $("#add-many-containers").on('click', handleAddContainers);
+        }
+
+        function addCurrentInvoiceRows() {
+            let containers = JSON.parse('@json($rows->pluck('container_no')->toArray())');
+            let selectedServices = JSON.parse('@json($rows->pluck('service')->toArray())');
+            let selectedPtiTypes = JSON.parse('@json($rows->pluck('pti_type')->toArray())');
+            let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
+            let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
+            let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
+
+            addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
         }
 
         function handleDynamicFieldsChange() {
@@ -576,37 +584,74 @@
 
 
         const handleAddContainers = async e => {
-            const success = await swal({
-                content: {
-                    element: "textarea",
-                    attributes: {
-                        placeholder: "Enter Containers Here",
-                        id: "containers-auto"
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+            if (vesselId === '' && voyage === '') {
+                swal('Select Voyage First')
+            } else {
+                const success = await swal({
+                    content: {
+                        element: "textarea",
+                        attributes: {
+                            placeholder: "Enter Containers Here",
+                            id: "containers-auto"
+                        },
                     },
-                },
-                buttons: ["no", "yes"]
-            })
+                    buttons: ["no", "yes"]
+                })
 
-            if (success) {
-                let containersText = document.getElementById("containers-auto").value
-                $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
-                await autoAddContainers(containersText)
+                if (success) {
+                    let containersText = document.getElementById("containers-auto").value
+                    $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
+                    await autoAddContainers(containersText)
+                    if (failedContainers.length > 0) {
+                        swal("Failed To Get Details For These Containers :" + failedContainers)
+                        failedContainers = []
+                    }
+                }
             }
         }
 
-        const autoAddContainers = async (containersText) => {
-            const containers = containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "")
+        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans) => {
             const vesselId = $('#vessel_id').val();
             const voyage = $('#voyage').val();
-            if (containers.length > 0 && vesselId !== '' && voyage !== '') {
+
+            if (containers.length > 0 && vesselId && voyage) {
+                for (let i = 0; i < containers.length; i++) {
+                    const container = containers[i];
+                    const service = selectedServices[i];
+                    const ptiType = selectedPtiTypes[i];
+                    const powerDay = selectedPowerDays[i];
+                    const storageDay = selectedStorageDays[i];
+                    const addPlan = selectedAddPlans[i];
+
+                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan);
+                    $(".storage-days").trigger('change')
+                    $(".power-days").trigger('change')
+                    $(".pti-type").trigger('change')
+                    $(".add-plan-select").trigger('change')
+                }
+            }
+        };
+
+
+        const autoAddContainers = async (containersText) => {
+            const containers = Array.isArray(containersText)
+                ? containersText
+                : containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "");
+
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+
+            if (containers.length > 0 && vesselId && voyage) {
                 for (const container of containers) {
                     await processContainer(container, vesselId, voyage);
                 }
-
             }
-        }
+        };
 
-        const processContainer = async (container, vesselId, voyage) => {
+
+        const processContainer = async (container, vesselId, voyage, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) => {
             try {
                 const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
@@ -641,12 +686,13 @@
 
                 if (table !== '') {
                     const tbody = $(`#${table} tbody`);
-                    appendSingleRow(container, tbody, selectedCharge);
+                    console.log(selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
+                    appendSingleRow(container, tbody, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan);
                     updateChargeTypeOptions(table);
                     handleDynamicFieldsChange(table);
                 }
             } catch (error) {
-                console.error(error);
+                failedContainers.push(container)
             }
         };
 
@@ -675,6 +721,7 @@
             const refNoInput = row.find('.ref-no-td');
             const ptiTypeSelect = row.find('.pti-type');
             const powerDaysSelect = row.find('.power-days');
+            const storageDaysSelect = row.find('.storage-days');
             const addPlanSelect = row.find('.add-plan-select');
             const quotationType = row.find('.quotation_type');
             const emptyExportFromSelect = $('[name="empty_export_from_id"]');
@@ -708,15 +755,18 @@
                             'gat_lift_on_inbnd_em_ft40', 'add_plan'
                         ]
                         dynamicFields.forEach(item => {
-                            row.find(`[name*="${item}"]`).val(response.data[item]);
+                            row.find(`[name*="[${item}]"]`).val(response.data[item]);
                         });
-                        powerDaysSelect.find('option[value="none"]').data('cost', response.data['power'])
-                        powerDaysSelect.find('option[value="plus"]').data('cost', response.data['power_plus_one'])
+                        powerDaysSelect.find('option[value="normal"]').data('cost', response.data['power'])
                         powerDaysSelect.find('option[value="minus"]').data('cost', response.data['power_minus_one'])
+                        storageDaysSelect.find('option[value="normal"]').data('cost', response.data['storage'])
+                        storageDaysSelect.find('option[value="minus"]').data('cost', response.data['storage_minus_one'])
                         ptiTypeSelect.find('option[value="failed"]').data('cost', response.data['pti_failed']);
                         ptiTypeSelect.find('option[value="passed"]').data('cost', response.data['pti_passed'])
                         addPlanSelect.find('option[value="1"]').data('cost', response.data['add_plan'])
                         ptiTypeSelect.trigger('change')
+                        addPlanSelect.trigger('change')
+                        storageDaysSelect.trigger('change')
 
                         calculateTotals();
                     })
@@ -742,13 +792,24 @@
             powerInput.val(powerCost);
         }
 
+        function handleStorageDaysChange() {
+            const storageCost = $(this).find(`option:selected`).data('cost');
+
+            const row = $(this).closest('tr');
+            const storageInput = row.find('input[name*="rows[storage][]"]')
+            storageInput.val(storageCost);
+        }
+
         function addPtiTypeToSelect(e) {
             const dynamicFieldsSelect = $('#dynamic_fields');
             if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
             }
             if (dynamicFieldsSelect.find('option:selected[value="power"]').length > 0) {
-                dynamicFieldsSelect.append('<option value="power_days" selected>PTI Type</option>');
+                dynamicFieldsSelect.append('<option value="power_days" selected>power days</option>');
+            }
+            if (dynamicFieldsSelect.find('option:selected[value="storage"]').length > 0) {
+                dynamicFieldsSelect.append('<option value="storage_days" selected>power days</option>');
             }
         }
 
@@ -818,19 +879,32 @@
             containerNumbers.forEach(containerNumber => appendSingleRow(containerNumber, tbody, selectedCharge, selectedService))
         }
 
-        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null) {
+        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) {
             if (containerNumber !== '') {
                 const newRow = getNewRow(containerNumber)
                 tbody.append(newRow)
-                if (selectedCharge !== null) {
-                    newRow.find('.charge_type').val(selectedCharge);
-                }
-                if (selectedService !== null) {
-                    newRow.find('.service_type').val(selectedService);
-                }
+                setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
                 newRow.find('.container_no').trigger('change')
             }
         }
+
+        function setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan) {
+            const selectors = {
+                '.charge_type': selectedCharge,
+                '.service_type': selectedService,
+                '.pti-type': selectedPtiType,
+                '.power-days': selectedPowerDay,
+                '.storage-days': selectedStorageDay,
+                '.add-plan-select': selectedAddPlan,
+            };
+
+            for (const selector in selectors) {
+                if (selectors[selector] !== null) {
+                    newRow.find(selector).val(selectors[selector]);
+                }
+            }
+        }
+
 
         function handleContainerNoChange() {
             const containerNumber = $(this).val().trim();
@@ -985,9 +1059,8 @@
                 </select>
                 `,
                 power: `
-                <select style="min-width: 100px" class="form-control power-days" name="power_days">
-                    <option value="none" data-cost="0" selected>Normal</option>
-                    <option value="plus" data-cost="0">Plus One Day</option>
+                <select style="min-width: 100px" class="form-control power-days" name="rows[power_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
                     <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `,
@@ -995,6 +1068,12 @@
                 <select style="min-width: 100px" class="form-control add-plan-select">
                     <option value="1" data-cost="0" selected>Added</option>
                     <option value="0" data-cost="0">Not added</option>
+                </select>
+                `,
+                storage: `
+                <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
+                    <option value="normal" data-cost="0" selected>Normal</option>
+                    <option value="minus" data-cost="0">Minus One Day</option>
                 </select>
                 `
             };
