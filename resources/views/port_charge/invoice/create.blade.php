@@ -606,16 +606,20 @@
         }
 
         const autoAddContainers = async (containersText) => {
-            const containers = containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "")
+            const containers = Array.isArray(containersText)
+                ? containersText
+                : containersText.split('\n').map(containerNumber => containerNumber.trim()).filter(e => e !== "");
+
             const vesselId = $('#vessel_id').val();
             const voyage = $('#voyage').val();
-            if (containers.length > 0 && vesselId !== '' && voyage !== '') {
+
+            if (containers.length > 0 && vesselId && voyage) {
                 for (const container of containers) {
                     await processContainer(container, vesselId, voyage);
                 }
-
             }
-        }
+        };
+
 
         const processContainer = async (container, vesselId, voyage) => {
             try {
@@ -844,17 +848,29 @@
             containerNumbers.forEach(containerNumber => appendSingleRow(containerNumber, tbody, selectedCharge, selectedService))
         }
 
-        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null) {
+        function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) {
             if (containerNumber !== '') {
                 const newRow = getNewRow(containerNumber)
                 tbody.append(newRow)
-                if (selectedCharge !== null) {
-                    newRow.find('.charge_type').val(selectedCharge);
-                }
-                if (selectedService !== null) {
-                    newRow.find('.service_type').val(selectedService);
-                }
+                setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
                 newRow.find('.container_no').trigger('change')
+            }
+        }
+
+        function setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan) {
+            const selectors = {
+                '.charge_type': selectedCharge,
+                '.service_type': selectedService,
+                '.pti-type': selectedPtiType,
+                '.power-days': selectedPowerDay,
+                '.storage-days': selectedStorageDay,
+                '.add-plan-select': selectedAddPlan,
+            };
+
+            for (const selector in selectors) {
+                if (selectors[selector] !== null) {
+                    newRow.find(selector).val(selectors[selector]);
+                }
             }
         }
 

@@ -34,10 +34,10 @@
                             <th style="min-width: 222px">TS</th>
                             <th style="min-width: 222px">SHIPMENT TYPE</th>
                             <th style="min-width: 222px">QUOTATION TYPE</th>
-                            @foreach(['thc', 'storage', 'storage_days', 'power', 'power_days', 'shifting',
-                                      'disinf','hand-fes-em',
-                                      'gat-lift-off-inbnd-em-ft40', 'gat-lift-on-inbnd-em-ft40',
-                                      'pti', 'pti_type', 'add-plan'] as $field)
+                            @foreach(['thc', 'storage', 'storage_days', 'power', 
+                                      'power_days', 'shifting', 'disinf', 'hand_fes_em',
+                                       'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40'
+                                       , 'pti', 'pti_type', 'add_plan'] as $field)
                                 @if(in_array($field, $selected))
                                     <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
                                 @endif
@@ -54,10 +54,10 @@
                                 <td>{{ $row->ts }}</td>
                                 <td>{{ $row->shipment_type }}</td>
                                 <td>{{ $row->quotation_type }}</td>
-                                @foreach(['thc', 'storage', 'storage_days', 'power', 'power_days', 'shifting',
-                                          'disinf','hand-fes-em',
-                                          'gat-lift-off-inbnd-em-ft40', 'gat-lift-on-inbnd-em-ft40',
-                                          'pti', 'pti_type', 'add-plan'] as $field)
+                                @foreach(['thc', 'storage', 'storage_days', 'power', 
+                                          'power_days', 'shifting', 'disinf', 'hand_fes_em',
+                                          'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
+                                          'pti', 'pti_type', 'add_plan'] as $field)
                                     @if(in_array($field, $selected))
                                         <td>{{ $row->{$field} }}</td>
                                     @endif
