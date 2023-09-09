@@ -251,7 +251,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('get-ref-no', [PortChargeInvoiceController::class, 'getRefNo'])->name('get-ref-no');
         Route::post('calculateInvoiceRow', [PortChargeInvoiceController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
     });
-    Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
+        Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
 });
 Auth::routes(['register' => false]);
 require 'mail.php';

@@ -10,9 +10,10 @@
                             <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);"> EXPORT CARGO MANIFEST</a></li>
                             <li class="breadcrumb-item"></li>
-                        </ol> 
+                        </ol>
                     </nav>
-                </div> 
+                </div>
+
                 <div class="widget-content widget-content-area">
                     <div class="col-md-12 text-center">
                     </div>
@@ -29,11 +30,11 @@
                             @foreach($blDraft->blDetails as $blkey => $bldetails)
                                 @php
                                     $packages = $packages + (float)$bldetails->packs;
-                                    $net_weight = $net_weight + (float)$bldetails->net_weight; 
+                                    $net_weight = $net_weight + (float)$bldetails->net_weight;
                                     $gross_weight =$gross_weight + (float)$bldetails->gross_weight;
                                     $measurement = $measurement + (float)$bldetails->measurement;
                                 @endphp
-                            @endforeach 
+                            @endforeach
                             <div class="row">
                                 <div class="col-md-2">
                                     @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
@@ -44,17 +45,17 @@
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                     @endif
                                 </div>
-                                
+
                                 <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                                     <tbody>
                                         <tr>
                                             @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                                 <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
-                                            @elseif($blDraft->booking->quotation->shipment_typ == "Import")
-                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">IMport SERVICE MANIFEST</br></br>
-                                            @else
-                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
-                                            @endif   
+                                            @elseif($blDraft->booking->shipment_type == 'Export')
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} EXPORT SERVICE MANIFEST </br></br>
+                                                @else
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} IMport SERVICE MANIFEST</br></br>
+                                            @endif
                                             @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                                 <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                                 </br>
@@ -104,7 +105,7 @@
                                 <td class=" tableStyle" style="border-left-style: hidden; font-size: 16px;">Weight</td>
                                 <td class=" tableStyle" style="border-left-style: hidden; font-size: 16px;">Measurement</td>
                             </tr>
-             
+
                         <tr class="col-md-12 tableStyle">
                             <td class="tableStyle" style="border-left-style: hidden;">{{ optional($blDraft->booking)->ref_no }} <br>
                             {{ $blDraft->ref_no }}
@@ -112,25 +113,25 @@
                             <td class="tableStyle" style="border-left-style: hidden;">
                                 {{ optional($blDraft->customer)->name }}
                                 {{ old('shipper',$blDraft->customer_shipper_details) }}
-                                <br> <br>  <br> <br> 
+                                <br> <br>  <br> <br>
 
                                 {{ optional($blDraft->customerConsignee)->name }}
-                                <br> 
+                                <br>
                                 {!! $blDraft->customer_consignee_details !!}
-                                <br> <br>  <br> <br> 
+                                <br> <br>  <br> <br>
                                 {{ optional($blDraft->customerNotify)->name }}
                                  <br>
                                  {!! $blDraft->customer_notifiy_details !!}
 
                             </td>
-                            <td class="tableStyle" style="border-left-style: hidden; width: 300px !important;  font-size: 14px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br> 
+                            <td class="tableStyle" style="border-left-style: hidden; width: 300px !important;  font-size: 14px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br>
                                 <textarea style="width: 100%; height:400px; border: none; font-size: 12px; font-weight: bolder !important; resize: none; background-color: white; color: #000;" disabled>{!! $blDraft->descripions  !!}</textarea>
                             </td>
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $bldetails->measurement }}</td>
                         </tr>
-                        
+
                         </tbody>
                     </table>
                     @if($blDraft->blDetails->count() > 3)
@@ -144,8 +145,8 @@
                         </br>
                         </br>
                         </br>
-    
-     
+
+
                         @php
                             $net_weight = 0;
                             $gross_weight = 0;
@@ -175,11 +176,11 @@
                                     <tr>
                                         @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                             <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
-                                        @elseif($blDraft->booking->quotation->shipment_typ == "Import")
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">IMport SERVICE MANIFEST</br></br>
+                                        @elseif($blDraft->booking->shipment_type == 'Export')
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} EXPORT SERVICE MANIFEST </br></br>
                                         @else
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">EXPORT SERVICE MANIFEST</br></br>
-                                        @endif   
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} IMport SERVICE MANIFEST</br></br>
+                                        @endif
                                         @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                             <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                         </br>
@@ -307,7 +308,7 @@
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Manifest</button>
                 <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
                 </div>
-    
+
 </div>
 </div>
 </div>
@@ -363,11 +364,11 @@
         width: 50Px !important;
     }
 
-		
+
 		body {
           margin: 0 !important;
           margin-top: 0 !important;
 		  padding: 0 !important;
         }
-        
+
 </style>

@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class LoadListFirstOnlyExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -21,8 +21,8 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
         "Load Port",
         "Final Dest",
         "Transhipment Port",
-        "Line", 
-        "Pick Up Location", 
+        "Line",
+        "Pick Up Location",
         "Place Of Return",
         "Container No",
         "Container Type",
@@ -38,8 +38,8 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
         "BOOKING STATUS",
         ];
     }
-    
-    
+
+
     public function collection()
     {
         $bookings = session('bookings');
@@ -60,19 +60,19 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                     }else{
                         $containerNo = optional($bookingContainerDetail->container)->code;
                     }
-                    
+
                     $tempCollection = collect([
                         'no' => $count,
                         'ref_no' => $booking->ref_no,
-                        'first_vessel' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional($booking->voyage)->vessel->name ) : ( optional(optional($booking->secondvoyage)->vessel)->name ) ,
+                        'first_vessel' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional(optional($booking->voyage)->vessel)->name ) : ( optional(optional($booking->secondvoyage)->vessel)->name ) ,
                         'voyage_id' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional($booking->voyage)->voyage_no ) : ( optional($booking->secondvoyage)->voyage_no ),
                         'leg' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional(optional($booking->voyage)->leg)->name ) : ( optional(optional($booking->secondvoyage)->leg)->name ),
                         'Load Port' => optional($booking->loadPort)->code,
                         'Final Dest' => optional($booking->dischargePort)->code,
-                        'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
+                        'transhipmentPort' =>optional($booking->transhipmentPort)->name,
                         'line' => optional($booking->principal)->code,
                         'pickUpLocation' =>optional($booking->pickUpLocation)->name,
-                        'placeOfReturn' =>optional($booking->placeOfReturn)->name,   
+                        'placeOfReturn' =>optional($booking->placeOfReturn)->name,
                         'Container No' => $containerNo,
                         'Container Type' => optional($bookingContainerDetail->containerType)->name,
                         'Seal No' => optional($bookingContainerDetail)->seal_no,
@@ -100,10 +100,10 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                             'leg' => ( request()->input('first_voyage_id') == $booking->voyage->id ) ? ( optional(optional($booking->voyage)->leg)->name ) : ( optional(optional($booking->secondvoyage)->leg)->name ),
                             'Load Port' => optional($booking->loadPort)->code,
                             'Final Dest' => optional($booking->dischargePort)->code,
-                            'transhipmentPort' =>optional($booking->transhipmentPort)->name, 
+                            'transhipmentPort' =>optional($booking->transhipmentPort)->name,
                             'line' => optional($booking->principal)->code,
                             'pickUpLocation' =>optional($booking->pickUpLocation)->name,
-                            'placeOfReturn' =>optional($booking->placeOfReturn)->name,        
+                            'placeOfReturn' =>optional($booking->placeOfReturn)->name,
                             'Container No' => "Dummy",
                             'Container Type' => optional($bookingContainerDetail->containerType)->name,
                             'Seal No' => optional($bookingContainerDetail)->seal_no,
@@ -119,7 +119,7 @@ class LoadListFirstOnlyExport implements FromCollection,WithHeadings
                         ]);
                         $exportBookings->add($tempCollection);
                     }
-                        
+
                 }
             }
         }

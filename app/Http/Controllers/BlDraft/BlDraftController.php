@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 class BlDraftController extends Controller
 {
 
-    public function index() 
+    public function index()
     {
         $this->authorize(__FUNCTION__,BlDraft::class);
         $blDrafts = BlDraft::filter(new BlDraftIndexFilter(request()))->orderBy('id','desc')->where('company_id',Auth::user()->company_id)->with('blDetails','invoices','customer')->paginate(30);
@@ -41,7 +41,7 @@ class BlDraftController extends Controller
             'customers'=>$customers,
             'voyages'=>$voyages,
             'ffw'=>$ffw,
-        ]); 
+        ]);
     }
 
     public function selectBooking()
@@ -123,9 +123,9 @@ class BlDraftController extends Controller
     {
         if ($request->input('bl_status') == 0){
         $request->validate([
-            'customer_id' => ['required'], 
-            'place_of_acceptence_id' => ['required'], 
-            'load_port_id' => ['required'], 
+            'customer_id' => ['required'],
+            'place_of_acceptence_id' => ['required'],
+            'load_port_id' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'voyage_id' => ['required'],
@@ -135,9 +135,9 @@ class BlDraftController extends Controller
         ]);
         }else{
             $request->validate([
-                'customer_id' => ['required'], 
-                'place_of_acceptence_id' => ['required'], 
-                'load_port_id' => ['required'], 
+                'customer_id' => ['required'],
+                'place_of_acceptence_id' => ['required'],
+                'load_port_id' => ['required'],
                 'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
                 'discharge_port_id' => ['required','different:load_port_id'],
                 'voyage_id' => ['required'],
@@ -170,7 +170,7 @@ class BlDraftController extends Controller
             $numOfChilds = BlDraft::where('parent_id',$request->blDraft_id)->count();
             $blDraftParent = BlDraft::where('id',$request->blDraft_id)->with('childs.blDetails','blDetails')->first();
             $qtyCount = count($blDraftParent->blDetails);
-            // BlDraft forloop childs 
+            // BlDraft forloop childs
             foreach($blDraftParent->childs as $child){
                 $qtyCount = $qtyCount + count($child->blDetails);
             }
@@ -270,7 +270,7 @@ class BlDraftController extends Controller
             return view('bldraft.bldraft.showCstar',[
                 'blDraft'=>$blDraft,
                 'etdvoayege'=>$etdvoayege,
-                ]);      
+                ]);
     }
 
 
@@ -333,7 +333,7 @@ class BlDraftController extends Controller
         }
         $this->authorize(__FUNCTION__,BlDraft::class);
         $bldraft = $bldraft ->load('blDetails');
-        $inputs = request()->all(); 
+        $inputs = request()->all();
         unset($inputs['blDraftdetails'],$inputs['_token'],$inputs['removed']);
         $bldraft->update($inputs);
         $bldraft->UpdateBlDetails($request->blDraftdetails);
@@ -355,7 +355,7 @@ class BlDraftController extends Controller
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
         $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
-        
+
         return view('bldraft.bldraft.serviceManifest',[
             'blDraft'=>$blDraft,
             'voyage'=>request()->voyage ?? '',
@@ -368,7 +368,7 @@ class BlDraftController extends Controller
     }
 
 
-    
+
 
     public function destroy($id)
     {
@@ -377,7 +377,7 @@ class BlDraftController extends Controller
         $booking->has_bl = 0;
         $booking->save();
         BlDraftDetails::where('bl_id',$id)->delete();
-        $bldraft->delete(); 
+        $bldraft->delete();
         return back()->with('success',trans('BlDraft.Deleted.Success'));
     }
 }

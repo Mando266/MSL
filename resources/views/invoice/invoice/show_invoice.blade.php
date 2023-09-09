@@ -141,7 +141,7 @@
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
+                            <th class="col-md-2 tableStyle text-center">{{$invoice->add_egp != 'onlyegp' ? 'Equivalent Total(EGP)' : 'Total(EGP)'}}</th>
                             @endif
                         </tr>
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
