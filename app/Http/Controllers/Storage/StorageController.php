@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StorageController extends Controller
 {
-
+// for storage & power calc
     public function index()
     {
         $now = Carbon::now()->format('Y-m-d');
@@ -38,10 +38,26 @@ class StorageController extends Controller
         ]);
     }
 
-
+// testing for demurrage calc
     public function create()
     {
+        $now = Carbon::now()->format('Y-m-d');
+        $movementsBlNo = BlDraft::where('company_id', Auth::user()->company_id)->get();
+        $containers = [];
+        $demurrages = Demurrage::where('company_id', Auth::user()->company_id)
+            ->where('is_storge', '!=', 'Detention')->where('validity_to', '>=', $now)
+            ->get();
+        $movementsCode = ContainersMovement::orderBy('id')->get();
+        $tariffType = ['EDET', 'IDET'];
+        $services = TariffType::whereIn('code', $tariffType)->get();
 
+        return view('storage.demurrage-index', [
+            'movementsBlNo' => $movementsBlNo,
+            'containers' => $containers,
+            'demurrages' => $demurrages,
+            'movementsCode' => $movementsCode,
+            'services' => $services,
+        ]);
     }
 
 
@@ -54,6 +70,11 @@ class StorageController extends Controller
         ];
 
         $request->validate($rules);
+        $route = 'storage.index';
+
+        if(in_array($request->service,[1,3])){
+            $route = 'storage.create';
+        }
         $bl_no = BlDraft::where('id', $request->bl_no)->pluck('ref_no')->first();
         $triff = Demurrage::where('id', $request->Triff_id)->with('slabs.periods')->first();
         $containerCalc = collect();
@@ -72,7 +93,7 @@ class StorageController extends Controller
                     $fromMovement = Movements::where('container_id', $container->id)->where('movement_id', request()->from)
                         ->where('bl_no', $bl_no)->first();
                     if (!isset($fromMovement)) {
-                        return redirect()->route('storage.index')->with([
+                        return redirect()->route($route)->with([
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
@@ -166,7 +187,7 @@ class StorageController extends Controller
                     $fromMovement = Movements::where('container_id', $container->id)->where('movement_id', request()->from)
                         ->where('bl_no', $bl_no)->first();
                     if (!isset($fromMovement)) {
-                        return redirect()->route('storage.index')->with([
+                        return redirect()->route($route)->with([
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
@@ -262,7 +283,7 @@ class StorageController extends Controller
                     $fromMovement = Movements::where('container_id', $container->id)->where('movement_id', request()->from)
                         ->where('bl_no', $bl_no)->first();
                     if (!isset($fromMovement)) {
-                        return redirect()->route('storage.index')->with([
+                        return redirect()->route($route)->with([
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
@@ -352,7 +373,7 @@ class StorageController extends Controller
                     'containers' => $containerCalc,
                 ]);
         // return redirect()->back()->with(['calculation'=>$calculation])->withInput($request->input());
-        return redirect()->route('storage.index')->with([
+        return redirect()->route($route)->with([
             'calculation' => $calculation,
             'input' => $request->input()
         ]);
