@@ -67,16 +67,16 @@
                         </tr>
                     </tbody>
                 </table>
-                
+
                 <table class="col-lg-12 tableStyle">
                     <tbody>
                         <tr>
                             <td class="col-md-2 tableStyle text-center">Vessel</td>
-                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)    
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</span></td>
                             @else
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name }}</span></td>
-                            @endif                            
+                            @endif
                             <td class="col-md-2 tableStyle text-center" >Origin Port</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
@@ -90,7 +90,7 @@
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >Voyage No</td>
-                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)  
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null)
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional(optional($invoice->bldraft)->booking)->secondvoyage)->voyage_no }}</span></td>
                             @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no }}</span></td>
@@ -104,7 +104,7 @@
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                             @endif
                         </tr>
-                         
+
                         <tr>
                             <td class="col-md-2 tableStyle text-center">IMO ClASS</td>
                             <td class="col-md-2 tableStyle text-center" ></td>
@@ -121,7 +121,7 @@
                             <td class="col-md-2 tableStyle text-center" ></td>
                             <td class="col-md-2 tableStyle text-center" ></td>
                         </tr>
-                 
+
                     </tbody>
                 </table>
                 <br>
@@ -133,7 +133,7 @@
                             <th class="col-md-2 tableStyle text-center">QTY</th>
                             <th class="col-md-2 tableStyle text-center">Amount ({{$invoice->add_egp == 'onlyegp' ? 'EGP' : 'USD'}})</th>
                             <th class="col-md-2 tableStyle text-center">Vat</th>
-                        
+
                             <!-- @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
                             <th class="col-md-2 tableStyle text-center">EGP Vat</th>
                             @endif -->
@@ -141,7 +141,7 @@
                             <th class="col-md-2 tableStyle text-center">Total(USD)</th>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <th class="col-md-2 tableStyle text-center">Total(EGP)</th>
+                            <th class="col-md-2 tableStyle text-center">{{$invoice->add_egp != 'onlyegp' ? 'Equivalent Total(EGP)' : 'Total(EGP)'}}</th>
                             @endif
                         </tr>
                         @foreach($invoice->chargeDesc as $key => $chargeDesc)
@@ -165,7 +165,7 @@
                             @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat == 1 ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
                             @else
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat == 1 ? $chargeDesc->total_amount * $invoice->vat / 100 : 0 }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->add_vat == 1 ? $chargeDesc->total_egy * $invoice->vat / 100 : 0 }}</span></td>
                             @endif
 
                             @if( $invoice->add_egp != 'onlyegp')
@@ -193,7 +193,7 @@
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg_before_vat }}</span></td>
                             @endif
                         </tr>
-                        <tr>         
+                        <tr>
                             <td class="col-md-6 tableStyle" colspan="5"><span class="entry">GRAND TOTAL</span></td>
                             @if( $invoice->add_egp != 'onlyegp')
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total}}</span></td>
@@ -224,7 +224,7 @@
 
                     </td>
                 </tr>
-                
+
             </tbody>
         </table>
                 <br>

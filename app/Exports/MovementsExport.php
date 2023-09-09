@@ -18,7 +18,7 @@ class MovementsExport implements FromCollection,WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
-    */  
+    */
     // use Exportable;
 
     public function headings(): array
@@ -50,7 +50,7 @@ class MovementsExport implements FromCollection,WithHeadings
             "Containers Ownership"
         ];
     }
-    
+
     /**
     * @return \Illuminate\Support\Collection
     */
@@ -68,16 +68,16 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->voyage_id = Voyages::where('id',$movement->voyage_id)->pluck('voyage_no')->first();
                     $movement->booking_agent_id = Agents::where('id',$movement->booking_agent_id)->pluck('name')->first();
                     $movement->import_agent = Agents::where('id',$movement->import_agent)->pluck('name')->first();
-                    $movement->description = optional($movement->container)->description;
-                    $movement->containersOwner = optional($movement->container->containersOwner)->name;
+                    $movement->description = optional(optional($movement->container)->seller)->name;
+                    $movement->containersOwner = optional(optional($movement->container)->containersOwner)->name;
                     $movement->pol_id = Ports::where('id',$movement->pol_id)->pluck('code')->first();
                     $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
                     $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                     $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                     //dd($movement->container->containersOwner->name);
                 }
-            
-        
+
+
         return $movements;
     }
 }

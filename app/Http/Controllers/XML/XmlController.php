@@ -32,9 +32,9 @@ class XmlController extends Controller
             'items'=>$xmls,
             'blDraftNo'=>$blDraftNo,
             'voyages'=>$voyages,
-        ]); 
+        ]);
     }
-    
+
     public function selectManifest()
     {
         $voyages  = Voyages::where('company_id',Auth::user()->company_id)->with('voyagePorts.port')->get();
@@ -105,10 +105,10 @@ class XmlController extends Controller
             'Content-Type' => 'application/xml',
             'Content-Disposition' => 'attachment; filename="manifest.xml"',
         ];
-    
+
         // Return the XML content as a download response
         $response = response($xmlContent, 200, $headers);
-    
+
         // Redirect back to the xml.index route after downloading
         return $response->header('Refresh', '5;url='.route('xml.index'))
             ->header('Success-Message', trans('Manifest XML.Created'));
@@ -121,8 +121,8 @@ class XmlController extends Controller
                 'vessel','line.country','bldrafts.customer','bldrafts.blDetails.container.containersTypes',
                 'bldrafts.customerNotify','bldrafts.customerConsignee',
                 'bldrafts.loadPort.country','bldrafts.dischargePort.country',)->first();
-        
-        // $bldraft = $voyage->bldrafts->first();
+
+        $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
 
         // Create a new XML document
@@ -132,10 +132,11 @@ class XmlController extends Controller
         // Create the root element <ManifestData>
         $manifestData = $xmlDoc->createElement('ManifestData');
         $xmlDoc->appendChild($manifestData);
-        
+
         //getting arrival date
-        
+
         $etaDate = VoyagePorts::where('voyage_id',$voyage->id)->where('port_from_name',$port)->pluck('eta')->first();
+        $etdDate = VoyagePorts::where('voyage_id',$voyage->id)->where('port_from_name',optional($bldraft->loadPort)->id)->pluck('etd')->first();
 
         // Create the <GeneralInfo> element and add child elements
         $generalInfo = $xmlDoc->createElement('GeneralInfo');
@@ -154,7 +155,7 @@ class XmlController extends Controller
             $BillOfLading = $xmlDoc->createElement('BillOfLading');
             // dd($bldraft);
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->ref_no , 'BOLNumber');
-            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->date_of_issue , 'BOLLoadingDate');
+            $this->addItemToElement($xmlDoc, $BillOfLading, $etdDate , 'BOLLoadingDate');
             //is transit or not 1 => transit , 0 => no transit
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->is_transhipment , 'BOLTransitIndicator');
             //bl is consolidated or not 1=>normal , 2=>consolidated
@@ -169,10 +170,10 @@ class XmlController extends Controller
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->loadPort->country->prefix , 'BOLLoadingCountry');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->dischargePort->code , 'BOLUnLoadingPort');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->dischargePort->country->prefix , 'BOLUnLoadingCountry');
-            $this->addItemToElement($xmlDoc, $BillOfLading, 5601610390 , 'BOLShippingAgent');
+            $this->addItemToElement($xmlDoc, $BillOfLading, 560161093 , 'BOLShippingAgent');
             $this->addItemToElement($xmlDoc, $BillOfLading, 22 , 'BOLWarehouse');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->blDetails->count() , 'BOLItemsCount');
-            
+
             foreach($bldraft->blDetails as $item){
                 if($item->container == null){
                     return back()->with('error','there is unselected container in Bill Of Lading No : '.$bldraft->ref_no);
@@ -208,18 +209,18 @@ class XmlController extends Controller
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
-                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemExpGrossWeight');
+                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight + (float)optional($item->container)->tar_weight, 'ItemExpGrossWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
-                $this->addItemToElement($xmlDoc, $Item, $item->net_weight , 'ItemContentPackagesWeight');
+                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
                 $BillOfLading->appendChild($Item);
             }
             $cargoData->appendChild($BillOfLading);
         }
 
         $manifestData->appendChild($cargoData);
-        
+
         // Generate the XML content
         $xmlContent = $xmlDoc->saveXML();
 
