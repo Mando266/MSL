@@ -7,14 +7,14 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
+                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">New Debit</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-           
+
                     <form id="createForm" action="{{route('invoice.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                         <div class="form-row">
@@ -38,7 +38,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="customer">Customer Name</label>
                                     <input type="text" id="notifiy" class="form-control"  name="customer"
@@ -47,7 +47,7 @@
                                     <div style="color: red;">
                                         {{$message}}
                                     </div>
-                                    @enderror 
+                                    @enderror
                             </div>
 
                         </div>
@@ -57,20 +57,20 @@
                                         @if(optional($bldraft)->place_of_acceptence_id != null)
                                         <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{(optional($bldraft->placeOfAcceptence)->code)}}" style="background-color:#fff" disabled>
                                         @endif
-                                </div> 
+                                </div>
 
                                 <div class="form-group col-md-3" >
                                     <label>Load Port</label>
                                         @if(optional($bldraft)->load_port_id != null)
                                         <input type="text" class="form-control" placeholder="Load Port" autocomplete="off" value="{{(optional($bldraft->loadPort)->code)}}" style="background-color:#fff" disabled>
                                         @endif
-                                </div> 
+                                </div>
                             <div class="form-group col-md-3" >
                                 <label for="Date">Booking Ref</label>
                                     @if(optional($bldraft)->booking_id != null)
                                     <input type="text" class="form-control" placeholder="Booking Ref" autocomplete="off" value="{{(optional($bldraft->booking)->ref_no)}}" style="background-color:#fff" disabled>
                                     @endif
-                            </div> 
+                            </div>
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id" name="voyage_id"  data-live-search="true" data-size="10"
@@ -85,27 +85,27 @@
                                 </select>
                             </div>
 
-                            </div> 
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
                                         <label>Discharge Port</label>
                                         @if(optional($bldraft)->discharge_port_id != null)
                                         <input type="text" class="form-control" placeholder="Discharge Port" autocomplete="off" value="{{(optional($bldraft->dischargePort)->code)}}" style="background-color:#fff" disabled>
                                         @endif
-                                </div> 
+                                </div>
 
                                 <div class="form-group col-md-3" >
                                     <label>Port of Delivery</label>
                                         @if(optional($bldraft)->place_of_delivery_id != null)
                                         <input type="text" class="form-control" placeholder="Port of Delivery" autocomplete="off" value="{{(optional($bldraft->placeOfDelivery)->code)}}" style="background-color:#fff" disabled>
                                         @endif
-                                </div> 
+                                </div>
                                 <div class="form-group col-md-3" >
                                     <label>Equipment Type</label>
                                         @if(optional($bldraft)->equipment_type_id != null)
                                         <input type="text" class="form-control" placeholder="Equipment Type" name="bl_kind" autocomplete="off" value="{{(optional($bldraft->equipmentsType)->name)}}" style="background-color:#fff" disabled>
                                         @endif
-                                </div> 
+                                </div>
 
                                 <div class="form-group col-md-3">
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
@@ -113,7 +113,7 @@
                                         <option value="draft">Draft</option>
                                         @if($bldraft->bl_status == 1)
                                         <option value="confirm">Confirm</option>
-                                        @endif 
+                                        @endif
                                    </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
@@ -129,12 +129,12 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
-                            </div> 
+                            </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
                                     <label> Notes </label>
                                     <textarea class="form-control" name="notes"></textarea>
-                                </div> 
+                                </div>
                             </div>
                         <h4>Charges<h4>
                         <table id="containerDepit" class="table table-bordered">
@@ -146,17 +146,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                            <tr>
-                                <td>
-                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
-                                </td>
-                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
-                                    placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
-                                    placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
-                                </td>
-                            </tr>
+                                @if($cartData != null)
+                                        @foreach($cartData as $cart)
+                                            <tr>
+                                                <td>
+                                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                                                </td>
+                                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($cart->calculationData)->grandTotal)}}"
+                                                           placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
+                                                </td>
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($cart->calculationData)->grandTotal)}}"
+                                                           placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                @else
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                                        </td>
+                                        <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
+                                            placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
+                                        </td>
+                                        <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
+                                            placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                             <div class="row">

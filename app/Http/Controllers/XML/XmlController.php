@@ -32,9 +32,9 @@ class XmlController extends Controller
             'items'=>$xmls,
             'blDraftNo'=>$blDraftNo,
             'voyages'=>$voyages,
-        ]); 
+        ]);
     }
-    
+
     public function selectManifest()
     {
         $voyages  = Voyages::where('company_id',Auth::user()->company_id)->with('voyagePorts.port')->get();
@@ -105,10 +105,10 @@ class XmlController extends Controller
             'Content-Type' => 'application/xml',
             'Content-Disposition' => 'attachment; filename="manifest.xml"',
         ];
-    
+
         // Return the XML content as a download response
         $response = response($xmlContent, 200, $headers);
-    
+
         // Redirect back to the xml.index route after downloading
         return $response->header('Refresh', '5;url='.route('xml.index'))
             ->header('Success-Message', trans('Manifest XML.Created'));
@@ -120,8 +120,8 @@ class XmlController extends Controller
             ->with('bldrafts.booking.quotation','bldrafts.voyage.vessel',
                 'vessel','line.country','bldrafts.customer','bldrafts.blDetails.container.containersTypes',
                 'bldrafts.customerNotify','bldrafts.customerConsignee',
-                'bldrafts.loadPort.country','bldrafts.dischargePort.country',)->first();
-        
+                'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
+
         // $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
 
@@ -132,9 +132,9 @@ class XmlController extends Controller
         // Create the root element <ManifestData>
         $manifestData = $xmlDoc->createElement('ManifestData');
         $xmlDoc->appendChild($manifestData);
-        
+
         //getting arrival date
-        
+
         $etaDate = VoyagePorts::where('voyage_id',$voyage->id)->where('port_from_name',$port)->pluck('eta')->first();
 
         // Create the <GeneralInfo> element and add child elements
@@ -172,7 +172,7 @@ class XmlController extends Controller
             $this->addItemToElement($xmlDoc, $BillOfLading, 5601610390 , 'BOLShippingAgent');
             $this->addItemToElement($xmlDoc, $BillOfLading, 22 , 'BOLWarehouse');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->blDetails->count() , 'BOLItemsCount');
-            
+
             foreach($bldraft->blDetails as $item){
                 if($item->container == null){
                     return back()->with('error','there is unselected container in Bill Of Lading No : '.$bldraft->ref_no);
@@ -219,7 +219,7 @@ class XmlController extends Controller
         }
 
         $manifestData->appendChild($cargoData);
-        
+
         // Generate the XML content
         $xmlContent = $xmlDoc->saveXML();
 
