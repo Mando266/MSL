@@ -25,20 +25,21 @@ class CreatePortChargeInvoiceRowsTable extends Migration
             $table->boolean('is_transhipment');
             $table->string('shipment_type');
             $table->string('quotation_type');
-            $table->decimal('thc', 10, 2);
-            $table->decimal('storage', 10, 2);
-            $table->decimal('power', 10, 2);
-            $table->decimal('shifting', 10, 2);
-            $table->decimal('disinf', 10, 2);
-            $table->decimal('hand_fes_em', 10, 2);
-            $table->decimal('gat_lift_off_inbnd_em_ft40', 10, 2);
-            $table->decimal('gat_lift_on_inbnd_em_ft40', 10, 2);
-            $table->decimal('pti', 10, 2);
-            $table->decimal('add_plan', 10, 2);
-//            $table->string('pti_type');
+            $table->decimal('thc', 10, 2)->default(0);
+            $table->decimal('storage', 10, 2)->default(0);
+            $table->decimal('power', 10, 2)->default(0);
+            $table->decimal('shifting', 10, 2)->default(0);
+            $table->decimal('disinf', 10, 2)->default(0);
+            $table->decimal('hand_fes_em', 10, 2)->default(0);
+            $table->decimal('gat_lift_off_inbnd_em_ft40', 10, 2)->default(0);
+            $table->decimal('gat_lift_on_inbnd_em_ft40', 10, 2)->default(0);
+            $table->decimal('pti', 10, 2)->default(0);
+            $table->decimal('add_plan', 10, 2)->default(0);
+            $table->string('pti_type')->nullable();
+            $table->string('storage_days')->nullable();
+            $table->string('power_days')->nullable();
             $table->timestamps();
 
-            $table->foreign('port_charge_invoice_id')->references('id')->on('port_charge_invoices')->onDelete('cascade');
         });
     }
 

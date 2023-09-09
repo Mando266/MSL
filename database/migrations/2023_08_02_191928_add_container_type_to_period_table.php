@@ -13,9 +13,9 @@ class AddContainerTypeToPeriodTable extends Migration
      */
     public function up()
     {
-        Schema::table('period', function (Blueprint $table) {
-            $table->bigInteger('container_type_id')->nullable();
-        });
+//        Schema::table('period', function (Blueprint $table) {
+//            $table->bigInteger('container_type_id')->nullable();
+//        });
     }
 
     /**

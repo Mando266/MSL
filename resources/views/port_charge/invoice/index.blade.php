@@ -31,7 +31,8 @@
                                     <th>Vessel</th>
                                     <th>Voyage</th>
                                     <th>Total USD</th>
-                                    <th>Total EGP</th>
+                                    <th>Invoice EGP</th>
+                                    <th>Invoice USD</th>
                                     <th class='text-center' style='width:100px;'></th>
                                 </tr>
                                 </thead>
@@ -44,7 +45,8 @@
                                         <th>{{ $invoice->vessel->name ?? '' }}</th>
                                         <th>{{ $invoice->voyage->voyage_no ?? '' }}</th>
                                         <th>{{ $invoice->total_usd }}</th>
-                                        <th>{{ $invoice->total_egp }}</th>
+                                        <th>{{ $invoice->invoice_egp }}</th>
+                                        <th>{{ $invoice->invoice_usd }}</th>
                                         <td class="text-center">
                                             <ul class="table-controls">
                                                 <li>

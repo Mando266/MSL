@@ -13,9 +13,9 @@ class AddTariffTypeIdToDemurrageTable extends Migration
      */
     public function up()
     {
-        Schema::table('demurrage', function (Blueprint $table) {
-            $table->bigInteger('tariff_type_id')->nullable();
-        });
+//        Schema::table('demurrage', function (Blueprint $table) {
+//            $table->bigInteger('tariff_type_id')->nullable();
+//        });
     }
 
     /**

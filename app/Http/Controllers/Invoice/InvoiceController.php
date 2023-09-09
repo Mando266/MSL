@@ -6,20 +6,21 @@ use App\Filters\Invoice\InvoiceIndexFilter;
 use App\Http\Controllers\Controller;
 use App\Models\Bl\BlDraft;
 use App\Models\Booking\Booking;
+use App\Models\Containers\Demurrage;
 use App\Models\Invoice\ChargesDesc;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceChargeDesc;
+use App\Models\Master\ContainersTypes;
+use App\Models\Master\Customers;
+use App\Models\Master\Ports;
 use App\Models\Quotations\LocalPortTriff;
 use App\Models\Voyages\VoyagePorts;
-use App\Models\Master\ContainersTypes;
-use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
+use App\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Setting;
-use App\Models\Master\Customers;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -104,10 +105,10 @@ class InvoiceController extends Controller
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
             })->with('CustomerRoles.role')->get();
-            $shippers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            $shippers = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 1);
             })->with('CustomerRoles.role')->get();
-            $suppliers = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            $suppliers = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 7);
             })->with('CustomerRoles.role')->get();
             $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
@@ -134,9 +135,9 @@ class InvoiceController extends Controller
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
 
         $bl_id = request()->input('bldraft_id');
-        if($bl_id != null){
-            $bldraft = BlDraft::where('id',$bl_id)->with('blDetails')->first();
-        }else{
+        if ($bl_id != null) {
+            $bldraft = BlDraft::where('id', $bl_id)->with('blDetails')->first();
+        } else {
             $bldraft = null;
         }
         $qty = $bldraft->blDetails->count();
@@ -148,9 +149,7 @@ class InvoiceController extends Controller
             $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
             ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
             ->with(["triffPriceDetailes" => function($q) use($bldraft) {
-                $q->where("is_import_or_export", 1);
-                $q->where('standard_or_customise',1)
-
+                $q->where("is_import_or_export", 1)
                 ->where(function($query) use($bldraft) {
                     $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
                     ->orWhere('equipment_type_id', '100');
@@ -171,14 +170,23 @@ class InvoiceController extends Controller
             },'triffPriceDetailes.charge'])
             ->first();
         }
-        return view('invoice.invoice.create_invoice',[
-            'bldrafts'=>$bldrafts,
-            'total_storage'=>request('total_storage'),
-            'qty'=>$qty,
-            'bldraft'=>$bldraft,
-            'triffDetails'=>$triffDetails,
-            'voyages'=>$voyages,
-            'charges'=>$charges,
+        // id's of triff type export and import power charge
+        $powerTriffs = [7,8];
+        foreach ($cartData as $cart){
+            if(in_array(Demurrage::where('id',$cart->triffValue)->pluck('tariff_type_id')->first(),$powerTriffs)){
+                $cart->triffText = "Power Charge";
+            }else{
+                $cart->triffText = "Port Storage";
+            }
+        }
+        return view('invoice.invoice.create_invoice', [
+            'bldrafts' => $bldrafts,
+            'cartData' => $cartData ?? null,
+            'qty' => $qty,
+            'bldraft' => $bldraft,
+            'triffDetails' => $triffDetails,
+            'voyages' => $voyages,
+            'charges' => $charges,
         ]);
     }
 
@@ -305,7 +313,6 @@ class InvoiceController extends Controller
                 'add_egp'=>'false',
                 'voyage_id'=>$request->voyage_id,
                 'notes'=>$request->notes,
-                'activity_code'=>$request->activity_code,
             ]);
         }
         $setting = Setting::find(1);
@@ -365,6 +372,7 @@ class InvoiceController extends Controller
 
     public function storeInvoice(Request $request)
     {
+
         if($request->bldraft_id == 'customize'){
             request()->validate([
                 'customer' => ['required'],
@@ -579,6 +587,8 @@ class InvoiceController extends Controller
             $EGP =  ucfirst($f->format($exp[0]));
         }
 
+
+
         if($invoice->type == 'debit'){
             return view('invoice.invoice.show_debit',[
                 'invoice'=>$invoice,
@@ -756,9 +766,9 @@ class InvoiceController extends Controller
                 }
             }
             $setting->invoice_confirm += 1;
-        }elseif($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit"){
+        } elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit") {
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 23';
+            $inputs['invoice_no'] = 'DN' . ' ' . '/' . ' ' . $setting->debit_confirm . ' / 23';
             $setting->debit_confirm += 1;
         }
         $setting->save();

@@ -13,23 +13,23 @@ class AdjustPortChargesTable extends Migration
      */
     public function up()
     {
-        Schema::table('port_charges', function (Blueprint $table) {
-            $table->dropColumn('storage_20ft');
-            $table->dropColumn('storage_40ft_first_5');
-            $table->dropColumn('storage_40ft_after_5');
-            $table->dropColumn('pti_20ft');
-            $table->dropColumn('pti_40ft_failed');
-            $table->dropColumn('pti_40ft_pass');
-            $table->decimal('storage_free', 10, 2)->nullable();
-            $table->decimal('storage_slab1_period', 10, 2)->nullable();
-            $table->decimal('storage_slab1_20ft', 10, 2)->nullable();
-            $table->decimal('storage_slab1_40ft', 10, 2)->nullable();
-            $table->decimal('storage_slab2_period', 10, 2)->nullable();
-            $table->decimal('storage_slab2_20ft', 10, 2)->nullable();
-            $table->decimal('storage_slab2_40ft', 10, 2)->nullable();
-            $table->decimal('pti_failed', 10, 2)->nullable();
-            $table->decimal('pti_passed', 10, 2)->nullable();
-        });
+//        Schema::table('port_charges', function (Blueprint $table) {
+//            $table->dropColumn('storage_20ft');
+//            $table->dropColumn('storage_40ft_first_5');
+//            $table->dropColumn('storage_40ft_after_5');
+//            $table->dropColumn('pti_20ft');
+//            $table->dropColumn('pti_40ft_failed');
+//            $table->dropColumn('pti_40ft_pass');
+//            $table->decimal('storage_free', 10, 2)->nullable();
+//            $table->decimal('storage_slab1_period', 10, 2)->nullable();
+//            $table->decimal('storage_slab1_20ft', 10, 2)->nullable();
+//            $table->decimal('storage_slab1_40ft', 10, 2)->nullable();
+//            $table->decimal('storage_slab2_period', 10, 2)->nullable();
+//            $table->decimal('storage_slab2_20ft', 10, 2)->nullable();
+//            $table->decimal('storage_slab2_40ft', 10, 2)->nullable();
+//            $table->decimal('pti_failed', 10, 2)->nullable();
+//            $table->decimal('pti_passed', 10, 2)->nullable();
+//        });
     }
 
     /**
