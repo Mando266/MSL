@@ -7,7 +7,7 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a a href="{{route('bldraft.index')}}">BL Draft</a></li> 
+                            <li class="breadcrumb-item"><a a href="{{route('bldraft.index')}}">BL Draft</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Create New BL Draft</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
@@ -39,7 +39,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Shipping Customer Details</label>
                                 @if($booking->customer_id != null)
@@ -47,15 +47,15 @@
                                     placeholder="Customer Shipper Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_shipper_details}} @else Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}  @endisset</textarea>
                                 @endif
                             </div>
-    
-                            
+
+
                             <!-- <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Phone <span class="text-warning"> * (Required.) </span></label>
                                 @if($booking->customer_id != null)
                                     <input type="text" class="form-control" id="customer_phone" name="customer_phone" value="{{optional($booking->customer)->phone}}"
                                     placeholder="Customer Phone" autocomplete="off">
                                 @endif
-                            </div> 
+                            </div>
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Address <span class="text-warning"> * (Required.) </span></label>
                                 @if($booking->customer_id != null)
@@ -63,7 +63,7 @@
                                     placeholder="Customer Address" autocomplete="off">
                                 @endif
                             </div>  -->
-                        </div> 
+                        </div>
                     <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Consignee <span class="text-warning"> * (Required.) </span></label>
@@ -82,7 +82,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-8" id="summernote">
                                 <label for="customer_id">Customer Consignee Details</label>
                                 @if($booking->customer_consignee_id != null)
@@ -92,7 +92,7 @@
                                     <textarea id="consignee" class="form-control"  name="customer_consignee_details"
                                     placeholder="Customer Consignee Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_consignee_details}} @endisset</textarea>
                                 @endif
-                            </div> 
+                            </div>
                     </div>
                     <div class="form-row">
                             <div class="form-group col-md-4">
@@ -113,7 +113,7 @@
                                 <label for="customer_id">Customer Notifiy Details</label>
                                     <textarea id="notifiy" class="form-control"  name="customer_notifiy_details"
                                     placeholder="Customer Notifiy Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_notifiy_details}} @endisset</textarea>
-                            </div> 
+                            </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
@@ -134,7 +134,7 @@
                             <label for="customer_id">Additional Notifiy Details</label>
                                 <textarea id="additional_notify_details" class="form-control"  name="additional_notify_details"
                                 placeholder="Additional Notifiy Details" autocomplete="off">@isset($blDraft){{$blDraft->additional_notifiy_details}} @endisset</textarea>
-                        </div> 
+                        </div>
                 </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
@@ -192,7 +192,7 @@
                             <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                 title="{{trans('forms.select')}}" disabled>
-                            
+
                                 @foreach ($ports as $item)
                                 @if($booking->discharge_port_id != null)
                                     <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$booking->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -223,7 +223,7 @@
                                 {{$message}}
                             </div>
                             @enderror
-                        </div> 
+                        </div>
                         <div class="form-group col-md-3">
                             <label for="voyage_id">Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
@@ -297,13 +297,13 @@
                         @if($booking->is_transhipment == 1)
                             <div class="form-group col-md-3">
                                     <label for="status">Bl Payment</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}">
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required>
                                     <option value="Prepaid">Prepaid</option>
                                     <option value="Collect">Collect</option>
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
-                                    {{$message}} 
+                                    {{$message}}
                                 </div>
                                 @enderror
                             </div>
@@ -327,7 +327,7 @@
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
-                                    {{$message}} 
+                                    {{$message}}
                                 </div>
                                 @enderror
                         </div>
@@ -382,7 +382,7 @@
                                 <td>
                                     <input type="text" id="seal_no" value="{{$bookingContainer->seal_no}}" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" required>
                                 </td>
-             
+
                                 <td>
                                     <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
@@ -432,7 +432,7 @@
                                 <td>
                                     <input type="text" id="seal_no" name="blDraftdetails[{{ $key }}][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No.S" required>
                                 </td>
-             
+
                                 <td>
                                     <input type="text" id="Packs" name="blDraftdetails[{{ $key }}][packs]" class="form-control input"  autocomplete="off" placeholder="Packs" required>
                                 </td>
@@ -464,10 +464,10 @@
                                     <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                            </div>
-            </div> 
-        </div> 
-    </div> 
-</div>                 
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('scripts')
 <script>
@@ -476,7 +476,7 @@
             console.log(1);
             $(this).closest("tr").remove();
     });
-    
+
 });
 </script>
 <script>
@@ -531,4 +531,3 @@
     });
 </script>
 @endpush
-                         

@@ -13,13 +13,13 @@ class CreateDemuragePeriodsSlabsTable extends Migration
      */
     public function up()
     {
-        Schema::create('demurage_periods_slabs', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('status')->default(1);
-            $table->unsignedInteger('demurage_id')->nullable();
-            $table->unsignedInteger('container_type_id')->nullable();
-            $table->timestamps();
-        });
+//        Schema::create('demurage_periods_slabs', function (Blueprint $table) {
+//            $table->id();
+//            $table->tinyInteger('status')->default(1);
+//            $table->unsignedInteger('demurage_id')->nullable();
+//            $table->unsignedInteger('container_type_id')->nullable();
+//            $table->timestamps();
+//        });
     }
 
     /**

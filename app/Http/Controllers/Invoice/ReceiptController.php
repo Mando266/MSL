@@ -19,9 +19,9 @@ use setasign\Fpdi\PdfParser\Type\PdfNull;
 
 class ReceiptController extends Controller
 {
-   
+
     public function index()
-    { 
+    {
         $this->authorize(__FUNCTION__,Receipt::class);
 
         $receipts = Receipt::filter(new ReceiptIndexFilter(request()))
@@ -54,7 +54,7 @@ class ReceiptController extends Controller
         // Set the current page on the paginator
         $paginator->setPageName('page');
 
-                    
+
         $receiptno = Receipt::orderBy('id','desc')->where('status','valid')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $invoices  = Invoice::where('company_id',Auth::user()->company_id)->get();
@@ -69,7 +69,7 @@ class ReceiptController extends Controller
             'invoices'=>$invoices,
             'bldrafts'=>$bldrafts,
         ]);
-    
+
     }
 
     public function selectinvoice()
@@ -84,8 +84,8 @@ class ReceiptController extends Controller
             'invoiceRef'=>$invoiceRef,
         ]);
     }
-    
-   
+
+
     public function create()
     {
         $this->authorize(__FUNCTION__,Receipt::class);
@@ -107,7 +107,7 @@ class ReceiptController extends Controller
         $vat = $vat / 100;
         $total_after_vat = 0;
         $total_eg_after_vat = 0;
-        
+
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
@@ -146,32 +146,34 @@ class ReceiptController extends Controller
         if ($request->input('bank_transfer') < $request->input('total_payment')){
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-        if ( $request->input('bank_cash') < $request->input('total_payment') ){
+        elseif( $request->input('bank_cash') < $request->input('total_payment') ){
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-        if ( $request->input('matching') < $request->input('total_payment') ){
+        elseif( $request->input('matching') < $request->input('total_payment') ){
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-        if ( $request->input('bank_check') < $request->input('total_payment') ){
+        elseif ( $request->input('bank_check') < $request->input('total_payment') )
+        {
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-        if ( $request->input('bank_deposit') < $request->input('total_payment') ){
+        elseif( $request->input('bank_deposit') < $request->input('total_payment') ){
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
+        
         if ($request->input('bank_deposit') != Null){
             $request->validate([
                 'bank_id' => ['required'],
             ],[
-                'bank_id.required'=>'Please Choose Bank Account', 
+                'bank_id.required'=>'Please Choose Bank Account',
             ]);
         }
-        
+
         if ($request->input('bank_transfer') != Null){
             $request->validate([
                 'bank_transfer_id' => ['required'],
             ],[
                 'bank_transfer_id.required'=>'Please Choose Bank Account',
-                
+
             ]);
         }
         if($request->input('bank_check') != Null){
@@ -249,7 +251,7 @@ class ReceiptController extends Controller
                 }
             }
         }
-        
+
         $receipt = Receipt::create([
             'company_id'=>Auth::user()->company_id,
             'invoice_id'=>$request->invoice_id,
@@ -280,12 +282,12 @@ class ReceiptController extends Controller
             $setting->save();
         }
         $receipt->save();
-        
+
 
         if($oldReceipts->count() == 0){
             // ADD to Credit
             if($paid > (int)$request->total_payment){
-                
+
                 if($invoice->add_egp == "false"){
                     // currency USD
                     $customer->credit = $customer->credit + ($paid - (int)$request->total_payment);
@@ -325,7 +327,7 @@ class ReceiptController extends Controller
             }
         }else{
             if($paid > (int)$request->total_payment){
-                
+
                 if($invoice->add_egp == "false"){
                     // currency USD
                     $customer->credit = $customer->credit + ($paid - (int)$request->total_payment);
@@ -343,7 +345,7 @@ class ReceiptController extends Controller
                         'user_id'=>$customer->id
                     ]);
                 }
-                
+
             }
         }
         if($paid >= (int)$request->total_payment){
@@ -354,7 +356,7 @@ class ReceiptController extends Controller
         return redirect()->route('receipt.index')->with('success',trans('Receipt.created'));
     }
 
-   
+
     public function show($id)
     {
         $this->authorize(__FUNCTION__,Receipt::class);
@@ -371,7 +373,7 @@ class ReceiptController extends Controller
             $total =  ucfirst($f->format($exp[0]));
         }
 
-  
+
 
         return view('invoice.receipt.show',[
             'receipt'=>$receipt,
@@ -391,7 +393,7 @@ class ReceiptController extends Controller
         //
     }
 
- 
+
     public function destroy($id)
     {
         //
