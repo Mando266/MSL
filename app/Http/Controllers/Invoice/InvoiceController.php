@@ -216,6 +216,7 @@ class InvoiceController extends Controller
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
                 'suppliers'=>$suppliers,
+                'cartData' => $cartData ?? null,
                 'notify'=>$notify,
                 'ffws'=>$ffws,
                 'voyages'=>$voyages,
@@ -234,9 +235,10 @@ class InvoiceController extends Controller
         }
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $qty = $bldraft->blDetails->count();
-
+        $cartData = json_decode(request('cart_data_for_invoice'));
         return view('invoice.invoice.create_debit',[
             'bldrafts'=>$bldrafts,
+            'cartData' => $cartData ?? null,
             'qty'=>$qty,
             'bldraft'=>$bldraft,
             'voyages'=>$voyages,

@@ -253,7 +253,7 @@
                                         <a href="{{route('container-types.index')}}"> Container Types </a>
                                     </li>
                                 @endpermission
-                                
+
                                 @permission('Movements-List')
                                     <li>
                                         <a href="{{route('tracking.create')}}"> Containers Tracking</a>
@@ -276,7 +276,7 @@
                                         <a href="{{route('stock-types.index')}}"> Stock Types </a>
                                     </li>
                                 @endpermission
-                                <!-- 
+                                <!--
                                 @permission('Demurrage-List')
                                 <li>
                                     <a href="{{route('demurrage.index')}}">Demurrage & Dentention</a>
@@ -320,7 +320,7 @@
                         <ul class="collapse submenu list-unstyled" id="component7" data-parent="#accordionExample">
                                 @permission('Demurrage-List')
                                     <li>
-                                        <a href="{{route('detention.view')}}"> Dentention Calculation </a>
+                                        <a href="{{route('storage.create')}}"> Dentention Calculation </a>
                                     </li>
                                 @endpermission
                                 @permission('Invoice-List')
@@ -336,7 +336,7 @@
             <li class="menu">
                         <a href="#component8" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                              <span>Quotations</span>
                             </div>
                             <div>
@@ -372,16 +372,16 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
-               
+
                         @permission('Booking-List')
-                 
+
                                 @permission('Booking-List')
                                 <li>
                                     <a href="{{route('booking.index')}}">Booking Gates</a>
                                 </li>
                                 @endpermission
 
-            
+
                                 @permission('BlDraft-List')
                                 <li>
                                     <a href="{{route('bldraft.index')}}"> Bl Gates </a>
@@ -395,7 +395,7 @@
                                 @endpermission
                                 </ul>
                         </li>
-                        @endpermission                        
+                        @endpermission
             </li>
         </ul>
         @permission('Trucker-List')
@@ -433,7 +433,7 @@
                 <li class="menu">
                         <a href="#component10" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>     
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokewidth="2" fill="none" strokelinecap="round" strokelinejoin="round" classname="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                              <span>Accounting</span>
                             </div>
                             <div>
@@ -465,7 +465,7 @@
                                 <li>
                                     <a href="{{route('refund.index')}}">Refund Gates</a>
                                 </li>
-                                @endpermission 
+                                @endpermission
                                 @permission('Invoice-List')
                                 <li>
                                     <a href="{{route('statements.index')}}">Customer Statements</a>

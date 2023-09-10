@@ -123,6 +123,9 @@ class XmlController extends Controller
                 'bldrafts.loadPort.country','bldrafts.dischargePort.country',)->first();
 
         $bldraft = $voyage->bldrafts->first();
+                'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
+
+        // $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
 
         // Create a new XML document
