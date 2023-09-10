@@ -7,7 +7,7 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a a href="{{route('booking.index')}}">Booking</a></li> 
+                            <li class="breadcrumb-item"><a a href="{{route('booking.index')}}">Booking</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Create New Booking</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
@@ -16,7 +16,7 @@
                 <div class="widget-content widget-content-area">
                     <form id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-            
+
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
                             <div class="form-group col-md-4">
@@ -40,7 +40,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
 
                             <div class="form-group col-md-2">
                                 <label for="equipment_type_id">Equipment Type <span class="text-warning"> *</span></label>
@@ -59,7 +59,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             @if(request()->input('quotation_id') == "draft")
 
                             <div class="form-group col-md-2">
@@ -92,11 +92,11 @@
                             <div class="form-group col-md-4" style="padding-top: 30px;">
                                 <div class="form-check">
                                 <input type="checkbox" id="soc" name="soc" value="1"  onclick="return false;" readonly {{$quotation->soc == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>
-                                
+
                                 <input type="checkbox" id="imo" name="imo" value="1"  onclick="return false;" readonly {{$quotation->imo == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> IMO </a>
-                                
+
                                 <input type="checkbox" id="oog" name="oog" value="1"  onclick="return false;" readonly {{$quotation->oog == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> OOG </a>
-                                
+
                                 <input type="checkbox" id="rf" name="rf" value="1"  onclick="return false;" readonly {{$quotation->rf == 1 ? 'checked' : ''}}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> RF </a>
                                 </div>
                             </div>
@@ -161,7 +161,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="customer_consignee_id">Consignee Customer</label>
                                 <select class="selectpicker form-control" id="customer_consignee_id" data-live-search="true" name="customer_consignee_id" data-size="10"
@@ -175,8 +175,8 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
-                            
+                            </div>
+
                         </div>
 
                         <div class="form-row">
@@ -250,7 +250,7 @@
                                 <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
-                                
+
                                     @foreach ($ports as $item)
                                     @if($quotation->discharge_port_id != null)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':'disabled'}}>{{$item->name}}</option>
@@ -329,7 +329,7 @@
                         </div>
 
                         <div class="form-row">
-                            @if(request()->input('quotation_id') != "draft") 
+                            @if(request()->input('quotation_id') != "draft")
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
@@ -536,19 +536,19 @@
                             </div>
                         </div>
                         <div class="form-row">
-                           @if(request()->input('quotation_id') != "draft") 
+                           @if(request()->input('quotation_id') != "draft")
                             <div class="form-group col-md-6">
                                 <label>Shipment Status</label>
                                 <input type="text" class="form-control"  name ="shipment_type" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
-                            {{-- <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label>Shipment Status <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required>
                                     <option value="Import">Import</option>
                                     <option value="Export">Export</option>
                                 </select>
-                            </div> --}}
+                            </div>
                             @endif
                             @if($quotation->id != 0)
                             <div class="form-group col-md-6">
@@ -558,7 +558,7 @@
                             @else
                             <div class="form-group col-md-4">
                                 <label>Booking Status <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required>
                                    <option value="Empty">Empty</option>
                                    <option value="Full">Full</option>
                                 </select>
@@ -568,7 +568,7 @@
                             <div class="form-group col-md-4">
                                 <label>Ref No</label>
                                 <input type="text" class="form-control"  style="background-color:#fff" name="ref_no" placeholder="Ref No"   required>
-                            </div>                            
+                            </div>
                             @endif
                         </div>
                         <div class="form-row">
@@ -609,7 +609,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>                        
+                            </div>
                         </div>
 
                         <h4>Container Details</h4>
@@ -634,7 +634,7 @@
                                 <td>
                                     <input type="text" id="seal_no" name="containerDetails[0][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No">
                                 </td>
-                                <td class="container_type">  
+                                <td class="container_type">
                                     <select class="form-control" id="container_type" data-live-search="true" name="containerDetails[0][container_type]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($equipmentTypes as $item)
@@ -651,7 +651,7 @@
                                     </div>
                                     @enderror
                                 </td>
-                                
+
                                 <td>
                                     <input type="text" id="qyt" onchange="return check();" name="containerDetails[0][qty]" class="form-control input"  autocomplete="off" placeholder="QTY" required>
                                     @error('qty')
@@ -695,7 +695,7 @@
                                     placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF" autocomplete="off">
                                 @endif
                                 </td>
-                                
+
                                 <td><input type="text" class="form-control" id="weight" name="containerDetails[0][weight]" value="{{old('weight')}}"
                                     placeholder="Weight" autocomplete="off">
                                 </td>
@@ -723,14 +723,14 @@
 @push('scripts')
 
 <script>
-   
+
         $(document).ready(function(){
         $("#containerDetails").on("click", ".remove", function () {
             $(this).closest("tr").remove();
     });
     var counter  = 1;
     $("#add").click(function(){
-       
+
             var tr = '<tr>'+
                 '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
                 '<td><select id="selectpicker" class="selectpicker form-control" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
@@ -751,13 +751,13 @@
 </script>
 <script src="js/jquery.js"></script>
     <script type="text/javascript">
-    function check(){  
+    function check(){
             //get the number
-            var number = $('#qyt').val();  
+            var number = $('#qyt').val();
 
-                    if(number == 0){  
-                        //show that the number is not allowed  
-                        alert("Container Qyt value Not Allowed 0"); 
+                    if(number == 0){
+                        //show that the number is not allowed
+                        alert("Container Qyt value Not Allowed 0");
                         $("#qyt").val('');
                     }
     }
@@ -765,13 +765,13 @@
 
 <script src="js/jquery.js"></script>
     <script type="text/javascript">
-    function check_value(){  
+    function check_value(){
             //get the number
-            var number = $('#number').val();  
+            var number = $('#number').val();
 
-                    if(number == 0){  
-                        //show that the number is not allowed  
-                        alert("Container Qyt value Not Allowed 0"); 
+                    if(number == 0){
+                        //show that the number is not allowed
+                        alert("Container Qyt value Not Allowed 0");
                         $("#number").val('');
                     }
     }
@@ -811,7 +811,7 @@
 
 <script>
   $(document).ready(function (){
-    
+
         $(function(){
             let company_id = "{{ optional(Auth::user())->company->id }}";
             let equipment_id = "{{$quotation->equipment_type_id}}";
@@ -833,7 +833,7 @@
                 });
             });
         });
-  });  
+  });
 </script>
 <script>
     $(document).ready(function() {

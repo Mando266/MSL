@@ -44,8 +44,9 @@ class MovementsExportAll implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
-            "Lessor/Seller Refrence",
-            "Containers Ownership"
+            "Containers Ownership",
+            "Containers Ownership Type",
+            "SOC/COC",
         ];
     }
 
@@ -69,6 +70,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
             $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
             $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
+            $movement->SOC_COC = optional($movement->container)->SOC_COC;
 
         }
 
