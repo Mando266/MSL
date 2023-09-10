@@ -481,6 +481,10 @@
             min-width: 100px;
         }
 
+        input.ref-no-td {
+            min-width: 233px !important;
+        }
+
         .table-container {
             overflow-x: auto;
             max-width: 100%;
@@ -635,23 +639,24 @@
                 let table = '';
                 let selectedCharge = null;
 
-                if (quotation_type === 'full') {
+                if (is_ts == '1') {
+                    table = 'table4';
+                    if (quotation_type.toLowerCase() === 'full') {
+                        selectedCharge = 5;
+                    }
+                    if (quotation_type.toLowerCase() === 'empty') {
+                        selectedCharge = 6;
+                    }
+                }
+                else if (quotation_type.toLowerCase() === 'full') {
                     table = 'table1';
-                    selectedCharge = shipment_type === 'Import' ? 1 : 2;
-                } else if (quotation_type === 'empty' && shipment_type === 'Export') {
+                    selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
                     table = 'table2';
                     selectedCharge = 4;
-                } else if (quotation_type === 'empty' && shipment_type === 'Import') {
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'import') {
                     table = 'table3';
                     selectedCharge = 3;
-                } else if (is_ts == '1') {
-                    table = 'table4';
-                    if (quotation_type === 'full') {
-                        selectedCharge = 5
-                    }
-                    if (quotation_type === 'empty') {
-                        selectedCharge = 6
-                    }
                 }
 
                 if (table !== '') {

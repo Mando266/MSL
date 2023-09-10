@@ -196,7 +196,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($total_storage == null)
+                                    @if($cartData == null)
                                         @foreach($triffDetails->triffPriceDetailes ?? [] as $key => $detail)
                                             <tr>
                                                 <td>
@@ -303,7 +303,7 @@
                                             </td>
                                             <td><input type="text" name="invoiceChargeDesc[0][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>
 
-                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][egy_amount]" value="{{$total_storage}}"
+                                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][egy_amount]" value="{{$cart->calculationData->grandTotal}}"
                                                 placeholder="Egp Amount  " autocomplete="off" disabled style="background-color: white;" disabled>
                                             </td>
                                             <td><input type="text" name="invoiceChargeDesc[0][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT" disabled></td>

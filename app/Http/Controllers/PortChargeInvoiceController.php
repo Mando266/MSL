@@ -337,8 +337,8 @@ class PortChargeInvoiceController extends Controller
                 'status' => 'success',
                 'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
-                'shipment_type' => $quotation->shipment_type ?? '',
-                'quotation_type' => $quotation->quotation_type ?? '',
+                'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
+                'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unkown',
             ], 201);
         }
 
