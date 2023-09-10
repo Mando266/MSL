@@ -25,18 +25,7 @@ class Containers extends Model implements PermissionSeederContract
             'Delete'
         ]);
     }
-
-    protected static function booted(): void
-    {
-        if (!app()->runningInConsole() && !request()->is('api/*')) {
-            $lessor_id = auth()->user()->lessor_id;
-            if ($lessor_id != 0) {
-                static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
-                    $builder->where('description', $lessor_id);
-                });
-            }
-        }
-    }
+    
     
     public function containersOwner (){
         return $this->belongsto(ContinerOwnership::class,'container_ownership_id','id');
