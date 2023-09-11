@@ -167,7 +167,9 @@ class PortChargeInvoiceController extends Controller
         $quotationType = request()->quotation_type;
         $chargeMatrix = ChargesMatrix::find($chargeType);
         $storage_from = request()->from ?? $chargeMatrix->storage_from;
+        $storage_to = request()->to ?? $chargeMatrix->storage_to;
         $power_from = request()->from ?? $chargeMatrix->power_from;
+        $power_to = request()->from ?? $chargeMatrix->power_to;
 
         $container = Containers::firstWhere('code', $containerNo);
         $containerId = $container->id;
@@ -176,10 +178,10 @@ class PortChargeInvoiceController extends Controller
 
         $storageDaysInPort = $storage_from === "Select" ?
             0 :
-            $this->calculateDays($containerId, $storage_from, $blNo);
+            $this->calculateDays($containerId, $storage_from, $storage_to, $blNo);
         $powerDaysInPort = $storage_from === "Select" ?
             0 :
-            $this->calculateDays($containerId, $power_from, $blNo);
+            $this->calculateDays($containerId, $power_from, $power_to, $blNo);
 
         [$storage_cost, $storage_cost_minus_one] = $this->calculateStorageCost(
             $storageDaysInPort,
@@ -226,7 +228,7 @@ class PortChargeInvoiceController extends Controller
         return response()->json($response, 201);
     }
 
-    public function calculateDays($containerId, $storage_from, $blNo)
+    public function calculateDays($containerId, $storage_from, $storage_to, $blNo)
     {
 //        dd($containerId, $storage_from, $blNo);
 
@@ -235,10 +237,10 @@ class PortChargeInvoiceController extends Controller
         $fromMovement = Movements::where('container_id', $containerId)
             ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
             ->where('booking_no', $bookingId)->first();
-
         if ($fromMovement) {
             $toMovement = Movements::where('container_id', $containerId)
                 ->whereDate('movement_date', '>=', $fromMovement->movement_date)
+                ->whereHas('movementcode', fn($q) => $q->where('code', $storage_to))
                 ->orderBy('movement_date')
                 ->first();
         }

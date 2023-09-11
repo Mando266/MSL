@@ -19,7 +19,7 @@ class MovementsExportSearch implements FromCollection,WithHeadings
 
     public function headings(): array
     {
-        return [
+        $headings = [
             "company_id",
             "container_id",
             "container_type_id",
@@ -45,6 +45,19 @@ class MovementsExportSearch implements FromCollection,WithHeadings
             "Lessor/Seller Refrence",
             "Containers Ownership"
         ];
+        if (auth()->user()->lessor_id != 0) {
+            // Remove the headings for lessor-specific fields
+            $headings = array_diff($headings, [
+                "company_id",
+                "terminal_id",
+                "booking_agent_id",
+                "import_agent",
+                "free_time_origin",
+                "Lessor/Seller Refrence",
+                "Containers Ownership"
+            ]);
+        }
+        return $headings;
     }
 
     /**
@@ -59,6 +72,13 @@ class MovementsExportSearch implements FromCollection,WithHeadings
 
             foreach($movements as $movement){
                 unset($movement['id']);
+                if (auth()->user()->lessor_id != 0) {
+                    unset($movement['company_id']);
+                    unset($movement['terminal_id']);
+                    unset($movement['booking_agent_id']);
+                    unset($movement['import_agent']);
+                    unset($movement['free_time_origin']);
+                }
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                 $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
                 $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
