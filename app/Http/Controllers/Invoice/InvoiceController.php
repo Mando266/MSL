@@ -172,6 +172,7 @@ class InvoiceController extends Controller
         }
         // id's of triff type export and import power charge
         $powerTriffs = [7,8];
+        $cartData = json_decode(request('cart_data_for_invoice'));
         foreach ($cartData as $cart){
             if(in_array(Demurrage::where('id',$cart->triffValue)->pluck('tariff_type_id')->first(),$powerTriffs)){
                 $cart->triffText = "Power Charge";
