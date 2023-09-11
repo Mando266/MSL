@@ -238,7 +238,7 @@ class PortChargeInvoiceController extends Controller
 
         if ($fromMovement) {
             $toMovement = Movements::where('container_id', $containerId)
-                ->whereDate('movement_date', '>', $fromMovement->movement_date)
+                ->whereDate('movement_date', '>=', $fromMovement->movement_date)
                 ->orderBy('movement_date')
                 ->first();
         }
