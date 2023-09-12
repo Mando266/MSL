@@ -351,8 +351,8 @@ class MovementController extends Controller
                 // dd($movements);
                 $container_id = Containers::where('id', $movements->first()->container_id)->pluck('id')->first();
             }
-            $movement = Movements::find($container_id)->first();
-            $container = Containers::find($container_id)->first();
+            $movement = Movements::find($container_id);
+            $container = Containers::find($container_id);
             $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id', $container_id);
 
             $movementId = false;
