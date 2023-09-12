@@ -178,7 +178,7 @@
                                 </td>
                                 <td style="width:85px;">
                                         <button type="button" class="btn btn-danger remove" onclick="removeItem({{$item->id}})"><i class="fa fa-trash"></i></button>
-                                    </td>                           
+                                    </td>
                                  </tr>
                                  @endforeach
                             </tbody>
@@ -195,13 +195,28 @@
             </div>
 
         </div>
-    </div>
 </div>
 @endsection
 @push('scripts')
+
+<script>
+    var removed = [];
+    function removeItem( item )
+    {
+        removed.push(item);
+        document.getElementById("removed").value = removed;
+    }
+    $(document).ready(function(){
+        $("#voyageport").on("click", ".remove", function () {
+        $(this).closest("tr").remove();
+        });
+    });
+    </script>
+
+
 <script>
   $(document).ready(function (){
-    
+
         $(function(){
                 $('#voyageport').on('change','td.ports select' , function(e){
                   let self = $(this);
@@ -221,6 +236,6 @@
                 });
             });
         });
-  });  
+  });
 </script>
 @endpush
