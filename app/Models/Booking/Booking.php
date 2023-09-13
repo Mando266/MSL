@@ -5,6 +5,7 @@ namespace App\Models\Booking;
 use App\Models\Bl\BlDraft;
 use App\Models\Master\Agents;
 use App\Models\Master\Containers;
+use App\Models\Master\Vessels;
 use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Models\Quotations\Quotation;
@@ -102,6 +103,12 @@ class   Booking extends Model implements PermissionSeederContract
     public function transhipmentPort(){
         return $this->belongsTo(Ports::class,'transhipment_port','id');
     }
+
+    public function vessel(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Vessels::class, 'vessel_name');
+    }
+    
     public function createOrUpdateContainerDetails($inputs)
     {
         $has_gate_in = 0;

@@ -14,7 +14,13 @@
                         </nav>
                         <br>
                         <div class="row">
-                            <div class="col-md-12 text-right mb-12">
+                            <div class="col-md-10 text-right mb-12">
+                                <a class="btn btn-success" id="export-date"
+                                   href="{{ route('port-charge-invoices.export-date') }}"
+                                >Export By Date
+                                </a>
+                            </div>
+                            <div class="col-md-2 text-right mb-12">
                                 <a href="{{ route('port-charge-invoices.create') }}" class="btn btn-primary">Create New
                                     Invoice</a>
                             </div>
@@ -99,21 +105,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script type="text/javascript">
 
-        $('.show_confirm').click(function (event) {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                title: `Are you sure you want to delete this Invoice?`,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
-        });
+        $(document).ready(function () {
+
+            // $("#export-date").on('click', function(){
+            //     swal({
+            //         content: {
+            //             html: "<input>",
+            //             attributes: {
+            //                 placeholder: "Enter Containers Here",
+            //                 id: "containers-auto"
+            //             },
+            //         },
+            //         buttons: ["no", "yes"]
+            //     })
+            // })
+
+
+            $('.show_confirm').click(function (event) {
+                var form = $(this).closest("form");
+                var name = $(this).data("name");
+                event.preventDefault();
+                swal({
+                    title: `Are you sure you want to delete this Invoice?`,
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            form.submit();
+                        }
+                    });
+            });
+        })
     </script>
 @endpush
