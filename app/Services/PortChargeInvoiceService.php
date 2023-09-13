@@ -102,7 +102,12 @@ class PortChargeInvoiceService
                 ->whereDate('movement_date', '>=', $fromMovement->movement_date)
                 ->whereHas('movementcode', fn($q) => $q->where('code', $storage_to))
                 ->orderBy('movement_date')
-                ->first();
+                ->first()
+                ??
+                Movements::where('container_id', $containerId)
+                    ->whereDate('movement_date', '>=', $fromMovement->movement_date)
+                    ->orderBy('movement_date')
+                    ->first();
             if ($toMovement) {
                 $fromDate = Carbon::parse($fromMovement->movement_date);
                 $toDate = Carbon::parse($toMovement->movement_date);
@@ -110,7 +115,7 @@ class PortChargeInvoiceService
                 return $fromDate->diffInDays($toDate) + 1;
             }
         }
-        
+
         return 0;
     }
 
@@ -142,7 +147,10 @@ class PortChargeInvoiceService
             ->where('bl_no', $blNo)->first()->movement_date;
     }
 
-    public function calculatePowerCost($daysInPort, $container_size, $portCharge, $isMinus = false): array
+    /**
+     * @return array|float|int
+     */
+    public function calculatePowerCost($daysInPort, $container_size, $portCharge, $isMinus = false)
     {
         $free_days = $portCharge->power_free;
         $day_20ft = $portCharge->power_20ft;

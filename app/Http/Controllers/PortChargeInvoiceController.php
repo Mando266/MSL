@@ -110,9 +110,10 @@ class PortChargeInvoiceController extends Controller
 
         $rows = $invoices->pluck('rows')->collapse()->map(function ($row) {
             $invoice = $row->invoice;
-            $booking = Booking::firstWhere('ref_no', $row->bl_no);
-            $vesselName = $booking->vessel->name;
-            $voyageName = $booking->voyage->voyage_no;
+            $booking = Booking::where('ref_no', $row->bl_no)->firstWhere('company_id', auth()->user()->company_id);
+            $voyage = $booking->voyage;
+            $voyageName = $voyage->voyage_no;
+            $vesselName = $voyage->vessel->name;
             $invoiceData = [
                 'invoice_no' => $invoice->invoice_no,
                 'invoice_date' => $invoice->invoice_date,
@@ -172,7 +173,7 @@ class PortChargeInvoiceController extends Controller
         $rows->push($sums);
         $q = new PortChargeInvoiceExport($rows);
 //        dd(array_keys($rows->first()));
-        return Excel::download($q, 'asd.xlsx');
+        return Excel::download($q, "invoice_from_${from}_to_${to}.xlsx");
     }
 
 
@@ -249,8 +250,10 @@ class PortChargeInvoiceController extends Controller
     public function getRefNo(): \Illuminate\Http\JsonResponse
     {
         $voyage = request()->input('voyage');
-        $container = request()->input('container');
-        $containerId = Containers::firstWhere('code', $container)->id;
+        $containerCode = request()->input('container');
+        $container = Containers::firstWhere('code', $containerCode);
+        $containerId = $container->id;
+        $containerType = $container->containersTypes->name;
 
         $booking = Booking::with(['quotation'])
             ->where(function ($query) use ($voyage, $containerId) {
@@ -273,7 +276,8 @@ class PortChargeInvoiceController extends Controller
                 'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
                 'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
-                'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unkown',
+                'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
+                'container_type' => $containerType ?? 'unknown',
             ], 201);
         }
 

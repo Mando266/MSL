@@ -129,14 +129,14 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="exchange_rate">
-                                                    Exchange Rate
+                                                    Exchange Rate *
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="number" class="form-control" id="exchange_rate"
                                                    name="exchange_rate" value="{{old('exchange_rate')}}"
-                                                   min="0" max="1000" step="0.01">
+                                                   min="0" max="1000" step="0.01" required>
                                         </div>
                                     </div>
                                     @error('exchange_rate')

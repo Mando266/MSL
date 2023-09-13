@@ -103,11 +103,6 @@ class   Booking extends Model implements PermissionSeederContract
     public function transhipmentPort(){
         return $this->belongsTo(Ports::class,'transhipment_port','id');
     }
-
-    public function vessel(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Vessels::class, 'vessel_name');
-    }
     
     public function createOrUpdateContainerDetails($inputs)
     {
