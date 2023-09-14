@@ -9,8 +9,9 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Port Charge</a></li>
-                                <li class="breadcrumb-item active"><a href="{{route('movements.index')}}">Invoice</a>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charge-invoices.index') }}">Invoice</a>
+                                <li class="breadcrumb-item active"><a href="#">Create</a>
                                 </li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
@@ -196,7 +197,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="ports">
-                                                    Port
+                                                    Port *
                                                 </label>
                                             </div>
                                         </div>
@@ -204,7 +205,7 @@
                                             <select class="selectpicker form-control rounded-0" id="ports"
                                                     name="port_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($ports as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
@@ -504,6 +505,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         var failedContainers = []
+        var addedContainers = []
         $(document).ready(function () {
             setupEventHandlers()
             switchTables()
@@ -623,7 +625,29 @@
                 }
             }
         };
+        
+        
+        function checkForDuplicateContainers() {
+            const containerInputs = document.querySelectorAll('.container_no');
+            const containerSet = new Set();
+            const duplicateContainers = [];
 
+            containerInputs.forEach(input => {
+                const containerNumber = input.value.trim();
+                if (containerNumber) {
+                    if (containerSet.has(containerNumber)) {
+                        duplicateContainers.push(containerNumber);
+                    } else {
+                        containerSet.add(containerNumber);
+                    }
+                }
+            });
+
+            if (duplicateContainers.length > 0) {
+                swal(`Duplicate Containers: ${duplicateContainers.join(', ')}`);
+                return true;
+            }
+        }
 
         const processContainer = async (container, vesselId, voyage) => {
             try {
@@ -820,6 +844,9 @@
                 })
                 e.preventDefault()
             }
+            if (checkForDuplicateContainers()){
+                e.preventDefault()
+            }
         }
 
 
@@ -890,6 +917,7 @@
                 const isTsCell = row.find('.is_transhipment')[0];
                 const shipTypeCell = row.find('.shipment_type')[0];
                 const quoteTypeCell = row.find('.quotation_type')[0];
+                const containerTypeCell = row.find('.container-type')[0];
                 axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
                         vessel: vesselId,
@@ -902,13 +930,14 @@
                         isTsCell.value = response.data.is_ts;
                         shipTypeCell.value = response.data.shipment_type;
                         quoteTypeCell.value = response.data.quotation_type;
+                        containerTypeCell.value = response.data.container_type;
                         row.find('.charge_type').trigger('change');
                     }
                 }).catch(() => {
                     console.error('Could not find ref_no');
                 });
             }
-
+            checkForDuplicateContainers()
             handleDynamicFieldsChange();
         }
 
@@ -976,36 +1005,37 @@
                         <select name="rows[port_charge_id][]" class="form-control charge_type new_charge" required>
                             <option hidden selected>Select</option>
                             @foreach($portCharges as $portCharge)
-            <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
+                            <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
                             @endforeach
-            </select>
-        </td>
-        <td>
-            <select name="rows[service][]" class="form-control service_type" required>
-                <option selected hidden>Select</option>
-                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
-                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
-                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
-                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
-                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
-                <option value="018-YARD-SERV">018-YARD-SERV</option>
-                <option value="019-LOG-SERV">019-LOG-SERV</option>
-                <option value="020-HAND-FES">020-HAND-FES</option>
-                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
-                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
-                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
-                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
-                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
-                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
-                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
-                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
-                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
-                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
-            </select>
-        </td>
-        <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
-        <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rows[service][]" class="form-control service_type" required>
+                            <option selected hidden>Select</option>
+                            <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                            <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                            <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                            <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                            <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                            <option value="018-YARD-SERV">018-YARD-SERV</option>
+                            <option value="019-LOG-SERV">019-LOG-SERV</option>
+                            <option value="020-HAND-FES">020-HAND-FES</option>
+                            <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
+                            <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
+                            <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+                            <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                            <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
+                            <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                            <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
+                            <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
+                            <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+                            <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                            <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+                        </select>
+                    </td>
+                    <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
+                    <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
+                    <td><input type="text" class="form-control container-type"></td>
                     <td><input type="text" name="rows[is_transhipment][]" class="is_transhipment form-control"></td>
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Master\Containers;
 use Illuminate\Database\Eloquent\Model;
 
 class PortChargeInvoiceRow extends Model
@@ -20,6 +21,10 @@ class PortChargeInvoiceRow extends Model
         return $this->belongsTo(PortCharge::class);
     }
 
+    public function container(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Containers::class, 'container_no', 'code');
+    }
     public function getServiceAttribute($value)
     {
         return $value === 'Select' ?

@@ -20,14 +20,29 @@ class PortChargeInvoiceController extends Controller
         $this->invoiceService = new PortChargeInvoiceService();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = PortChargeInvoice::paginate(20);
+        $query = $request->input('q');
+
+        $invoices = PortChargeInvoice::query()
+            ->where('invoice_no', 'like', "%{$query}%")
+            ->orWhereHas('country', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('port', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('vessel', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('voyage', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('voyage_no', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->paginate(20);
 
         return view('port_charge.invoice.index')
-            ->with([
-                'invoices' => $invoices,
-            ]);
+            ->with('invoices', $invoices);
     }
 
     public function create()
@@ -57,9 +72,14 @@ class PortChargeInvoiceController extends Controller
 
     public function show(PortChargeInvoice $portChargeInvoice)
     {
+        $wordsToRemove = ["power_days", "storage_days", "pti_type"];
+        $selectedArray = explode(",", $portChargeInvoice->selected_costs);
+        $filteredString = implode(", ", array_diff($selectedArray, $wordsToRemove));
+
         return view('port_charge.invoice.show', [
             'invoice' => $portChargeInvoice->load('rows'),
             'selected' => explode(',', $portChargeInvoice->selected_costs),
+            'selectedCostsString' => $filteredString
         ]);
     }
 
@@ -95,6 +115,14 @@ class PortChargeInvoiceController extends Controller
         $portChargeInvoice->delete();
         return redirect()->route('port-charge-invoices.index');
     }
+    
+    public function doExportInvoice(PortChargeInvoice $invoice)
+    {
+        $rows = $invoice->rows;
+
+        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
+
+    }
 
     public function exportByDateView()
     {
@@ -108,74 +136,11 @@ class PortChargeInvoiceController extends Controller
 
         $invoices = PortChargeInvoice::whereBetween('invoice_date', [$from, $to])->get()->load('rows');
 
-        $rows = $invoices->pluck('rows')->collapse()->map(function ($row) {
-            $invoice = $row->invoice;
-            $booking = Booking::where('ref_no', $row->bl_no)->firstWhere('company_id', auth()->user()->company_id);
-            $voyage = $booking->voyage;
-            $voyageName = $voyage->voyage_no;
-            $vesselName = $voyage->vessel->name;
-            $invoiceData = [
-                'invoice_no' => $invoice->invoice_no,
-                'invoice_date' => $invoice->invoice_date,
-                'vessel' => $vesselName,
-                'voyage' => $voyageName,
-                'rate' => $invoice->exchange_rate,
-                'port_charge_name' => $row->portCharge->name
-            ];
-            $rowData = $row->makeHidden([
-                'rows',
-                'invoice',
-                'port_charge',
-                'id',
-                "port_charge_invoice_id",
-                "port_charge_id",
-                "created_at",
-                "updated_at",
-                "storage_days",
-                "power_days",
-                'pti_type',
-            ])->toArray();
-            unset($rowData['port_charge']); //for some reason makeHidden did not remove the port_charge :v
-            return array_merge($invoiceData, $rowData);
-        });
-
-        $sums = $rows->reduce(function ($carry, $row) {
-            $carry['total'] = 'Total';
-            if (!isset($carry['total_usd'])) {
-                $carry['total_usd'] = 0;
-            }
-            foreach (
-                [
-                    "thc",
-                    "storage",
-                    "power",
-                    "shifting",
-                    "disinf",
-                    "hand_fes_em",
-                    "gat_lift_off_inbnd_em_ft40",
-                    "gat_lift_on_inbnd_em_ft40",
-                    "pti",
-                    "add_plan"
-                ] as $key
-            ) {
-                if (!isset($carry[$key])) {
-                    $carry[$key] = 0;
-                }
-                $carry[$key] += $row[$key];
-                $carry['total_usd'] += $row[$key];
-            }
-//            dd($carry);
-            return $carry;
-        });
-        $spacer = array_fill(0, 10, ''); // Fill with empty strings
+        $rows = $invoices->pluck('rows')->collapse();
         
-        $sums = array_merge($spacer,$sums);
-        $rows->push($sums);
-        $q = new PortChargeInvoiceExport($rows);
-//        dd(array_keys($rows->first()));
-        return Excel::download($q, "invoice_from_${from}_to_${to}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
     }
-
+    
 
     public function calculateInvoiceRow(): \Illuminate\Http\JsonResponse
     {
@@ -258,8 +223,8 @@ class PortChargeInvoiceController extends Controller
         $booking = Booking::with(['quotation'])
             ->where(function ($query) use ($voyage, $containerId) {
                 $query->where('voyage_id', $voyage)
-                    ->orWhere(function ($subquery) use ($voyage, $containerId) {
-                        $subquery->where('voyage_id_second', $voyage)
+                    ->orWhere(function ($subQuery) use ($voyage, $containerId) {
+                        $subQuery->where('voyage_id_second', $voyage)
                             ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
                     });
             })

@@ -7,7 +7,7 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Port Charges</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charges</a></li>
                                 <li class="breadcrumb-item active"><a href="javascript:void(0);">Invoice</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
@@ -26,6 +26,16 @@
                             </div>
                         </div>
                     </div>
+                    <form action="{{ route('port-charge-invoices.index') }}">
+                        <div class="row layout-top-spacing mx-3 my-5">
+                            <div class="col-md-10">
+                                <input type="text" name="q" class="form-control" placeholder="Search Invoices">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" id="searchButton">Search</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
