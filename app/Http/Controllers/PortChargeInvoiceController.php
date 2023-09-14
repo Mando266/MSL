@@ -24,25 +24,18 @@ class PortChargeInvoiceController extends Controller
     {
         $query = $request->input('q');
 
-        $invoices = PortChargeInvoice::query()
-            ->where('invoice_no', 'like', "%{$query}%")
-            ->orWhereHas('country', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('port', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('vessel', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('voyage', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('voyage_no', 'like', "%{$query}%");
-            })
-            ->latest()
-            ->paginate(20);
+        $invoices = PortChargeInvoice::searchQuery($query)->paginate(20);
 
         return view('port_charge.invoice.index')
             ->with('invoices', $invoices);
+    }
+
+    public function searchJson(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $query = $request->input('q');
+
+        $invoices = PortChargeInvoice::searchQuery($query)->get();
+        return response()->json($invoices);
     }
 
     public function create()
