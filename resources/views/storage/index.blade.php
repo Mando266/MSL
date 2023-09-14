@@ -205,24 +205,29 @@
                                 </ul>
                             </div>
 
-                            <!-- Create Invoice Button -->
-                            <form id="create-invoice-form" action="{{ route('invoice.create_invoice') }}" method="get">
-                                @csrf
-                                <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
-                                <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice" value="">
-                                <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice
-                                </button>
-                            </form>
+                            <div class="button-container">
+                                <!-- Create Invoice Button -->
+                                <form id="create-invoice-form" action="{{ route('invoice.create_invoice') }}"
+                                      method="get">
+                                    @csrf
+                                    <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
+                                    <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
+                                           value="">
+                                    <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice
+                                    </button>
+                                </form>
+                                <a class="btn btn-custom" href="{{ route('export.calculation') }}">Export</a>
+                            </div>
                         </div>
-                    @endif
+                        @endif
 
 
-                    {{--                    @isset($calculation)--}}
-                    {{--                        <form id="createForm" action="{{route('invoice.create_invoice')}}" method="get">--}}
-                    {{--                            @csrf--}}
-                    {{--                            <input type="hidden" id="bldraft_id" name="bldraft_id">--}}
-                    {{--                            <input type="hidden" value="{{$calculation['grandTotal']}}" name="total_storage">--}}
-                    {{--                            <button type="submit" class="btn btn-primary mt-3">Create Invoice</button>--}}
+                        {{--                    @isset($calculation)--}}
+                        {{--                        <form id="createForm" action="{{route('invoice.create_invoice')}}" method="get">--}}
+                        {{--                            @csrf--}}
+                        {{--                            <input type="hidden" id="bldraft_id" name="bldraft_id">--}}
+                        {{--                            <input type="hidden" value="{{$calculation['grandTotal']}}" name="total_storage">--}}
+                        {{--                            <button type="submit" class="btn btn-primary mt-3">Create Invoice</button>--}}
                     {{--                        </form>--}}
                     {{--                    @endisset--}}
                 </div>
@@ -234,6 +239,27 @@
 @endsection
 @push('styles')
     <style>
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center buttons horizontally */
+            gap: 10px; /* Adjust the space between the buttons */
+        }
+
+        .btn-custom {
+            background-color: #ffc107; /* Set the background color to yellow */
+            color: #000; /* Set the text color to black */
+            border: none; /* Remove button border */
+            padding: 10px 20px; /* Adjust padding as needed */
+            border-radius: 5px; /* Add rounded corners */
+            text-decoration: none; /* Remove underlines from links */
+            transition: background-color 0.3s; /* Add a smooth hover effect */
+        }
+
+        .btn-custom:hover {
+            background-color: #ff9800; /* Change the background color on hover */
+        }
+
         /* Style the cart container */
         #invoice-cart {
             border: 1px solid #ddd;

@@ -108,6 +108,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('invoiceBreakdown', 'ImportExportController@invoiceBreakdown')->name('export.invoice.breakdown');
+    Route::get('exportCalculationForInvoice', 'ImportExportController@exportCalculationForInvoice')->name('export.calculation');
     Route::get('receiptExport', 'ImportExportController@receiptExport')->name('export.receipt');
     Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name(
         'export.statements'

@@ -6,6 +6,7 @@ use App\Exports\AgentsExportSearch;
 use App\Exports\BLExport;
 use App\Exports\BLLoadListExport;
 use App\Exports\BookingExport;
+use App\Exports\CalculationExport;
 use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
 use App\Exports\CustomerStatementsExport;
@@ -73,6 +74,11 @@ class ImportExportController extends Controller
     public function exportQuotation()
     {
         return $this->exportWithValidation(new QuotationExport, 'Quotations.xlsx', 'quotations');
+    }
+
+    public function exportCalculationForInvoice()
+    {
+        return $this->exportWithValidation(new CalculationExport(), 'InvoiceCalculation.xlsx', 'calculations');
     }
 
     public function exportContainers()
