@@ -7,11 +7,12 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
-class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles
+class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithStrictNullComparison
 {
 
 
@@ -159,7 +160,6 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
                 }
                 $carry[$key] += $row[$key];
             }
-//            dd($carry);
             return $carry;
         };
     }

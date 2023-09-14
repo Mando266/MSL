@@ -131,6 +131,9 @@ class PortChargeInvoiceController extends Controller
 
         $rows = $invoices->pluck('rows')->collapse();
         
+        if($rows->isEmpty()){
+            return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
+        }
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
     }
     
