@@ -32,6 +32,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "invoice_date",
             "vessel",
             "voyage",
+            "leg",
             "rate",
             "port_charge_name",
             "service",
@@ -59,7 +60,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $rows->transform($this->processRowExport());
 
         $sums = $rows->reduce($this->calculateSumRowsExport());
-        $spacer = array_fill(0, 11, ''); // Fill with empty strings
+        $spacer = array_fill(0, 12, ''); // Fill with empty strings
         $sums = array_merge($spacer, $sums);
         
         $total = array_sum($sums);
@@ -76,12 +77,12 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $totalUsdRow = $this->rows->count() + 1;
         $totalsRow = $this->rows->count() - 1;
         
-        $totalUsdRange = "L$totalUsdRow:V$totalUsdRow";
-        $totalsRange = "L$totalsRow:V$totalsRow";
+        $totalUsdRange = "M$totalUsdRow:W$totalUsdRow";
+        $totalsRange = "M$totalsRow:W$totalsRow";
 
         $TotalUsdStyle = [
             'borders' => [
-                'outline' => [
+                'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
                 ],
             ],
@@ -91,7 +92,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         ];
         $totalsStyle = [
             'borders' => [
-                'outline' => [
+                'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                 ],
             ],
@@ -99,7 +100,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
 
         $sheet->getStyle($totalUsdRange)->applyFromArray($TotalUsdStyle);
         $sheet->getStyle($totalsRange)->applyFromArray($totalsStyle);
-        $sheet->mergeCells("M$totalUsdRow:V$totalUsdRow");
+        $sheet->mergeCells("N$totalUsdRow:W$totalUsdRow");
     }
     
     public function processRowExport(): \Closure
@@ -108,13 +109,12 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             $invoice = $row->invoice;
             $booking = Booking::where('ref_no', $row->bl_no)->firstWhere('company_id', auth()->user()->company_id);
             $voyage = $booking->voyage;
-            $voyageName = $voyage->voyage_no;
-            $vesselName = $voyage->vessel->name;
             $invoiceData = [
                 'invoice_no' => $invoice->invoice_no,
                 'invoice_date' => $invoice->invoice_date,
-                'vessel' => $vesselName,
-                'voyage' => $voyageName,
+                'vessel' => $voyage->vessel->name,
+                'voyage' => $voyage->voyage_no,
+                'leg' => $voyage->leg->name,
                 'rate' => $invoice->exchange_rate,
                 'port_charge_name' => $row->portCharge->name
             ];

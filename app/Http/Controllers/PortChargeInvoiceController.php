@@ -109,6 +109,11 @@ class PortChargeInvoiceController extends Controller
         return redirect()->route('port-charge-invoices.index');
     }
     
+    public function exportByDateView()
+    {
+        return view('port_charge.invoice.export-date');
+    }
+    
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
         $rows = $invoice->rows;
@@ -116,12 +121,7 @@ class PortChargeInvoiceController extends Controller
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
 
     }
-
-    public function exportByDateView()
-    {
-        return view('port_charge.invoice.export-date');
-    }
-
+    
     public function doExportByDate()
     {
         $from = request()->from_date;
