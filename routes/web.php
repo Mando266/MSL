@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
    */
     Route::prefix('master')->namespace('Master')->group(function () {
         Route::resource('company', 'CompanyController');
-        Route::resource('countries','CountryController');
+        Route::resource('countries', 'CountryController');
         Route::resource('port-types', 'PortTyepsController');
         Route::resource('ports', 'PortsController');
         Route::resource('agents', 'AgentsController');
@@ -211,7 +211,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund', 'RefundController');
         Route::resource('creditNote', 'CreditController');
-        Route::get('get_invoice_json/{invoice}','InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
+        Route::get('get_invoice_json/{invoice}', 'InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
     });
     /*
     |-------------------------------------------
@@ -246,13 +246,21 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::resource('port-charges', 'PortChargeController')->except(['show']);
-        Route::prefix('port-charges')->name('port-charges.')->group(function () {
+    Route::prefix('port-charges')->name('port-charges.')->group(function () {
         Route::post('edit-row', [PortChargeController::class, 'editRow'])->name('edit-row');
         Route::post('delete-row', [PortChargeController::class, 'deleteRow'])->name('delete-row');
         Route::get('get-ref-no', [PortChargeInvoiceController::class, 'getRefNo'])->name('get-ref-no');
-        Route::post('calculateInvoiceRow', [PortChargeInvoiceController::class, 'calculateInvoiceRow'])->name('calculate-invoice-row');
+        Route::post('calculateInvoiceRow', [PortChargeInvoiceController::class, 'calculateInvoiceRow'])->name(
+            'calculate-invoice-row'
+        );
     });
-        Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
+    Route::get('port-charge-invoices/export-by-date', [PortChargeInvoiceController::class, 'exportByDateView'])
+        ->name('port-charge-invoices.export-date');
+    Route::post('port-charge-invoices/do-export-date', [PortChargeInvoiceController::class, 'doExportByDate'])
+        ->name('port-charge-invoices.do-export-date');
+    Route::post('port-charge-invoices/{invoice}/export', [PortChargeInvoiceController::class, 'doExportInvoice'])
+        ->name('port-charge-invoices.show.export');
+    Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
 });
 Auth::routes(['register' => false]);
 require 'mail.php';

@@ -2,37 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PortChargeInvoiceExport;
 use App\Models\Booking\Booking;
 use App\Models\ChargesMatrix;
-use App\Models\Containers\Movements;
 use App\Models\Master\Containers;
-use App\Models\Master\ContainersMovement;
-use App\Models\Master\Country;
-use App\Models\Master\Lines;
-use App\Models\Master\Ports;
-use App\Models\Master\Vessels;
-use App\Models\PortCharge;
 use App\Models\PortChargeInvoice;
-use App\Models\Voyages\Voyages;
-use Carbon\Carbon;
+use App\Services\PortChargeInvoiceService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PortChargeInvoiceController extends Controller
 {
-    public function index()
+    private PortChargeInvoiceService $invoiceService;
+
+    public function __construct()
     {
-        $invoices = PortChargeInvoice::paginate(20);
+        $this->invoiceService = new PortChargeInvoiceService();
+    }
+
+    public function index(Request $request)
+    {
+        $query = $request->input('q');
+
+        $invoices = PortChargeInvoice::query()
+            ->where('invoice_no', 'like', "%{$query}%")
+            ->orWhereHas('country', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('port', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('vessel', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('voyage', function ($queryBuilder) use ($query) {
+                $queryBuilder->where('voyage_no', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->paginate(20);
 
         return view('port_charge.invoice.index')
-            ->with([
-                'invoices' => $invoices,
-            ]);
+            ->with('invoices', $invoices);
     }
 
     public function create()
     {
-        $formViewData = $this->getFormViewData();
+        $formViewData = $this->invoiceService->getFormViewData();
 
         return view('port_charge.invoice.create', $formViewData);
     }
@@ -43,8 +58,8 @@ class PortChargeInvoiceController extends Controller
             'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
 
-        $rows = $this->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->extractInvoiceData(request()->except('_token', 'rows'));
+        $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
 
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
 
@@ -57,15 +72,20 @@ class PortChargeInvoiceController extends Controller
 
     public function show(PortChargeInvoice $portChargeInvoice)
     {
+        $wordsToRemove = ["power_days", "storage_days", "pti_type"];
+        $selectedArray = explode(",", $portChargeInvoice->selected_costs);
+        $filteredString = implode(", ", array_diff($selectedArray, $wordsToRemove));
+
         return view('port_charge.invoice.show', [
             'invoice' => $portChargeInvoice->load('rows'),
             'selected' => explode(',', $portChargeInvoice->selected_costs),
+            'selectedCostsString' => $filteredString
         ]);
     }
 
     public function edit(PortChargeInvoice $portChargeInvoice)
     {
-        $formViewData = $this->getFormViewData();
+        $formViewData = $this->invoiceService->getFormViewData();
 
         return view('port_charge.invoice.edit', $formViewData)
             ->with([
@@ -77,8 +97,8 @@ class PortChargeInvoiceController extends Controller
 
     public function update(PortChargeInvoice $portChargeInvoice)
     {
-        $rows = $this->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->extractInvoiceData(request()->except('_token', 'rows'));
+        $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
 
         $portChargeInvoice->update($invoiceData);
         $portChargeInvoice->rows()->delete();
@@ -95,70 +115,34 @@ class PortChargeInvoiceController extends Controller
         $portChargeInvoice->delete();
         return redirect()->route('port-charge-invoices.index');
     }
-
-    public function prepareInvoiceRows($rawRows)
+    
+    public function doExportInvoice(PortChargeInvoice $invoice)
     {
-        $rows = $this->separateInputByIndex($rawRows);
-        $selectedCosts = request()->selected_costs;
-        $identifiers = [
-            "port_charge_id",
-            "service",
-            "bl_no",
-            "container_no",
-            "is_transhipment",
-            "shipment_type",
-            "quotation_type"
-        ];
-        $selectedItems = array_merge($selectedCosts, $identifiers);
-        return $rows->transform(fn($row) => $row->only($selectedItems))->toArray();
+        $rows = $invoice->rows;
+
+        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
+
     }
 
-    public function separateInputByIndex($data): Collection
+    public function exportByDateView()
     {
-        $details = collect();
-
-        for ($i = 0; $i < count(reset($data)); $i++) {
-            $item = collect();
-
-            foreach ($data as $key => $values) {
-                $item[$key] = $values[$i] ?? null;
-            }
-
-            $details->push($item);
-        }
-
-        return $details;
+        return view('port_charge.invoice.export-date');
     }
 
-    public function extractInvoiceData($invoiceData)
+    public function doExportByDate()
     {
-        $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
-        return $invoiceData;
+        $from = request()->from_date;
+        $to = request()->to_date;
+
+        $invoices = PortChargeInvoice::whereBetween('invoice_date', [$from, $to])->get()->load('rows');
+
+        $rows = $invoices->pluck('rows')->collapse();
+        
+        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
     }
+    
 
-    public function getFormViewData()
-    {
-        $userCompanyId = auth()->user()->company_id;
-        $vessels = Vessels::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $voyages = Voyages::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $lines = Lines::where('company_id', $userCompanyId)->orderBy('id')->get();
-        $portCharges = PortCharge::paginate(10);
-        $possibleMovements = ContainersMovement::all();
-        $countries = Country::orderBy('name')->get();
-        $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
-
-        return compact(
-            'vessels',
-            'voyages',
-            'lines',
-            'portCharges',
-            'possibleMovements',
-            'countries',
-            'ports'
-        );
-    }
-
-    public function calculateInvoiceRow()
+    public function calculateInvoiceRow(): \Illuminate\Http\JsonResponse
     {
 //        dd(request()->all());
         $blNo = request()->bl_no;
@@ -178,12 +162,12 @@ class PortChargeInvoiceController extends Controller
 
         $storageDaysInPort = $storage_from === "Select" ?
             0 :
-            $this->calculateDays($containerId, $storage_from, $storage_to, $blNo);
+            $this->invoiceService->calculateDays($containerId, $storage_from, $storage_to, $blNo);
         $powerDaysInPort = $storage_from === "Select" ?
             0 :
-            $this->calculateDays($containerId, $power_from, $power_to, $blNo);
+            $this->invoiceService->calculateDays($containerId, $power_from, $power_to, $blNo);
 
-        [$storage_cost, $storage_cost_minus_one] = $this->calculateStorageCost(
+        [$storage_cost, $storage_cost_minus_one] = $this->invoiceService->calculateStorageCost(
             $storageDaysInPort,
             $container_size,
             $portCharge
@@ -191,7 +175,7 @@ class PortChargeInvoiceController extends Controller
 
         [$power_cost, $power_cost_minus_one] = $quotationType === 'empty' ?
             [0, 0] :
-            $this->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
+            $this->invoiceService->calculatePowerCost($powerDaysInPort, $container_size, $portCharge);
 
 
         $containerSizeSuffix = "{$container_size}ft";
@@ -228,102 +212,19 @@ class PortChargeInvoiceController extends Controller
         return response()->json($response, 201);
     }
 
-    public function calculateDays($containerId, $storage_from, $storage_to, $blNo)
-    {
-//        dd($containerId, $storage_from, $blNo);
-
-        $bookingId = Booking::where('ref_no', $blNo)->first()->id;
-
-        $fromMovement = Movements::where('container_id', $containerId)
-            ->whereHas('movementcode', fn($q) => $q->where('code', $storage_from))
-            ->where('booking_no', $bookingId)->first();
-        if ($fromMovement) {
-            $toMovement = Movements::where('container_id', $containerId)
-                ->whereDate('movement_date', '>=', $fromMovement->movement_date)
-                ->whereHas('movementcode', fn($q) => $q->where('code', $storage_to))
-                ->orderBy('movement_date')
-                ->first();
-        }
-
-        if ($fromMovement && $toMovement) {
-            $fromDate = Carbon::parse($fromMovement->movement_date);
-            $toDate = Carbon::parse($toMovement->movement_date);
-
-            return $fromDate->diffInDays($toDate) + 1;
-        }
-
-        return 0;
-    }
-
-    public function calculateStorageCost($daysInPort, $container_size, $portCharge, $isMinus = false)
-    {
-        $free_days = $portCharge->storage_free;
-        $slab1_period = $portCharge->storage_slab1_period;
-        $slab1_20ft = $portCharge->storage_slab1_20ft;
-        $slab1_40ft = $portCharge->storage_slab1_40ft;
-        $slab2_20ft = $portCharge->storage_slab2_20ft;
-        $slab2_40ft = $portCharge->storage_slab2_40ft;
-        $cost = 0;
-
-        if ($daysInPort > $free_days) {
-            if ($daysInPort <= ($free_days + $slab1_period)) {
-                $daysInSlab1 = $daysInPort - $free_days;
-                $cost += $daysInSlab1 * ($container_size === 20 ? $slab1_20ft : $slab1_40ft);
-            } else {
-                $daysInSlab1 = $slab1_period;
-                $cost += $daysInSlab1 * ($container_size === 20 ? $slab1_20ft : $slab1_40ft);
-
-                $daysInSlab2 = $daysInPort - $free_days - $slab1_period;
-                $cost += $daysInSlab2 * ($container_size === 20 ? $slab2_20ft : $slab2_40ft);
-            }
-        }
-
-        if ($isMinus) {
-            return $cost;
-        }
-        $cost_minus_one = $this->calculateStorageCost($daysInPort - 1, $container_size, $portCharge, true);
-
-        return [$cost, $cost_minus_one];
-    }
-
-    public function calculatePowerCost($daysInPort, $container_size, $portCharge, $isMinus = false)
-    {
-        $free_days = $portCharge->power_free;
-        $day_20ft = $portCharge->power_20ft;
-        $day_40ft = $portCharge->power_40ft;
-
-        $cost = 0;
-        if ($daysInPort > $free_days) {
-            $daysInSlab1 = $daysInPort - $free_days;
-            $cost += $daysInSlab1 * ($container_size === 20 ? $day_20ft : $day_40ft);
-        }
-
-        if ($isMinus) {
-            return $cost;
-        }
-        $cost_minus_one = $this->calculatePowerCost($daysInPort - 1, $container_size, $portCharge, true);
-
-        return [$cost, $cost_minus_one];
-    }
-
-    public function getMovementDate($containerId, $movementCode, $blNo)
-    {
-        return Movements::where('container_id', $containerId)
-            ->whereHas('movementcode', fn($q) => $q->where('code', $movementCode))
-            ->where('bl_no', $blNo)->first()->movement_date;
-    }
-
-    public function getRefNo()
+    public function getRefNo(): \Illuminate\Http\JsonResponse
     {
         $voyage = request()->input('voyage');
-        $container = request()->input('container');
-        $containerId = Containers::firstWhere('code', $container)->id;
+        $containerCode = request()->input('container');
+        $container = Containers::firstWhere('code', $containerCode);
+        $containerId = $container->id;
+        $containerType = $container->containersTypes->name;
 
         $booking = Booking::with(['quotation'])
             ->where(function ($query) use ($voyage, $containerId) {
                 $query->where('voyage_id', $voyage)
-                    ->orWhere(function ($subquery) use ($voyage, $containerId) {
-                        $subquery->where('voyage_id_second', $voyage)
+                    ->orWhere(function ($subQuery) use ($voyage, $containerId) {
+                        $subQuery->where('voyage_id_second', $voyage)
                             ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
                     });
             })
@@ -340,7 +241,8 @@ class PortChargeInvoiceController extends Controller
                 'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
                 'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
-                'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unkown',
+                'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
+                'container_type' => $containerType ?? 'unknown',
             ], 201);
         }
 
