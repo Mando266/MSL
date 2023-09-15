@@ -59,7 +59,8 @@
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
+                        </div>
+
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('demurrage.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
@@ -74,11 +75,6 @@
                                             <th>Tariff Ref No</th>
                                             <th>validity from</th>
                                             <th>validity to</th>
-{{--                                            <th>Container Type/Size</th>--}}
-{{--                                            <th>Detention OR Storage</th>--}}
-{{--                                            <th>period Details</th>--}}
-                                            {{-- <th>period</th>
-                                            <th>calendar days</th>--}}
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -87,15 +83,9 @@
                                         @forelse ($items as $item)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{$item->is_storge}} {{{optional($item->bound)->name}}} {{{optional($item->ports)->code}}} {{{optional($item->containersType)->name}}} </td>
+                                            <td>{{{optional($item->tarriffType)->code}}} - {{{optional($item->ports)->code}}} - {{$item->tariff_id}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
-{{--                                            <td>{{{optional($item->containersType)->name}}}</td>--}}
-{{--                                            <td>{{$item->is_storge}}</td>--}}
-                                            {{-- <td>{{$item->period}}</td>
-                                            <td>{{$item->number_off_dayes}}</td>
-                                            <td>{{$item->rate}}</td> --}}
-
                                            <td class="text-center">
                                                <ul class="table-controls">
                                                    @permission('Demurrage-Show')
@@ -105,13 +95,13 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
-                                                    @permission('Demurrage-Edit')
+                                                    {{-- @permission('Demurrage-Edit')
                                                     <li>
                                                         <a href="{{route('demurrage.edit',['demurrage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission
+                                                    @endpermission --}}
                                                 </ul>
                                            </td>
                                             <td class="text-center">
@@ -142,7 +132,3 @@
         </div>
     </div>
 @endsection
-{{-- const date1 = new Date('7/13/2010');
-const date2 = new Date('12/15/2010');
-const diffTime = Math.abs(date2 - date1);
-console.log(diffDays + "days"); --}}

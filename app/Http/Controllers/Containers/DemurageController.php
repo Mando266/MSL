@@ -99,23 +99,22 @@ class DemurageController extends Controller
         return redirect()->route('demurrage.index')->with('success', trans('Demurrage.created'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $this->authorize(__FUNCTION__,Demurrage::class);
         $demurrages = Demurrage::find($id);
-        $period = Period::where('demurrage_id',$id)->get();
-        $demurrage = Demurrage::where('id',$id)->first();
+        $slabs = DemuragePeriodsSlabs::where('demurage_id', $id)->with('periods')->get();
 
+        foreach ($slabs as $slab) {
+            foreach ($slab->periods as $period) {
+                $periodData = $period->toArray();
+            }
+        }
+            // dd($slabs);
         return view('containers.demurrage.show',[
             'demurrages'=>$demurrages,
-            'period'=>$period,
-            'demurrage'=>$demurrage,
+            'slabs'=>$slabs,
+            'periodData'=>$periodData,
         ]);
     }
 

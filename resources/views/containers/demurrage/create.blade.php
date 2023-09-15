@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="is_storage">Detention OR Storage</label>
-                                    <input class="form-control" id="is_storage" name="is_storage" readonly>
+                                    <input class="form-control" id="is_storage" name="is_storge" readonly>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="bound_id">Bound</label>
@@ -178,9 +178,6 @@
                                                         <button type="button" class="btn btn-sm btn-success"
                                                                 id="addSlab">Create Slab
                                                         </button>
-{{--                                                        <button type="button" class="btn btn-sm btn-primary"--}}
-{{--                                                                id="updateSlab">Update Slab--}}
-{{--                                                        </button>--}}
                                                     </div>
                                                 </div>
                                                 <div class="row mt-3">
@@ -434,6 +431,7 @@
 
         });
     </script>
+    
     <script>
         $(document).ready(function () {
             $('#tariff_type_id').on('change', function () {

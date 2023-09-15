@@ -73,7 +73,14 @@
 
                     <form>
                         <div class="form-row">
-                            <div class="form-group col-md-9">
+                            <div class="form-group col-md-12">
+                                <label for="pastedContainers">Paste Container Numbers (Separated by commas)</label>
+                                <input type="text" class="form-control" id="pastedContainers" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
                                 <label for="ContainerInput">Container Number</label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
                                  title="{{trans('forms.select')}}"  multiple="multiple">
@@ -93,7 +100,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
 
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="portlocationInput">Activity Location</label>
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
@@ -103,8 +112,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
+
                         <div class="form-group col-md-3">
                                 <label for="vessel_port_idInput">Vessel Name</label>
                                 <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
@@ -137,6 +145,8 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="BLNo">BL No</label>
                                 <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
@@ -148,9 +158,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
                                 <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="booking_no" data-size="10"
@@ -179,6 +187,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="countryInput"> Container Ownership </label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
@@ -312,5 +323,28 @@ function unlockupdate(){
                         });
                     });
                 });
+</script>
+
+<script>
+    var containerSelect = document.getElementById('ContainerInput');
+    var pastedContainersInput = document.getElementById('pastedContainers');
+
+    pastedContainersInput.addEventListener('input', function(e) {
+        var pastedText = e.target.value;
+        var numbersArray = pastedText.split(',');
+
+        for (var i = 0; i < containerSelect.options.length; i++) {
+            containerSelect.options[i].selected = false;
+        }
+
+        for (var j = 0; j < numbersArray.length; j++) {
+            var numberToSelect = numbersArray[j].trim();
+            for (var k = 0; k < containerSelect.options.length; k++) {
+                if (containerSelect.options[k].text === numberToSelect) {
+                    containerSelect.options[k].selected = true;
+                }
+            }
+        }
+    });
 </script>
 @endpush

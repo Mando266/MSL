@@ -120,12 +120,9 @@ class XmlController extends Controller
             ->with('bldrafts.booking.quotation','bldrafts.voyage.vessel',
                 'vessel','line.country','bldrafts.customer','bldrafts.blDetails.container.containersTypes',
                 'bldrafts.customerNotify','bldrafts.customerConsignee',
-                'bldrafts.loadPort.country','bldrafts.dischargePort.country',)->first();
-
-        $bldraft = $voyage->bldrafts->first();
                 'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
 
-        // $bldraft = $voyage->bldrafts->first();
+        $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
 
         // Create a new XML document
@@ -207,16 +204,17 @@ class XmlController extends Controller
                         break;
                 }
                 $this->addItemToElement($xmlDoc, $Item, $containerType , 'ItemContainerType');
-                $this->addItemToElement($xmlDoc, $Item, substr($item->container->containersTypes->name, 0, 2) , 'ItemContainerVolume');
+                $this->addItemToElement($xmlDoc, $Item, $item->container->containersTypes->name, 'ItemContainerVolume');
                 $this->addItemToElement($xmlDoc, $Item, $item->seal_no , 'ItemShipingSeal');
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
                 $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight + (float)optional($item->container)->tar_weight, 'ItemExpGrossWeight');
-                $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
+                $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
+
                 $BillOfLading->appendChild($Item);
             }
             $cargoData->appendChild($BillOfLading);
