@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //});
 Route::get('vessel/voyages/{id}', [CompanyDataController::class, 'getVesselVoyages']);
+Route::get('vessel/multi-voyages/{id}', [CompanyDataController::class, 'getMultiVesselVoyages']);
 Route::get('master/ports/{id}/{company_id}', [CompanyDataController::class, 'portsCountry']);
 Route::get('master/customers/{id}', [CompanyDataController::class, 'customer']);
 Route::get('master/terminals/{id}', [CompanyDataController::class, 'terminalsPorts']);

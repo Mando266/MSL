@@ -7,6 +7,7 @@ use App\Models\Booking\Booking;
 use App\Models\ChargesMatrix;
 use App\Models\Master\Containers;
 use App\Models\PortChargeInvoice;
+use App\Models\Voyages\Voyages;
 use App\Services\PortChargeInvoiceService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -51,9 +52,9 @@ class PortChargeInvoiceController extends Controller
             'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
 
+//        dd(request()->rows);
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
-
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows',"124_applied_costs","91_applied_costs"));
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
 
         foreach ($rows as $row) {
@@ -210,17 +211,18 @@ class PortChargeInvoiceController extends Controller
 
     public function getRefNo(): \Illuminate\Http\JsonResponse
     {
-        $voyage = request()->input('voyage');
+        $voyageId = request()->input('voyage');
+//        dd($voyageId);
         $containerCode = request()->input('container');
         $container = Containers::firstWhere('code', $containerCode);
         $containerId = $container->id;
         $containerType = $container->containersTypes->name;
 
         $booking = Booking::with(['quotation'])
-            ->where(function ($query) use ($voyage, $containerId) {
-                $query->where('voyage_id', $voyage)
-                    ->orWhere(function ($subQuery) use ($voyage, $containerId) {
-                        $subQuery->where('voyage_id_second', $voyage)
+            ->where(function ($query) use ($voyageId, $containerId) {
+                $query->whereIn('voyage_id', $voyageId)
+                    ->orWhere(function ($subQuery) use ($voyageId, $containerId) {
+                        $subQuery->whereIn('voyage_id_second', $voyageId)
                             ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
                     });
             })
@@ -232,6 +234,7 @@ class PortChargeInvoiceController extends Controller
 
         if ($booking) {
             $quotation = $booking->quotation;
+            $voyage = $booking->voyage;
             return response()->json([
                 'status' => 'success',
                 'ref_no' => $booking->ref_no,
@@ -239,6 +242,8 @@ class PortChargeInvoiceController extends Controller
                 'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
                 'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
                 'container_type' => $containerType ?? 'unknown',
+                'voyage_name' => $voyage ? "{$voyage->voyage_no} - {$voyage->leg->name}" : 'unknown',
+                'voyage_id' => $voyage->id ?? 'unknown',
             ], 201);
         }
 
