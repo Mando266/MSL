@@ -337,10 +337,10 @@ class InvoiceController extends Controller
         if($blkind == 40){
             foreach($request->input('invoiceChargeDesc',[])  as $chargeDesc){
                 InvoiceChargeDesc::create([
-                    'invoice_id'=>$invoice->id,
-                    'charge_description'=>$chargeDesc['charge_description'],
-                    'size_large'=>$chargeDesc['size_small'],
-                    'total_amount'=>$qty * $chargeDesc['size_small'],
+                    'invoice_id' => $invoice->id,
+                    'charge_description' => $chargeDesc['charge_description'],
+                    'size_large' => $chargeDesc['size_small'],
+                    'total_amount' => ($chargeDesc['size_small'] == $chargeDesc['total_amount'] && $qty > 1) ? $chargeDesc['size_small'] : $qty * $chargeDesc['size_small'],
                     // 'enabled'=>$chargeDesc['enabled'],
                 ]);
             }

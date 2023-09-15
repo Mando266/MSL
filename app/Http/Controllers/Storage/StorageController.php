@@ -76,6 +76,7 @@ class StorageController extends Controller
             $route = 'storage.create';
         }
         $bl_no = BlDraft::where('id', $request->bl_no)->pluck('ref_no')->first();
+        $bldraft = BlDraft::where('id', $request->bl_no)->with('booking.quotation')->first();
         $triff = Demurrage::where('id', $request->Triff_id)->with('slabs.periods')->first();
         $containerCalc = collect();
         if (count(request()->container_code) == 1) {
@@ -126,39 +127,119 @@ class StorageController extends Controller
                     }
                     $daysCount++;
                     $tempDaysCount = $daysCount;
+                    if (request()->service == 3) {
+                        $quotationFreeTime = $bldraft->booking->quotation->import_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    } elseif (request()->service == 1) {
+                        $quotationFreeTime = $bldraft->booking->quotation->export_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    }
                     // Calculation of each period
                     foreach ($triff->slabs as $slab) {
                         if ($slab->container_type_id == $container->container_type_id) {
                             foreach ($slab->periods as $period) {
-                                if ($tempDaysCount != 0) {
-                                    if ($period->number_off_dayes < $tempDaysCount) {
-                                        // remaining days more than period days
-                                        $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
-                                        $periodtotal = $period->rate * $period->number_off_dayes;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $period->number_off_dayes,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
+                                //for Detention just export and import
+                                if (request()->service == 3 || request()->service == 1) {
+                                    //we are in the free time period
+                                    if ($quotationFreeTime > $period->number_off_dayes) {
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
+
+                                                $periodtotal = 0 * $period->number_off_dayes;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                            } else {
+                                                // remaining days less than period days
+                                                $periodtotal = 0 * $tempDaysCount;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                            }
+                                        }
                                     } else {
-                                        // remaining days less than period days
-                                        $periodtotal = $period->rate * $tempDaysCount;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $tempDaysCount,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
-                                        $tempDaysCount = 0;
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $days = $period->number_off_dayes - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $quotationFreeTime = 0;
+                                            } else {
+                                                // remaining days less than period days
+                                                $days = $tempDaysCount - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                                $quotationFreeTime = 0;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if ($tempDaysCount != 0) {
+                                        if ($period->number_off_dayes < $tempDaysCount) {
+                                            // remaining days more than period days
+                                            $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                            $periodtotal = $period->rate * $period->number_off_dayes;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $period->number_off_dayes,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                        } else {
+                                            // remaining days less than period days
+                                            $periodtotal = $period->rate * $tempDaysCount;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $tempDaysCount,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                            $tempDaysCount = 0;
+                                        }
                                     }
                                 }
+
                             }
                         }
                     }
@@ -171,6 +252,8 @@ class StorageController extends Controller
                         'container_type' => $container->containersTypes->name,
                         'from' => $fromMovement->movement_date,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'from_code'=>$fromMovement->movementcode->code,
+                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
@@ -221,37 +304,114 @@ class StorageController extends Controller
                     $daysCount++;
                     $tempDaysCount = $daysCount;
                     // Calculation of each period
-
+                    if (request()->service == 3) {
+                        $quotationFreeTime = $bldraft->booking->quotation->import_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    } elseif (request()->service == 1) {
+                        $quotationFreeTime = $bldraft->booking->quotation->export_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    }
                     foreach ($triff->slabs as $slab) {
                         if ($slab->container_type_id == $container->container_type_id) {
                             foreach ($slab->periods as $period) {
-                                if ($tempDaysCount != 0) {
-                                    if ($period->number_off_dayes < $tempDaysCount) {
-                                        // remaining days more than period days
-                                        $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
-                                        $periodtotal = $period->rate * $period->number_off_dayes;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $period->number_off_dayes,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
+                                if (request()->service == 3 || request()->service == 1) {
+
+                                    //we are in the free time period
+                                    if ($quotationFreeTime > $period->number_off_dayes) {
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
+                                                $periodtotal = 0 * $period->number_off_dayes;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                            } else {
+                                                // remaining days less than period days
+                                                $periodtotal = 0 * $tempDaysCount;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                            }
+                                        }
                                     } else {
-                                        // remaining days less than period days
-                                        $periodtotal = $period->rate * $tempDaysCount;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $tempDaysCount,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
-                                        $tempDaysCount = 0;
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $days = $period->number_off_dayes - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $quotationFreeTime = 0;
+                                            } else {
+                                                // remaining days less than period days
+                                                $days = $tempDaysCount - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                                $quotationFreeTime = 0;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if ($tempDaysCount != 0) {
+                                        if ($period->number_off_dayes < $tempDaysCount) {
+                                            // remaining days more than period days
+                                            $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                            $periodtotal = $period->rate * $period->number_off_dayes;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $period->number_off_dayes,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                        } else {
+                                            // remaining days less than period days
+                                            $periodtotal = $period->rate * $tempDaysCount;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $tempDaysCount,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                            $tempDaysCount = 0;
+                                        }
                                     }
                                 }
                             }
@@ -265,6 +425,8 @@ class StorageController extends Controller
                         'container_type' => $container->containersTypes->name,
                         'from' => $fromMovement->movement_date,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'from_code'=>$fromMovement->movementcode->code,
+                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
@@ -317,36 +479,114 @@ class StorageController extends Controller
                     $daysCount++;
                     $tempDaysCount = $daysCount;
                     // Calculation of each period
+                    if (request()->service == 3) {
+                        $quotationFreeTime = $bldraft->booking->quotation->import_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    } elseif (request()->service == 1) {
+                        $quotationFreeTime = $bldraft->booking->quotation->export_detention;
+                        $exportFreeTime = $quotationFreeTime;
+                    }
                     foreach ($triff->slabs as $slab) {
                         if ($slab->container_type_id == $container->container_type_id) {
                             foreach ($slab->periods as $period) {
-                                if ($tempDaysCount != 0) {
-                                    if ($period->number_off_dayes < $tempDaysCount) {
-                                        // remaining days more than period days
-                                        $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
-                                        $periodtotal = $period->rate * $period->number_off_dayes;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $period->number_off_dayes,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
+                                if (request()->service == 3 || request()->service == 1) {
+
+                                    //we are in the free time period
+                                    if ($quotationFreeTime > $period->number_off_dayes) {
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
+                                                $periodtotal = 0 * $period->number_off_dayes;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                            } else {
+                                                // remaining days less than period days
+                                                $periodtotal = 0 * $tempDaysCount;
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                            }
+                                        }
                                     } else {
-                                        // remaining days less than period days
-                                        $periodtotal = $period->rate * $tempDaysCount;
-                                        $containerTotal = $containerTotal + $periodtotal;
-                                        $tempCollection = collect([
-                                            'name' => $period->period,
-                                            'days' => $tempDaysCount,
-                                            'rate' => $period->rate,
-                                            'total' => $periodtotal,
-                                        ]);
-                                        // Adding period
-                                        $periodCalc->add($tempCollection);
-                                        $tempDaysCount = 0;
+                                        if ($tempDaysCount != 0) {
+                                            if ($period->number_off_dayes < $tempDaysCount) {
+                                                // remaining days more than period days
+                                                $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                                $days = $period->number_off_dayes - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $period->number_off_dayes,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $quotationFreeTime = 0;
+                                            } else {
+                                                // remaining days less than period days
+                                                $days = $tempDaysCount - $quotationFreeTime;
+                                                $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                $containerTotal = $containerTotal + $periodtotal;
+                                                $tempCollection = collect([
+                                                    'name' => $period->period,
+                                                    'days' => $tempDaysCount,
+                                                    'rate' => $period->rate,
+                                                    'total' => $periodtotal,
+                                                ]);
+                                                // Adding period
+                                                $periodCalc->add($tempCollection);
+                                                $tempDaysCount = 0;
+                                                $quotationFreeTime = 0;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if ($tempDaysCount != 0) {
+                                        if ($period->number_off_dayes < $tempDaysCount) {
+                                            // remaining days more than period days
+                                            $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
+                                            $periodtotal = $period->rate * $period->number_off_dayes;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $period->number_off_dayes,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                        } else {
+                                            // remaining days less than period days
+                                            $periodtotal = $period->rate * $tempDaysCount;
+                                            $containerTotal = $containerTotal + $periodtotal;
+                                            $tempCollection = collect([
+                                                'name' => $period->period,
+                                                'days' => $tempDaysCount,
+                                                'rate' => $period->rate,
+                                                'total' => $periodtotal,
+                                            ]);
+                                            // Adding period
+                                            $periodCalc->add($tempCollection);
+                                            $tempDaysCount = 0;
+                                        }
                                     }
                                 }
                             }
@@ -360,6 +600,8 @@ class StorageController extends Controller
                         'container_type' => $container->containersTypes->name,
                         'from' => $fromMovement->movement_date,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        'from_code'=>$fromMovement->movementcode->code,
+                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
@@ -367,16 +609,19 @@ class StorageController extends Controller
                 }
             }
         }
-                $calculation = collect([
-                    'grandTotal' => $grandTotal,
-                    'currency' => $triff->currency,
-                    'containers' => $containerCalc,
-                ]);
-        // return redirect()->back()->with(['calculation'=>$calculation])->withInput($request->input());
-        return redirect()->route($route)->with([
-            'calculation' => $calculation,
-            'input' => $request->input()
+        $calculation = collect([
+            'grandTotal' => $grandTotal,
+            'currency' => $triff->currency,
+            'containers' => $containerCalc,
         ]);
+        // return redirect()->back()->with(['calculation'=>$calculation])->withInput($request->input());
+        $data = [
+            'calculation' => $calculation,
+            'freetime' => (request()->service == 3 || request()->service == 1) ? $exportFreeTime : 0,
+            'input' => $request->input()
+        ];
+        session(['calculations'=> $data]);
+        return redirect()->route($route)->with($data);
     }
 
     /**
