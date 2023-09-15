@@ -20,11 +20,11 @@
                             @endif
                         </br>
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a> 
+                            <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
                     @endpermission
                     @permission('Booking-List')
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
-                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a> 
+                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a>
                     @endpermission
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="col-md-12 text-right mb-6">
                             <form action="{{route('importBooking')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
-    
+
                                     {{ csrf_field() }}
                                         <input type="file" name="file" >
                                         <button  id="buttonSubmit" class="btn btn-success mt-3" >Import Booking Container</button>
@@ -98,7 +98,7 @@
                                 <label for="place_of_delivery_id">POD</label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item) 
+                                    @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
@@ -239,13 +239,13 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
-                                    <?php 
+                                    <?php
                                     $qty = 0;
                                     $assigned = 0;
                                     $unassigned = 0;
                                     ?>
                                         @foreach($item->bookingContainerDetails as $bookingContainerDetail)
-                                            <?php 
+                                            <?php
                                             $qty += $bookingContainerDetail->qty;
                                             if($bookingContainerDetail->qty == 1 && $bookingContainerDetail->container_id == "000"){
                                                 $unassigned += 1;
@@ -265,9 +265,9 @@
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->consignee)->name}}</td>
-                                            <td>{{optional($item->voyage)->vessel->name}}</td>
+                                            <td>{{optional(optional($item->voyage)->vessel)->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
-                                            <td>{{optional($item->voyage->leg)->name}}</td>
+                                            <td>{{optional(optional($item->voyage)->leg)->name}}</td>
                                             <td>{{optional($item->principal)->name}}</td>
                                             <td>{{optional($item->operator)->name}}</td>
                                             <td>{{optional($item->loadPort)->code}}</td>
@@ -282,7 +282,7 @@
                                             <td>{{ $qty }}</td>
                                             <td>
                                                 {{ $assigned }} Assigned<br>
-                                                {{ $unassigned }} Unassigned 
+                                                {{ $unassigned }} Unassigned
                                             </td>
                                             <td>{{{$item->created_at}}}</td>
                                             <td class="text-center">
@@ -312,7 +312,7 @@
                                                                 @endif
                                                         @endif
                                                     @endpermission
-                                                
+
                                                 @endif
                                                 </ul>
                                             </td>
@@ -368,7 +368,7 @@
                                                     </ul>
                                                 @endpermission
                                             </td>
-                                        
+
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                     @if($item->certificat == !null)
@@ -392,7 +392,7 @@
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
                                                     </li>
-                                                    @endpermission 
+                                                    @endpermission
                                                     @endif
                                                     {{-- @if($item->has_bl == 0)
                                                     @permission('Booking-Delete')
@@ -401,11 +401,11 @@
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
                                                     @endif --}}
-                                                </ul> 
+                                                </ul>
                                             </td>
                                         </tr>
                                     @empty
@@ -438,7 +438,7 @@
             $('.selectpicker').selectpicker('refresh')
         })
     });
-    
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");

@@ -11,6 +11,7 @@
         <th style="min-width: 222px">Service</th>
         <th style="min-width: 222px">BL NO</th>
         <th style="min-width: 222px">CONTAINER NO</th>
+        <th style="min-width: 100px">CONTAINER TYPE</th>
         <th style="min-width: 222px">TS</th>
         <th style="min-width: 222px">SHIPMENT TYPE</th>
         <th style="min-width: 222px">QUOTATION TYPE</th>
@@ -91,6 +92,7 @@
             <td><input type="text" class="form-control ref-no-td" name="rows[bl_no][]"></td>
             <td><input type="text" name="rows[container_no][]"
                        class="container_no form-control"></td>
+            <td><input type="text" class="form-control container-type"></td>
             <td><input type="text" name="rows[is_transhipment][]"
                        class="is_transhipment form-control"></td>
             <td><input type="text" name="rows[shipment_type][]"

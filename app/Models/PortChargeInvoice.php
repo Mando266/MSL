@@ -16,7 +16,7 @@ class PortChargeInvoice extends Model
         'country',
         'port',
         'vessel',
-        'voyage'
+        'voyage.leg'
     ];
 
     public function rows(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -44,5 +44,15 @@ class PortChargeInvoice extends Model
         return $this->belongsTo(Voyages::class, 'voyage_id');
     }
 
+    public static function searchQuery($term): \Illuminate\Database\Eloquent\Builder
+    {
+        return static::query()
+            ->where('invoice_no', 'like', "%{$term}%")
+            ->orWhereHas('country', fn ($q) => $q->where('name', 'like', "%{$term}%"))
+            ->orWhereHas('port', fn ($q) => $q->where('name', 'like', "%{$term}%"))
+            ->orWhereHas('vessel', fn ($q) => $q->where('name', 'like', "%{$term}%"))
+            ->orWhereHas('voyage', fn ($q) => $q->where('voyage_no', 'like', "%{$term}%"))
+            ->latest();
+    }
 
 }
