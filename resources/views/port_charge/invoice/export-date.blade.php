@@ -31,7 +31,7 @@
                                     <div class="col-md-6">
                                         <input type="date" class="form-control" id="from_date"
                                                name="from_date" value="{{old('from_date')}}"
-                                               autocomplete="off">
+                                               autocomplete="off" required>
                                     </div>
                                 </div>
                                 @error('invoice_date')
@@ -53,7 +53,7 @@
                                     <div class="col-md-6">
                                         <input type="date" class="form-control" id="to_date"
                                                name="to_date" value="{{old('to_date')}}"
-                                               autocomplete="off">
+                                               autocomplete="off" required>
                                     </div>
                                 </div>
                                 @error('invoice_date')
@@ -61,13 +61,23 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                                @error('invoices')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="text-center mx-4">
                                     <button type="submit" id="submit"
-                                            class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
+                                            class="btn btn-primary mt-3">{{ trans('forms.create') }}</button>
+                                </div>
+                                <div class="text-center">
+                                    <a href="{{ route('port-charge-invoices.index') }}" class="btn btn-success mt-3">Go
+                                        Back</a>
                                 </div>
                             </div>
+
                         </form>
                     </div>
                 </div>

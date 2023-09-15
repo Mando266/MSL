@@ -24,25 +24,18 @@ class PortChargeInvoiceController extends Controller
     {
         $query = $request->input('q');
 
-        $invoices = PortChargeInvoice::query()
-            ->where('invoice_no', 'like', "%{$query}%")
-            ->orWhereHas('country', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('port', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('vessel', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            })
-            ->orWhereHas('voyage', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('voyage_no', 'like', "%{$query}%");
-            })
-            ->latest()
-            ->paginate(20);
+        $invoices = PortChargeInvoice::searchQuery($query)->paginate(20);
 
         return view('port_charge.invoice.index')
             ->with('invoices', $invoices);
+    }
+
+    public function searchJson(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $query = $request->input('q');
+
+        $invoices = PortChargeInvoice::searchQuery($query)->get();
+        return response()->json($invoices);
     }
 
     public function create()
@@ -116,6 +109,11 @@ class PortChargeInvoiceController extends Controller
         return redirect()->route('port-charge-invoices.index');
     }
     
+    public function exportByDateView()
+    {
+        return view('port_charge.invoice.export-date');
+    }
+    
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
         $rows = $invoice->rows;
@@ -123,12 +121,7 @@ class PortChargeInvoiceController extends Controller
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
 
     }
-
-    public function exportByDateView()
-    {
-        return view('port_charge.invoice.export-date');
-    }
-
+    
     public function doExportByDate()
     {
         $from = request()->from_date;
@@ -138,6 +131,9 @@ class PortChargeInvoiceController extends Controller
 
         $rows = $invoices->pluck('rows')->collapse();
         
+        if($rows->isEmpty()){
+            return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
+        }
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
     }
     
