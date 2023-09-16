@@ -103,7 +103,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
                     'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
-                    'bl no' => $invoice->bldraft_id == 0 ? optional(optional($invoice->bldraft)->booking)->ref_no : optional($invoice->bldraft)->ref_no,
+                    'bl no' => $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->eta : optional($VoyagePort)->eta,
