@@ -161,18 +161,21 @@ class XmlController extends Controller
             //bl is consolidated or not 1=>normal , 2=>consolidated
             $this->addItemToElement($xmlDoc, $BillOfLading, 2 , 'BOLConsolidation');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->customerConsignee->name , 'BOLConsigneeName');
+            $this->addItemToElement($xmlDoc, $BillOfLading, optional($bldraft->customerConsignee)->tax_card_no , 'ImporterTaxNumber');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->customer_consignee_details , 'BOLConsigneeAddress');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->customerNotify->name , 'BOLNotifyPartyName');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->customer_notifiy_details , 'BOLNOotifyPartyAddress');
             //ask moataz
             // $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->customer_consignee_details , 'BOLDestinationCustoms');
-            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->loadPort->code , 'BOLLoadingPort');
+            $this->addItemToElement($xmlDoc, $BillOfLading, substr($bldraft->loadPort->code,2) , 'BOLLoadingPort');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->loadPort->country->prefix , 'BOLLoadingCountry');
-            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->dischargePort->code , 'BOLUnLoadingPort');
+            $this->addItemToElement($xmlDoc, $BillOfLading, substr($bldraft->dischargePort->code,2) ,'BOLUnLoadingPort');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->dischargePort->country->prefix , 'BOLUnLoadingCountry');
             $this->addItemToElement($xmlDoc, $BillOfLading, 560161093 , 'BOLShippingAgent');
             $this->addItemToElement($xmlDoc, $BillOfLading, 22 , 'BOLWarehouse');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->blDetails->count() , 'BOLItemsCount');
+            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->booking->acid , 'ACID');
+            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->descripions , 'BOLCargoDesc');
 
             foreach($bldraft->blDetails as $item){
                 if($item->container == null){
@@ -188,7 +191,7 @@ class XmlController extends Controller
                         $containerType = 1;
                         break;
                     case 'HC':
-                        $containerType = 1;
+                        $containerType = 2;
                         break;
                     case 'FR':
                         $containerType = 2;
@@ -204,17 +207,16 @@ class XmlController extends Controller
                         break;
                 }
                 $this->addItemToElement($xmlDoc, $Item, $containerType , 'ItemContainerType');
-                $this->addItemToElement($xmlDoc, $Item, $item->container->containersTypes->name, 'ItemContainerVolume');
-                $this->addItemToElement($xmlDoc, $Item, $item->seal_no , 'ItemShipingSeal');
+                $this->addItemToElement($xmlDoc, $Item, substr($item->container->containersTypes->name, 0, 2), 'ItemContainerVolume');
+                $this->addItemToElement($xmlDoc, $Item, $item->seal_no, 'ItemShipingSeal');
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
                 $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight + (float)optional($item->container)->tar_weight, 'ItemExpGrossWeight');
-                $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
-                $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
-                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
-
+                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
+                $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
+                $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
                 $BillOfLading->appendChild($Item);
             }
             $cargoData->appendChild($BillOfLading);

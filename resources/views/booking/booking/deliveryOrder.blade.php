@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
@@ -25,7 +25,7 @@
                         <div class="col-md-3">
                         </div>
                         <table class="col-md-6 " style="height: 20px;">
-                        
+
                             <tbody>
                             <tr>
                                 <td style="height: 45px;"></td>
@@ -73,7 +73,7 @@
                             <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} </td>
                             @endif
                         </tr> --}}
-                   
+
                         <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->consignee)->name}} <br>
                             </td>
@@ -147,18 +147,18 @@
                                     Description
                                 </td>
                                 <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                    Weight KG 
+                                    Weight KG
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden;  border-right-style: hidden; font-size: 14px; padding: .75rem;">
-                                    
+
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                    
+
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
-                                    
+
                                 </td>
                                 <td class="col-md-4 tableStyle"  rowspan="5" style="border: 1px solid #000;  border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                     <textarea class="tableStyle" name="maindesc"  style="overflow: hidden;font-size: 16px;border-style: hidden; height: 285px; width: 500px;resize: none; background-color: white;" cols="30" rows="10" readonly>
@@ -174,7 +174,7 @@
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                                 </td>
-                                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">   
+                                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
@@ -186,7 +186,7 @@
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                                     As per attached sheet
                                 </td>
-                                <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">   
+                                <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                     As per attached sheet
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
@@ -197,7 +197,7 @@
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                                 </td>
-                                <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">   
+                                <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000;border-bottom-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
@@ -207,7 +207,7 @@
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                                 </td>
-                                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">   
+                                <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                 </td>
@@ -222,17 +222,17 @@
                                             </tr>
                                             <tr>
                                                 <td class="col-md-12 tableStyle text-right underline" >ملاحظات اذن التسليم
-                                                    شركة ميدل أيست غير مسئولة عن الوزن والمقاس المبين بعالية والبضاعة تم تعبئتها  وتفريغها تحت مسئولية الشاحن والمستلم 
+                                                    شركة ميدل أيست غير مسئولة عن الوزن والمقاس المبين بعالية والبضاعة تم تعبئتها  وتفريغها تحت مسئولية الشاحن والمستلم
                                                     دون اجنى مسئولية علي الخط الملاحي أو الوكيل الملاحي وعلي الجهات الرقابية والجمركية أخذ كافة الأجراءات الجمركية والقانونية اللازمة
                                                     ومراجعة المشمول ومحتوباته ويعتبر الخط الملاحي ناقل للحاوية  فقط  بأعتباره مالك الحاوية</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                    
-                    
+
+
                                     </div>
                     @foreach($chunkedDetails as $chunkIndex => $chunk)
-                    
+
 
 
                     <div class="row">
@@ -252,7 +252,7 @@
                                         Seal
                                     </td>
                                     <td class="col-md-3 tableStyle underline" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                        Weight KG 
+                                        Weight KG
                                     </td>
                                 </tr>
                                 @foreach($chunk as $detail)
@@ -270,14 +270,14 @@
                                         {{$detail->gross_weight}}
                                     </td>
                                     </tr>
-                        
-                                    
+
+
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                     <br>
-                    
+
                     @endforeach
                 @else
                     <table class="col-md-10 tableStyle" >
@@ -296,12 +296,12 @@
                                     Description
                                 </td>
                                 <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                    Weight KG 
+                                    Weight KG
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden;  border-right-style: hidden; font-size: 14px; padding: .75rem;">
-                                    
+
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;"></td>
@@ -311,14 +311,14 @@
                                             {!!  optional($booking->bldraft)->descripions  !!}
                                         </textarea>
                                     </td>
-                                
+
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-bottom-style: hidden; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
-                                    
+
                                 </td>
                             </tr>
                             @foreach(optional($booking->bldraft)->blDetails as $detail)
                             <tr>
-                    
+
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
                                     {{optional($detail->container)->code}}
                                 </td>
@@ -332,25 +332,25 @@
                                     {{$detail->gross_weight}}
                                 </td>
                                 </tr>
-                    
-                                
+
+
                             @endforeach
                         </tbody>
                     </table>
                                     </div>
                                     <table class="col-md-12 tableStyle" >
                                         <tbody>
-                                          
+
                                             <tr>
                                                 <td class="col-md-12 tableStyle text-right underline" >ملاحظات اذن التسليم
-                                                    شركة ميدل أيست غير مسئولة عن الوزن والمقاس المبين بعالية والبضاعة تم تعبئتها  وتفريغها تحت مسئولية الشاحن والمستلم 
+                                                    شركة ميدل أيست غير مسئولة عن الوزن والمقاس المبين بعالية والبضاعة تم تعبئتها  وتفريغها تحت مسئولية الشاحن والمستلم
                                                     دون اجنى مسئولية علي الخط الملاحي أو الوكيل الملاحي وعلي الجهات الرقابية والجمركية أخذ كافة الأجراءات الجمركية والقانونية اللازمة
                                                     ومراجعة المشمول ومحتوباته ويعتبر الخط الملاحي ناقل للحاوية  فقط  بأعتباره مالك الحاوية</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                    
-                    
+
+
                                     </div>
                 @endif
 
@@ -387,7 +387,7 @@
         font-weight: 500 !important;
         border: none;
         margin-bottom: 1rem;
-        height: 40px;
+        height: 100%;
         color: black;
         padding: 0 .75rem;
     }
@@ -397,7 +397,7 @@
     .thstyle {
         background-color: #fff !important;
         color: black !important;
-        height: 35px;
+        height: 100%;
         border: 1px solid #000 !important;
         font-size: 25px !important;
         font-weight: bolder !important;

@@ -21,6 +21,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
     public function headings(): array
     {
         $headings = [
+            "id",
             "company_id",
             "container_id",
             "container_type_id",
