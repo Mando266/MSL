@@ -187,7 +187,7 @@
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($countries as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -210,7 +210,7 @@
                                                     title="{{trans('forms.select')}}" required>
                                                 @foreach ($ports as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -260,7 +260,7 @@
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($vessels as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}">{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -287,7 +287,7 @@
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($voyages as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}">{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -304,7 +304,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="dynamic_fields">
-                                                    Applied Costs
+                                                    Default Applied Costs
                                                 </label>
                                             </div>
                                         </div>
@@ -368,7 +368,7 @@
                                             <label>Empty/Export</label>
                                             <label class="col-md-3">From
                                                 <select name="empty_export_from_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -376,7 +376,7 @@
                                             </label>
                                             <label class="col-md-3">To
                                                 <select name="empty_export_to_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -391,7 +391,7 @@
                                             <label>Empty/Import</label>
                                             <label class="col-md-3">From
                                                 <select name="empty_import_from_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -399,7 +399,7 @@
                                             </label>
                                             <label class="col-md-3">To
                                                 <select name="empty_import_to_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -503,7 +503,13 @@
                     var clonedDiv = appliedCostsClone.clone()
                         .removeClass('dynamic-fields-clone d-none')
                         .addClass('voyage-applied-costs');
-                    clonedDiv.find('label').text(voyageId + ' Costs');
+
+                    var selectedOptions = $('#voyage option:selected');
+                    var desiredOption = selectedOptions.filter(function () {
+                        return $(this).val() === voyageId;
+                    });
+
+                    clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Costs');
 
                     var select = clonedDiv.find('select')
                         .attr('id', 'voyage_' + voyageId + '_applied_costs')
@@ -609,32 +615,46 @@
         }
 
 
-        function calculateTotals() {
+        async function calculateTotals() {
             const exchangeRate = parseFloat($('#exchange_rate').val());
-            let totalUSD = 0
-            let invoiceUSD = 0
-            let invoiceEGP = 0
-            let USD_to_EGP = 0
-
-            $('.dynamic-input.included').each(function () {
-                totalUSD += parseFloat($(this).val()) || 0
-            })
-            $('#table1').find('.dynamic-input.included').each(function () {
-                USD_to_EGP += parseFloat($(this).val()) || 0
-            })
-
-            console.log(USD_to_EGP)
-            invoiceUSD = totalUSD - USD_to_EGP
+            let totalUSD = 0;
+            let invoiceUSD = 0;
+            let invoiceEGP = 0;
+            let USD_to_EGP = 0;
+            
+            await new Promise((resolve) => {
+                $('.dynamic-input.included').each(function () {
+                    totalUSD += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
+            
+            await new Promise((resolve) => {
+                $('#table1').find('.dynamic-input.included').each(function () {
+                    USD_to_EGP += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
+            
+            await new Promise((resolve) => {
+                $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
+                    .each(function () {
+                        USD_to_EGP += parseFloat($(this).val()) || 0;
+                    });
+                resolve();
+            });
+            
+            console.log(USD_to_EGP);
+            invoiceUSD = totalUSD - USD_to_EGP;
 
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
 
-            $("#total_usd").val(totalUSD)
-            $("#invoice_usd").val(invoiceUSD)
-            $("#invoice_egp").val(invoiceEGP)
+            $("#total_usd").val(totalUSD);
+            $("#invoice_usd").val(invoiceUSD);
+            $("#invoice_egp").val(invoiceEGP);
         }
-
 
         const handleAddContainers = async e => {
             const vesselId = $('#vessel_id').val();
@@ -1013,7 +1033,7 @@
 
             $.get(`/api/vessel/multi-voyages/${vessel.val()}`).then(data => {
                 const voyages = data.voyages || []
-                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
+                const options = voyages.map(voyage => `<option value="${voyage.id}" data-name="${voyage.voyage_no} - ${voyage.leg.name}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
                 voyageNo.html(options.join(''))
                 $('.selectpicker').selectpicker('refresh')
             })
