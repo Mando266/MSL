@@ -120,10 +120,10 @@ class XmlController extends Controller
             ->with('bldrafts.booking.quotation','bldrafts.voyage.vessel',
                 'vessel','line.country','bldrafts.customer','bldrafts.blDetails.container.containersTypes',
                 'bldrafts.customerNotify','bldrafts.customerConsignee',
-                'bldrafts.loadPort.country','bldrafts.dischargePort.country',)->first();
+                'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
 
         $bldraft = $voyage->bldrafts->first();
-                'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
+
 
         // $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
