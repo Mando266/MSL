@@ -8,7 +8,8 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a a href="">Demurrage</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Demurrage Calculation</a>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Demurrage
+                                        Calculation</a>
                                 </li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
@@ -46,9 +47,10 @@
                                 // dd(isset($input) ? $input['bl_no'] : '');
                             @endphp
                             <div class="form-row">
-                                <div class="form-group col-md-4" >
+                                <div class="form-group col-md-4">
                                     <label>BL NO</label>
-                                    <select class="selectpicker form-control" id="blno" data-live-search="true" name="bl_no" data-size="10"
+                                    <select class="selectpicker form-control" id="blno" data-live-search="true"
+                                            name="bl_no" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($movementsBlNo as $item)
                                             <option
@@ -89,10 +91,12 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>From</label>
-                                    <select class="selectpicker form-control" data-live-search="true" name="from" data-size="10"
+                                    <select class="selectpicker form-control" data-live-search="true" name="from"
+                                            data-size="10"
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                            <option
+                                                value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('from'))
@@ -101,10 +105,12 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>To</label>
-                                    <select class="selectpicker form-control" data-live-search="true" name="to" data-size="10"
+                                    <select class="selectpicker form-control" data-live-search="true" name="to"
+                                            data-size="10"
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
-                                            <option value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                            <option
+                                                value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('to'))
@@ -113,7 +119,8 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>Till Date</label>
-                                    <input type="date" name="date" class="form-control" value="{{old('date',isset($input) ? $input['date'] : '')}}">
+                                    <input type="date" name="date" class="form-control"
+                                           value="{{old('date',isset($input) ? $input['date'] : '')}}">
                                     @if ($errors->has('date'))
                                         <span class="text-danger">{{ $errors->first('date') }}</span>
                                     @endif
@@ -133,7 +140,8 @@
                                             <tr>
                                                 <th class="col-md-2 text-center">Container No</th>
                                                 <th class="col-md-8 text-center" colspan="4">Calculation Details</th>
-                                                <th class="col-md-2 text-center">Total ({{$calculation['currency']}})</th>
+                                                <th class="col-md-2 text-center">Total ({{$calculation['currency']}})
+                                                </th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -184,14 +192,19 @@
                         @if(isset($calculation))
                             <div class="layout-px-spacing">
                                 <!-- ... Your existing HTML ... -->
-
-                                <!-- Add a button to add the entire calculation to the cart -->
-                                <form id="add-to-cart-form">
-                                    @csrf
-                                    <input type="hidden" name="bl_no" value="{{$input['bl_no']}}">
-                                    <input type="hidden" name="calculation_data" value="{{json_encode($calculation)}}">
-                                    <button class="btn btn-sm btn-primary" id="add-to-cart">Add to Invoice</button>
-                                </form>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <button class="btn btn-primary" onclick="openPreview()">Preview</button>
+                                    </div>
+                                    <!-- Add a button to add the entire calculation to the cart -->
+                                    <form id="add-to-cart-form">
+                                        @csrf
+                                        <input type="hidden" name="bl_no" value="{{$input['bl_no']}}">
+                                        <input type="hidden" name="calculation_data"
+                                               value="{{json_encode($calculation)}}">
+                                        <button class="btn btn-sm btn-primary" id="add-to-cart">Add to Invoice</button>
+                                    </form>
+                                </div>
 
                                 <!-- Display the Cart -->
                                 <div id="invoice-cart">
@@ -209,8 +222,11 @@
                                     <form id="create-invoice-form" action="{{ route('invoice.create') }}" method="get">
                                         @csrf
                                         <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
-                                        <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice" value="">
-                                        <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice</button>
+                                        <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
+                                               value="">
+                                        <button type="button" class="btn btn-primary" id="create-invoice">Create
+                                            Invoice
+                                        </button>
                                     </form>
                                     <a class="btn btn-custom" href="{{ route('export.calculation') }}">Export</a>
                                 </div>
@@ -247,6 +263,7 @@
         .btn-custom:hover {
             background-color: #ff9800; /* Change the background color on hover */
         }
+
         /* Style the cart container */
         #invoice-cart {
             border: 1px solid #ddd;
@@ -390,6 +407,22 @@
     <script>
         // Initialize the cart with data from localStorage or an empty array
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function openPreview() {
+            const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
+
+            // Replace 'your-preview-url' with the actual URL for your preview page
+            const previewUrl = `/preview?cartData=${cartDataParam}`;
+
+            // Open a new window or popup
+            const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
+
+            // Focus on the new window/popup (optional)
+            if (popup) {
+                popup.focus();
+            }
+        }
 
         // Add click event listener to "Add to Invoice" button
         const addToCartButton = document.getElementById('add-to-cart');
@@ -557,7 +590,5 @@
             updateCartDisplay();
         });
     </script>
-
-
 
 @endpush

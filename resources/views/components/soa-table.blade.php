@@ -9,6 +9,7 @@
         <th>Remove</th>
         <th style="min-width: 222px">Type</th>
         <th style="min-width: 222px">Service</th>
+        <th style="min-width: 222px">Voyage</th>
         <th style="min-width: 222px">BL NO</th>
         <th style="min-width: 222px">CONTAINER NO</th>
         <th style="min-width: 100px">CONTAINER TYPE</th>
@@ -89,6 +90,7 @@
                         CONTAINERS
                     </option>
                 </select></td>
+            <td><input type="text" class="form-control voyage-name"></td>
             <td><input type="text" class="form-control ref-no-td" name="rows[bl_no][]"></td>
             <td><input type="text" name="rows[container_no][]"
                        class="container_no form-control"></td>
@@ -199,6 +201,7 @@
                         CONTAINERS
                     </option>
                 </select></td>
+            <td><input type="text" class="form-control ref-no-td" name="rows[bl_no][]" value="{{ $row->bl_no }}"></td>
             <td><input type="text" class="form-control ref-no-td" name="rows[bl_no][]" value="{{ $row->bl_no }}"></td>
             <td><input type="text" name="rows[container_no][]"
                        class="container_no form-control" value="{{ $row->container_no }}"></td>

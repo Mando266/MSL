@@ -1,4 +1,12 @@
 @extends('layouts.app')
+{{--@php--}}
+{{--    $a = \App\Models\PortChargeInvoice::all();--}}
+{{--    $w = $a->pluck('rows','id')->map(fn($r)=> $r->pluck('booking.voyage.id')->unique())->toArray();--}}
+{{--    foreach($w as $id => $array){--}}
+{{--        \App\Models\PortChargeInvoice::find($id)->voyages()->attach($array);--}}
+{{--    }--}}
+{{--//    dd($w);--}}
+{{--@endphp--}}
 @section('content')
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -60,8 +68,8 @@
                                         <th>{{ $invoice->invoice_no }}</th>
                                         <th>{{ $invoice->country->name ?? '' }}</th>
                                         <th>{{ $invoice->port->name ?? '' }}</th>
-                                        <th>{{ $invoice->vessel->name ?? '' }}</th>
-                                        <th>{{ $invoice->voyage ? "{$invoice->voyage->voyage_no} {$invoice->voyage->leg->name}" : '' }}</th>
+                                        <th>{{ $invoice->vesselsNames() }}</th>
+                                        <th>{{ $invoice->voyagesNames() }}</th>
                                         <th>{{ $invoice->total_usd }}</th>
                                         <th>{{ $invoice->invoice_egp }}</th>
                                         <th>{{ $invoice->invoice_usd }}</th>

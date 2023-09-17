@@ -24,7 +24,7 @@ class PortChargeInvoiceController extends Controller
     {
         $query = $request->input('q');
 
-        $invoices = PortChargeInvoice::searchQuery($query)->paginate(20);
+        $invoices = PortChargeInvoice::searchQuery($query)->with(['voyages.vessel'])->paginate(20);
 
         return view('port_charge.invoice.index')
             ->with('invoices', $invoices);
@@ -51,10 +51,13 @@ class PortChargeInvoiceController extends Controller
             'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
 
+//        dd(request()->rows);
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
-
+        $invoiceData = $this->invoiceService->extractInvoiceData(
+            request()->except('_token', 'rows', "vessel_id", 'voyage_id')
+        );
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
+        $portChargeInvoice->voyages()->attach(request()->voyage_id);
 
         foreach ($rows as $row) {
             $portChargeInvoice->rows()->create($row);
@@ -108,20 +111,19 @@ class PortChargeInvoiceController extends Controller
         $portChargeInvoice->delete();
         return redirect()->route('port-charge-invoices.index');
     }
-    
+
     public function exportByDateView()
     {
         return view('port_charge.invoice.export-date');
     }
-    
+
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
         $rows = $invoice->rows;
 
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
-
     }
-    
+
     public function doExportByDate()
     {
         $from = request()->from_date;
@@ -130,13 +132,13 @@ class PortChargeInvoiceController extends Controller
         $invoices = PortChargeInvoice::whereBetween('invoice_date', [$from, $to])->get()->load('rows');
 
         $rows = $invoices->pluck('rows')->collapse();
-        
-        if($rows->isEmpty()){
+
+        if ($rows->isEmpty()) {
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
     }
-    
+
 
     public function calculateInvoiceRow(): \Illuminate\Http\JsonResponse
     {
@@ -210,17 +212,18 @@ class PortChargeInvoiceController extends Controller
 
     public function getRefNo(): \Illuminate\Http\JsonResponse
     {
-        $voyage = request()->input('voyage');
+        $voyageId = request()->input('voyage');
+//        dd($voyageId);
         $containerCode = request()->input('container');
         $container = Containers::firstWhere('code', $containerCode);
         $containerId = $container->id;
         $containerType = $container->containersTypes->name;
 
         $booking = Booking::with(['quotation'])
-            ->where(function ($query) use ($voyage, $containerId) {
-                $query->where('voyage_id', $voyage)
-                    ->orWhere(function ($subQuery) use ($voyage, $containerId) {
-                        $subQuery->where('voyage_id_second', $voyage)
+            ->where(function ($query) use ($voyageId, $containerId) {
+                $query->whereIn('voyage_id', $voyageId)
+                    ->orWhere(function ($subQuery) use ($voyageId, $containerId) {
+                        $subQuery->whereIn('voyage_id_second', $voyageId)
                             ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
                     });
             })
@@ -232,6 +235,7 @@ class PortChargeInvoiceController extends Controller
 
         if ($booking) {
             $quotation = $booking->quotation;
+            $voyage = $booking->voyage;
             return response()->json([
                 'status' => 'success',
                 'ref_no' => $booking->ref_no,
@@ -239,6 +243,8 @@ class PortChargeInvoiceController extends Controller
                 'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
                 'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
                 'container_type' => $containerType ?? 'unknown',
+                'voyage_name' => $voyage ? "{$voyage->voyage_no} - {$voyage->leg->name}" : 'unknown',
+                'voyage_id' => $voyage->id ?? 'unknown',
             ], 201);
         }
 

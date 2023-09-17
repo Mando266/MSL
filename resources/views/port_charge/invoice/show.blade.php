@@ -41,8 +41,8 @@
                             <li><strong>Country:</strong> {{ $invoice->country->name ?? '' }}</li>
                             <li><strong>Port:</strong> {{ $invoice->port->name ?? '' }}</li>
                             <li><strong>Shipping Line:</strong> {{ $invoice->shippingLine->name ?? '' }}</li>
-                            <li><strong>Vessel Name:</strong> {{ $invoice->vessel->name ?? '' }}</li>
-                            <li><strong>Voyage No:</strong> {{ $invoice->voyage->voyage_no ?? '' }}</li>
+                            <li><strong>Vessel Name:</strong> {{ $invoice->vesselsNames() }}</li>
+                            <li><strong>Voyage No:</strong> {{ $invoice->voyagesNames() }}</li>
                             <li><strong>Applied Costs:</strong> {{ $selectedCostsString }}</li>
                             <li><strong>Total USD:</strong> {{ $invoice->total_usd }}</li>
                             <li><strong>Invoice EGP:</strong> {{ $invoice->invoice_egp }}</li>
@@ -55,6 +55,7 @@
                                 <tr>
                                     <th style="min-width: 222px">Type</th>
                                     <th style="min-width: 222px">Service</th>
+                                    <th style="min-width: 222px">Voyage</th>
                                     <th style="min-width: 222px">BL NO</th>
                                     <th style="min-width: 222px">CONTAINER NO</th>
                                     <th style="min-width: 100px">CONTAINER TYPE</th>
@@ -76,6 +77,7 @@
                                     <tr>
                                         <td>{{ $row->portCharge->name }}</td>
                                         <td>{{ $row->service }}</td>
+                                        <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no}" }}</td>
                                         <td>{{ $row->bl_no }}</td>
                                         <td>{{ $row->container_no }}</td>
                                         <td>{{ $row->container->containersTypes->name }}</td>

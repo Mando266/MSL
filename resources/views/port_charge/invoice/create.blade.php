@@ -9,8 +9,10 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('port-charge-invoices.index') }}">Invoice</a>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a>
+                                </li>
+                                <li class="breadcrumb-item"><a
+                                            href="{{ route('port-charge-invoices.index') }}">Invoice</a>
                                 <li class="breadcrumb-item active"><a href="#">Create</a>
                                 </li>
                                 <li class="breadcrumb-item"></li>
@@ -253,9 +255,9 @@
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
-                                                    name="vessel_id"
+                                                    name="vessel_id[]"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}" required>
+                                                    title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($vessels as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -280,9 +282,9 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="voyage"
-                                                    name="voyage_id"
+                                                    name="voyage_id[]"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}" required>
+                                                    title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($voyages as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -296,7 +298,7 @@
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-12 dynamic-fields-clone">
                                     <div class="input-group">
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
@@ -307,7 +309,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <select class="selectpicker form-control" id="dynamic_fields" multiple
+                                            <select class="form-control" id="dynamic_fields" multiple
                                                     data-size="10" name="selected_costs[]" required>
                                                 @foreach ([
                                                             'thc', 'storage','power', 'shifting',
@@ -321,20 +323,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{--                                <div class="form-group col-md-12">--}}
-                                {{--                                    <div class="input-group">--}}
-                                {{--                                        <div class="col-md-2">--}}
-                                {{--                                            <div class="input-group-prepend">--}}
-                                {{--                                                <span class="input-group-text bg-transparent border-0">VAT (%)</span>--}}
-                                {{--                                            </div>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-md-6">--}}
-                                {{--                                            <input type="number" class="form-control" id="vat" name="vat" min="0"--}}
-                                {{--                                                   max="100"--}}
-                                {{--                                                   autocomplete="off">--}}
-                                {{--                                        </div>--}}
-                                {{--                                    </div>--}}
-                                {{--                                </div>--}}
                                 <div class="form-group col-md-12">
                                     <div class="input-group">
                                         <div class="col-md-2">
@@ -466,8 +454,6 @@
                                             class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
@@ -503,7 +489,74 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <script>
+        $(document).ready(function () {
+            const appliedCostsClone = $('.dynamic-fields-clone').clone();
+            $('#dynamic_fields').addClass('selectpicker').selectpicker('refresh');
+
+            $('#voyage').change(function () {
+                var selectedVoyages = $(this).val();
+                $('.voyage-applied-costs').remove();
+
+                selectedVoyages.forEach(function (voyageId) {
+                    var clonedDiv = appliedCostsClone.clone()
+                        .removeClass('dynamic-fields-clone d-none')
+                        .addClass('voyage-applied-costs');
+                    clonedDiv.find('label').text(voyageId + ' Costs');
+
+                    var select = clonedDiv.find('select')
+                        .attr('id', 'voyage_' + voyageId + '_applied_costs')
+                        .removeAttr('name')
+                        .data('voyage-id', voyageId)
+                        .addClass('selectpicker');
+
+                    $('.dynamic-fields-clone').after(clonedDiv);
+                });
+
+                $('.voyage-applied-costs select').html($('#dynamic_fields option:selected').clone())
+                    .find('option').prop('selected', true);
+
+                $(".selectpicker").selectpicker('refresh');
+            });
+
+            $('#dynamic_fields').change(function () {
+                $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
+                    .find('option').prop('selected', true);
+
+                $(".selectpicker").selectpicker('refresh');
+            });
+        });
+        $(document).on('change', '.voyage-applied-costs select', function () {
+            var voyageId = $(this).data('voyage-id');
+
+            var voyageInputs = $('.voyage-' + voyageId);
+
+            var voyageRows = voyageInputs.closest('tr');
+
+            var selectedFields = $(this).val();
+
+            voyageRows.find('.dynamic-input').removeClass('included');
+            voyageRows.find('.dynamic-input').each(function () {
+                var dynamicInput = $(this);
+                let currentVal = dynamicInput.val()
+                if (dynamicInput.val() != 0) {
+                    dynamicInput.data('old-value', currentVal)
+                    dynamicInput.val(0);
+                }
+            })
+
+            selectedFields.forEach(function (selectedField) {
+                var dynamicInput = voyageRows.find('.dynamic-input[data-field*="' + selectedField + '"]');
+                voyageRows.find('.dynamic-input[data-field*="' + selectedField + '"]').each(function () {
+                    var dynamicInput = $(this);
+                    let oldVal = dynamicInput.data('old-value')
+                    dynamicInput.val(oldVal);
+                })
+                dynamicInput.addClass('included');
+            });
+        });
+
         var failedContainers = []
         var addedContainers = []
         $(document).ready(function () {
@@ -521,6 +574,7 @@
             $(document).on('paste', '.container_no', handleContainerNoPaste)
             $(document).on('change', '.container_no', handleContainerNoChange)
             $('#vessel_id').on('change', loadVoyages)
+            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
             $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
             $(document).on('input', '.dynamic-input', calculateTotals)
             $(document).on('change', '.pti-type', handlePtiTypeChange);
@@ -603,7 +657,7 @@
                     let containersText = document.getElementById("containers-auto").value
                     $('tbody tr').filter((index, element) => !$('.container_no', element).val().trim()).remove();
                     await autoAddContainers(containersText)
-                    if (failedContainers.length > 0){
+                    if (failedContainers.length > 0) {
                         swal("Failed To Get Details For These Containers :" + failedContainers)
                         failedContainers = []
                     }
@@ -625,8 +679,8 @@
                 }
             }
         };
-        
-        
+
+
         function checkForDuplicateContainers() {
             const containerInputs = document.querySelectorAll('.container_no');
             const containerSet = new Set();
@@ -671,8 +725,7 @@
                     if (quotation_type.toLowerCase() === 'empty') {
                         selectedCharge = 6;
                     }
-                }
-                else if (quotation_type.toLowerCase() === 'full') {
+                } else if (quotation_type.toLowerCase() === 'full') {
                     table = 'table1';
                     selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
                 } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
@@ -844,7 +897,7 @@
                 })
                 e.preventDefault()
             }
-            if (checkForDuplicateContainers()){
+            if (checkForDuplicateContainers()) {
                 e.preventDefault()
             }
         }
@@ -918,6 +971,7 @@
                 const shipTypeCell = row.find('.shipment_type')[0];
                 const quoteTypeCell = row.find('.quotation_type')[0];
                 const containerTypeCell = row.find('.container-type')[0];
+                const voyageCell = row.find('.voyage-name')[0];
                 axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
                         vessel: vesselId,
@@ -931,6 +985,8 @@
                         shipTypeCell.value = response.data.shipment_type;
                         quoteTypeCell.value = response.data.quotation_type;
                         containerTypeCell.value = response.data.container_type;
+                        voyageCell.value = response.data.voyage_name;
+                        voyageCell.classList.add('voyage-' + response.data.voyage_id)
                         row.find('.charge_type').trigger('change');
                     }
                 }).catch(() => {
@@ -955,10 +1011,10 @@
             const vessel = $('#vessel_id')
             const voyageNo = $('#voyage')
 
-            $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
+            $.get(`/api/vessel/multi-voyages/${vessel.val()}`).then(data => {
                 const voyages = data.voyages || []
-                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
-                voyageNo.html('<option hidden selected>Select</option>' + options.join(''))
+                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
+                voyageNo.html(options.join(''))
                 $('.selectpicker').selectpicker('refresh')
             })
         }
@@ -1005,36 +1061,37 @@
                         <select name="rows[port_charge_id][]" class="form-control charge_type new_charge" required>
                             <option hidden selected>Select</option>
                             @foreach($portCharges as $portCharge)
-                            <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
+            <option value="{{ $portCharge->id }}">{{ $portCharge->name }}</option>
                             @endforeach
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rows[service][]" class="form-control service_type" required>
-                            <option selected hidden>Select</option>
-                            <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
-                            <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
-                            <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
-                            <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
-                            <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
-                            <option value="018-YARD-SERV">018-YARD-SERV</option>
-                            <option value="019-LOG-SERV">019-LOG-SERV</option>
-                            <option value="020-HAND-FES">020-HAND-FES</option>
-                            <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
-                            <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
-                            <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
-                            <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
-                            <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
-                            <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
-                            <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
-                            <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
-                            <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
-                            <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-                            <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
-                        </select>
-                    </td>
-                    <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
-                    <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
+            </select>
+        </td>
+        <td>
+            <select name="rows[service][]" class="form-control service_type" required>
+                <option selected hidden>Select</option>
+                <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+                <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
+                <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+                <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+                <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
+                <option value="018-YARD-SERV">018-YARD-SERV</option>
+                <option value="019-LOG-SERV">019-LOG-SERV</option>
+                <option value="020-HAND-FES">020-HAND-FES</option>
+                <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
+                <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
+                <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+                <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
+                <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
+                <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
+                <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
+                <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
+                <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+                <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
+                <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+            </select>
+        </td>
+        <td><input type="text" class="form-control voyage-name"></td>
+        <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
+        <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
                     <td><input type="text" class="form-control container-type"></td>
                     <td><input type="text" name="rows[is_transhipment][]" class="is_transhipment form-control"></td>
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
