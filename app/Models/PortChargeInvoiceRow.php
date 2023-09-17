@@ -31,6 +31,16 @@ class PortChargeInvoiceRow extends Model
     {
         return $this->belongsTo(Booking::class, 'bl_no', 'ref_no');
     }
+    
+    public function voyage()
+    {
+        return $this->booking->voyage();
+    }
+    
+    public function vessel()
+    {
+        return $this->booking->voyage->vessel();
+    }
 
     public function getServiceAttribute($value)
     {

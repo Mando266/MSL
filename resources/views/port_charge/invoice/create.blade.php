@@ -255,7 +255,7 @@
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
-                                                    name="vessel_id"
+                                                    name="vessel_id[]"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($vessels as $item)
@@ -282,7 +282,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="voyage"
-                                                    name="voyage_id"
+                                                    name="voyage_id[]"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($voyages as $item)
