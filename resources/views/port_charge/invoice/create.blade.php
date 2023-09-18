@@ -491,55 +491,91 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
+        const appliedCostsClone = $('.dynamic-fields-clone').clone();
+        var failedContainers = []
+        var addedContainers = []
+        
         $(document).ready(function () {
-            const appliedCostsClone = $('.dynamic-fields-clone').clone();
             $('#dynamic_fields').addClass('selectpicker').selectpicker('refresh');
+            setupEventHandlers()
+            switchTables()
+            calculateTotals()
+            hideCellsWithoutIncludedInput()
+            handleDynamicFieldsChange()
+            loadVoyages()
+        })
 
-            $('#voyage').change(function () {
-                var selectedVoyages = $(this).val();
-                $('.voyage-applied-costs').remove();
+        function setupEventHandlers() {
+            $('#dynamic_fields').change(addOptionsToVoyageCosts);
+            $('#voyage').change(handleVoyageChange);
+            $(document).on('click', '.removeContact', handleRemoveRow)
+            $("#add-row").on('click', handleAddRow)
+            $(document).on('change', '.charge_type', handleChargeTypeChange)
+            $(document).on('paste', '.container_no', handleContainerNoPaste)
+            $(document).on('change', '.container_no', handleContainerNoChange)
+            $('#vessel_id').on('change', loadVoyages)
+            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
+            $(document).on('input', '.dynamic-input', calculateTotals)
+            $(document).on('change', '.pti-type', handlePtiTypeChange);
+            $(document).on('change', '.power-days', handlePowerDaysChange);
+            $(document).on('change', '.storage-days', handleStorageDaysChange);
+            $(document).on('change', '.add-plan-select', handleAddPlanChange);
+            $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
+            $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
+            $(document).on('click change keyup paste', () => calculateTotals());
+            $('form').on('submit', e => {
+                deleteEmptyOnSubmit(e)
+                addTypesToSelectedCosts(e)
+            });
+            $("#add-many-containers").on('click', handleAddContainers);
+        }
 
-                selectedVoyages.forEach(function (voyageId) {
+        function handleVoyageChange() {
+            var selectedVoyages = $(this).val();
+            $('.voyage-applied-costs').remove();
+
+            selectedVoyages.forEach(function (voyageId) {
+                var selectedOptions = $('#voyage option:selected');
+                var desiredOption = selectedOptions.filter(function () {
+                    return $(this).val() === voyageId;
+                });
+
+                for (var i = 0; i < 2; i++) {
                     var clonedDiv = appliedCostsClone.clone()
                         .removeClass('dynamic-fields-clone d-none')
                         .addClass('voyage-applied-costs');
 
-                    var selectedOptions = $('#voyage option:selected');
-                    var desiredOption = selectedOptions.filter(function () {
-                        return $(this).val() === voyageId;
-                    });
-
-                    clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Costs');
+                    if (i === 0) {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Full Costs');
+                        clonedDiv.find('select').data('type', 'full');
+                    } else {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Empty Costs');
+                        clonedDiv.find('select').data('type', 'empty');
+                    }
 
                     var select = clonedDiv.find('select')
                         .attr('id', 'voyage_' + voyageId + '_applied_costs')
                         .removeAttr('name')
                         .data('voyage-id', voyageId)
+                        .addClass('voyage-costs')
                         .addClass('selectpicker');
 
                     $('.dynamic-fields-clone').after(clonedDiv);
-                });
-
-                $('.voyage-applied-costs select').html($('#dynamic_fields option:selected').clone())
-                    .find('option').prop('selected', true);
-
-                $(".selectpicker").selectpicker('refresh');
+                }
             });
+            
+            addOptionsToVoyageCosts()
+        }
 
-            $('#dynamic_fields').change(function () {
-                $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
-                    .find('option').prop('selected', true);
-
-                $(".selectpicker").selectpicker('refresh');
-            });
-        });
-        $(document).on('change', '.voyage-applied-costs select', function () {
+        function handleVoyageCostsChange() {
             var voyageId = $(this).data('voyage-id');
+            var voyageType = $(this).data('type');
 
             var voyageInputs = $('.voyage-' + voyageId);
 
             var voyageRows = voyageInputs.closest('tr');
-
+            console.log(voyageRows)
+            voyageRows = voyageRows.filter((index, row) => row.querySelector('.quotation_type').value == voyageType)
             var selectedFields = $(this).val();
 
             voyageRows.find('.dynamic-input').removeClass('included');
@@ -561,38 +597,13 @@
                 })
                 dynamicInput.addClass('included');
             });
-        });
+        }
 
-        var failedContainers = []
-        var addedContainers = []
-        $(document).ready(function () {
-            setupEventHandlers()
-            switchTables()
-            calculateTotals()
-            hideCellsWithoutIncludedInput()
-            handleDynamicFieldsChange()
-        })
+        function addOptionsToVoyageCosts() {
+            $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
+                .find('option');
 
-        function setupEventHandlers() {
-            $(document).on('click', '.removeContact', handleRemoveRow)
-            $("#add-row").on('click', handleAddRow)
-            $(document).on('change', '.charge_type', handleChargeTypeChange)
-            $(document).on('paste', '.container_no', handleContainerNoPaste)
-            $(document).on('change', '.container_no', handleContainerNoChange)
-            $('#vessel_id').on('change', loadVoyages)
-            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $(document).on('input', '.dynamic-input', calculateTotals)
-            $(document).on('change', '.pti-type', handlePtiTypeChange);
-            $(document).on('change', '.power-days', handlePowerDaysChange);
-            $(document).on('change', '.storage-days', handleStorageDaysChange);
-            $(document).on('change', '.add-plan-select', handleAddPlanChange);
-            $(document).on('click change keyup paste', () => calculateTotals());
-            $('form').on('submit', e => {
-                deleteEmptyOnSubmit(e)
-                addPtiTypeToSelect(e)
-            });
-            $("#add-many-containers").on('click', handleAddContainers);
+            $(".selectpicker").selectpicker('refresh');
         }
 
         function handleDynamicFieldsChange() {
@@ -621,21 +632,21 @@
             let invoiceUSD = 0;
             let invoiceEGP = 0;
             let USD_to_EGP = 0;
-            
+
             await new Promise((resolve) => {
                 $('.dynamic-input.included').each(function () {
                     totalUSD += parseFloat($(this).val()) || 0;
                 });
                 resolve();
             });
-            
+
             await new Promise((resolve) => {
                 $('#table1').find('.dynamic-input.included').each(function () {
                     USD_to_EGP += parseFloat($(this).val()) || 0;
                 });
                 resolve();
             });
-            
+
             await new Promise((resolve) => {
                 $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
                     .each(function () {
@@ -643,8 +654,8 @@
                     });
                 resolve();
             });
-            
-            console.log(USD_to_EGP);
+
+            // console.log(USD_to_EGP);
             invoiceUSD = totalUSD - USD_to_EGP;
 
             if (!isNaN(exchangeRate)) {
@@ -694,8 +705,21 @@
             const voyage = $('#voyage').val();
 
             if (containers.length > 0 && vesselId && voyage) {
+                const currentContainerInputs = document.querySelectorAll('.container_no');
+                const existingContainers = Array.from(currentContainerInputs).map(input => input.value);
+
+                const duplicates = [];
+
                 for (const container of containers) {
-                    await processContainer(container, vesselId, voyage);
+                    if (existingContainers.includes(container)) {
+                        duplicates.push(container);
+                    } else {
+                        await processContainer(container, vesselId, voyage);
+                    }
+                }
+
+                if (duplicates.length > 0) {
+                    swal(`Duplicate Containers: ${duplicates.join(', ')}`);
                 }
             }
         };
@@ -838,6 +862,7 @@
                         ptiTypeSelect.trigger('change')
                         addPlanSelect.trigger('change')
                         storageDaysSelect.trigger('change')
+                        $(".voyage-costs").trigger('change')
 
                         calculateTotals();
                     })
@@ -871,7 +896,7 @@
             storageInput.val(storageCost);
         }
 
-        function addPtiTypeToSelect(e) {
+        function addTypesToSelectedCosts(e) {
             const dynamicFieldsSelect = $('#dynamic_fields');
             if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
