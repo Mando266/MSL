@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -23,6 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('dashboard.index');
+        if(Auth::user()->id == 18){
+            return view('movements.index');
+        }else{
+            return view('dashboard.index');
+
+        }
     }
 }

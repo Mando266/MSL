@@ -46,19 +46,19 @@ class MovementsExportSearch implements FromCollection,WithHeadings
             "Containers Ownership Type",
             "SOC/COC",
         ];
-        if (auth()->user()->lessor_id != 0) {
-            // Remove the headings for lessor-specific fields
-            $headings = array_diff($headings, [
-                "company_id",
-                "terminal_id",
-                "booking_agent_id",
-                "import_agent",
-                "free_time_origin",
-                "Lessor/Seller Refrence",
-                "Containers Ownership"
-            ]);
-        }
-        return $headings;
+        // if (auth()->user()->lessor_id != 0) {
+        //     // Remove the headings for lessor-specific fields
+        //     $headings = array_diff($headings, [
+        //         "company_id",
+        //         "terminal_id",
+        //         "booking_agent_id",
+        //         "import_agent",
+        //         "free_time_origin",
+        //         "Lessor/Seller Refrence",
+        //         "Containers Ownership"
+        //     ]);
+        // }
+        // return $headings;
     }
 
     /**

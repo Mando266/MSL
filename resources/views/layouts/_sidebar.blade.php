@@ -10,15 +10,14 @@
                 </a>
                 @else
                 <a href="{{route('home')}}">
-                    <img src="{{asset('assets/img/mas1.png')}}" style="width: 81px; height: 72px;" class="navbar-logo" alt="logo">
+                    <img src="{{asset('assets/img/cstar_line_logo.jpeg')}}" style="width: 81px; height: 72px;" class="navbar-logo" alt="logo">
                 </a>
             @endif
             </li>
+
             <li class="nav-item theme-text">
-                @if (Auth::user()->company_id == 1)
-                    <a href="{{route('home')}}" class="nav-link"> MSL </a>
-                            @else
-                    <a href="{{route('home')}}" class="nav-link"> MAS </a>
+                @if(Auth::user()->id != 18)
+                    <a href="{{route('home')}}" class="nav-link">MSL</a>
                 @endif
             </li>
             <li class="nav-item toggle-sidebar">
@@ -74,6 +73,7 @@
                 </li>
                 @endpermission
         <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
+            @permission('Ports-List')
             <li class="menu">
                         <a href="#components" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
@@ -196,6 +196,7 @@
                         </li>
                     @endpermission
             </li>
+            @endpermission
         </ul>
                 @permission('Voyages-List')
                 <li class="menu">
@@ -254,7 +255,7 @@
                                     </li>
                                 @endpermission
 
-                                @permission('Movements-List')
+                                @permission('Containers-List')
                                     <li>
                                         <a href="{{route('tracking.create')}}"> Containers Tracking</a>
                                     </li>
@@ -361,6 +362,7 @@
 
 
             <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
+            @permission('Booking-List')
             <li class="menu">
                         <a href="#booking" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div>
@@ -397,6 +399,7 @@
                         </li>
                         @endpermission
             </li>
+            @endpermission
         </ul>
         @permission('Trucker-List')
             <li class="menu">

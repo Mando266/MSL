@@ -83,7 +83,7 @@
                                         @forelse ($items as $item)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{{optional($item->tarriffType)->code}}} - {{{optional($item->ports)->code}}} - {{$item->tariff_id}}</td>
+                                            <td>{{{optional($item->tarriffType)->name}}} - {{{optional($item->ports)->code}}} - {{$item->tariff_id}}</td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                            <td class="text-center">

@@ -74,7 +74,7 @@
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="pastedContainers">Paste Container Numbers (Separated by commas)</label>
+                                <label for="pastedContainers">Paste Container Numbers</label>
                                 <input type="text" class="form-control" id="pastedContainers" autocomplete="off">
                             </div>
                         </div>

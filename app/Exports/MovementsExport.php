@@ -46,9 +46,9 @@ class MovementsExport implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
-            "Containers Ownership",
-            "Containers Ownership Type",
-            "SOC/COC",
+            "Containers_Ownership",
+            "container_ownership_id",
+            "SOC_COC",
         ];
     }
 
