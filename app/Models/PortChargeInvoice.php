@@ -57,8 +57,8 @@ class PortChargeInvoice extends Model
             ->where('invoice_no', 'like', "%{$term}%")
             ->orWhereHas('country', fn ($q) => $q->where('name', 'like', "%{$term}%"))
             ->orWhereHas('port', fn ($q) => $q->where('name', 'like', "%{$term}%"))
-//            ->orWhereHas('vessel', fn ($q) => $q->where('name', 'like', "%{$term}%"))
-//            ->orWhereHas('voyage', fn ($q) => $q->where('voyage_no', 'like', "%{$term}%"))
+//            ->orWhereHas('vessels', fn ($q) => $q->where('name', 'like', "%{$term}%"))
+            ->orWhereHas('voyages', fn ($q) => $q->where('voyage_no', 'like', "%{$term}%"))
             ->latest();
     }
 

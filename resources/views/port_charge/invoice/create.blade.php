@@ -557,6 +557,7 @@
                         .attr('id', 'voyage_' + voyageId + '_applied_costs')
                         .removeAttr('name')
                         .data('voyage-id', voyageId)
+                        .prop('required', false)
                         .addClass('voyage-costs')
                         .addClass('selectpicker');
 
@@ -649,6 +650,7 @@
 
             await new Promise((resolve) => {
                 $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
+                    .not($('#table1 .dynamic-input.included[data-field="disinf_cost"], #table1 .dynamic-input.included[data-field="hand_fes_em_cost"]'))
                     .each(function () {
                         USD_to_EGP += parseFloat($(this).val()) || 0;
                     });
