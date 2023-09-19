@@ -15,8 +15,7 @@ class PreviewController extends Controller
      */
     public function index()
     {
-        $cartDataParam = request()->query('cartData');
-        $cartData = json_decode(urldecode($cartDataParam), true);
+        $cartData = json_decode(request('preview-data'), true);
         $total = 0;
         foreach ($cartData as $key => $data) {
             $total += $data['calculationData']['grandTotal'];

@@ -193,7 +193,11 @@
                                 <!-- ... Your existing HTML ... -->
                                 <div class="row">
                                     <div class="col-md-1">
-                                        <button class="btn btn-primary" onclick="openPreview()">Preview</button>
+                                        <form action="{{ route('preview.index') }}" method="post" id="preview-form">
+                                            @csrf
+                                            <input type="text"  name="preview-data" id="preview-data" hidden>
+                                            <button class="btn btn-primary">Preview</button>
+                                        </form>
                                     </div>
 
                                     <!-- Add a button to add the entire calculation to the cart -->
@@ -407,22 +411,64 @@
     <script>
         // Initialize the cart with data from localStorage or an empty array
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        {{--$('#preview-form').submit(function(event) {--}}
+        {{--    // Retrieve the cart data from local storage--}}
+        {{--    const cartData = localStorage.getItem('cart') || [];--}}
 
-        function openPreview() {
-            const cartData = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
+        {{--    // Construct the request headers--}}
+        {{--    const headers = new Headers({--}}
+        {{--        'Content-Type': 'application/json',--}}
+        {{--        'X-CSRF-TOKEN': '{{csrf_token()}}',--}}
+        {{--    });--}}
 
-            // Replace 'your-preview-url' with the actual URL for your preview page
-            const previewUrl = `/preview?cartData=${cartDataParam}`;
+        {{--    // Construct the request object--}}
+        {{--    const requestOptions = {--}}
+        {{--        method: 'POST',--}}
+        {{--        headers: headers,--}}
+        {{--        body: cartData,--}}
+        {{--    };--}}
 
-            // Open a new window or popup
-            const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
+        {{--    // Replace 'your-preview-url' with the actual URL for your preview page--}}
+        {{--    const previewUrl = `/preview`;--}}
 
-            // Focus on the new window/popup (optional)
-            if (popup) {
-                popup.focus();
+        {{--    // Send a POST request with the cart data and CSRF token in the headers--}}
+        {{--    fetch(previewUrl, requestOptions)--}}
+        {{--        .then(response => response.json())--}}
+        {{--        .then(data => {--}}
+        {{--            // Handle the response data here--}}
+        {{--            console.log(data);--}}
+        {{--        })--}}
+        {{--        .catch(error => {--}}
+        {{--            console.error('Error:', error);--}}
+        {{--        });--}}
+
+        {{--    // Prevent the default form submission behavior--}}
+        {{--    event.preventDefault();--}}
+        {{--});--}}
+
+
+        $('#preview-form').submit(function(event) {
+            const storedItem = localStorage.getItem('cart');
+            if (storedItem) {
+                $('#preview-data').val(storedItem);
             }
-        }
+        });
+
+        // function openPreview() {
+        //     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+        //     const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
+        //
+        //     // Replace 'your-preview-url' with the actual URL for your preview page
+        //     const previewUrl = `/preview`;
+        //
+        //     // Open a new window or popup
+        //     const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
+        //
+        //     // Focus on the new window/popup (optional)
+        //     if (popup) {
+        //         popup.focus();
+        //     }
+        // }
 
         // Add click event listener to "Add to Invoice" button
         const addToCartButton = document.getElementById('add-to-cart');
