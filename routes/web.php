@@ -229,7 +229,7 @@ Route::group(['middleware' => 'auth'], function () {
     | Storage routes
     |--------------------------------------------
     */
-    Route::get('/preview', [PreviewController::class,'index'])->name('preview.index');
+    Route::post('/preview', [PreviewController::class,'index'])->name('preview.index');
     Route::prefix('storage')->namespace('Storage')->group(function () {
         Route::resource('storage', 'StorageController');
 
