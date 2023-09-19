@@ -572,7 +572,11 @@
                             @endif
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
+                                <label>Exporter Number</label>
+                                <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number"   required>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="status">Movement</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
                                     <option value="FCL/FCL">FCL/FCL</option>
@@ -584,7 +588,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <div class="custom-file-container" data-upload-id="certificat">
                                     <label> <span style="color:#3b3f5c";> Certificat </span><a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
                                     <label class="custom-file-container__custom-file" >
@@ -600,7 +604,9 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-6">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="details" name="notes" value="{{old('notes')}}"
                                  placeholder="Notes" autocomplete="off"></textarea>

@@ -174,8 +174,9 @@ class XmlController extends Controller
             $this->addItemToElement($xmlDoc, $BillOfLading, 560161093 , 'BOLShippingAgent');
             $this->addItemToElement($xmlDoc, $BillOfLading, 22 , 'BOLWarehouse');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->blDetails->count() , 'BOLItemsCount');
-            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->booking->acid , 'ACID');
             $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->descripions , 'BOLCargoDesc');
+            $this->addItemToElement($xmlDoc, $BillOfLading, $bldraft->booking->acid , 'ACID');
+            $this->addItemToElement($xmlDoc, $BillOfLading, optional($bldraft->booking)->exportal_id , 'ExporterNumber');
 
             foreach($bldraft->blDetails as $item){
                 if($item->container == null){

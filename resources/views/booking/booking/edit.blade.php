@@ -675,6 +675,10 @@
                             </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Exporter Number</label>
+                            <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number" value="{{old('exportal_id',$booking->exportal_id)}}">
+                        </div>
                         <div class="form-group col-md-3">
                                 <label for="status">Movement</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
