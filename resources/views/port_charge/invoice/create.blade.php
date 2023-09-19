@@ -187,7 +187,7 @@
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ($countries as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -210,7 +210,7 @@
                                                     title="{{trans('forms.select')}}" required>
                                                 @foreach ($ports as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}" {{$item->id == old('port_id') ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -260,7 +260,7 @@
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($vessels as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('vessel_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}">{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -287,7 +287,7 @@
                                                     title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($voyages as $item)
                                                     <option
-                                                            value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->name}}</option>
+                                                            value="{{$item->id}}">{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -304,7 +304,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="dynamic_fields">
-                                                    Applied Costs
+                                                    Default Applied Costs
                                                 </label>
                                             </div>
                                         </div>
@@ -368,7 +368,7 @@
                                             <label>Empty/Export</label>
                                             <label class="col-md-3">From
                                                 <select name="empty_export_from_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -376,7 +376,7 @@
                                             </label>
                                             <label class="col-md-3">To
                                                 <select name="empty_export_to_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -391,7 +391,7 @@
                                             <label>Empty/Import</label>
                                             <label class="col-md-3">From
                                                 <select name="empty_import_from_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -399,7 +399,7 @@
                                             </label>
                                             <label class="col-md-3">To
                                                 <select name="empty_import_to_id" class="form-control">
-                                                    <option hidden selected>Select</option>
+                                                    <option selected>Select</option>
                                                     @foreach ($possibleMovements as $movement)
                                                         <option value="{{ $movement->id }}">{{ $movement->code }}</option>
                                                     @endforeach
@@ -491,49 +491,91 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
+        const appliedCostsClone = $('.dynamic-fields-clone').clone();
+        var failedContainers = []
+        var addedContainers = []
+        
         $(document).ready(function () {
-            const appliedCostsClone = $('.dynamic-fields-clone').clone();
             $('#dynamic_fields').addClass('selectpicker').selectpicker('refresh');
+            setupEventHandlers()
+            switchTables()
+            calculateTotals()
+            hideCellsWithoutIncludedInput()
+            handleDynamicFieldsChange()
+            loadVoyages()
+        })
 
-            $('#voyage').change(function () {
-                var selectedVoyages = $(this).val();
-                $('.voyage-applied-costs').remove();
+        function setupEventHandlers() {
+            $('#dynamic_fields').change(addOptionsToVoyageCosts);
+            $('#voyage').change(handleVoyageChange);
+            $(document).on('click', '.removeContact', handleRemoveRow)
+            $("#add-row").on('click', handleAddRow)
+            $(document).on('change', '.charge_type', handleChargeTypeChange)
+            $(document).on('paste', '.container_no', handleContainerNoPaste)
+            $(document).on('change', '.container_no', handleContainerNoChange)
+            $('#vessel_id').on('change', loadVoyages)
+            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
+            $(document).on('input', '.dynamic-input', calculateTotals)
+            $(document).on('change', '.pti-type', handlePtiTypeChange);
+            $(document).on('change', '.power-days', handlePowerDaysChange);
+            $(document).on('change', '.storage-days', handleStorageDaysChange);
+            $(document).on('change', '.add-plan-select', handleAddPlanChange);
+            $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
+            $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
+            $(document).on('click change keyup paste', () => calculateTotals());
+            $('form').on('submit', e => {
+                deleteEmptyOnSubmit(e)
+                addTypesToSelectedCosts(e)
+            });
+            $("#add-many-containers").on('click', handleAddContainers);
+        }
 
-                selectedVoyages.forEach(function (voyageId) {
+        function handleVoyageChange() {
+            var selectedVoyages = $(this).val();
+            $('.voyage-applied-costs').remove();
+
+            selectedVoyages.forEach(function (voyageId) {
+                var selectedOptions = $('#voyage option:selected');
+                var desiredOption = selectedOptions.filter(function () {
+                    return $(this).val() === voyageId;
+                });
+
+                for (var i = 0; i < 2; i++) {
                     var clonedDiv = appliedCostsClone.clone()
                         .removeClass('dynamic-fields-clone d-none')
                         .addClass('voyage-applied-costs');
-                    clonedDiv.find('label').text(voyageId + ' Costs');
+
+                    if (i === 0) {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Full Costs');
+                        clonedDiv.find('select').data('type', 'full');
+                    } else {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Empty Costs');
+                        clonedDiv.find('select').data('type', 'empty');
+                    }
 
                     var select = clonedDiv.find('select')
                         .attr('id', 'voyage_' + voyageId + '_applied_costs')
                         .removeAttr('name')
                         .data('voyage-id', voyageId)
+                        .addClass('voyage-costs')
                         .addClass('selectpicker');
 
                     $('.dynamic-fields-clone').after(clonedDiv);
-                });
-
-                $('.voyage-applied-costs select').html($('#dynamic_fields option:selected').clone())
-                    .find('option').prop('selected', true);
-
-                $(".selectpicker").selectpicker('refresh');
+                }
             });
+            
+            addOptionsToVoyageCosts()
+        }
 
-            $('#dynamic_fields').change(function () {
-                $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
-                    .find('option').prop('selected', true);
-
-                $(".selectpicker").selectpicker('refresh');
-            });
-        });
-        $(document).on('change', '.voyage-applied-costs select', function () {
+        function handleVoyageCostsChange() {
             var voyageId = $(this).data('voyage-id');
+            var voyageType = $(this).data('type');
 
             var voyageInputs = $('.voyage-' + voyageId);
 
             var voyageRows = voyageInputs.closest('tr');
-
+            console.log(voyageRows)
+            voyageRows = voyageRows.filter((index, row) => row.querySelector('.quotation_type').value == voyageType)
             var selectedFields = $(this).val();
 
             voyageRows.find('.dynamic-input').removeClass('included');
@@ -555,38 +597,13 @@
                 })
                 dynamicInput.addClass('included');
             });
-        });
+        }
 
-        var failedContainers = []
-        var addedContainers = []
-        $(document).ready(function () {
-            setupEventHandlers()
-            switchTables()
-            calculateTotals()
-            hideCellsWithoutIncludedInput()
-            handleDynamicFieldsChange()
-        })
+        function addOptionsToVoyageCosts() {
+            $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
+                .find('option');
 
-        function setupEventHandlers() {
-            $(document).on('click', '.removeContact', handleRemoveRow)
-            $("#add-row").on('click', handleAddRow)
-            $(document).on('change', '.charge_type', handleChargeTypeChange)
-            $(document).on('paste', '.container_no', handleContainerNoPaste)
-            $(document).on('change', '.container_no', handleContainerNoChange)
-            $('#vessel_id').on('change', loadVoyages)
-            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $(document).on('change', '#dynamic_fields', handleDynamicFieldsChange)
-            $(document).on('input', '.dynamic-input', calculateTotals)
-            $(document).on('change', '.pti-type', handlePtiTypeChange);
-            $(document).on('change', '.power-days', handlePowerDaysChange);
-            $(document).on('change', '.storage-days', handleStorageDaysChange);
-            $(document).on('change', '.add-plan-select', handleAddPlanChange);
-            $(document).on('click change keyup paste', () => calculateTotals());
-            $('form').on('submit', e => {
-                deleteEmptyOnSubmit(e)
-                addPtiTypeToSelect(e)
-            });
-            $("#add-many-containers").on('click', handleAddContainers);
+            $(".selectpicker").selectpicker('refresh');
         }
 
         function handleDynamicFieldsChange() {
@@ -609,32 +626,46 @@
         }
 
 
-        function calculateTotals() {
+        async function calculateTotals() {
             const exchangeRate = parseFloat($('#exchange_rate').val());
-            let totalUSD = 0
-            let invoiceUSD = 0
-            let invoiceEGP = 0
-            let USD_to_EGP = 0
+            let totalUSD = 0;
+            let invoiceUSD = 0;
+            let invoiceEGP = 0;
+            let USD_to_EGP = 0;
 
-            $('.dynamic-input.included').each(function () {
-                totalUSD += parseFloat($(this).val()) || 0
-            })
-            $('#table1').find('.dynamic-input.included').each(function () {
-                USD_to_EGP += parseFloat($(this).val()) || 0
-            })
+            await new Promise((resolve) => {
+                $('.dynamic-input.included').each(function () {
+                    totalUSD += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
 
-            console.log(USD_to_EGP)
-            invoiceUSD = totalUSD - USD_to_EGP
+            await new Promise((resolve) => {
+                $('#table1').find('.dynamic-input.included').each(function () {
+                    USD_to_EGP += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
+
+            await new Promise((resolve) => {
+                $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
+                    .each(function () {
+                        USD_to_EGP += parseFloat($(this).val()) || 0;
+                    });
+                resolve();
+            });
+
+            // console.log(USD_to_EGP);
+            invoiceUSD = totalUSD - USD_to_EGP;
 
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
 
-            $("#total_usd").val(totalUSD)
-            $("#invoice_usd").val(invoiceUSD)
-            $("#invoice_egp").val(invoiceEGP)
+            $("#total_usd").val(totalUSD);
+            $("#invoice_usd").val(invoiceUSD);
+            $("#invoice_egp").val(invoiceEGP);
         }
-
 
         const handleAddContainers = async e => {
             const vesselId = $('#vessel_id').val();
@@ -674,8 +705,21 @@
             const voyage = $('#voyage').val();
 
             if (containers.length > 0 && vesselId && voyage) {
+                const currentContainerInputs = document.querySelectorAll('.container_no');
+                const existingContainers = Array.from(currentContainerInputs).map(input => input.value);
+
+                const duplicates = [];
+
                 for (const container of containers) {
-                    await processContainer(container, vesselId, voyage);
+                    if (existingContainers.includes(container)) {
+                        duplicates.push(container);
+                    } else {
+                        await processContainer(container, vesselId, voyage);
+                    }
+                }
+
+                if (duplicates.length > 0) {
+                    swal(`Duplicate Containers: ${duplicates.join(', ')}`);
                 }
             }
         };
@@ -818,6 +862,7 @@
                         ptiTypeSelect.trigger('change')
                         addPlanSelect.trigger('change')
                         storageDaysSelect.trigger('change')
+                        $(".voyage-costs").trigger('change')
 
                         calculateTotals();
                     })
@@ -851,7 +896,7 @@
             storageInput.val(storageCost);
         }
 
-        function addPtiTypeToSelect(e) {
+        function addTypesToSelectedCosts(e) {
             const dynamicFieldsSelect = $('#dynamic_fields');
             if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
@@ -1013,7 +1058,7 @@
 
             $.get(`/api/vessel/multi-voyages/${vessel.val()}`).then(data => {
                 const voyages = data.voyages || []
-                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
+                const options = voyages.map(voyage => `<option value="${voyage.id}" data-name="${voyage.voyage_no} - ${voyage.leg.name}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
                 voyageNo.html(options.join(''))
                 $('.selectpicker').selectpicker('refresh')
             })

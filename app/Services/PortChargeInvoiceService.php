@@ -106,6 +106,7 @@ class PortChargeInvoiceService
                 ??
                 Movements::where('container_id', $containerId)
                     ->whereDate('movement_date', '>=', $fromMovement->movement_date)
+                    ->where('id', '<>', $fromMovement->id)
                     ->orderBy('movement_date')
                     ->first();
             if ($toMovement) {
