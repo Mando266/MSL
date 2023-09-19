@@ -125,7 +125,7 @@ class StorageController extends Controller
                         $now = Carbon::now()->format('Y-m-d');
                         $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
                     }
-                    $daysCount++;
+                    $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
                     if (request()->service == 3) {
                         $quotationFreeTime = $bldraft->booking->quotation->import_detention;
@@ -301,7 +301,7 @@ class StorageController extends Controller
                         $now = Carbon::now()->format('Y-m-d');
                         $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
                     }
-                    $daysCount++;
+                    $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
                     // Calculation of each period
                     if (request()->service == 3) {
@@ -476,7 +476,7 @@ class StorageController extends Controller
                         $now = Carbon::now()->format('Y-m-d');
                         $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
                     }
-                    $daysCount++;
+                    $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
                     // Calculation of each period
                     if (request()->service == 3) {
