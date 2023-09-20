@@ -21,7 +21,6 @@ class MovementsExportAll implements FromCollection,WithHeadings
     public function headings(): array
     {
         $headings = [
-            "id",
             "company_id",
             "container_id",
             "container_type_id",
@@ -44,8 +43,8 @@ class MovementsExportAll implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
+            "Lessor/Seller Refrence",
             "Containers Ownership",
-            "Containers Ownership Type",
             "SOC/COC",
         ];
         if (auth()->user()->lessor_id != 0) {
@@ -56,8 +55,6 @@ class MovementsExportAll implements FromCollection,WithHeadings
                 "booking_agent_id",
                 "import_agent",
                 "free_time_origin",
-                "Lessor/Seller Refrence",
-                "Containers Ownership"
             ]);
         }
         return $headings;
@@ -69,13 +66,6 @@ class MovementsExportAll implements FromCollection,WithHeadings
         $movements = Movements::where('company_id',Auth::user()->company_id)->with('container')->get();
 
         foreach($movements  ?? [] as $movement){
-            if (auth()->user()->lessor_id != 0) {
-                unset($movement['company_id']);
-                unset($movement['terminal_id']);
-                unset($movement['booking_agent_id']);
-                unset($movement['import_agent']);
-                unset($movement['free_time_origin']);
-            }
             $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
             $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
             $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
@@ -92,9 +82,14 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
             $movement->SOC_COC = optional($movement->container)->SOC_COC;
 
+            if (auth()->user()->lessor_id != 0) {
+                unset($movement['company_id']);
+                unset($movement['terminal_id']);
+                unset($movement['booking_agent_id']);
+                unset($movement['import_agent']);
+                unset($movement['free_time_origin']);
+            }
         }
-
-
         return $movements;
     }
 }

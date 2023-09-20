@@ -42,23 +42,21 @@ class MovementsExportSearch implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
+            "Lessor/Seller Refrence",
             "Containers Ownership",
-            "Containers Ownership Type",
             "SOC/COC",
         ];
-        // if (auth()->user()->lessor_id != 0) {
-        //     // Remove the headings for lessor-specific fields
-        //     $headings = array_diff($headings, [
-        //         "company_id",
-        //         "terminal_id",
-        //         "booking_agent_id",
-        //         "import_agent",
-        //         "free_time_origin",
-        //         "Lessor/Seller Refrence",
-        //         "Containers Ownership"
-        //     ]);
-        // }
-        // return $headings;
+        if (auth()->user()->lessor_id != 0) {
+            // Remove the headings for lessor-specific fields
+            $headings = array_diff($headings, [
+                "company_id",
+                "terminal_id",
+                "booking_agent_id",
+                "import_agent",
+                "free_time_origin",
+            ]);
+        }
+        return $headings;
     }
 
     /**
@@ -73,13 +71,6 @@ class MovementsExportSearch implements FromCollection,WithHeadings
 
             foreach($movements as $movement){
                 unset($movement['id']);
-                if (auth()->user()->lessor_id != 0) {
-                    unset($movement['company_id']);
-                    unset($movement['terminal_id']);
-                    unset($movement['booking_agent_id']);
-                    unset($movement['import_agent']);
-                    unset($movement['free_time_origin']);
-                }
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                 $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
                 $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
@@ -95,6 +86,14 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                 $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                 $movement->SOC_COC = optional($movement->container)->SOC_COC;
+                if (auth()->user()->lessor_id != 0) {
+                    unset($movement['company_id']);
+                    unset($movement['terminal_id']);
+                    unset($movement['booking_agent_id']);
+                    unset($movement['import_agent']);
+                    unset($movement['free_time_origin']);
+                }
+                //dd($movement->container->containersOwner->name);
             }
         return $movements;
     }
