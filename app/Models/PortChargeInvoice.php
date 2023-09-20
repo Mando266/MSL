@@ -31,22 +31,27 @@ class PortChargeInvoice extends Model
         return $this->belongsTo(Ports::class, 'port_id');
     }
     
-    public function voyages()
+    public function voyages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Voyages::class, PortChargeInvoiceVoyage::class);
+    }
+
+    public function vessels()
+    {
+        return $this->voyages->pluck('vessel');
     }
 
     public function voyagesNames(): string
     {
         return $this->voyages->isNotEmpty()
-            ? $this->voyages->pluck('voyage_no')->implode(',')
+            ? $this->voyages->pluck('voyage_no')->unique()->implode(',')
             : '';
     }
 
     public function vesselsNames(): string
     {
         return $this->voyages->isNotEmpty()
-            ? $this->voyages->pluck('vessel.name')->implode(',')
+            ? $this->voyages->pluck('vessel.name')->unique()->implode(',')
             : '';
     }
 

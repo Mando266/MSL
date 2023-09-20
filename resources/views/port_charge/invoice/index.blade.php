@@ -139,7 +139,19 @@
                     processResults: function (data) {
                         return {
                             results: $.map(data, function (item) {
-                                let text = `${item.invoice_no} - ${item.port.name} - ${item.vessel.name} - ${item.voyage.voyage_no} ${item.voyage.leg.name}`
+                                let text = `${item.invoice_no} - `;
+                                if (item.port) {
+                                    text += `${item.port.name} - `;
+                                }
+                                if (item.vessel) {
+                                    text += `${item.vessel.name} - `;
+                                }
+                                if (item.voyage) {
+                                    text += `${item.voyage.voyage_no} `;
+                                    if (item.voyage.leg) {
+                                        text += `${item.voyage.leg.name}`;
+                                    }
+                                }
                                 return {
                                     id: item.id,
                                     text: text
