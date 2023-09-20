@@ -194,7 +194,11 @@
                                 <!-- ... Your existing HTML ... -->
                                 <div class="row">
                                     <div class="col-md-1">
-                                        <button class="btn btn-primary" onclick="openPreview()">Preview</button>
+                                        <form action="{{ route('preview.index') }}" method="post" id="preview-form">
+                                            @csrf
+                                            <input type="text"  name="preview-data" id="preview-data" hidden>
+                                            <button class="btn btn-primary">Preview</button>
+                                        </form>
                                     </div>
                                     <!-- Add a button to add the entire calculation to the cart -->
                                     <form id="add-to-cart-form">
@@ -408,21 +412,28 @@
         // Initialize the cart with data from localStorage or an empty array
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        function openPreview() {
-            const cartData = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
-
-            // Replace 'your-preview-url' with the actual URL for your preview page
-            const previewUrl = `/preview?cartData=${cartDataParam}`;
-
-            // Open a new window or popup
-            const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
-
-            // Focus on the new window/popup (optional)
-            if (popup) {
-                popup.focus();
+        $('#preview-form').submit(function(event) {
+            const storedItem = localStorage.getItem('cart');
+            if (storedItem) {
+                $('#preview-data').val(storedItem);
             }
-        }
+        });
+
+        // function openPreview() {
+        //     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+        //     const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
+        //
+        //     // Replace 'your-preview-url' with the actual URL for your preview page
+        //     const previewUrl = `/preview?cartData=${cartDataParam}`;
+        //
+        //     // Open a new window or popup
+        //     const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
+        //
+        //     // Focus on the new window/popup (optional)
+        //     if (popup) {
+        //         popup.focus();
+        //     }
+        // }
 
         // Add click event listener to "Add to Invoice" button
         const addToCartButton = document.getElementById('add-to-cart');
