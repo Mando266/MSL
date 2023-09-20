@@ -19,12 +19,12 @@ class CreatePortChargeInvoiceRowsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('port_charge_invoice_id');
             $table->unsignedBigInteger('port_charge_id');
-            $table->string('service');
+            $table->string('service')->nullable();
             $table->string('bl_no');
             $table->string('container_no');
-            $table->boolean('is_transhipment');
-            $table->string('shipment_type');
-            $table->string('quotation_type');
+            $table->boolean('is_transhipment')->nullable();
+            $table->string('shipment_type')->nullable();
+            $table->string('quotation_type')->nullable();
             $table->decimal('thc', 10, 2)->default(0);
             $table->decimal('storage', 10, 2)->default(0);
             $table->decimal('power', 10, 2)->default(0);

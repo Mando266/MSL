@@ -7,6 +7,7 @@
     <thead>
     <tr>
         <th>Remove</th>
+        <th>#</th>
         <th style="min-width: 222px">Type</th>
         <th style="min-width: 222px">Service</th>
         <th style="min-width: 222px">Voyage</th>
@@ -35,6 +36,7 @@
                 <button type="button" class="btn btn-danger removeContact"><i
                             class="fa fa-trash"></i></button>
             </td>
+            <td class="row-number"></td>
             <td>
                 <select name="rows[port_charge_type][]" class="form-control charge_type" required>
                     <option hidden selected>Select</option>

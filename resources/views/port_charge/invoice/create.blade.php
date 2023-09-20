@@ -494,7 +494,7 @@
         const appliedCostsClone = $('.dynamic-fields-clone').clone();
         var failedContainers = []
         var addedContainers = []
-        
+
         $(document).ready(function () {
             $('#dynamic_fields').addClass('selectpicker').selectpicker('refresh');
             setupEventHandlers()
@@ -503,6 +503,7 @@
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
             loadVoyages()
+            updateRowNumbers()
         })
 
         function setupEventHandlers() {
@@ -557,13 +558,14 @@
                         .attr('id', 'voyage_' + voyageId + '_applied_costs')
                         .removeAttr('name')
                         .data('voyage-id', voyageId)
+                        .prop('required', false)
                         .addClass('voyage-costs')
                         .addClass('selectpicker');
 
                     $('.dynamic-fields-clone').after(clonedDiv);
                 }
             });
-            
+
             addOptionsToVoyageCosts()
         }
 
@@ -625,7 +627,6 @@
             hideCellsWithoutIncludedInput();
         }
 
-
         async function calculateTotals() {
             const exchangeRate = parseFloat($('#exchange_rate').val());
             let totalUSD = 0;
@@ -649,6 +650,8 @@
 
             await new Promise((resolve) => {
                 $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
+                    .not($('#table1 .dynamic-input.included[data-field="disinf_cost"], #table1 .dynamic-input.included[data-field="hand_fes_em_cost"]'))
+                    .not($('#table4 .dynamic-input.included[data-field="hand_fes_em_cost"]'))
                     .each(function () {
                         USD_to_EGP += parseFloat($(this).val()) || 0;
                     });
@@ -724,7 +727,6 @@
             }
         };
 
-
         function checkForDuplicateContainers() {
             const containerInputs = document.querySelectorAll('.container_no');
             const containerSet = new Set();
@@ -794,6 +796,7 @@
         function handleRemoveRow() {
             $(this).closest("tr").remove()
             calculateTotals()
+            updateRowNumbers()
         }
 
         function handleAddRow() {
@@ -804,8 +807,16 @@
             targetTable.append(newRow)
             handleDynamicFieldsChange()
             updateChargeTypeOptions(tableId)
+            updateRowNumbers()
         }
 
+        function updateRowNumbers() {
+            $('table').each(function (tableIndex, tableElement) {
+                $(tableElement).find('tr').each(function (rowIndex, rowElement) {
+                    $(rowElement).find('td.row-number').text(rowIndex);
+                });
+            });
+        }
 
         function handleChargeTypeChange() {
             const selectedOption = $(this).find('option:selected');
@@ -947,7 +958,6 @@
             }
         }
 
-
         function handleContainerNoPaste(e) {
             e.preventDefault()
 
@@ -968,7 +978,6 @@
 
         const getClipboardData = event => (event.originalEvent || event).clipboardData || window.clipboardData
 
-
         function getPastedContainerNumbers(clipboardData) {
             const pastedContent = clipboardData.getData('text/plain')
             return pastedContent.split('\n').map(containerNumber => containerNumber.trim())
@@ -984,6 +993,7 @@
                 tbody.append(newRow)
                 setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
                 newRow.find('.container_no').trigger('change')
+                updateRowNumbers()
             }
         }
 
@@ -1041,7 +1051,6 @@
             checkForDuplicateContainers()
             handleDynamicFieldsChange();
         }
-
 
         function handlePtiTypeChange() {
             const selectedPtiType = $(this).val();
@@ -1102,6 +1111,7 @@
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
+                    <td class="row-number"></td>
                     <td>
                         <select name="rows[port_charge_id][]" class="form-control charge_type new_charge" required>
                             <option hidden selected>Select</option>
@@ -1236,7 +1246,6 @@
                 }
             });
         }
-
 
     </script>
 @endpush
