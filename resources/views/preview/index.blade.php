@@ -19,65 +19,72 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($cartData as $item)
-        <tr>
-            <td class="col-md-12 text-center" style="font-weight: bold; font-size: 18px;"
-                colspan="6">{{$item['triffValue']}}</td>
-        </tr>
-        @foreach($item['calculationData']['containers'] as $calculation)
+    @if(isset($cartData))
+        @foreach($cartData as $item)
             <tr>
-                <td class="col-md-2 text-center">{{$calculation['container_no']}} {{$calculation['container_type']}}</td>
-                <td class="col-md-2" style="border-right-style: hidden;">
-                    From: {{$calculation['from']}} <br>
-                    To: {{$calculation['to']}}
-                </td>
-                <td class="col-md-2" style="border-right-style: hidden;">
-                    @foreach($calculation['periods'] as $period)
-                        {{ $period['name'] }} <br>
-                    @endforeach
-                </td>
-                <td class="col-md-2" style="border-right-style: hidden;">
-                    @foreach($calculation['periods'] as $period)
-                        {{ $period['days'] }} Days <br>
-                    @endforeach
-                </td>
-                <td class="col-md-2">
-                    @foreach($calculation['periods'] as $period)
-                        {{ $period['total'] }} <br>
-                    @endforeach
-                </td>
+                <td class="col-md-12 text-center" style="font-weight: bold; font-size: 18px;"
+                    colspan="6">{{$item['triffValue']}}</td>
+            </tr>
+            @foreach($item['calculationData']['containers'] as $calculation)
+                <tr>
+                    <td class="col-md-2 text-center">{{$calculation['container_no']}} {{$calculation['container_type']}}</td>
+                    <td class="col-md-2" style="border-right-style: hidden;">
+                        From: {{$calculation['from']}} <br>
+                        To: {{$calculation['to']}}
+                    </td>
+                    <td class="col-md-2" style="border-right-style: hidden;">
+                        @foreach($calculation['periods'] as $period)
+                            {{ $period['name'] }} <br>
+                        @endforeach
+                    </td>
+                    <td class="col-md-2" style="border-right-style: hidden;">
+                        @foreach($calculation['periods'] as $period)
+                            {{ $period['days'] }} Days <br>
+                        @endforeach
+                    </td>
+                    <td class="col-md-2">
+                        @foreach($calculation['periods'] as $period)
+                            {{ $period['total'] }} <br>
+                        @endforeach
+                    </td>
+                    <td class="col-md-2 text-center">
+                        {{$calculation['total']}}
+                    </td>
+                </tr>
+            @endforeach
+            <tr>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2">Total:</td>
                 <td class="col-md-2 text-center">
-                    {{$calculation['total']}}
+                    {{$item['calculationData']['grandTotal']}}
                 </td>
             </tr>
         @endforeach
-        <tr>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2">Total:</td>
-            <td class="col-md-2 text-center">
-                {{$item['calculationData']['grandTotal']}}
-            </td>
+    @else
+        <tr class="text-center">
+            <td colspan="20">{{ trans('home.no_data_found')}} Please ADD CALCULATION IN CART</td>
         </tr>
-
-    @endforeach
-    </tbody>
-    @if(count($cartData) > 1)
-        <tfoot>
-        <tr>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2" style="border-right-style: hidden;"></td>
-            <td class="col-md-2">Total Invoice:</td>
-            <td class="col-md-2 text-center">
-                {{$total}}
-            </td>
-        </tr>
-        </tfoot>
     @endif
+    </tbody>
+    @isset($cartData)
+        @if(count($cartData) > 1)
+            <tfoot>
+            <tr>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2" style="border-right-style: hidden;"></td>
+                <td class="col-md-2">Total Invoice:</td>
+                <td class="col-md-2 text-center">
+                    {{$total}}
+                </td>
+            </tr>
+            </tfoot>
+        @endif
+    @endisset
 </table>
 
 <!-- Add a Print button -->
@@ -96,6 +103,7 @@
             display: none !important;
         }
     }
+
     .tableStyle {
         font-size: 14px !important;
         font-weight: bolder !important;
@@ -106,6 +114,7 @@
         text-transform: uppercase;
         padding: .75rem;
     }
+
     .thstyle {
         background-color: #80808061 !important;
         color: #000 !important;

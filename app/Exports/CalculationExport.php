@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Bl\BlDraft;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -13,8 +14,10 @@ class CalculationExport implements FromCollection, WithHeadings
     {
         return [
             "SR",
+            "Booking No.",
             "CONTAINER NO",
             "CONTAINER TYPE",
+            "DEPOT NAME",
             "GATE IN MOVE CODE",
             "GATE IN MOVE DATE",
             "NEXT MOVE CODE",
@@ -32,6 +35,7 @@ class CalculationExport implements FromCollection, WithHeadings
     public function collection()
     {
         $calculations = session()->pull('calculations');
+        $bl = BlDraft::find($calculations['input']['bl_no']);
         $calculationexport = collect();
         $count = 1;
         $freeTime = $calculations['freetime'];
@@ -46,8 +50,10 @@ class CalculationExport implements FromCollection, WithHeadings
                 $freeTimeTillDate = $fromTime->addDays(($freeTime - 1));
                 $tempCollection = collect([
                     "SR" => $count,
+                    "Booking No." => $bl->booking->ref_no,
                     "CONTAINER NO" => $container['container_no'],
                     "CONTAINER TYPE" => $container['container_type'],
+                    "DEPOT NAME" => $bl->booking->terminals->code,
                     "GATE IN MOVE CODE" => $container['from_code'],
                     "GATE IN MOVE DATE" => $fromTime->format('d-m-Y'),
                     "NEXT MOVE CODE" => $container['to_code'],
