@@ -51,11 +51,11 @@ class PortChargeInvoiceController extends Controller
             'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
 
-//        dd(request()->rows);
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
         $invoiceData = $this->invoiceService->extractInvoiceData(
             request()->except('_token', 'rows', "vessel_id", 'voyage_id')
         );
+        dd($rows, request()->all());
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
         $portChargeInvoice->voyages()->attach(request()->voyage_id);
 

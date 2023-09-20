@@ -253,19 +253,18 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="vessel_id">
-                                                    Vessel Name
+                                                    Vessel Name *
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <select class="selectpicker form-control rounded-0" id="vessel_id"
-                                                    name="vessel_id"
+                                                    name="vessel_id[]"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{ trans('forms.select') }}">
+                                                    title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($vessels as $item)
-                                                    <option value="{{ $item->id }}" {{ $invoice->vessel_id == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
+                                                    <option
+                                                            value="{{$item->id}}">{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -281,19 +280,19 @@
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0" for="voyage_id">
-                                                    Voyage No
+                                                    Voyage No *
                                                 </label>
                                             </div>
                                         </div>
+                                        @dump($invoice->vessels()->pluck('id')->unique()->toArray())
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="voyage"
-                                                    name="voyage_id"
+                                                    name="voyage_id[]"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{ trans('forms.select') }}">
+                                                    title="{{trans('forms.select')}}" required multiple>
                                                 @foreach ($voyages as $item)
-                                                    <option value="{{ $item->id }}" {{ $invoice->voyage_id == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
+                                                    <option value="{{ $item->id }}" 
+                                                            {{ in_array($item->id, $invoice->vessels()->pluck('id')->unique()->toArray()) ? 'selected' : '' }} required>{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -304,23 +303,26 @@
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-12 dynamic-fields-clone">
                                     <div class="input-group">
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="dynamic_fields">
-                                                    Applied Costs
+                                                    Default Applied Costs
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <select class="selectpicker form-control" id="dynamic_fields" multiple
+                                            <select class="form-control" id="dynamic_fields" multiple
                                                     data-size="10" name="selected_costs[]" required>
-                                                @foreach (['thc', 'storage', 'power', 'shifting', 'disinf', 'hand_fes_em', 'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40', 'pti', 'add_plan'] as $field)
-                                                    <option value="{{ $field }}" {{ in_array($field, $selected) ? 'selected' : '' }}>
-                                                        {{ $field }}
-                                                    </option>
+                                                @foreach([
+                                                            'thc', 'storage','power', 'shifting',
+                                                            'disinf','hand_fes_em',
+                                                            'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
+                                                            'pti', 'add_plan'
+                                                        ] as $field)
+                                                    <option value="{{ $field }}">{{ $field }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -473,7 +475,7 @@
         input {
             min-width: 100px;
         }
-        
+
         input.ref-no-td {
             min-width: 233px !important;
         }
@@ -496,19 +498,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        var failedContainers = []
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh')
-            $('form').find('tbody tr').remove()
             addCurrentInvoiceRows()
+        })
+
+        function addCurrentInvoiceRows() {
+            let containers = JSON.parse('@json($rows->pluck('container_no')->toArray())');
+            let selectedServices = JSON.parse('@json($rows->pluck('service')->toArray())');
+            let selectedPtiTypes = JSON.parse('@json($rows->pluck('pti_type')->toArray())');
+            let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
+            let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
+            let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
+
+            addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
+        }
+
+        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans) => {
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+
+            if (containers.length > 0 && vesselId && voyage) {
+                for (let i = 0; i < containers.length; i++) {
+                    const container = containers[i];
+                    const service = selectedServices[i];
+                    const ptiType = selectedPtiTypes[i];
+                    const powerDay = selectedPowerDays[i];
+                    const storageDay = selectedStorageDays[i];
+                    const addPlan = selectedAddPlans[i];
+
+                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan);
+                    $(".storage-days").trigger('change')
+                    $(".power-days").trigger('change')
+                    $(".pti-type").trigger('change')
+                    $(".add-plan-select").trigger('change')
+                }
+            }
+        };
+    </script>
+    <script>
+        const appliedCostsClone = $('.dynamic-fields-clone').clone();
+        var failedContainers = []
+        var addedContainers = []
+
+        $(document).ready(function () {
+            $('#dynamic_fields').addClass('selectpicker').selectpicker('refresh');
             setupEventHandlers()
             switchTables()
             calculateTotals()
             hideCellsWithoutIncludedInput()
             handleDynamicFieldsChange()
+            loadVoyages()
         })
 
         function setupEventHandlers() {
+            $('#dynamic_fields').change(addOptionsToVoyageCosts);
+            $('#voyage').change(handleVoyageChange);
             $(document).on('click', '.removeContact', handleRemoveRow)
             $("#add-row").on('click', handleAddRow)
             $(document).on('change', '.charge_type', handleChargeTypeChange)
@@ -521,23 +565,91 @@
             $(document).on('change', '.power-days', handlePowerDaysChange);
             $(document).on('change', '.storage-days', handleStorageDaysChange);
             $(document).on('change', '.add-plan-select', handleAddPlanChange);
+            $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
+            $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
             $(document).on('click change keyup paste', () => calculateTotals());
             $('form').on('submit', e => {
                 deleteEmptyOnSubmit(e)
-                addPtiTypeToSelect(e)
+                addTypesToSelectedCosts(e)
             });
             $("#add-many-containers").on('click', handleAddContainers);
         }
 
-        function addCurrentInvoiceRows() {
-            let containers = JSON.parse('@json($rows->pluck('container_no')->toArray())');
-            let selectedServices = JSON.parse('@json($rows->pluck('service')->toArray())');
-            let selectedPtiTypes = JSON.parse('@json($rows->pluck('pti_type')->toArray())');
-            let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
-            let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
-            let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
+        function handleVoyageChange() {
+            var selectedVoyages = $(this).val();
+            $('.voyage-applied-costs').remove();
 
-            addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
+            selectedVoyages.forEach(function (voyageId) {
+                var selectedOptions = $('#voyage option:selected');
+                var desiredOption = selectedOptions.filter(function () {
+                    return $(this).val() === voyageId;
+                });
+
+                for (var i = 0; i < 2; i++) {
+                    var clonedDiv = appliedCostsClone.clone()
+                        .removeClass('dynamic-fields-clone d-none')
+                        .addClass('voyage-applied-costs');
+
+                    if (i === 0) {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Full Costs');
+                        clonedDiv.find('select').data('type', 'full');
+                    } else {
+                        clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Empty Costs');
+                        clonedDiv.find('select').data('type', 'empty');
+                    }
+
+                    var select = clonedDiv.find('select')
+                        .attr('id', 'voyage_' + voyageId + '_applied_costs')
+                        .removeAttr('name')
+                        .data('voyage-id', voyageId)
+                        .prop('required', false)
+                        .addClass('voyage-costs')
+                        .addClass('selectpicker');
+
+                    $('.dynamic-fields-clone').after(clonedDiv);
+                }
+            });
+
+            addOptionsToVoyageCosts()
+        }
+
+        function handleVoyageCostsChange() {
+            var voyageId = $(this).data('voyage-id');
+            var voyageType = $(this).data('type');
+
+            var voyageInputs = $('.voyage-' + voyageId);
+
+            var voyageRows = voyageInputs.closest('tr');
+            console.log(voyageRows)
+            voyageRows = voyageRows.filter((index, row) => row.querySelector('.quotation_type').value == voyageType)
+            var selectedFields = $(this).val();
+
+            voyageRows.find('.dynamic-input').removeClass('included');
+            voyageRows.find('.dynamic-input').each(function () {
+                var dynamicInput = $(this);
+                let currentVal = dynamicInput.val()
+                if (dynamicInput.val() != 0) {
+                    dynamicInput.data('old-value', currentVal)
+                    dynamicInput.val(0);
+                }
+            })
+
+            selectedFields.forEach(function (selectedField) {
+                var dynamicInput = voyageRows.find('.dynamic-input[data-field*="' + selectedField + '"]');
+                voyageRows.find('.dynamic-input[data-field*="' + selectedField + '"]').each(function () {
+                    var dynamicInput = $(this);
+                    let oldVal = dynamicInput.data('old-value')
+                    dynamicInput.val(oldVal);
+                })
+                dynamicInput.addClass('included');
+            });
+        }
+
+        function addOptionsToVoyageCosts() {
+            $('.voyage-applied-costs select').html($(this).find('option:selected').clone())
+                .find('option');
+
+            $(".selectpicker").selectpicker('refresh');
         }
 
         function handleDynamicFieldsChange() {
@@ -559,33 +671,48 @@
             hideCellsWithoutIncludedInput();
         }
 
-
-        function calculateTotals() {
+        async function calculateTotals() {
             const exchangeRate = parseFloat($('#exchange_rate').val());
-            let totalUSD = 0
-            let invoiceUSD = 0
-            let invoiceEGP = 0
-            let USD_to_EGP = 0
+            let totalUSD = 0;
+            let invoiceUSD = 0;
+            let invoiceEGP = 0;
+            let USD_to_EGP = 0;
 
-            $('.dynamic-input.included').each(function () {
-                totalUSD += parseFloat($(this).val()) || 0
-            })
-            $('#table1').find('.dynamic-input.included').each(function () {
-                USD_to_EGP += parseFloat($(this).val()) || 0
-            })
+            await new Promise((resolve) => {
+                $('.dynamic-input.included').each(function () {
+                    totalUSD += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
 
-            console.log(USD_to_EGP)
-            invoiceUSD = totalUSD - USD_to_EGP
+            await new Promise((resolve) => {
+                $('#table1').find('.dynamic-input.included').each(function () {
+                    USD_to_EGP += parseFloat($(this).val()) || 0;
+                });
+                resolve();
+            });
+
+            await new Promise((resolve) => {
+                $(`.dynamic-input.included[data-field="disinf_cost"], .dynamic-input.included[data-field="hand_fes_em_cost"]`)
+                    .not($('#table1 .dynamic-input.included[data-field="disinf_cost"], #table1 .dynamic-input.included[data-field="hand_fes_em_cost"]'))
+                    .not($('#table4 .dynamic-input.included[data-field="disinf_cost"], #table4 .dynamic-input.included[data-field="hand_fes_em_cost"]'))
+                    .each(function () {
+                        USD_to_EGP += parseFloat($(this).val()) || 0;
+                    });
+                resolve();
+            });
+
+            // console.log(USD_to_EGP);
+            invoiceUSD = totalUSD - USD_to_EGP;
 
             if (!isNaN(exchangeRate)) {
                 invoiceEGP = USD_to_EGP * exchangeRate;
             }
 
-            $("#total_usd").val(totalUSD)
-            $("#invoice_usd").val(invoiceUSD)
-            $("#invoice_egp").val(invoiceEGP)
+            $("#total_usd").val(totalUSD);
+            $("#invoice_usd").val(invoiceUSD);
+            $("#invoice_egp").val(invoiceEGP);
         }
-
 
         const handleAddContainers = async e => {
             const vesselId = $('#vessel_id').val();
@@ -616,29 +743,6 @@
             }
         }
 
-        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans) => {
-            const vesselId = $('#vessel_id').val();
-            const voyage = $('#voyage').val();
-
-            if (containers.length > 0 && vesselId && voyage) {
-                for (let i = 0; i < containers.length; i++) {
-                    const container = containers[i];
-                    const service = selectedServices[i];
-                    const ptiType = selectedPtiTypes[i];
-                    const powerDay = selectedPowerDays[i];
-                    const storageDay = selectedStorageDays[i];
-                    const addPlan = selectedAddPlans[i];
-
-                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan);
-                    $(".storage-days").trigger('change')
-                    $(".power-days").trigger('change')
-                    $(".pti-type").trigger('change')
-                    $(".add-plan-select").trigger('change')
-                }
-            }
-        };
-
-
         const autoAddContainers = async (containersText) => {
             const containers = Array.isArray(containersText)
                 ? containersText
@@ -648,14 +752,48 @@
             const voyage = $('#voyage').val();
 
             if (containers.length > 0 && vesselId && voyage) {
+                const currentContainerInputs = document.querySelectorAll('.container_no');
+                const existingContainers = Array.from(currentContainerInputs).map(input => input.value);
+
+                const duplicates = [];
+
                 for (const container of containers) {
-                    await processContainer(container, vesselId, voyage);
+                    if (existingContainers.includes(container)) {
+                        duplicates.push(container);
+                    } else {
+                        await processContainer(container, vesselId, voyage);
+                    }
+                }
+
+                if (duplicates.length > 0) {
+                    swal(`Duplicate Containers: ${duplicates.join(', ')}`);
                 }
             }
         };
 
+        function checkForDuplicateContainers() {
+            const containerInputs = document.querySelectorAll('.container_no');
+            const containerSet = new Set();
+            const duplicateContainers = [];
 
-        const processContainer = async (container, vesselId, voyage, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) => {
+            containerInputs.forEach(input => {
+                const containerNumber = input.value.trim();
+                if (containerNumber) {
+                    if (containerSet.has(containerNumber)) {
+                        duplicateContainers.push(containerNumber);
+                    } else {
+                        containerSet.add(containerNumber);
+                    }
+                }
+            });
+
+            if (duplicateContainers.length > 0) {
+                swal(`Duplicate Containers: ${duplicateContainers.join(', ')}`);
+                return true;
+            }
+        }
+
+        const processContainer = async (container, vesselId, voyage) => {
             try {
                 const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
@@ -677,8 +815,7 @@
                     if (quotation_type.toLowerCase() === 'empty') {
                         selectedCharge = 6;
                     }
-                }
-                else if (quotation_type.toLowerCase() === 'full') {
+                } else if (quotation_type.toLowerCase() === 'full') {
                     table = 'table1';
                     selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
                 } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
@@ -691,8 +828,7 @@
 
                 if (table !== '') {
                     const tbody = $(`#${table} tbody`);
-                    console.log(selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
-                    appendSingleRow(container, tbody, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan);
+                    appendSingleRow(container, tbody, selectedCharge);
                     updateChargeTypeOptions(table);
                     handleDynamicFieldsChange(table);
                 }
@@ -715,7 +851,6 @@
             handleDynamicFieldsChange()
             updateChargeTypeOptions(tableId)
         }
-
 
         function handleChargeTypeChange() {
             const selectedOption = $(this).find('option:selected');
@@ -772,6 +907,7 @@
                         ptiTypeSelect.trigger('change')
                         addPlanSelect.trigger('change')
                         storageDaysSelect.trigger('change')
+                        $(".voyage-costs").trigger('change')
 
                         calculateTotals();
                     })
@@ -805,7 +941,7 @@
             storageInput.val(storageCost);
         }
 
-        function addPtiTypeToSelect(e) {
+        function addTypesToSelectedCosts(e) {
             const dynamicFieldsSelect = $('#dynamic_fields');
             if (dynamicFieldsSelect.find('option:selected[value="pti"]').length > 0) {
                 dynamicFieldsSelect.append('<option value="pti_type" selected>PTI Type</option>');
@@ -851,8 +987,10 @@
                 })
                 e.preventDefault()
             }
+            if (checkForDuplicateContainers()) {
+                e.preventDefault()
+            }
         }
-
 
         function handleContainerNoPaste(e) {
             e.preventDefault()
@@ -873,7 +1011,6 @@
         }
 
         const getClipboardData = event => (event.originalEvent || event).clipboardData || window.clipboardData
-
 
         function getPastedContainerNumbers(clipboardData) {
             const pastedContent = clipboardData.getData('text/plain')
@@ -910,7 +1047,6 @@
             }
         }
 
-
         function handleContainerNoChange() {
             const containerNumber = $(this).val().trim();
             const vesselId = $('#vessel_id').val();
@@ -922,6 +1058,8 @@
                 const isTsCell = row.find('.is_transhipment')[0];
                 const shipTypeCell = row.find('.shipment_type')[0];
                 const quoteTypeCell = row.find('.quotation_type')[0];
+                const containerTypeCell = row.find('.container-type')[0];
+                const voyageCell = row.find('.voyage-name')[0];
                 axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
                         vessel: vesselId,
@@ -934,16 +1072,18 @@
                         isTsCell.value = response.data.is_ts;
                         shipTypeCell.value = response.data.shipment_type;
                         quoteTypeCell.value = response.data.quotation_type;
+                        containerTypeCell.value = response.data.container_type;
+                        voyageCell.value = response.data.voyage_name;
+                        voyageCell.classList.add('voyage-' + response.data.voyage_id)
                         row.find('.charge_type').trigger('change');
                     }
                 }).catch(() => {
                     console.error('Could not find ref_no');
                 });
             }
-
+            checkForDuplicateContainers()
             handleDynamicFieldsChange();
         }
-
 
         function handlePtiTypeChange() {
             const selectedPtiType = $(this).val();
@@ -958,10 +1098,10 @@
             const vessel = $('#vessel_id')
             const voyageNo = $('#voyage')
 
-            $.get(`/api/vessel/voyages/${vessel.val()}`).then(data => {
+            $.get(`/api/vessel/multi-voyages/${vessel.val()}`).then(data => {
                 const voyages = data.voyages || []
-                const options = voyages.map(voyage => `<option value="${voyage.id}">${voyage.voyage_no} - ${voyage.leg}</option>`)
-                voyageNo.html('<option hidden selected>Select</option>' + options.join(''))
+                const options = voyages.map(voyage => `<option value="${voyage.id}" data-name="${voyage.voyage_no} - ${voyage.leg.name}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`)
+                voyageNo.html(options.join(''))
                 $('.selectpicker').selectpicker('refresh')
             })
         }
@@ -1036,8 +1176,10 @@
                 <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
             </select>
         </td>
+        <td><input type="text" class="form-control voyage-name"></td>
         <td><input type="text" name="rows[bl_no][]" class="form-control ref-no-td"></td>
         <td><input type="text" name="rows[container_no][]" class="form-control container_no" value="${containerNumber}"></td>
+                    <td><input type="text" class="form-control container-type"></td>
                     <td><input type="text" name="rows[is_transhipment][]" class="is_transhipment form-control"></td>
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
@@ -1137,6 +1279,6 @@
             });
         }
 
-
     </script>
+
 @endpush

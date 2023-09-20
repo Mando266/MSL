@@ -32,7 +32,9 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {
         $moveUpdate = Movements::where('id',$row['id'])->first();
-        
+        if (!$moveUpdate){
+            return null;
+        }
         // CHECK if null
         $a = collect($row);
         $z = $a->filter(fn($v)=>$v != null)->toArray();
