@@ -43,7 +43,8 @@ class MovementsExportSearch implements FromCollection,WithHeadings
             "import_agent",
             "free_time_origin",
             "Lessor/Seller Refrence",
-            "Containers Ownership"
+            "Containers Ownership",
+            "SOC/COC",
         ];
         if (auth()->user()->lessor_id != 0) {
             // Remove the headings for lessor-specific fields
@@ -84,6 +85,7 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
                 $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                 $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
+                $movement->SOC_COC = optional($movement->container)->SOC_COC;
                 if (auth()->user()->lessor_id != 0) {
                     unset($movement['company_id']);
                     unset($movement['terminal_id']);

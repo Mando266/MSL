@@ -28,7 +28,7 @@
                             @if(!$items->isEmpty())
                                     <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a>
                                     <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export</a>
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export Last Movements</a>
 
                                 @endif
                                 @endpermission
@@ -71,9 +71,16 @@
                         @endpermission
                         </br>
 
-                    <form>  
+                    <form>
                         <div class="form-row">
-                            <div class="form-group col-md-9">
+                            <div class="form-group col-md-12">
+                                <label for="pastedContainers">Paste Container Numbers</label>
+                                <input type="text" class="form-control" id="pastedContainers" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
                                 <label for="ContainerInput">Container Number</label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="container_id[]" data-size="10"
                                  title="{{trans('forms.select')}}"  multiple="multiple">
@@ -91,9 +98,11 @@
                                 <div class ="invalid-feedback">
                                     {{$message}}
                                 </div>
-                                @enderror 
+                                @enderror
                             </div>
-                    
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="portlocationInput">Activity Location</label>
                                 <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
@@ -103,8 +112,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
+
                         <div class="form-group col-md-3">
                                 <label for="vessel_port_idInput">Vessel Name</label>
                                 <select class="selectpicker form-control" id="vessel_id" data-live-search="true" name="vessel_id" data-size="10"
@@ -122,7 +130,7 @@
                                         <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
-                            </div> 
+                            </div>
                             <!-- <div class="form-group col-md-3">
                             <label for="Movement">Movement Date</label>
                                 <input type="date" class="form-control" id="movement_dateInput" name="movement_date" value="{{request()->input('movement_date')}}">
@@ -137,6 +145,8 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="BLNo">BL No</label>
                                 <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="bl_no" data-size="10"
@@ -146,11 +156,9 @@
                                         <option value="{{$item}}" {{$item == old('bl_no',request()->input('bl_no')) ? 'selected':''}}>{{$item}}</option>
                                         @endif
                                     @endforeach
-                                </select> 
+                                </select>
                             </div>
-                        </div> 
 
-                        <div class="form-row">
                         <div class="form-group col-md-3">
                                 <label for="BLNo">Booking No</label>
                                 <select class="selectpicker form-control" id="BLNoInput" data-live-search="true" name="booking_no" data-size="10"
@@ -158,7 +166,7 @@
                                     @foreach ($bookings as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('booking_no',request()->input('booking_no')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
-                                </select> 
+                                </select>
                             </div>
                             <div class="form-group col-md-3">
                                     <label for="remarkes">Remarkes</label>
@@ -166,7 +174,7 @@
                                     placeholder="Remarkes" autocomplete="off">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="countryInput"> Container Ownership </label>
+                                <label for="countryInput"> Container Ownership Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_ownership as $item)
@@ -179,8 +187,11 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label for="countryInput"> LESSOR/SELLER REFRENCE </label>
+                                <label for="countryInput"> Container Ownership </label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($lessor as $item)
@@ -201,7 +212,7 @@
                             </div>
                         </div>
                     </form>
-                    
+
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
@@ -211,17 +222,17 @@
                                         <th>Container No</th>
                                         <th>Container Type</th>
                                         <th>movement code</th>
-                                        <th>Ownership</th>
-                                        <th>Lessor/Seller Refrence</th>
+                                        <th>Container Ownership Type</th>
+                                        <th>Container Ownership</th>
                                         <th>movement date</th>
                                         <th>movement status</th>
                                         <th>bl no</th>
                                         <th>VSL/VOY</th>
                                         <th>ACTIVITY LOCATION</th>
                                         <th>Pol</th>
-                                        <th>Pod</th>   
+                                        <th>Pod</th>
                                         <th>free time destination</th>
-                                        {{-- <th>import agent</th>   
+                                        {{-- <th>import agent</th>
                                         <th>booking agent</th>    --}}
                                         <th>remarkes</th>
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
@@ -238,7 +249,7 @@
                                             <td>{{{optional($item->container)->seller->name ?? optional($item->container)->description}}}</td>
                                             <td>{{$item->movement_date}}</td>
                                             <td>{{optional($item->movementcode->containerstatus)->name}}</td>
-                                            <td>{{$item->bl_no}}</td> 
+                                            <td>{{$item->bl_no}}</td>
                                             <td>{{{optional($item->vessels)->name}}} {{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{optional($item->activitylocation)->code}}</td>
                                             <td>{{optional($item->pol)->code}}</td>
@@ -247,7 +258,7 @@
                                             {{-- <td>{{{optional($item->importAgent)->name}}}</td>
                                             <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
                                             <td>{{$item->remarkes}}</td>
-                                            
+
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Movements-Show')
@@ -255,13 +266,13 @@
                                                         <a href="{{route('movements.show',['movement'=>$item->container_id,'bl_no' => $plNo,'port_location_id' => request()->input('port_location_id'),'booking_no' => request()->input('booking_no'),'movement_id' => request()->input('movement_id'),'voyage_id' => request()->input('voyage_id')])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show" target="blank">
                                                             <i class="far fa-eye text-primary"></i>
                                                         </a>
-                                                        
+
                                                     </li>
                                                     @endpermission
                                                 </ul>
                                             </td>
                                         </tr>
-                                        
+
                                     @empty
                                         <tr class="text-center">
                                             <td colspan="20">{{ trans('home.no_data_found')}}</td>
@@ -312,5 +323,28 @@ function unlockupdate(){
                         });
                     });
                 });
+</script>
+
+<script>
+    var containerSelect = document.getElementById('ContainerInput');
+    var pastedContainersInput = document.getElementById('pastedContainers');
+
+    pastedContainersInput.addEventListener('input', function(e) {
+        var pastedText = e.target.value;
+        var numbersArray = pastedText.split(',');
+
+        for (var i = 0; i < containerSelect.options.length; i++) {
+            containerSelect.options[i].selected = false;
+        }
+
+        for (var j = 0; j < numbersArray.length; j++) {
+            var numberToSelect = numbersArray[j].trim();
+            for (var k = 0; k < containerSelect.options.length; k++) {
+                if (containerSelect.options[k].text === numberToSelect) {
+                    containerSelect.options[k].selected = true;
+                }
+            }
+        }
+    });
 </script>
 @endpush

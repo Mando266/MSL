@@ -77,6 +77,7 @@
                                         <th>ETD</th>
                                         <th>terminal name</th>
                                         <th>road no</th>
+                                        <th>Booking Engaged</th>
                                         <th>Bl Engaged</th>
                                         <th class='text-center'></th>
                                         <th class='text-center'>Add Port</th>
@@ -128,10 +129,13 @@
                                                 @endforeach
                                             </td>
                                             <td>
+                                                {{$item->bookings->count()}}
+                                            </td>
+                                            <td>
                                                 {{ $item->bldrafts->count() == 0 ? $item->transhipmentBldrafts->count() : $item->bldrafts->count() }}
                                             </td>
                                             <td class="text-center">
-                                                <ul class="table-controls"> 
+                                                <ul class="table-controls">
                                                 @permission('Voyages-Edit')
                                                     <li>
                                                     <a href="{{route('voyages.edit',['voyage'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
@@ -175,7 +179,7 @@
 
                             </table>
                         </div>
-                        
+
                         <div class="paginating-container">
                         {{ $items->appends(request()->query())->links()}}
                         </div>

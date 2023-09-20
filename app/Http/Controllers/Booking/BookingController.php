@@ -277,6 +277,7 @@ class BookingController extends Controller
             'acid' => $request->input('acid'),
             'shipment_type' => $request->input('shipment_type'),
             'movement'=> $request->input('movement'),
+            'exportal_id'=> $request->input('exportal_id'),
         ]);
         $has_gate_in = 0;
         foreach ($request->input('containerDetails', []) as $details) {

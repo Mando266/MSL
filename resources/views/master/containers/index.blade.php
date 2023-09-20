@@ -44,9 +44,9 @@
                                 </form>
                                 @endpermission
                             </div>
-                        </div>  
+                        </div>
                             </br>
-                            </br>                      
+                            </br>
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-3">
@@ -87,7 +87,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                    <label for="remarkes">Lessor/Seller Refrence</label>
+                                    <label for="remarkes">Container Ownership</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="description" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($sellers as $item)
@@ -110,11 +110,11 @@
                                         <th>Number</th>
                                         <th>Type</th>
                                         <th>ISO</th>
-                                        <th>Ownership</th>
+                                        <th>Ownership Type</th>
                                         <th>tar weight</th>
                                         <th>max payload</th>
                                         <th>production year</th>
-                                        <th>Lessor/Seller Refrence</th>
+                                        <th>Container Ownership </th>
                                         <th>SOC_COC</th>
                                         <th class='text-center' style='width:100px;'></th>
 
@@ -185,7 +185,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
@@ -203,7 +203,7 @@
             }
           });
       });
-  
+
 </script>
 <script>
 function unlock(){

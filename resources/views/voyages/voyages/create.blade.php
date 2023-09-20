@@ -145,7 +145,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="ports">  
+                                <td class="ports">
                                     <select class="selectpicker form-control" id="port" data-live-search="true" name="voyageport[0][port_from_name]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($ports as $item)
@@ -212,7 +212,7 @@
 
 <script>
   $(document).ready(function (){
-    
+
         $(function(){
                 $('#voyagePort').on('change','td.ports select' , function(e){
                   let self = $(this);
@@ -231,7 +231,7 @@
                 });
             });
         });
-  });  
+  });
 </script>
 @endpush
 

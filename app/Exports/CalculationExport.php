@@ -41,6 +41,7 @@ class CalculationExport implements FromCollection, WithHeadings
         $freeTime = $calculations['freetime'];
             foreach ($calculations['calculation']['containers'] as $container) {
                 $fromTime = Carbon::parse($container['from']);
+                // dd($fromTime);
                 $toTime = Carbon::parse($container['to']);
                 if ($freeTime == 0) {
                     $freeTime = $container['periods'][0]['days'];
@@ -55,11 +56,11 @@ class CalculationExport implements FromCollection, WithHeadings
                     "CONTAINER TYPE" => $container['container_type'],
                     "DEPOT NAME" => $bl->booking->terminals->code,
                     "GATE IN MOVE CODE" => $container['from_code'],
-                    "GATE IN MOVE DATE" => $fromTime->format('d-m-Y'),
+                    "GATE IN MOVE DATE" => $fromTime->format('Y-m-d'),
                     "NEXT MOVE CODE" => $container['to_code'],
                     "FREE DAYS" => $calculations['freetime'],
-                    "FREE TIME END DATE" => $freeTimeTillDate->format('d-m-Y'),
-                    "STORAGE TILL DATE" => $toTime->format('d-m-Y'),
+                    "FREE TIME END DATE" => $freeTimeTillDate->format('Y-m-d'),
+                    "STORAGE TILL DATE" => $toTime->format('Y-m-d'),
                     "CHARGABLE DAYS" => $chargableDays,
                     "RATE" => 1,
                     "AMOUNT" => $container['total'],

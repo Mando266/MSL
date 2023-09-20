@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ContainersExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -14,19 +14,20 @@ class ContainersExport implements FromCollection,WithHeadings
             "NUMBER",
             "ISO",
             "TYPE",
-            "OWNERSHIP",
+            "Container Ownership Type",
             "TAR WEIGHT" ,
             "MAX PAYLOAD",
             "PRODUCTION YEAR",
-            "LESSOR/SELLER REFRENCE",
+            "Container Ownership",
+            "SOC/COC",
             "Transhipment OR Not"
         ];
     }
-    
+
 
     public function collection()
     {
-       
+
         $containers = session('containers');
         $exportContainers = collect();
         foreach($containers  ?? [] as $container){
@@ -46,11 +47,12 @@ class ContainersExport implements FromCollection,WithHeadings
                     'max_payload'=> $container->max_payload,
                     'prod_year'=> $container->production_year,
                     'lessor'=> optional($container->seller)->name,
+                    'soc_coc'=> $container->SOC_COC,
                     'is_transhipment'=>$transhipment,
                 ]);
                 $exportContainers->add($tempCollection);
         }
-        
+
         return $exportContainers;
-    }    
+    }
 }

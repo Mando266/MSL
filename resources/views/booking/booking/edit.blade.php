@@ -627,13 +627,13 @@
                                 <input type="text" class="form-control" name="shipment_type" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
-                            {{-- <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label>Shipment Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required>
                                    <option value="Import" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Import"? 'selected':''}}>Import</option>
                                    <option value="Export" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Export"? 'selected':''}}>Export</option>
                                 </select>
-                            </div> --}}
+                            </div>
                             @endif
 
                             @if($quotation->id != 0)
@@ -675,6 +675,10 @@
                             </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Exporter Number</label>
+                            <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number" value="{{old('exportal_id',$booking->exportal_id)}}">
+                        </div>
                         <div class="form-group col-md-3">
                                 <label for="status">Movement</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">

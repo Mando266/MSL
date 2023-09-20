@@ -52,7 +52,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput"> Container Ownership </label>
+                                    <label for="countryInput"> Container Ownership Type</label>
                                     <select class="selectpicker form-control" id="countryInput" data-live-search="true"
                                             name="container_ownership_id" data-size="10"
                                             title="{{trans('forms.select')}}">
@@ -106,7 +106,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput">Lessor/Seller Refrence</label>
+                                    <label for="countryInput">Container Ownership</label>
                                     <select class="selectpicker form-control" id="countryInput" data-live-search="true"
                                             name="description" data-size="10"
                                             title="{{trans('forms.select')}}">

@@ -45,10 +45,10 @@ class ContainersImport implements ToModel, WithHeadingRow
         $row['description'] = LessorSeller::where('name', $row['description'])->pluck('id')->first();
 
         if(!$row['description']){
-            
+
             return session()->flash('message',"This Lessor/Seller: {$seller} Not found ");
         }
-        
+
         if (!$row['container_type_id']) {
             $this->errors[] = "This Container Type: {$containerType} Not found!!!";
             return session()->flash('message', implode(PHP_EOL, $this->errors));
@@ -71,6 +71,7 @@ class ContainersImport implements ToModel, WithHeadingRow
             'container_ownership_id' => $row['container_ownership_id'],
             'production_year' => $row['production_year'],
             'is_transhipment' => $row['is_transhipment'],
+            'SOC_COC'=> $row['SOC_COC'],
         ]);
         $ImportContainers->company_id = $user->company_id;
         $ImportContainers->save();

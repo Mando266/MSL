@@ -7,7 +7,7 @@ use App\Models\Voyages\VoyagePorts;
 
 class InvoiceListExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -30,11 +30,11 @@ class InvoiceListExport implements FromCollection,WithHeadings
             "Receipts",
         ];
     }
-    
+
 
     public function collection()
     {
-       
+
         $invoices = session('invoice');
         $exportinvoices = collect();
 
@@ -85,7 +85,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
                     'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
-                    'bl no' => optional($invoice->bldraft)->ref_no,
+                    'bl no' => $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional($VoyagePort)->eta,
@@ -100,10 +100,10 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'PaymentSTATUS' => $Payment,
                     'receipts' => $receipts,
                 ]);
-                
+
                 $exportinvoices->add($tempCollection);
         }
-        
+
         return $exportinvoices;
-    }    
+    }
 }

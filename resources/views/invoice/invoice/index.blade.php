@@ -60,6 +60,7 @@
                                 <label for="Bldraft">Bl Number</label>
                                 <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
                                  title="{{trans('forms.select')}}">
+                                 <option value="o">Customize</option>
                                     @foreach ($bldrafts as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
                                     @endforeach
@@ -128,6 +129,7 @@
                                         <th>payment kind</th>
                                         <th>Total USD</th>
                                         <th>Total EGP</th>
+                                        <th>Exchange Rate</th>
                                         <th>Invoice Status</th>
                                         <th>Payment Status</th>
                                         <th>Receipts</th>
@@ -177,6 +179,14 @@
                                         ->where('port_from_name',optional(optional(optional($invoice->bldraft)->booking)->loadPort)->id)->first();
                                         }
 
+                                        $rate = $invoice->rate ?? 1;
+                                        if($rate == 'eta'){
+                                            $rate = optional(optional($invoice->bldraft)->voyage)->exchange_rate;
+                                        }elseif($rate == 'etd'){
+                                            $rate = $invoice->bldraft->voyage->exchange_rate_etd;
+                                        }else{
+                                            $rate = $invoice->customize_exchange_rate;
+                                        }
                                     @endphp
 
                                         <tr>
@@ -184,7 +194,7 @@
                                             <td>{{optional($invoice)->invoice_no}}</td>
                                             <td>{{$invoice->customer}}</td>
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
-                                            <td>{{optional($invoice->bldraft)->ref_no ?? "Customize"}}</td>
+                                            <td>{{$invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no}}</td>
                                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
                                             <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional($invoice->bldraft->booking)->secondvoyage)->voyage_no }}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</td>
@@ -207,7 +217,7 @@
                                             @else
                                             <td></td>
                                             @endif
-
+                                            <td>{{$rate}}</td>
                                             <td class="text-center">
                                                 @if($invoice->invoice_status == "confirm")
                                                     <span class="badge badge-info"> Confirm </span>
