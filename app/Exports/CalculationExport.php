@@ -72,8 +72,10 @@ class CalculationExport implements FromCollection, WithHeadings
 
         $tempCollection = collect([
             "SR" => '',
+            "Booking No." => '',
             "CONTAINER NO" => '',
             "CONTAINER TYPE" => '',
+            "DEPOT NAME" => '',
             "GATE IN MOVE CODE" => '',
             "GATE IN MOVE DATE" => '',
             "NEXT MOVE CODE" => '',
