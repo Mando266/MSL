@@ -32,6 +32,7 @@ class CalculationExport implements FromCollection, WithHeadings
     public function collection()
     {
         $calculations = session()->pull('calculations');
+        dd($calculations);
         $calculationexport = collect();
         $count = 1;
         $freeTime = $calculations['freetime'];

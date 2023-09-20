@@ -31,7 +31,6 @@ class ContainersExport implements FromCollection,WithHeadings
         $containers = session('containers');
         $exportContainers = collect();
         foreach($containers  ?? [] as $container){
-            dd($container);
             if($container->is_transhipment == 0){
                 $transhipment = 'No';
 
