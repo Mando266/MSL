@@ -566,6 +566,7 @@
                 }
             });
 
+            $('.voyage-costs').trigger('change')
             addOptionsToVoyageCosts()
         }
 
@@ -695,6 +696,7 @@
                         swal("Failed To Get Details For These Containers :" + failedContainers)
                         failedContainers = []
                     }
+                    updateRowNumbers()
                 }
             }
         }

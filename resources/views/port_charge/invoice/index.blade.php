@@ -1,11 +1,13 @@
 @extends('layouts.app')
 {{--@php--}}
-{{--    $a = \App\Models\PortChargeInvoice::all();--}}
-{{--    $w = $a->pluck('rows','id')->map(fn($r)=> $r->pluck('booking.voyage.id')->unique())->toArray();--}}
-{{--    foreach($w as $id => $array){--}}
-{{--        \App\Models\PortChargeInvoice::find($id)->voyages()->attach($array);--}}
-{{--    }--}}
-{{--//    dd($w);--}}
+{{--    $a = \App\Models\PortChargeInvoiceVoyage::all();--}}
+{{--    $a->map(function($r){--}}
+{{--        if(! $r->vessel_id){--}}
+{{--            $vessel = \App\Models\Voyages\Voyages::find($r->voyages_id)->vessel;--}}
+{{--            $r->update(['vessel_id' => $vessel->id]);--}}
+{{--        }--}}
+{{--    });--}}
+{{--    dd('done');--}}
 {{--@endphp--}}
 @section('content')
     <div class="layout-px-spacing">
@@ -139,18 +141,23 @@
                     processResults: function (data) {
                         return {
                             results: $.map(data, function (item) {
-                                let text = `${item.invoice_no} - `;
+                                let text = `${item.invoice_no}`;
                                 if (item.port) {
-                                    text += `${item.port.name} - `;
+                                    text += ` - ${item.port.name}`;
                                 }
-                                if (item.vessel) {
-                                    text += `${item.vessel.name} - `;
+                                if (item.uniqueVessels) {
+                                    $.each(item.uniqueVessels, function (index, vessel) {
+                                        text += ` - ${vessel.name}`;
+                                    });
                                 }
-                                if (item.voyage) {
-                                    text += `${item.voyage.voyage_no} `;
-                                    if (item.voyage.leg) {
-                                        text += `${item.voyage.leg.name}`;
-                                    }
+
+                                if (item.uniqueVoyages) {
+                                    $.each(item.uniqueVoyages, function (index, voyage) {
+                                        text += ` - ${voyage.voyage_no}`;
+                                        if (voyage.leg) {
+                                            text += `/${voyage.leg.name}`;
+                                        }
+                                    });
                                 }
                                 return {
                                     id: item.id,
