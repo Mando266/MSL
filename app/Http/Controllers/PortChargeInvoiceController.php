@@ -34,7 +34,12 @@ class PortChargeInvoiceController extends Controller
     {
         $query = $request->input('q');
 
-        $invoices = PortChargeInvoice::searchQuery($query)->get();
+        $invoices = PortChargeInvoice::searchQuery($query)->get()->load('vessels', 'voyages.leg');
+        $invoices = $invoices->map(function ($invoice) {
+            $invoice->uniqueVessels = $invoice->vessels->unique();
+            $invoice->uniqueVoyages = $invoice->voyages->unique();
+            return $invoice;
+        });
         return response()->json($invoices);
     }
 
@@ -55,7 +60,7 @@ class PortChargeInvoiceController extends Controller
         $invoiceData = $this->invoiceService->extractInvoiceData(
             request()->except('_token', 'rows', "vessel_id", 'voyage_id')
         );
-        dd($rows, request()->all());
+//        dd($rows, request()->all());
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
         $portChargeInvoice->voyages()->attach(request()->voyage_id);
 
