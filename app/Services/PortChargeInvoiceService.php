@@ -12,6 +12,7 @@ use App\Models\Master\Vessels;
 use App\Models\PortCharge;
 use App\Models\Voyages\Voyages;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class PortChargeInvoiceService
@@ -23,6 +24,7 @@ class PortChargeInvoiceService
      */
     public function extractInvoiceData($invoiceData): array
     {
+        Arr::forget($invoiceData, ['_token', 'rows', "vessel_id", 'voyage_id']);
         $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
         return $invoiceData;
     }

@@ -32,12 +32,17 @@ class PortChargeInvoice extends Model
         return $this->belongsTo(Ports::class, 'port_id');
     }
 
+    public function portChargeInvoiceVoyages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PortChargeInvoiceVoyage::class);
+    }
+    
     public function voyages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Voyages::class, PortChargeInvoiceVoyage::class);
     }
 
-    public function vessels()
+    public function vessels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Vessels::class, 'port_charge_invoice_voyages', 'port_charge_invoice_id', 'vessel_id');
     }

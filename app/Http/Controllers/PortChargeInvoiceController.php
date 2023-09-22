@@ -57,12 +57,10 @@ class PortChargeInvoiceController extends Controller
         ]);
 
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(
-            request()->except('_token', 'rows', "vessel_id", 'voyage_id')
-        );
-//        dd($rows, request()->all());
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
         $portChargeInvoice->voyages()->attach(request()->voyage_id);
+        $portChargeInvoice->vessels()->attach(request()->vessel_id);
 
         foreach ($rows as $row) {
             $portChargeInvoice->rows()->create($row);
@@ -99,10 +97,14 @@ class PortChargeInvoiceController extends Controller
     public function update(PortChargeInvoice $portChargeInvoice)
     {
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());
 
         $portChargeInvoice->update($invoiceData);
         $portChargeInvoice->rows()->delete();
+        $portChargeInvoice->portChargeInvoiceVoyages()->delete();
+
+        $portChargeInvoice->voyages()->attach(request()->voyage_id);
+        $portChargeInvoice->vessels()->attach(request()->vessel_id);
 
         foreach ($rows as $row) {
             $portChargeInvoice->rows()->create($row);
