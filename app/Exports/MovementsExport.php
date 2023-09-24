@@ -46,10 +46,22 @@ class MovementsExport implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
-            "Containers_Ownership",
-            "container_ownership_id",
-            "SOC_COC",
+            "Containers Ownership",
+            "Containers Ownership Type",
+            "SOC/COC",
         ];
+            if (auth()->user()->lessor_id != 0) {
+            // Remove the headings for lessor-specific fields
+            $headings = array_diff($headings, [
+                "company_id",
+                "terminal_id",
+                "booking_agent_id",
+                "created_at",
+                "updated_at",
+                "import_agent",
+                "free_time_origin",
+            ]);
+        }
     }
 
     /**
@@ -76,6 +88,16 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                     $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                     $movement->SOC_COC = optional($movement->container)->SOC_COC;
+                    if (auth()->user()->lessor_id != 0) {
+                        unset($movement['id']);
+                        unset($movement['company_id']);
+                        unset($movement['terminal_id']);
+                        unset($movement['created_at']);
+                        unset($movement['updated_at']);
+                        unset($movement['booking_agent_id']);
+                        unset($movement['import_agent']);
+                        unset($movement['free_time_origin']);
+                    }
                 }
 
 

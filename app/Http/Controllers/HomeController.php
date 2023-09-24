@@ -24,11 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->id == 18){
-            return view('movements.index');
-        }else{
             return view('dashboard.index');
-
-        }
     }
 }

@@ -34,7 +34,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>
@@ -100,8 +100,8 @@
                         <hr/>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="lessor_id">Lessor or Seller</label>
-                                <select class="selectpicker show-tick form-control" id="lessor_id" data-live-search="true" name="lessor_id" title="{{trans('forms.select')}}">
+                                <label for="lessor_id">Container Ownership</label>
+                                <select class="selectpicker show-tick form-control" id="lessor_id" data-live-search="true" name="lessor_id" title="{{trans('forms.select')}}" required>
                                     <option value="0">All</option>
                                     @foreach ($lessors as $item)
                                     <option value="{{$item->id}}" {{$item->id == old('lessor_id') ? 'selected' :''}}>{{$item->name}}</option>
@@ -114,23 +114,38 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="operator_id">Vessel Operator</label>
-                                <select class="selectpicker show-tick form-control" id="operator_id" data-live-search="true" name="operator_id" title="{{trans('forms.select')}}">
-                                    <option value="0">All</option>
-                                    @foreach ($operators as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('operator_id') ? 'selected' :''}}>{{$item->name}}</option>
-                                    @endforeach
+                                <label>SOC/COC</label>
+                                <select class="selectpicker show-tick form-control" id="soc_coc" data-live-search="true" name="soc_coc" title="{{trans('forms.select')}}" required>
+                                    <option value="">All</option>
+                                    <option value="SOC">SOC</option>
+                                    <option value="COC">COC</option>
                                 </select>
-                                @error('operator_id')
+                                @error('soc_soc')
                                 <div style="color:red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-row">
-
+                            <div class="form-group col-md-12">
+                                <label for="ownership"> Container Ownership Type</label>
+                                <select class="selectpicker form-control" id="ownership" data-live-search="true"
+                                        name="container_ownership_type[][id]" data-size="10"
+                                        title="{{trans('forms.select')}}"  multiple="multiple">
+                                    <option value="0">All</option>
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('container_ownership_type') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_type')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="role">{{trans('user.role')}} <span class="text-warning"> (user will be disabled if no role is selected)</span></label>
                                 <select class="selectpicker show-tick form-control" id="role" data-live-search="true" name="role" title="{{trans('forms.select')}}">
@@ -192,6 +207,25 @@
 </style>
 @endpush
 @push('scripts')
+    <script>
+        $('#ownership').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue.length > 1 && selectedValue.includes('0')) {
+                    selectedValue = selectedValue.filter(function (value) {
+                        return value !== '0';
+                    });
+                    $(this).val(selectedValue);
+                }
+
+                if (selectedValue.includes('0')) {
+                    $('#ownership option:not(:selected)').prop('disabled', true);
+                } else {
+                    $('#ownership option').prop('disabled', false);
+                }
+                $('#ownership').selectpicker('refresh');
+            });
+    </script>
+
     <script src="{{asset('plugins/sweetalerts/sweetalert2.min.js')}}"></script>
     <script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
     <script src="{{ asset('plugins/file-upload/file-upload-with-preview.min.js')}}"></script>

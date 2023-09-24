@@ -247,7 +247,7 @@
                                             <td class="text-center">
                                                  <ul class="table-controls">
 
-                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3)
+                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15)
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">

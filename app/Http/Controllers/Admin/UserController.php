@@ -8,6 +8,7 @@ use App\Models\Master\Company;
 use App\Models\Master\Agents;
 use App\Models\Master\LessorSeller;
 use App\Models\Master\Lines;
+use App\Models\Master\ContinerOwnership;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -56,19 +57,20 @@ class UserController extends Controller
         $roles = Role::orderBy('name')->get();
         $isSuperAdmin = false;
         $lessors = LessorSeller::where('company_id',Auth::user()->company_id)->get();
-        $operators = Lines::where('company_id',Auth::user()->company_id)->get();
+        $container_ownership = ContinerOwnership::orderBy('id')->get();
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
             $agents = Agents::where('company_id',Auth::user()->company_id)->get();
         }else{
             $agents = [];
         }
+
         return view('admin.user.create',[
             'companies'=>$companies,
             'roles'=>$roles,
             'agents'=>$agents,
             'lessors'=>$lessors,
-            'operators'=>$operators,
+            'container_ownership'=>$container_ownership,
             'user_agent'=>$user_agent,
             'isSuperAdmin'=>$isSuperAdmin
         ]);
@@ -78,11 +80,20 @@ class UserController extends Controller
         $this->authorize(__FUNCTION__,User::class);
         $this->validate($request,$this->rules(),$this->messages());
         $user = Auth::user();
+
+        $container_ownership_type = "";
+        if($request->container_ownership_type != null){
+            foreach($request->container_ownership_type as $container_ownership){
+                $container_ownership_type .= $container_ownership['id'] . ', ';
+            }
+        }
+
         $data = array_merge($request->except('_token','password_confirmation','role'),[
             'password'=>Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request),
             'is_super_admin'=>0,
             'company_id'=>$user->company_id,
+            'container_ownership_type'=>$container_ownership_type
         ]);
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
@@ -103,33 +114,45 @@ class UserController extends Controller
         $user_agent = Agents::where('company_id',Auth::user()->company_id)->get();
         $isSuperAdmin = false;
         $lessors = LessorSeller::where('company_id',Auth::user()->company_id)->get();
-        $operators = Lines::where('company_id',Auth::user()->company_id)->get();
+        $container_ownership = ContinerOwnership::orderBy('id')->get();
         if(Auth::user()->is_super_admin){
             $isSuperAdmin = true;
             $agents = Agents::where('company_id',Auth::user()->company_id)->get();
         }else{
             $agents = [];
         }
+        $container_ownership_type = explode(", ", $user->container_ownership_type);
+
         return view('admin.user.edit',[
             'companies'=>$companies,
             'isSuperAdmin'=>$isSuperAdmin,
             'lessors'=>$lessors,
-            'operators'=>$operators,
+            'container_ownership'=>$container_ownership,
             'agents'=>$agents,
             'roles'=>$roles,
             'user'=>$user,
             'userCompanis'=>$userCompanis,
             'user_agent'=>$user_agent,
+            'container_ownership_type'=>$container_ownership_type,
+
         ]);
     }
 
     public function update(Request $request,User $user){
         $this->authorize(__FUNCTION__,User::class);
         $this->validate($request,$this->rules(true,$user));
-        $data = array_merge($request->except('_token','password','password_confirmation','role','companies'),[
+        $data = array_merge($request->except('_token','password','password_confirmation','role','companies','container_ownership_type'),[
             'password'=>is_null($request->input('password')) ? $user->password : Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request,$user->avatar)
         ]);
+
+        $container_ownership_type = "";
+        if($request->container_ownership_type != null){
+            foreach($request->container_ownership_type as $container_ownership){
+                $container_ownership_type .= $container_ownership['id'] . ', ';
+            }
+        }
+        $user->container_ownership_type = $container_ownership_type;
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
         }
@@ -175,7 +198,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-        $user->delete(); 
+        $user->delete();
         return redirect()->route('users.index')->with('success',trans('User.deleted.success'));
     }
 

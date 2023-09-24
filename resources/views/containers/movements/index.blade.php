@@ -174,7 +174,7 @@
                                     placeholder="Remarkes" autocomplete="off">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="countryInput"> Container Ownership Type</label>
+                                <label> Container Ownership Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_ownership as $item)
