@@ -68,21 +68,21 @@
         <th data-field="hand-fes-em">
             <label>
                 HAND-FES-EM
-                <input type="checkbox" class="hand_fes_em in-egp">
+                <input type="checkbox" class="hand_fes_em_cost in-egp">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-off-inbnd-em-ft40">
             <label>
                 GAT-LIFT OFF-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40 in-egp">
+                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40_cost in-egp">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-on-inbnd-em-ft40">
             <label>
                 GAT-LIFT ON-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40 in-egp">
+                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40_cost in-egp">
                 EGP
             </label>
         </th>
