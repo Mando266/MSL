@@ -21,6 +21,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
     public function headings(): array
     {
         $headings = [
+            "id",
             "company_id",
             "container_id",
             "container_type_id",
@@ -50,11 +51,16 @@ class MovementsExportAll implements FromCollection,WithHeadings
         if (auth()->user()->lessor_id != 0) {
             // Remove the headings for lessor-specific fields
             $headings = array_diff($headings, [
+                "id",
                 "company_id",
                 "terminal_id",
                 "booking_agent_id",
+                "remarkes",
+                "created_at",
+                "updated_at",
                 "import_agent",
                 "free_time_origin",
+                "Lessor/Seller Refrence",
             ]);
         }
         return $headings;
@@ -83,11 +89,16 @@ class MovementsExportAll implements FromCollection,WithHeadings
             $movement->SOC_COC = optional($movement->container)->SOC_COC;
 
             if (auth()->user()->lessor_id != 0) {
+                unset($movement['id']);
                 unset($movement['company_id']);
                 unset($movement['terminal_id']);
+                unset($movement['created_at']);
+                unset($movement['updated_at']);
                 unset($movement['booking_agent_id']);
+                unset($movement['remarkes']);
                 unset($movement['import_agent']);
                 unset($movement['free_time_origin']);
+                unset($movement['description']);
             }
         }
         return $movements;

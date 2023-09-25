@@ -52,8 +52,12 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 "company_id",
                 "terminal_id",
                 "booking_agent_id",
+                "remarkes",
+                "created_at",
+                "updated_at",
                 "import_agent",
                 "free_time_origin",
+                "Lessor/Seller Refrence",
             ]);
         }
         return $headings;
@@ -87,11 +91,16 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                 $movement->SOC_COC = optional($movement->container)->SOC_COC;
                 if (auth()->user()->lessor_id != 0) {
+                    unset($movement['id']);
                     unset($movement['company_id']);
                     unset($movement['terminal_id']);
+                    unset($movement['created_at']);
+                    unset($movement['updated_at']);
                     unset($movement['booking_agent_id']);
+                    unset($movement['remarkes']);
                     unset($movement['import_agent']);
                     unset($movement['free_time_origin']);
+                    unset($movement['description']);
                 }
                 //dd($movement->container->containersOwner->name);
             }

@@ -22,7 +22,6 @@ class Movements extends Model implements PermissionSeederContract
 
     protected $table = 'movements';
     protected $guarded = [];
-    public static int $lessorId = 0;
 
     protected $fillable = [
         'container_id',

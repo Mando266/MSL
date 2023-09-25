@@ -10,30 +10,23 @@ class LessorMiddleware
 {
     public function handle($request, Closure $next)
     {
-//        if (auth()->check()) {
-//            $lessor_id = (int)auth()->user()->lessor_id;
-//
-//            if ($lessor_id != 0) {
-//                session(['lessorId' => $lessor_id]);
-//            }
-//        }
-//        $lessor_id = session('lessorId') ?? 0;
-
         if (auth()->check()) {
-            $lessor_id = (int)auth()->user()->lessor_id;
+            $lessor_id = auth()->user()->lessor_id;
 
-            if ($lessor_id != 0) {
-                Movements::addGlobalScope('lessor', function ($builder) use ($lessor_id) {
-                    $builder->whereHas('container', function ($q) use ($lessor_id) {
-                        $q->where('description', $lessor_id);
+            if (!empty($lessor_id)) {
+                // Convert the comma-separated string to an array
+                $lessorArray = explode(',', $lessor_id);
+
+                Movements::addGlobalScope('lessor', function ($builder) use ($lessorArray) {
+                    $builder->whereHas('container', function ($q) use ($lessorArray) {
+                        $q->whereIn('description', $lessorArray);
                     });
                 });
-                Containers::addGlobalScope('lessor', function ($builder) use ($lessor_id) {
-                    $builder->where('description', $lessor_id);
+                Containers::addGlobalScope('lessor', function ($builder) use ($lessorArray) {
+                    $builder->whereIn('description', $lessorArray);
                 });
             }
         }
-
         return $next($request);
     }
 }
