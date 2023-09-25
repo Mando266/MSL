@@ -60,6 +60,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
                 "updated_at",
                 "import_agent",
                 "free_time_origin",
+                "Lessor/Seller Refrence",
             ]);
         }
         return $headings;
@@ -97,6 +98,7 @@ class MovementsExportAll implements FromCollection,WithHeadings
                 unset($movement['remarkes']);
                 unset($movement['import_agent']);
                 unset($movement['free_time_origin']);
+                unset($movement['description']);
             }
         }
         return $movements;

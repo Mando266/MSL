@@ -234,7 +234,7 @@
                                         <th>free time destination</th>
                                         {{-- <th>import agent</th>
                                         <th>booking agent</th>    --}}
-                                        <th>remarkes</th>
+                                        {{-- <th>remarkes</th> --}}
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
                                 </thead>
@@ -257,7 +257,7 @@
                                             <td>{{$item->free_time}}</td>
                                             {{-- <td>{{{optional($item->importAgent)->name}}}</td>
                                             <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
-                                            <td>{{$item->remarkes}}</td>
+                                            {{-- <td>{{$item->remarkes}}</td> --}}
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

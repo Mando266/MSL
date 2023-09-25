@@ -15,6 +15,7 @@ class LoadListExport implements FromCollection,WithHeadings
         return [
         "S.No",
         "Booking No",
+        "Cstar Ref No",
         "Frist Vessel",
         "Frist VOYAGE",
         "LEG",
@@ -70,6 +71,7 @@ class LoadListExport implements FromCollection,WithHeadings
                     $tempCollection = collect([
                         'no' => $count,
                         'ref_no' => $booking->ref_no,
+                        'forwarder_ref_no' => $booking->forwarder_ref_no,
                         'first_vessel' => optional(optional($booking->voyage)->vessel)->name,
                         'voyage_id' => optional($booking->voyage)->voyage_no,
                         'leg' => optional(optional($booking->voyage)->leg)->name,

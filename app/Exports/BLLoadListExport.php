@@ -7,11 +7,12 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class BLLoadListExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
         "Booking No",
+        "Cstar Ref No",
         "Bl No",
         "Shipper Name",
         "FORWARDER",
@@ -38,9 +39,9 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Description",
         ];
     }
-    
 
-    public function collection() 
+
+    public function collection()
     {
         $bldarfts = session('bldarft');
         $exportbls = collect();
@@ -51,10 +52,11 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         $bldarft->bl_status = "Confirm";
                     }else{
                         $bldarft->bl_status = "Draft";
-                    } 
-       
+                    }
+
                     $tempCollection = collect([
                         'Booking No' => optional($bldarft->booking)->ref_no,
+                        'Cstar Ref No' => optional($bldarft->booking)->forwarder_ref_no,
                         'Bl No' => $bldarft->ref_no,
                         'Shipper Name' => optional($bldarft->customer)->name,
                         'FORWARDER' => optional($bldarft->booking->forwarder)->name,
@@ -68,7 +70,7 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'Container Type' => optional($bldarft->equipmentsType)->name,
                         'Container No' => optional($blDetail->container)->code,
                         'OFR' => optional($bldarft->booking->quotation)->ofr,
-                        'Seal No' => $blDetail->seal_no, 
+                        'Seal No' => $blDetail->seal_no,
                         'PACKS' => $blDetail->packs,
                         'PACKS TYPE' => $blDetail->pack_type,
                         'TARE WEIGHT' => optional($blDetail->container)->tar_weight,

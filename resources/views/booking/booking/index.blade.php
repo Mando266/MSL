@@ -35,8 +35,8 @@
                                 @csrf
 
                                     {{ csrf_field() }}
-                                        <input type="file" name="file" >
-                                        <button  id="buttonSubmit" class="btn btn-success mt-3" >Import Booking Container</button>
+                                        <input type="file" name="file" onchange="unlock();">
+                                        <button  id="buttonSubmit" class="btn btn-success mt-3" disabled>Import Booking Containers</button>
                                     </form>
                                 </div>
                             </div>
@@ -430,8 +430,13 @@
 @endsection
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-<script type="text/javascript">
+<script>
+    function unlock(){
+        document.getElementById('buttonSubmit').removeAttribute("disabled");
+    }
+</script>
 
+<script type="text/javascript">
     $(document).ready(function () {
         document.getElementById('reset-select').addEventListener('click',() => {
             $("option:selected").remove()

@@ -87,13 +87,20 @@ class UserController extends Controller
                 $container_ownership_type .= $container_ownership['id'] . ', ';
             }
         }
+        $lessor_id = "";
+        if($request->lessor_id != null){
+            foreach($request->lessor_id as $lessor){
+                $lessor_id .= $lessor['id'] . ', ';
+            }
+        }
 
         $data = array_merge($request->except('_token','password_confirmation','role'),[
             'password'=>Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request),
             'is_super_admin'=>0,
             'company_id'=>$user->company_id,
-            'container_ownership_type'=>$container_ownership_type
+            'container_ownership_type'=>$container_ownership_type,
+            'lessor_id'=>$lessor_id,
         ]);
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
@@ -122,6 +129,7 @@ class UserController extends Controller
             $agents = [];
         }
         $container_ownership_type = explode(", ", $user->container_ownership_type);
+        $lessor_id = explode(", ", $user->lessor_id);
 
         return view('admin.user.edit',[
             'companies'=>$companies,
@@ -134,17 +142,25 @@ class UserController extends Controller
             'userCompanis'=>$userCompanis,
             'user_agent'=>$user_agent,
             'container_ownership_type'=>$container_ownership_type,
-
+            'lessor_id'=>$lessor_id,
         ]);
     }
 
     public function update(Request $request,User $user){
         $this->authorize(__FUNCTION__,User::class);
         $this->validate($request,$this->rules(true,$user));
-        $data = array_merge($request->except('_token','password','password_confirmation','role','companies','container_ownership_type'),[
+        $data = array_merge($request->except('_token','password','password_confirmation','role','companies','container_ownership_type','lessor_id'),[
             'password'=>is_null($request->input('password')) ? $user->password : Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request,$user->avatar)
         ]);
+        $lessor_id = "";
+        if($request->lessor_id != null){
+            foreach($request->lessor_id as $lessors){
+                $lessor_id .= $lessors['id'] . ', ';
+            }
+        }
+        $user->lessor_id = $lessor_id;
+
 
         $container_ownership_type = "";
         if($request->container_ownership_type != null){
@@ -153,9 +169,12 @@ class UserController extends Controller
             }
         }
         $user->container_ownership_type = $container_ownership_type;
+
+
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
         }
+
         $user->update($data);
         $roles = is_null($request->input('role')) ? [] : [$request->input('role')];
         $user->syncRoles($roles);

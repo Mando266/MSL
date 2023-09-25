@@ -101,19 +101,23 @@
                         <hr/>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="lessor_id">Container Ownership</label>
-                                <select class="selectpicker show-tick form-control" id="lessor_id" data-live-search="true" name="lessor_id" title="{{trans('forms.select')}}" required>
+                                <label>Container Ownership</label>
+                                <select class="selectpicker form-control" id="ownership" data-live-search="true"
+                                        name="lessor_id[][id]" data-size="10"
+                                        title="{{trans('forms.select')}}" multiple="multiple">
                                     <option value="0" {{"0" == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>All</option>
                                     @foreach ($lessors as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{is_array($lessor_id) && $item->id == old('id',in_array($item->id, $lessor_id) ) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('lessor_id')
-                                <div style="color:red;">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
+
+
                             <div class="form-group col-md-6">
                                 <label for="soc-coc-Input"> SOC/COC </label>
                                 <select class="selectpicker form-control" id="soc-coc-select"
@@ -133,7 +137,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label>Container Ownership Type</label>
-                                <select class="selectpicker form-control" id="ownership" data-live-search="true"
+                                <select class="selectpicker form-control" id="ownershipType" data-live-search="true"
                                         name="container_ownership_type[][id]" data-size="10"
                                         title="{{trans('forms.select')}}" required multiple="multiple">
                                     <option value="0" {{"0" == old('container_ownership_type',$user->container_ownership_type) ? 'selected' :''}}>All</option>
@@ -231,6 +235,23 @@
                 $('#ownership').selectpicker('refresh');
             });
     </script>
+        <script>
+            $('#ownershipType').change(function () {
+                    var selectedValue = $(this).val();
+                    if (selectedValue.length > 1 && selectedValue.includes('0')) {
+                        selectedValue = selectedValue.filter(function (value) {
+                            return value !== '0';
+                        });
+                        $(this).val(selectedValue);
+                    }
+                    if (selectedValue.includes('0')) {
+                        $('#ownershipType option:not(:selected)').prop('disabled', true);
+                    } else {
+                        $('#ownershipType option').prop('disabled', false);
+                    }
+                    $('#ownershipType').selectpicker('refresh');
+                });
+        </script>
     <script src="{{asset('plugins/sweetalerts/sweetalert2.min.js')}}"></script>
     <script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
     <script src="{{ asset('plugins/file-upload/file-upload-with-preview.min.js')}}"></script>
