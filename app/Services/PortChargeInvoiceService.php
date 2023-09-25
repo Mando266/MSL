@@ -10,6 +10,7 @@ use App\Models\Master\Lines;
 use App\Models\Master\Ports;
 use App\Models\Master\Vessels;
 use App\Models\PortCharge;
+use App\Models\PortChargeInvoice;
 use App\Models\Voyages\Voyages;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -24,7 +25,7 @@ class PortChargeInvoiceService
      */
     public function extractInvoiceData($invoiceData): array
     {
-        Arr::forget($invoiceData, ['_token', 'rows', "vessel_id", 'voyage_id']);
+        Arr::forget($invoiceData, ['_token', 'rows', "vessel_id", 'voyage_id', 'voyage_costs']);
         $invoiceData['selected_costs'] = implode(',', $invoiceData['selected_costs']);
         return $invoiceData;
     }
@@ -183,6 +184,7 @@ class PortChargeInvoiceService
         $possibleMovements = ContainersMovement::all();
         $countries = Country::orderBy('name')->get();
         $ports = Ports::where('company_id', $userCompanyId)->orderBy('id')->get();
+        $costs = PortChargeInvoice::COSTS;
 
         return compact(
             'vessels',
@@ -191,7 +193,8 @@ class PortChargeInvoiceService
             'portCharges',
             'possibleMovements',
             'countries',
-            'ports'
+            'ports',
+            'costs',
         );
     }
 }

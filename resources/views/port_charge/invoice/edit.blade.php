@@ -316,12 +316,7 @@
                                         <div class="col-md-6">
                                             <select class="form-control" id="dynamic_fields" multiple
                                                     data-size="10" name="selected_costs[]" required>
-                                                @foreach([
-                                                            'thc', 'storage','power', 'shifting',
-                                                            'disinf','hand_fes_em',
-                                                            'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
-                                                            'pti', 'add_plan'
-                                                        ] as $field)
+                                                @foreach($costs as $field)
                                                     <option value="{{ $field }}"
                                                             {{ in_array($field, $selected) ? 'selected' : '' }}
                                                     >{{ $field }}</option>
@@ -369,6 +364,13 @@
                                                    readonly>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="ml-5">
+                                    <label class="switch">
+                                        <input type="checkbox" id="checkAll">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <h6>All In EGP</h6>
                                 </div>
                                 <div class="container">
                                     <div id="table2-selects" class="d-none">
@@ -492,6 +494,65 @@
         td:not(:has(input.included)) {
             display: none;
         }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
     </style>
 @endpush
 @push('scripts')
@@ -500,24 +561,55 @@
     @include('port_charge.invoice._js_soa')
     <script>
         $(document).ready(function () {
-            $('tbody tr').remove()
-            addCurrentInvoiceRows()
+            setupPage()
         })
+
+        async function setupPage() {
+            $('tbody tr').remove()
+            await loadVoyages();
+            await selectVoyageCosts()
+            toggleAllEgpSwitch()
+            addCurrentInvoiceRows()
+        }
 
         async function addCurrentInvoiceRows() {
             let containers = JSON.parse('@json($rows->pluck('container_no')->toArray())');
-            let selectedVoyages = JSON.parse('@json($invoice->voyages->pluck('id')->unique()->toArray())')
             let selectedServices = JSON.parse('@json($rows->pluck('service')->toArray())');
             let selectedPtiTypes = JSON.parse('@json($rows->pluck('pti_type')->toArray())');
             let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
             let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
             let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
 
-            await loadVoyages();
-            $("#voyage").val(selectedVoyages).trigger('change')
-            $("#dynamic_fields").trigger('change')
-            $('.selectpicker').selectpicker('refresh')
-            addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
+
+            await addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
+        }
+
+        function toggleAllEgpSwitch() {
+            let isEgp = +{{ $invoice->invoice_egp }};
+            if (isEgp > 0) {
+                $("#checkAll").prop('checked', true).trigger('change')
+            }
+        }
+
+        async function selectVoyageCosts() {
+            await selectVoyages()
+            let voyageCosts = JSON.parse('@json($voyagesCosts)')
+            voyageCosts.forEach(voyageCost => {
+                const voyageId = voyageCost.id
+                $(`.voyage-${voyageId}-full`).val(voyageCost.full).trigger('change')
+                $(`.voyage-${voyageId}-empty`).val(voyageCost.empty).trigger('change')
+                $('.selectpicker').selectpicker('refresh')
+            })
+        }
+
+        async function selectVoyages() {
+            return new Promise(resolve => {
+                let selectedVoyages = JSON.parse('@json($invoice->voyages->pluck('id')->unique()->toArray())')
+                $("#voyage").val(selectedVoyages).trigger('change')
+                $("#dynamic_fields").trigger('change')
+                $('.selectpicker').selectpicker('refresh')
+                resolve()
+            })
         }
 
         const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans) => {

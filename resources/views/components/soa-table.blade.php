@@ -33,70 +33,70 @@
         <th data-field="thc">
             <label>
                 THC
-                <input type="checkbox" class="thc_cost">
+                <input type="checkbox" class="thc_cost in-egp">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="storage">
             <label>
                 STORAGE
-                <input type="checkbox" class="storage_cost">
+                <input type="checkbox" class="storage_cost in-egp">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="power">
             <label>
                 POWER
-                <input type="checkbox" class="power_cost">
+                <input type="checkbox" class="power_cost in-egp">
                 EGP
             </label>
         </th>
         <th data-field="shifting">
             <label>
                 SHIFTING
-                <input type="checkbox" class="shifting_cost">
+                <input type="checkbox" class="shifting_cost in-egp">
                 EGP
             </label>
         </th>
         <th data-field="disinf">
             <label>
                 DISINF
-                <input type="checkbox" class="disinf_cost">
+                <input type="checkbox" class="disinf_cost in-egp">
                 EGP
             </label>
         </th>
         <th data-field="hand-fes-em">
             <label>
                 HAND-FES-EM
-                <input type="checkbox" class="hand_fes_em">
+                <input type="checkbox" class="hand_fes_em in-egp">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-off-inbnd-em-ft40">
             <label>
                 GAT-LIFT OFF-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40">
+                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40 in-egp">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-on-inbnd-em-ft40">
             <label>
                 GAT-LIFT ON-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40">
+                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40 in-egp">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="pti">
             <label>
                 PTI
-                <input type="checkbox" class="pti_cost">
+                <input type="checkbox" class="pti_cost in-egp">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="add-plan">
             <label>
                 ADD-PLAN
-                <input type="checkbox" class="add_plan_cost">
+                <input type="checkbox" class="add_plan_cost in-egp">
                 EGP
             </label>
         </th>

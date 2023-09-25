@@ -31,6 +31,10 @@
         $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
         $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
         $(document).on('click change keyup paste', () => calculateTotals());
+        $('#checkAll').change(function () {
+            $('.in-egp').prop('checked', this.checked);
+            calculateTotals()
+        });
         $('form').on('submit', e => {
             setToZeroIfNull()
             deleteEmptyOnSubmit(e)
@@ -64,10 +68,14 @@
                     clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Full Costs');
                     clonedDiv.find('select').data('type', 'full');
                     select.attr('id', 'voyage_' + voyageId + '_applied_costs' + '_full')
+                    select.attr('name', `voyage_costs[${voyageId}][full_costs][]`)
+                    select.addClass(`voyage-${voyageId}-full`)
                 } else {
                     clonedDiv.find('label').text($(desiredOption[0]).data('name') + ' Empty Costs');
                     clonedDiv.find('select').data('type', 'empty');
                     select.attr('id', 'voyage_' + voyageId + '_applied_costs' + '_empty')
+                    select.attr('name', `voyage_costs[${voyageId}][empty_costs][]`)
+                    select.addClass(`voyage-${voyageId}-empty`)
                 }
 
 
@@ -76,7 +84,6 @@
         });
 
         $('.voyage-costs').trigger('change')
-        console.log('a')
         addOptionsToVoyageCosts()
     }
 
@@ -164,7 +171,7 @@
             });
             resolve();
         });
-        
+
         invoiceUSD = totalUSD - USD_to_EGP;
 
         if (!isNaN(exchangeRate)) {
@@ -583,7 +590,8 @@
 
             $.get(`/api/vessel/multi-voyages/${vessel.val()}`).then(data => {
                 const voyages = data.voyages || [];
-                const options = voyages.map(voyage => `<option value="${voyage.id}" data-name="${voyage.voyage_no} - ${voyage.leg.name}">${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg.name}</option>`);
+                const options = voyages.map(voyage => `<option value="${voyage.id}" data-name="${voyage.voyage_no} - ${voyage.leg ? voyage.leg.name : ''}"
+                                                        >${voyage.vessel.name} - ${voyage.voyage_no} - ${voyage.leg ? voyage.leg.name : ''}</option>`);
                 voyageSelect.html(options.join(''));
                 voyageSelect.trigger('change');
                 $('.selectpicker').selectpicker('refresh');
