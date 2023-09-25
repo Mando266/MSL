@@ -7,6 +7,7 @@ use App\Models\Booking\Booking;
 use App\Models\ChargesMatrix;
 use App\Models\Master\Containers;
 use App\Models\PortChargeInvoice;
+use App\Models\Voyages\Voyages;
 use App\Services\PortChargeInvoiceService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -57,12 +58,15 @@ class PortChargeInvoiceController extends Controller
         ]);
 
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(
-            request()->except('_token', 'rows', "vessel_id", 'voyage_id')
-        );
-//        dd($rows, request()->all());
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());
+        $voyages = Voyages::findMany($request->voyage_id);
+
+        $voyageCosts = $request->voyage_costs;
         $portChargeInvoice = PortChargeInvoice::create($invoiceData);
-        $portChargeInvoice->voyages()->attach(request()->voyage_id);
+        foreach ($voyages as $voyage) {
+            $costs = $voyageCosts[$voyage->id] ?? [];
+            $portChargeInvoice->createVoyageCosts($voyage, $costs);
+        }
 
         foreach ($rows as $row) {
             $portChargeInvoice->rows()->create($row);
@@ -87,22 +91,37 @@ class PortChargeInvoiceController extends Controller
     public function edit(PortChargeInvoice $portChargeInvoice)
     {
         $formViewData = $this->invoiceService->getFormViewData();
+        $voyagesCosts = $portChargeInvoice->portChargeInvoiceVoyages->map(function($voyage){
+            $data['id'] = $voyage->voyages_id;
+            $data['empty'] = $voyage->empty_costs;
+            $data['full'] = $voyage->full_costs;
+            return $data;
+        });
 
         return view('port_charge.invoice.edit', $formViewData)
             ->with([
                 'invoice' => $portChargeInvoice,
                 'rows' => $portChargeInvoice->rows,
                 'selected' => explode(',', $portChargeInvoice->selected_costs),
+                'voyagesCosts' => $voyagesCosts,
             ]);
     }
 
     public function update(PortChargeInvoice $portChargeInvoice)
     {
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
-        $invoiceData = $this->invoiceService->extractInvoiceData(request()->except('_token', 'rows'));
+        $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());
 
         $portChargeInvoice->update($invoiceData);
         $portChargeInvoice->rows()->delete();
+        $portChargeInvoice->portChargeInvoiceVoyages()->delete();
+        
+        $voyageCosts = request()->voyage_costs;
+        $voyages = Voyages::findMany(request()->voyage_id);
+        foreach ($voyages as $voyage) {
+            $costs = $voyageCosts[$voyage->id] ?? [];
+            $portChargeInvoice->createVoyageCosts($voyage, $costs);
+        }
 
         foreach ($rows as $row) {
             $portChargeInvoice->rows()->create($row);

@@ -17,6 +17,13 @@ class PortChargeInvoice extends Model
         'port'
     ];
 
+    public const COSTS = [
+        'thc', 'storage','power', 'shifting',
+        'disinf','hand_fes_em',
+        'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
+        'pti', 'add_plan'
+    ];
+
     public function rows(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PortChargeInvoiceRow::class);
@@ -32,12 +39,17 @@ class PortChargeInvoice extends Model
         return $this->belongsTo(Ports::class, 'port_id');
     }
 
+    public function portChargeInvoiceVoyages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PortChargeInvoiceVoyage::class);
+    }
+    
     public function voyages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Voyages::class, PortChargeInvoiceVoyage::class);
+        return $this->belongsToMany(Voyages::class, PortChargeInvoiceVoyage::class, 'port_charge_invoice_id', 'voyages_id');
     }
 
-    public function vessels()
+    public function vessels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Vessels::class, 'port_charge_invoice_voyages', 'port_charge_invoice_id', 'vessel_id');
     }
@@ -69,6 +81,16 @@ class PortChargeInvoice extends Model
             ->orWhereHas('vessels', fn ($q) => $q->where('name', 'like', "%{$term}%"))
             ->orWhereHas('voyages', fn($q) => $q->where('voyage_no', 'like', "%{$term}%"))
             ->latest();
+    }
+
+    public function createVoyageCosts($voyage, $costs)
+    {
+        return $this->portChargeInvoiceVoyages()->create([
+            'voyages_id' => $voyage->id,
+            'vessel_id' => $voyage->vessel->id,
+            'empty_costs' => $costs['empty_costs'] ?? null,
+            'full_costs' => $costs['full_costs'] ?? null,
+        ]);
     }
 
 }

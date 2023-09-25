@@ -3,6 +3,19 @@
     'portCharges',
     'rows'
 ])
+@push('styles')
+    <style>
+        table th label {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table th label input[type="checkbox"] {
+            margin-top: 5px;
+        }
+    </style>
+@endpush
 <table id="{{ $id ?? '' }}" {{ $attributes->merge(['class' => 'table table-bordered table-hover table-condensed mb-4']) }}>
     <thead>
     <tr>
@@ -17,16 +30,76 @@
         <th style="min-width: 222px">TS</th>
         <th style="min-width: 222px">SHIPMENT TYPE</th>
         <th style="min-width: 222px">QUOTATION TYPE</th>
-        <th data-field="thc">THC</th>
-        <th colspan=2 data-field="storage">STORAGE</th>
-        <th colspan=2 data-field="power">POWER</th>
-        <th data-field="shifting">SHIFTING</th>
-        <th data-field="disinf">DISINF</th>
-        <th data-field="hand-fes-em">HAND-FES-EM</th>
-        <th data-field="gat-lift-off-inbnd-em-ft40">GAT-LIFT OFF-INBND-EM-FT40</th>
-        <th data-field="gat-lift-on-inbnd-em-ft40">GAT-LIFT ON-INBND-EM-FT40</th>
-        <th colspan="2" data-field="pti">PTI</th>
-        <th colspan="2" data-field="add-plan">ADD-PLAN</th>
+        <th data-field="thc">
+            <label>
+                THC
+                <input type="checkbox" class="thc_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th colspan=2 data-field="storage">
+            <label>
+                STORAGE
+                <input type="checkbox" class="storage_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th colspan=2 data-field="power">
+            <label>
+                POWER
+                <input type="checkbox" class="power_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th data-field="shifting">
+            <label>
+                SHIFTING
+                <input type="checkbox" class="shifting_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th data-field="disinf">
+            <label>
+                DISINF
+                <input type="checkbox" class="disinf_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th data-field="hand-fes-em">
+            <label>
+                HAND-FES-EM
+                <input type="checkbox" class="hand_fes_em in-egp">
+                EGP
+            </label>
+        </th>
+        <th data-field="gat-lift-off-inbnd-em-ft40">
+            <label>
+                GAT-LIFT OFF-INBND-EM-FT40
+                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40 in-egp">
+                EGP
+            </label>
+        </th>
+        <th data-field="gat-lift-on-inbnd-em-ft40">
+            <label>
+                GAT-LIFT ON-INBND-EM-FT40
+                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40 in-egp">
+                EGP
+            </label>
+        </th>
+        <th colspan="2" data-field="pti">
+            <label>
+                PTI
+                <input type="checkbox" class="pti_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th colspan="2" data-field="add-plan">
+            <label>
+                ADD-PLAN
+                <input type="checkbox" class="add_plan_cost in-egp">
+                EGP
+            </label>
+        </th>
     </tr>
     </thead>
     <tbody>
