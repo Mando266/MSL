@@ -448,7 +448,6 @@ class InvoiceController extends Controller
                 'type'=>'invoice',
                 'invoice_status'=>$request->invoice_status,
                 'notes'=>$request->notes,
-
             ]);
         }
 
@@ -502,6 +501,8 @@ class InvoiceController extends Controller
                 'total_egy'=>$chargeDesc['egy_amount'],
                 'enabled'=>$chargeDesc['enabled'],
                 'add_vat'=>$chargeDesc['add_vat'],
+                'usd_vat'=>$chargeDesc['usd_vat'],
+                'egp_vat'=>$chargeDesc['egp_vat'],
             ]);
         }
 

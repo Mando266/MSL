@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Models\Master\Agents;
+use App\Models\Master\ContinerOwnership;
 
 class User extends Authenticatable implements PermissionSeederContract
 {
@@ -58,7 +59,10 @@ class User extends Authenticatable implements PermissionSeederContract
         })
         ->get();
     }
-    
+    public function containerOwnership()
+    {
+        return $this->belongsTo(ContinerOwnership::class, 'container_ownership_type','id');
+    }
     public function companies()
     {
         return $this->belongsToMany(Company::class,'company_users','user_id','company_id');

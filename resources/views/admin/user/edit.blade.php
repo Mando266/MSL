@@ -35,7 +35,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>
@@ -101,35 +101,57 @@
                         <hr/>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="lessor_id">Lessor or Seller</label>
-                                <select class="selectpicker show-tick form-control" id="lessor_id" data-live-search="true" name="lessor_id" title="{{trans('forms.select')}}">
-                                    <option value="0" {{"0" == old('operator_id',$user->operator_id) ? 'selected' :''}}>All</option>
+                                <label>Container Ownership</label>
+                                <select class="selectpicker form-control" id="ownership" data-live-search="true"
+                                        name="lessor_id[][id]" data-size="10"
+                                        title="{{trans('forms.select')}}" multiple="multiple">
+                                    <option value="0" {{"0" == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>All</option>
                                     @foreach ($lessors as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>{{$item->name}}</option>
+                                        <option value="{{$item->id}}" {{is_array($lessor_id) && $item->id == old('id',in_array($item->id, $lessor_id) ) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('lessor_id')
-                                <div style="color:red;">
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
+
+
                             <div class="form-group col-md-6">
-                                <label for="operator_id">Vessel Operator</label>
-                                <select class="selectpicker show-tick form-control" id="operator_id" data-live-search="true" name="operator_id" title="{{trans('forms.select')}}">
-                                    <option value="0" {{"0" == old('operator_id',$user->operator_id) ? 'selected' :''}}>All</option>
-                                    @foreach ($operators as $item)
-                                    <option value="{{$item->id}}" {{$item->id == old('operator_id',$user->operator_id) ? 'selected' :''}}>{{$item->name}}</option>
-                                    @endforeach
+                                <label for="soc-coc-Input"> SOC/COC </label>
+                                <select class="selectpicker form-control" id="soc-coc-select"
+                                        data-live-search="true" name="soc_coc" data-size="10"
+                                        title="{{trans('forms.select')}}" required>
+                                    <option value="" {{ ($user->soc_coc) == "" ? 'selected' : '' }}>ALL</option>
+                                    <option value="SOC" {{ ($user->soc_coc) == "SOC" ? 'selected':''  }}>SOC</option>
+                                    <option value="COC" {{ ($user->soc_coc) == "COC" ? 'selected':'' }}>COC</option>
                                 </select>
-                                @error('operator_id')
-                                <div style="color:red;">
+                                @error('soc-coc')
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label>Container Ownership Type</label>
+                                <select class="selectpicker form-control" id="ownershipType" data-live-search="true"
+                                        name="container_ownership_type[][id]" data-size="10"
+                                        title="{{trans('forms.select')}}" required multiple="multiple">
+                                    <option value="0" {{"0" == old('container_ownership_type',$user->container_ownership_type) ? 'selected' :''}}>All</option>
+                                    @foreach ($container_ownership as $item)
+                                        <option value="{{$item->id}}" {{is_array($container_ownership_type) && $item->id == old('id',in_array($item->id, $container_ownership_type) ) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('container_ownership_type')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="role">{{trans('user.role')}} <span class="text-warning"> (user will be disabled if no role is selected)</span></label>
@@ -196,6 +218,40 @@
 </style>
 @endpush
 @push('scripts')
+    <script>
+        $('#ownership').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue.length > 1 && selectedValue.includes('0')) {
+                    selectedValue = selectedValue.filter(function (value) {
+                        return value !== '0';
+                    });
+                    $(this).val(selectedValue);
+                }
+                if (selectedValue.includes('0')) {
+                    $('#ownership option:not(:selected)').prop('disabled', true);
+                } else {
+                    $('#ownership option').prop('disabled', false);
+                }
+                $('#ownership').selectpicker('refresh');
+            });
+    </script>
+        <script>
+            $('#ownershipType').change(function () {
+                    var selectedValue = $(this).val();
+                    if (selectedValue.length > 1 && selectedValue.includes('0')) {
+                        selectedValue = selectedValue.filter(function (value) {
+                            return value !== '0';
+                        });
+                        $(this).val(selectedValue);
+                    }
+                    if (selectedValue.includes('0')) {
+                        $('#ownershipType option:not(:selected)').prop('disabled', true);
+                    } else {
+                        $('#ownershipType option').prop('disabled', false);
+                    }
+                    $('#ownershipType').selectpicker('refresh');
+                });
+        </script>
     <script src="{{asset('plugins/sweetalerts/sweetalert2.min.js')}}"></script>
     <script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
     <script src="{{ asset('plugins/file-upload/file-upload-with-preview.min.js')}}"></script>

@@ -195,7 +195,7 @@
                                             <td>{{$invoice->customer}}</td>
                                             <td>{{optional($invoice->customerShipperOrFfw)->tax_card_no}}</td>
                                             <td>{{$invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no}}</td>
-                                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional(optional(optional($invoice->bldraft)->booking)->quotation)->is_transhipment == 1)
                                             <td>{{ $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional(optional($invoice->bldraft->booking)->secondvoyage)->voyage_no }}</td>
                                             <td>{{ $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional(optional(optional($invoice->bldraft->booking)->secondvoyage)->vessel)->name }}</td>
                                             @else
@@ -247,7 +247,7 @@
                                             <td class="text-center">
                                                  <ul class="table-controls">
 
-                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3)
+                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15)
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
