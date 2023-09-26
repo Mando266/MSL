@@ -635,6 +635,11 @@
                 $(".power-days").trigger('change')
                 $(".pti-type").trigger('change')
                 $(".add-plan-select").trigger('change')
+                handleDynamicFieldsChange()
+                updateChargeTypeOptions('table1')
+                updateChargeTypeOptions('table2')
+                updateChargeTypeOptions('table3')
+                updateChargeTypeOptions('table4')
             }
         };
     </script>

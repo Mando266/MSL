@@ -239,6 +239,12 @@
                 swal(`Duplicate Containers: ${duplicates.join(', ')}`);
             }
         }
+        checkForDuplicateContainers()
+        handleDynamicFieldsChange()
+        updateChargeTypeOptions("table1")
+        updateChargeTypeOptions("table2")
+        updateChargeTypeOptions("table3")
+        updateChargeTypeOptions("table4")
     };
 
     function checkForDuplicateContainers() {
@@ -264,47 +270,49 @@
     }
 
     const processContainer = async (container, vesselId, voyage, service = null, ptiType = null, powerDay = null, storageDay = null, addPlan = null, additionalFee = null, additionalFeesDescription = null) => {
-        try {
-            const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
-                params: {
-                    vessel: vesselId,
-                    voyage: voyage,
-                    container: container
-                }
-            });
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
+                    params: {
+                        vessel: vesselId,
+                        voyage: voyage,
+                        container: container
+                    }
+                });
 
-            const {ref_no, is_ts, shipment_type, quotation_type} = response.data;
-            let table = '';
-            let selectedCharge = null;
+                const { ref_no, is_ts, shipment_type, quotation_type } = response.data;
+                let table = '';
+                let selectedCharge = null;
 
-            if (is_ts == '1') {
-                table = 'table4';
-                if (quotation_type.toLowerCase() === 'full') {
-                    selectedCharge = 5;
+                if (is_ts == '1') {
+                    table = 'table4';
+                    if (quotation_type.toLowerCase() === 'full') {
+                        selectedCharge = 5;
+                    }
+                    if (quotation_type.toLowerCase() === 'empty') {
+                        selectedCharge = 6;
+                    }
+                } else if (quotation_type.toLowerCase() === 'full') {
+                    table = 'table1';
+                    selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
+                    table = 'table2';
+                    selectedCharge = 4;
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'import') {
+                    table = 'table3';
+                    selectedCharge = 3;
                 }
-                if (quotation_type.toLowerCase() === 'empty') {
-                    selectedCharge = 6;
+
+                if (table !== '') {
+                    const tbody = $(`#${table} tbody`);
+                    appendSingleRow(container, tbody, selectedCharge, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
                 }
-            } else if (quotation_type.toLowerCase() === 'full') {
-                table = 'table1';
-                selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
-            } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
-                table = 'table2';
-                selectedCharge = 4;
-            } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'import') {
-                table = 'table3';
-                selectedCharge = 3;
+                resolve();
+            } catch (error) {
+                failedContainers.push(container);
+                reject(error);
             }
-
-            if (table !== '') {
-                const tbody = $(`#${table} tbody`);
-                appendSingleRow(container, tbody, selectedCharge, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
-                updateChargeTypeOptions(table);
-                handleDynamicFieldsChange(table);
-            }
-        } catch (error) {
-            failedContainers.push(container)
-        }
+        });
     };
 
     function handleRemoveRow() {
@@ -520,9 +528,8 @@
             updateRowNumbers()
         }
     }
-    
-    function setAdditionalFees(row, additionalFees, additionalFeesDescription){
-        console.log(row, additionalFees, additionalFeesDescription)
+
+    function setAdditionalFees(row, additionalFees, additionalFeesDescription) {
         row.find('.additional-cost').val(additionalFees)
         row.find('.additional-description').val(additionalFeesDescription)
     }
@@ -578,8 +585,6 @@
                 console.error('Could not find ref_no');
             });
         }
-        checkForDuplicateContainers()
-        handleDynamicFieldsChange()
     }
 
     function handlePtiTypeChange() {
@@ -702,7 +707,7 @@
         return newRow
     }
 
-    function generateDynamicInputsHtml() {
+    const generateDynamicInputsHtml = () => {
         const dynamicFields = [
             'thc', 'storage', 'power',
             'shifting', 'disinf', 'hand_fes_em',
