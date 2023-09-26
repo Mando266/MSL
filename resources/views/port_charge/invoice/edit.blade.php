@@ -579,9 +579,11 @@
             let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
             let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
             let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
+            let additionalFees = JSON.parse('@json($rows->pluck('additional_fees')->toArray())');
+            let additionalFeesDescriptions = JSON.parse('@json($rows->pluck('additional_fees_description')->toArray())');
 
 
-            await addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans)
+            await addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans, additionalFees, additionalFeesDescriptions)
         }
 
         function toggleAllEgpSwitch() {
@@ -612,25 +614,32 @@
             })
         }
 
-        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans) => {
+        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans, additionalFees, additionalFeesDescriptions) => {
             const vesselId = $('#vessel_id').val();
             const voyage = $('#voyage').val();
 
             if (containers.length > 0 && vesselId && voyage) {
                 for (let i = 0; i < containers.length; i++) {
                     const container = containers[i];
-                    const service = selectedServices[i];
+                    const service = selectedServices[i] !== "" ? selectedServices[i] : null;
                     const ptiType = selectedPtiTypes[i];
                     const powerDay = selectedPowerDays[i];
                     const storageDay = selectedStorageDays[i];
                     const addPlan = selectedAddPlans[i];
+                    const additionalFee = additionalFees[i];
+                    const additionalFeesDescription = additionalFeesDescriptions[i];
 
-                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan);
-                    $(".storage-days").trigger('change')
-                    $(".power-days").trigger('change')
-                    $(".pti-type").trigger('change')
-                    $(".add-plan-select").trigger('change')
+                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
                 }
+                $(".storage-days").trigger('change')
+                $(".power-days").trigger('change')
+                $(".pti-type").trigger('change')
+                $(".add-plan-select").trigger('change')
+                handleDynamicFieldsChange()
+                updateChargeTypeOptions('table1')
+                updateChargeTypeOptions('table2')
+                updateChargeTypeOptions('table3')
+                updateChargeTypeOptions('table4')
             }
         };
     </script>

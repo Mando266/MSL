@@ -153,14 +153,14 @@
         let USD_to_EGP = 0;
 
         await new Promise((resolve) => {
-            $('.dynamic-input.included').each(function () {
+            $('.included').each(function () {
                 totalUSD += parseFloat($(this).val()) || 0;
             });
             resolve();
         });
 
         await new Promise((resolve) => {
-            $('.dynamic-input.included').each(function () {
+            $('.included').each(function () {
                 const table = $(this).closest('table');
                 const field = $(this).data('field');
                 const checkbox = table.find(`input[type="checkbox"].${field}`);
@@ -239,6 +239,12 @@
                 swal(`Duplicate Containers: ${duplicates.join(', ')}`);
             }
         }
+        checkForDuplicateContainers()
+        handleDynamicFieldsChange()
+        updateChargeTypeOptions("table1")
+        updateChargeTypeOptions("table2")
+        updateChargeTypeOptions("table3")
+        updateChargeTypeOptions("table4")
     };
 
     function checkForDuplicateContainers() {
@@ -263,48 +269,50 @@
         }
     }
 
-    const processContainer = async (container, vesselId, voyage) => {
-        try {
-            const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
-                params: {
-                    vessel: vesselId,
-                    voyage: voyage,
-                    container: container
-                }
-            });
+    const processContainer = async (container, vesselId, voyage, service = null, ptiType = null, powerDay = null, storageDay = null, addPlan = null, additionalFee = null, additionalFeesDescription = null) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
+                    params: {
+                        vessel: vesselId,
+                        voyage: voyage,
+                        container: container
+                    }
+                });
 
-            const {ref_no, is_ts, shipment_type, quotation_type} = response.data;
-            let table = '';
-            let selectedCharge = null;
+                const { ref_no, is_ts, shipment_type, quotation_type } = response.data;
+                let table = '';
+                let selectedCharge = null;
 
-            if (is_ts == '1') {
-                table = 'table4';
-                if (quotation_type.toLowerCase() === 'full') {
-                    selectedCharge = 5;
+                if (is_ts == '1') {
+                    table = 'table4';
+                    if (quotation_type.toLowerCase() === 'full') {
+                        selectedCharge = 5;
+                    }
+                    if (quotation_type.toLowerCase() === 'empty') {
+                        selectedCharge = 6;
+                    }
+                } else if (quotation_type.toLowerCase() === 'full') {
+                    table = 'table1';
+                    selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
+                    table = 'table2';
+                    selectedCharge = 4;
+                } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'import') {
+                    table = 'table3';
+                    selectedCharge = 3;
                 }
-                if (quotation_type.toLowerCase() === 'empty') {
-                    selectedCharge = 6;
+
+                if (table !== '') {
+                    const tbody = $(`#${table} tbody`);
+                    appendSingleRow(container, tbody, selectedCharge, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
                 }
-            } else if (quotation_type.toLowerCase() === 'full') {
-                table = 'table1';
-                selectedCharge = shipment_type.toLowerCase() === 'import' ? 1 : 2;
-            } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'export') {
-                table = 'table2';
-                selectedCharge = 4;
-            } else if (quotation_type.toLowerCase() === 'empty' && shipment_type.toLowerCase() === 'import') {
-                table = 'table3';
-                selectedCharge = 3;
+                resolve();
+            } catch (error) {
+                failedContainers.push(container);
+                reject(error);
             }
-
-            if (table !== '') {
-                const tbody = $(`#${table} tbody`);
-                appendSingleRow(container, tbody, selectedCharge);
-                updateChargeTypeOptions(table);
-                handleDynamicFieldsChange(table);
-            }
-        } catch (error) {
-            failedContainers.push(container)
-        }
+        });
     };
 
     function handleRemoveRow() {
@@ -495,6 +503,7 @@
         appendNewRows(containerNumbers, tbody, selectedCharge, selectedService)
         row.remove()
         handleDynamicFieldsChange()
+        updateRowNumbers()
         updateChargeTypeOptions(tableId);
     }
 
@@ -509,14 +518,20 @@
         containerNumbers.forEach(containerNumber => appendSingleRow(containerNumber, tbody, selectedCharge, selectedService))
     }
 
-    function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) {
+    function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null, additionalFees = null, additionalFeesDescription = null) {
         if (containerNumber !== '') {
             const newRow = getNewRow(containerNumber)
             tbody.append(newRow)
             setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
+            setAdditionalFees(newRow, additionalFees, additionalFeesDescription)
             newRow.find('.container_no').trigger('change')
             updateRowNumbers()
         }
+    }
+
+    function setAdditionalFees(row, additionalFees, additionalFeesDescription) {
+        row.find('.additional-cost').val(additionalFees)
+        row.find('.additional-description').val(additionalFeesDescription)
     }
 
     function setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan) {
@@ -570,8 +585,6 @@
                 console.error('Could not find ref_no');
             });
         }
-        checkForDuplicateContainers()
-        handleDynamicFieldsChange();
     }
 
     function handlePtiTypeChange() {
@@ -579,7 +592,7 @@
         const ptiValue = $(this).find(`option:selected`).data('cost');
 
         const row = $(this).closest('tr');
-        const ptiInput = row.find('input[name*="pti"]');
+        const ptiInput = row.find('input[data-field="pti_cost"]');
         ptiInput.val(ptiValue);
     }
 
@@ -681,13 +694,20 @@
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
                     ${generateDynamicInputsHtml()}
+                    <td><input type="number" name="rows[additional_fees][]"
+                       class="form-control additional-cost included"
+                       step="0.01" placeholder="cost" data-field="additional_fees_cost">
+                    </td>
+                    <td><input placeholder="description" class="form-control additional-description" name="rows[additional_fees_description][]"
+                               style="min-width: 200px">
+                    </td>
                 </tr>
             `);
 
         return newRow
     }
 
-    function generateDynamicInputsHtml() {
+    const generateDynamicInputsHtml = () => {
         const dynamicFields = [
             'thc', 'storage', 'power',
             'shifting', 'disinf', 'hand_fes_em',
