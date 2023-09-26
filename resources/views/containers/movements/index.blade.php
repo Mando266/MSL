@@ -174,7 +174,7 @@
                                     placeholder="Remarkes" autocomplete="off">
                             </div>
                             <div class="form-group col-md-3">
-                                <label> Container Ownership Type</label>
+                                <label for="countryInput"> Container Ownership Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_ownership as $item)
@@ -234,7 +234,7 @@
                                         <th>free time destination</th>
                                         {{-- <th>import agent</th>
                                         <th>booking agent</th>    --}}
-                                        {{-- <th>remarkes</th> --}}
+                                        <th>remarkes</th>
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
                                 </thead>
@@ -257,7 +257,7 @@
                                             <td>{{$item->free_time}}</td>
                                             {{-- <td>{{{optional($item->importAgent)->name}}}</td>
                                             <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
-                                            {{-- <td>{{$item->remarkes}}</td> --}}
+                                            <td>{{$item->remarkes}}</td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">

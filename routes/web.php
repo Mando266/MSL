@@ -37,6 +37,10 @@ Route::group(['middleware' => 'auth'], function () {
    | master routes
    |--------------------------------------------
    */
+    Route::get('cache/clear',function (){
+        Artisan::call('cache:clear');
+        dd('done');
+    });
     Route::prefix('master')->namespace('Master')->group(function () {
         Route::resource('company', 'CompanyController');
         Route::resource('countries', 'CountryController');
