@@ -280,7 +280,7 @@
                     }
                 });
 
-                const { ref_no, is_ts, shipment_type, quotation_type } = response.data;
+                const {ref_no, is_ts, shipment_type, quotation_type} = response.data;
                 let table = '';
                 let selectedCharge = null;
 
