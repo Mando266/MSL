@@ -11,6 +11,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         table th label input[type="checkbox"] {
             margin-top: 5px;
         }
@@ -97,6 +98,13 @@
             <label>
                 ADD-PLAN
                 <input type="checkbox" class="add_plan_cost in-egp">
+                EGP
+            </label>
+        </th>
+        <th colspan="2">
+            <label>
+                Additional Fees
+                <input type="checkbox" class="additional_fees_cost in-egp">
                 EGP
             </label>
         </th>
@@ -217,12 +225,20 @@
                 </select>
             </td>
             <td data-field="add-plan"><input type="text" name="rows[add_plan][]" class="form-control dynamic-input"
-                                             data-field="add_plan_cost"></td>
+                                             data-field="add_plan_cost">
+            </td>
             <td data-field="add-plan">
                 <select style="min-width: 100px" class="form-control add-plan-select">
                     <option value="1" data-cost="0" selected>Added</option>
                     <option value="0" data-cost="0">Not added</option>
                 </select>
+            </td>
+            <td><input type="number" name="rows[additional_fees][]"
+                       class="form-control included additional-cost"
+                       step="0.01" placeholder="cost" data-field="additional_fees_cost">
+            </td>
+            <td><input placeholder="description" class="form-control additional-description" name="rows[additional_fees_description][]"
+                       style="min-width: 200px">
             </td>
         </tr>
     @endif

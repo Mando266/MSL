@@ -53,6 +53,7 @@
                             <table class='table table-bordered table-hover table-condensed mb-4'>
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th style="min-width: 222px">Type</th>
                                     <th style="min-width: 222px">Service</th>
                                     <th style="min-width: 222px">Voyage</th>
@@ -70,11 +71,15 @@
                                             <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
                                         @endif
                                     @endforeach
+                                    @if(! $invoice->rows->pluck('additional_fees')->filter()->isEmpty())
+                                        <th colspan="2">Additional Fees</th>
+                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($invoice->rows as $row)
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $row->portCharge->name }}</td>
                                         <td>{{ $row->service }}</td>
                                         <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no}" }}</td>
@@ -92,6 +97,10 @@
                                                 <td>{{ $row->{$field} }}</td>
                                             @endif
                                         @endforeach
+                                        @isset($row->additional_fees)
+                                            <td>{{ $row->additional_fees }}</td>
+                                            <td style="min-width: 200px">{{ $row->additional_fees_description }}</td>
+                                        @endif
                                     </tr>
                                 @endforeach
                                 </tbody>

@@ -237,25 +237,17 @@ class PortChargeInvoiceController extends Controller
     public function getRefNo(): \Illuminate\Http\JsonResponse
     {
         $voyageId = request()->input('voyage');
-//        dd($voyageId);
         $containerCode = request()->input('container');
         $container = Containers::firstWhere('code', $containerCode);
         $containerId = $container->id;
         $containerType = $container->containersTypes->name;
 
-        $booking = Booking::with(['quotation'])
-            ->where(function ($query) use ($voyageId, $containerId) {
-                $query->whereIn('voyage_id', $voyageId)
-                    ->orWhere(function ($subQuery) use ($voyageId, $containerId) {
-                        $subQuery->whereIn('voyage_id_second', $voyageId)
-                            ->whereHas('quotation', fn($q) => $q->where('shipment_type', 'Import'));
-                    });
-            })
-            ->whereHas('bookingContainerDetails', function ($q) use ($containerId) {
-                $q->where('container_id', $containerId);
-            })
-            ->latest()
-            ->first();
+        $booking = Booking::query()->with(['quotation'])
+            ->where(function ($q) use ($voyageId) {
+                $q->whereIn('voyage_id', $voyageId)
+                    ->orWhereIn('voyage_id_second', $voyageId);
+            })->whereHas('bookingContainerDetails', fn($q) => $q->where('container_id', $containerId))
+            ->latest()->first();
 
         if ($booking) {
             $quotation = $booking->quotation;

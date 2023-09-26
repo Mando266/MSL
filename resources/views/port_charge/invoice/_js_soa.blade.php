@@ -153,14 +153,14 @@
         let USD_to_EGP = 0;
 
         await new Promise((resolve) => {
-            $('.dynamic-input.included').each(function () {
+            $('.included').each(function () {
                 totalUSD += parseFloat($(this).val()) || 0;
             });
             resolve();
         });
 
         await new Promise((resolve) => {
-            $('.dynamic-input.included').each(function () {
+            $('.included').each(function () {
                 const table = $(this).closest('table');
                 const field = $(this).data('field');
                 const checkbox = table.find(`input[type="checkbox"].${field}`);
@@ -263,7 +263,7 @@
         }
     }
 
-    const processContainer = async (container, vesselId, voyage) => {
+    const processContainer = async (container, vesselId, voyage, service = null, ptiType = null, powerDay = null, storageDay = null, addPlan = null, additionalFee = null, additionalFeesDescription = null) => {
         try {
             const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
                 params: {
@@ -298,7 +298,7 @@
 
             if (table !== '') {
                 const tbody = $(`#${table} tbody`);
-                appendSingleRow(container, tbody, selectedCharge);
+                appendSingleRow(container, tbody, selectedCharge, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
                 updateChargeTypeOptions(table);
                 handleDynamicFieldsChange(table);
             }
@@ -495,6 +495,7 @@
         appendNewRows(containerNumbers, tbody, selectedCharge, selectedService)
         row.remove()
         handleDynamicFieldsChange()
+        updateRowNumbers()
         updateChargeTypeOptions(tableId);
     }
 
@@ -509,14 +510,21 @@
         containerNumbers.forEach(containerNumber => appendSingleRow(containerNumber, tbody, selectedCharge, selectedService))
     }
 
-    function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null) {
+    function appendSingleRow(containerNumber, tbody, selectedCharge = null, selectedService = null, selectedPtiType = null, selectedPowerDay = null, selectedStorageDay = null, selectedAddPlan = null, additionalFees = null, additionalFeesDescription = null) {
         if (containerNumber !== '') {
             const newRow = getNewRow(containerNumber)
             tbody.append(newRow)
             setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan)
+            setAdditionalFees(newRow, additionalFees, additionalFeesDescription)
             newRow.find('.container_no').trigger('change')
             updateRowNumbers()
         }
+    }
+    
+    function setAdditionalFees(row, additionalFees, additionalFeesDescription){
+        console.log(row, additionalFees, additionalFeesDescription)
+        row.find('.additional-cost').val(additionalFees)
+        row.find('.additional-description').val(additionalFeesDescription)
     }
 
     function setSelectsValue(newRow, selectedCharge, selectedService, selectedPtiType, selectedPowerDay, selectedStorageDay, selectedAddPlan) {
@@ -571,7 +579,7 @@
             });
         }
         checkForDuplicateContainers()
-        handleDynamicFieldsChange();
+        handleDynamicFieldsChange()
     }
 
     function handlePtiTypeChange() {
@@ -579,7 +587,7 @@
         const ptiValue = $(this).find(`option:selected`).data('cost');
 
         const row = $(this).closest('tr');
-        const ptiInput = row.find('input[name*="pti"]');
+        const ptiInput = row.find('input[data-field="pti_cost"]');
         ptiInput.val(ptiValue);
     }
 
@@ -681,6 +689,13 @@
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
                     ${generateDynamicInputsHtml()}
+                    <td><input type="number" name="rows[additional_fees][]"
+                       class="form-control additional-cost included"
+                       step="0.01" placeholder="cost" data-field="additional_fees_cost">
+                    </td>
+                    <td><input placeholder="description" class="form-control additional-description" name="rows[additional_fees_description][]"
+                               style="min-width: 200px">
+                    </td>
                 </tr>
             `);
 

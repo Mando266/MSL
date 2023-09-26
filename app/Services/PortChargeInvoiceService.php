@@ -45,7 +45,9 @@ class PortChargeInvoiceService
             "container_no",
             "is_transhipment",
             "shipment_type",
-            "quotation_type"
+            "quotation_type",
+            "additional_fees",
+            "additional_fees_description",
         ];
         $selectedItems = array_merge($selectedCosts, $identifiers);
         return $rows->transform(fn($row) => $row->only($selectedItems))->toArray();
