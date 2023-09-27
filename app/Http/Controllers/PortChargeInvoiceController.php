@@ -23,19 +23,21 @@ class PortChargeInvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $query = $request->input('q');
 
-        $invoices = PortChargeInvoice::searchQuery($query)->with(['voyages.vessel'])->paginate(20);
+        $formViewData = $this->invoiceService->getFormViewData();
 
-        return view('port_charge.invoice.index')
+        $query = PortChargeInvoice::searchQuery($request);
+        
+        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])->latest()->paginate(20);
+
+        return view('port_charge.invoice.index', $formViewData)
             ->with('invoices', $invoices);
     }
 
+
     public function searchJson(Request $request): \Illuminate\Http\JsonResponse
     {
-        $query = $request->input('q');
-
-        $invoices = PortChargeInvoice::searchQuery($query)->get()->load('vessels', 'voyages.leg');
+        $invoices = PortChargeInvoice::searchQuery($request)->get()->load('vessels', 'voyages.leg');
         $invoices = $invoices->map(function ($invoice) {
             $invoice->uniqueVessels = $invoice->vessels->unique();
             $invoice->uniqueVoyages = $invoice->voyages->unique();
@@ -161,6 +163,19 @@ class PortChargeInvoiceController extends Controller
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
         return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
+    }
+    public function exportCurrent()
+    {
+        $query = PortChargeInvoice::searchQuery(request());
+        $invoices = $query->get();
+
+        $rows = $invoices->pluck('rows')->collapse();
+        $now = now()->toDateString();
+
+        if ($rows->isEmpty()) {
+            return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
+        }
+        return Excel::download(new PortChargeInvoiceExport($rows), "invoices_export_{$now}.xlsx");
     }
 
 
