@@ -72,12 +72,12 @@
                         </br>
 
                     <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="pastedContainers">Paste Container Numbers</label>
-                                <input type="text" class="form-control" id="pastedContainers" autocomplete="off">
-                            </div>
-                        </div>
+{{--                        <div class="form-row">--}}
+{{--                            <div class="form-group col-md-12">--}}
+{{--                                <label for="pastedContainers">Paste Container Numbers</label>--}}
+{{--                                <input type="text" class="form-control" id="pastedContainers" autocomplete="off">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
                         <div class="form-row">
                             <div class="form-group col-md-12">
@@ -105,10 +105,13 @@
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="portlocationInput">Activity Location</label>
-                                <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                <select class="selectpicker form-control" id="portlocationInput" data-live-search="true" name="port_location_id[]" data-size="10"
+                                 title="{{trans('forms.select')}}" multiple>
                                     @foreach ($ports as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('port_location_id', request()->input('port_location_id')) ? 'selected':''}}>{{$item->code}}</option>
+                                        <option value="{{ $item->id }}"
+                                                {{ in_array($item->id, (array)request()->input('port_location_id')) ? 'selected' : '' }}>
+                                            {{ $item->code }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -174,7 +177,7 @@
                                     placeholder="Remarkes" autocomplete="off">
                             </div>
                             <div class="form-group col-md-3">
-                                <label> Container Ownership Type</label>
+                                <label for="countryInput"> Container Ownership Type</label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="container_ownership_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($container_ownership as $item)
@@ -208,6 +211,7 @@
 
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                <button type="button" id="resetSearch" class="btn btn-info mt-3">Reset</button>
                                 <a href="{{route('movements.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
@@ -234,7 +238,7 @@
                                         <th>free time destination</th>
                                         {{-- <th>import agent</th>
                                         <th>booking agent</th>    --}}
-                                        {{-- <th>remarkes</th> --}}
+                                        <th>remarkes</th>
                                         <th class='text-center' style='width:100px;'>Container Movements</th>
                                     </tr>
                                 </thead>
@@ -257,7 +261,7 @@
                                             <td>{{$item->free_time}}</td>
                                             {{-- <td>{{{optional($item->importAgent)->name}}}</td>
                                             <td>{{{optional($item->bookingAgent)->name}}}</td> --}}
-                                            {{-- <td>{{$item->remarkes}}</td> --}}
+                                            <td>{{$item->remarkes}}</td>
 
                                             <td class="text-center">
                                                 <ul class="table-controls">
@@ -326,25 +330,56 @@ function unlockupdate(){
 </script>
 
 <script>
-    var containerSelect = document.getElementById('ContainerInput');
-    var pastedContainersInput = document.getElementById('pastedContainers');
+    $(document).on('click', "#resetSearch", () => {
+        $("select").val([])
+        $('.selectpicker').selectpicker('refresh')
+    })
+    $(setTimeout(handlePasteContainers, 900))
+    
+    function handlePasteContainers() {
+        $("#ContainerInput").closest('div').find('.bs-searchbox input').off('paste').on('paste', function (e) {
+            const clipboardData = getClipboardData(e)
+            const containerNumbers = getPastedContainerNumbers(clipboardData)
 
-    pastedContainersInput.addEventListener('input', function(e) {
-        var pastedText = e.target.value;
-        var numbersArray = pastedText.split(',');
-
-        for (var i = 0; i < containerSelect.options.length; i++) {
-            containerSelect.options[i].selected = false;
-        }
-
-        for (var j = 0; j < numbersArray.length; j++) {
-            var numberToSelect = numbersArray[j].trim();
-            for (var k = 0; k < containerSelect.options.length; k++) {
-                if (containerSelect.options[k].text === numberToSelect) {
-                    containerSelect.options[k].selected = true;
+            $('#ContainerInput option').each(function () {
+                let optionValue = $(this).text();
+                if (containerNumbers.includes(optionValue)) {
+                    $(this).prop('selected', true);
+                } else {
+                    $(this).prop('selected', false);
                 }
-            }
-        }
-    });
+            });
+
+            $('.selectpicker').selectpicker('refresh');
+        });
+    }
+    
+    const getClipboardData = event => (event.originalEvent || event).clipboardData || window.clipboardData
+
+    function getPastedContainerNumbers(clipboardData) {
+        const pastedContent = clipboardData.getData('text/plain')
+        return pastedContent.split(/[\s,]+/).map(containerNumber => containerNumber.trim())
+    }
+
+    // var containerSelect = document.getElementById('ContainerInput');
+    // var pastedContainersInput = document.getElementById('pastedContainers');
+    //
+    // pastedContainersInput.addEventListener('input', function(e) {
+    //     var pastedText = e.target.value;
+    //     var numbersArray = pastedText.split(',');
+    //
+    //     for (var i = 0; i < containerSelect.options.length; i++) {
+    //         containerSelect.options[i].selected = false;
+    //     }
+    //
+    //     for (var j = 0; j < numbersArray.length; j++) {
+    //         var numberToSelect = numbersArray[j].trim();
+    //         for (var k = 0; k < containerSelect.options.length; k++) {
+    //             if (containerSelect.options[k].text === numberToSelect) {
+    //                 containerSelect.options[k].selected = true;
+    //             }
+    //         }
+    //     }
+    // });
 </script>
 @endpush

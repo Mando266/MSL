@@ -105,7 +105,7 @@
                                 <select class="selectpicker form-control" id="ownership" data-live-search="true"
                                         name="lessor_id[][id]" data-size="10"
                                         title="{{trans('forms.select')}}" multiple="multiple">
-                                    <option value="0" {{"0" == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>All</option>
+                                    <option value="0" {{0 == old('lessor_id',$user->lessor_id) ? 'selected' :''}}>All</option>
                                     @foreach ($lessors as $item)
                                         <option value="{{$item->id}}" {{is_array($lessor_id) && $item->id == old('id',in_array($item->id, $lessor_id) ) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -116,7 +116,6 @@
                                 </div>
                                 @enderror
                             </div>
-
 
                             <div class="form-group col-md-6">
                                 <label for="soc-coc-Input"> SOC/COC </label>
@@ -140,7 +139,7 @@
                                 <select class="selectpicker form-control" id="ownershipType" data-live-search="true"
                                         name="container_ownership_type[][id]" data-size="10"
                                         title="{{trans('forms.select')}}" required multiple="multiple">
-                                    <option value="0" {{"0" == old('container_ownership_type',$user->container_ownership_type) ? 'selected' :''}}>All</option>
+                                    <option value="0" {{0 == old('container_ownership_type',$user->container_ownership_type) ? 'selected' :''}}>All</option>
                                     @foreach ($container_ownership as $item)
                                         <option value="{{$item->id}}" {{is_array($container_ownership_type) && $item->id == old('id',in_array($item->id, $container_ownership_type) ) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach

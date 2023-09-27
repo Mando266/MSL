@@ -153,23 +153,26 @@ class UserController extends Controller
             'password'=>is_null($request->input('password')) ? $user->password : Hash::make($request->input('password')),
             'avatar'=>$this->storeAvatar($request,$user->avatar)
         ]);
-        $lessor_id = "";
-        if($request->lessor_id != null){
-            foreach($request->lessor_id as $lessors){
-                $lessor_id .= $lessors['id'] . ', ';
+
+        $lessor_id = '';
+        if ($request->input('lessor_id') != 0) {
+            foreach ($request->input('lessor_id') as $lessor) {
+                $lessor_id .= $lessor['id'] . ', ';
             }
         }
+
+        $lessor_id = rtrim($lessor_id, ', ');
         $user->lessor_id = $lessor_id;
 
-
-        $container_ownership_type = "";
-        if($request->container_ownership_type != null){
-            foreach($request->container_ownership_type as $container_ownership){
-                $container_ownership_type .= $container_ownership['id'] . ', ';
+        $container_ownership_type = '';
+        if ($request->input('container_ownership_type') != 0) {
+            foreach ($request->input('container_ownership_type') as $lessor) {
+                $container_ownership_type .= $lessor['id'] . ', ';
             }
         }
-        $user->container_ownership_type = $container_ownership_type;
 
+        $container_ownership_type = rtrim($container_ownership_type, ', ');
+        $user->container_ownership_type = $container_ownership_type;
 
         if(is_null($request->input('role'))){
             $data['is_active'] = '0';
