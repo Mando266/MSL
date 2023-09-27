@@ -36,6 +36,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "leg",
             "rate",
             "port_charge_name",
+            "Shipping Line",
             "service",
             "bl_no",
             "container_no",
@@ -51,7 +52,9 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "gat_lift_off_inbnd_em_ft40",
             "gat_lift_on_inbnd_em_ft40",
             "pti",
-            "add_plan"
+            "add_plan",
+            "additional_fees",
+            "additional_fees_description",
         ];
     }
 
@@ -61,7 +64,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $rows->transform($this->processRowExport());
 
         $sums = $rows->reduce($this->calculateSumRowsExport());
-        $spacer = array_fill(0, 12, ''); // Fill with empty strings
+        $spacer = array_fill(0, 13, ''); // Fill with empty strings
         $sums = array_merge($spacer, $sums);
         
         $total = array_sum($sums);
@@ -78,8 +81,8 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $totalUsdRow = $this->rows->count() + 1;
         $totalsRow = $this->rows->count() - 1;
         
-        $totalUsdRange = "M$totalUsdRow:W$totalUsdRow";
-        $totalsRange = "M$totalsRow:W$totalsRow";
+        $totalUsdRange = "N$totalUsdRow:Z$totalUsdRow";
+        $totalsRange = "N$totalsRow:Z$totalsRow";
 
         $TotalUsdStyle = [
             'borders' => [
@@ -101,7 +104,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
 
         $sheet->getStyle($totalUsdRange)->applyFromArray($TotalUsdStyle);
         $sheet->getStyle($totalsRange)->applyFromArray($totalsStyle);
-        $sheet->mergeCells("N$totalUsdRow:W$totalUsdRow");
+        $sheet->mergeCells("O$totalUsdRow:Z$totalUsdRow");
     }
     
     public function processRowExport(): \Closure
@@ -117,7 +120,8 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
                 'voyage' => $voyage->voyage_no,
                 'leg' => $voyage->leg->name,
                 'rate' => $invoice->exchange_rate,
-                'port_charge_name' => $row->portCharge->name
+                'port_charge_name' => $row->portCharge->name,
+                'shipping_line' => $invoice->line->name
             ];
             $rowData = $row->makeHidden([
                 'rows',
@@ -152,7 +156,8 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
                     "gat_lift_off_inbnd_em_ft40",
                     "gat_lift_on_inbnd_em_ft40",
                     "pti",
-                    "add_plan"
+                    "add_plan",
+                    "additional_fees"
                 ] as $key
             ) {
                 if (!isset($carry[$key])) {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Master\Country;
+use App\Models\Master\Lines;
 use App\Models\Master\Ports;
 use App\Models\Master\Vessels;
 use App\Models\Voyages\Voyages;
@@ -32,6 +33,11 @@ class PortChargeInvoice extends Model
     public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function line(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Lines::class, 'shipping_line_id');
     }
 
     public function port(): \Illuminate\Database\Eloquent\Relations\BelongsTo
