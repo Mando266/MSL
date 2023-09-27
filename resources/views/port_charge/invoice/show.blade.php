@@ -85,7 +85,7 @@
                                         <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no}" }}</td>
                                         <td>{{ $row->bl_no }}</td>
                                         <td>{{ $row->container_no }}</td>
-                                        <td>{{ $row->container->containersTypes->name }}</td>
+                                        <td>{{ optional($row->container)->containersTypes->name ?? '' }}</td>
                                         <td>{{ $row->ts }}</td>
                                         <td>{{ $row->shipment_type }}</td>
                                         <td>{{ $row->quotation_type }}</td>
