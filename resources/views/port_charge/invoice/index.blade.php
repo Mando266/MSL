@@ -79,13 +79,13 @@
                     </form>
                     <div class="widget-content widget-content-area">
                         <label>Total USD
-                            <input value="{{ $totalUsd }}" class="form-control border-0" disabled>
+                            <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
-                        <label>Invoice Usd
-                            <input value="{{ $invoiceUsd }}" class="form-control border-0" disabled>
+                        <label>Invoice USD
+                            <input value="{{ number_format($invoiceUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
                         <label>Invoice EGP
-                            <input value="{{ $invoiceEgp }}" class="form-control border-0" disabled>
+                            <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">

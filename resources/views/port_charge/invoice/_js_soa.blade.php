@@ -31,6 +31,7 @@
         $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
         $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
         $(document).on('click change keyup paste', () => calculateTotals());
+        $(document).on('change', '#country', loadPorts)
         $('#checkAll').change(function () {
             $('.in-egp').prop('checked', this.checked);
             calculateTotals()
@@ -612,6 +613,24 @@
                 resolve();
             });
         });
+    }
+
+    async function loadPorts() {
+        try {
+            const country = $('#country').val();
+            const portsSelect = $('#ports');
+
+            const response = await axios.get(`/api/master/ports/${country}/1`);
+            const data = response.data;
+
+            const ports = data.ports || [];
+            const options = ports.map(port => `<option value="${port.id}">${port.name}</option>`);
+
+            portsSelect.html(options.join(''));
+            $('.selectpicker').selectpicker('refresh');
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 
 
