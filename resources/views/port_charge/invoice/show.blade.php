@@ -40,7 +40,7 @@
                             <li><strong>Invoice Status:</strong> {{ $invoice->invoice_status }}</li>
                             <li><strong>Country:</strong> {{ $invoice->country->name ?? '' }}</li>
                             <li><strong>Port:</strong> {{ $invoice->port->name ?? '' }}</li>
-                            <li><strong>Shipping Line:</strong> {{ $invoice->shippingLine->name ?? '' }}</li>
+                            <li><strong>Shipping Line:</strong> {{ $invoice->line->name ?? '' }}</li>
                             <li><strong>Vessel Name:</strong> {{ $invoice->vesselsNames() }}</li>
                             <li><strong>Voyage No:</strong> {{ $invoice->voyagesNames() }}</li>
                             <li><strong>Applied Costs:</strong> {{ $selectedCostsString }}</li>

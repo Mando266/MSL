@@ -78,10 +78,20 @@
                         </div>
                     </form>
                     <div class="widget-content widget-content-area">
+                        <label>Total USD
+                            <input value="{{ $totalUsd }}" class="form-control border-0" disabled>
+                        </label>
+                        <label>Invoice Usd
+                            <input value="{{ $invoiceUsd }}" class="form-control border-0" disabled>
+                        </label>
+                        <label>Invoice EGP
+                            <input value="{{ $invoiceEgp }}" class="form-control border-0" disabled>
+                        </label>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Invoice Number</th>
                                     <th>Country</th>
                                     <th>Line</th>
@@ -89,14 +99,15 @@
                                     <th>Vessel</th>
                                     <th>Voyage</th>
                                     <th>Total USD</th>
-                                    <th>Invoice EGP</th>
                                     <th>Invoice USD</th>
+                                    <th>Invoice EGP</th>
                                     <th class='text-center' style='width:100px;'></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @forelse ($invoices as $invoice)
+                                @forelse ($invoices as $key => $invoice)
                                     <tr>
+                                        <td>{{ $invoices->firstItem() +  $key }}</td>
                                         <td>{{ $invoice->invoice_no }}</td>
                                         <td>{{ $invoice->country->name ?? '' }}</td>
                                         <td>{{ $invoice->line->name ?? '' }}</td>
@@ -104,8 +115,8 @@
                                         <td>{{ $invoice->vesselsNames() }}</td>
                                         <td>{{ $invoice->voyagesNames() }}</td>
                                         <td>{{ $invoice->total_usd }}</td>
-                                        <td>{{ $invoice->invoice_egp }}</td>
                                         <td>{{ $invoice->invoice_usd }}</td>
+                                        <td>{{ $invoice->invoice_egp }}</td>
                                         <td class="text-center">
                                             <ul class="table-controls">
                                                 <li>

@@ -97,6 +97,7 @@ class PortChargeInvoice extends Model
         $term = $request->q;
         $from = $request->from;
         $to = $request->to;
+        $lineIds = $request->line_id;
 
         return static::query()->where(function ($q) use ($term) {
             $q->where('invoice_no', 'like', "%{$term}%")
@@ -108,7 +109,8 @@ class PortChargeInvoice extends Model
                 ->orWhereHas('voyages', fn($q) => $q->where('voyage_no', 'like', "%{$term}%"));
         })
             ->when(isset($from), fn($q) => $q->whereDate('invoice_date', '>=', $from))
-            ->when(isset($to), fn($q) => $q->whereDate('invoice_date', '<=', $to));
+            ->when(isset($to), fn($q) => $q->whereDate('invoice_date', '<=', $to))
+            ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds));
     }
 
     public function createVoyageCosts($voyage, $costs)
