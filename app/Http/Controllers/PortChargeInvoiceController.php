@@ -154,9 +154,7 @@ class PortChargeInvoiceController extends Controller
 
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
-        $rows = $invoice->rows;
-
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoice->load('rows.booking.voyage')), "invoice_no_{$invoice->invoice_no}.xlsx");
     }
 
     public function doExportByDate()
@@ -165,28 +163,25 @@ class PortChargeInvoiceController extends Controller
         $to = request()->to_date;
 
         $invoices = PortChargeInvoice::query()->whereBetween('invoice_date', [$from, $to])
-            ->orderByDesc('invoice_no')->get()->load('rows');
+            ->orderByDesc('invoice_no')->get()->load('rows.booking.voyage');
 
-        $rows = $invoices->pluck('rows')->collapse();
-
-        if ($rows->isEmpty()) {
+        if ($invoices->isEmpty()) {
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoices), "invoice_from_${from}_to_${to}.xlsx");
     }
 
     public function exportCurrent()
     {
         $query = PortChargeInvoice::searchQuery(request())->orderByDesc('invoice_no');
-        $invoices = $query->get();
-
-        $rows = $invoices->pluck('rows')->collapse();
+        $invoices = $query->get()->load('rows.booking.voyage');
+        
         $now = now()->toDateString();
 
-        if ($rows->isEmpty()) {
+        if ($invoices->isEmpty()) {
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoices_export_{$now}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoices), "invoices_export_{$now}.xlsx");
     }
 
 

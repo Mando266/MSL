@@ -3,27 +3,39 @@
 namespace App\Exports;
 
 use App\Models\Booking\Booking;
+use App\Models\PortChargeInvoice;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
-class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithStrictNullComparison
+class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles,
+                                         WithStrictNullComparison
 {
 
 
+    protected $invoices;
     protected Collection $rows;
 
     /**
-     * @param $rows
+     * @param PortChargeInvoice|Collection $invoices
      */
-    public function __construct($rows)
+    public function __construct($invoices)
     {
-        $this->rows = $rows;
+        $this->invoices = $invoices;
+
+        if ($invoices instanceof Collection) {
+            $this->rows = $invoices->pluck('rows')->collapse();
+        } else {
+            $this->rows = $invoices->rows;
+        }
     }
 
     public function headings(): array
@@ -34,6 +46,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "vessel",
             "voyage",
             "leg",
+            "eta",
             "rate",
             "port_charge_name",
             "Shipping Line",
@@ -43,6 +56,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "is_transhipment",
             "shipment_type",
             "quotation_type",
+            "currency",
             "thc",
             "storage",
             "power",
@@ -64,11 +78,22 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $rows->transform($this->processRowExport());
 
         $sums = $rows->reduce($this->calculateSumRowsExport());
-        $spacer = array_fill(0, 13, ''); // Fill with empty strings
+        $spacer = array_fill(0, 15, ''); // Fill with empty strings
         $sums = array_merge($spacer, $sums);
-        
-        $total = array_sum($sums);
-        $totalRow = array_merge($spacer, ['TOTAL USD', $total]);
+
+        if ($this->invoices instanceof Collection) {
+            $totalUsd = $this->invoices->sum('total_usd');
+            $invoiceUsd = $this->invoices->sum('invoice_usd');
+            $invoiceEgp = $this->invoices->sum('invoice_egp');
+        } else {
+            $totalUsd = $this->invoices->total_usd;
+            $invoiceUsd = $this->invoices->invoice_usd;
+            $invoiceEgp = $this->invoices->invoice_egp;
+        }
+        $totalRow = array_merge(
+            $spacer,
+            ['INVOICE EGP', $invoiceEgp, 'INVOICE USD', $invoiceUsd, 'TOTAL USD', $totalUsd]
+        );
         $rows->push($sums);
         $rows->push(['']);
         $rows->push($totalRow);
@@ -78,66 +103,91 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
 
     public function styles(Worksheet $sheet)
     {
-        $totalUsdRow = $this->rows->count() + 1;
-        $totalsRow = $this->rows->count() - 1;
-        
-        $totalUsdRange = "N$totalUsdRow:Z$totalUsdRow";
-        $totalsRange = "N$totalsRow:Z$totalsRow";
+        $sumsRow = $this->rows->count() - 1;
+        $totalsRow = $this->rows->count() + 1;
 
-        $TotalUsdStyle = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                ],
-            ],
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
-            ],
-        ];
+        $totalsRange = "P$totalsRow:AB$totalsRow";
+        $sumsRange = "P$sumsRow:AB$sumsRow";
+
         $totalsStyle = [
             'borders' => [
                 'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'borderStyle' => Border::BORDER_THICK,
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+            ],
+        ];
+        $sumsStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
                 ],
             ],
         ];
+        $checkCell = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '5B6874'],
+            ],
+            'borders' => [
+                'top' => ['borderStyle' => Border::BORDER_DOUBLE],
+                'right' => ['borderStyle' => Border::BORDER_DOUBLE],
+                'bottom' => ['borderStyle' => Border::BORDER_DOUBLE],
+                'left' => ['borderStyle' => Border::BORDER_DOUBLE],
+            ],
+        ];
 
-        $sheet->getStyle($totalUsdRange)->applyFromArray($TotalUsdStyle);
+        $sheet->getStyle($sumsRange)->applyFromArray($sumsStyle);
         $sheet->getStyle($totalsRange)->applyFromArray($totalsStyle);
-        $sheet->mergeCells("O$totalUsdRow:Z$totalUsdRow");
+        $sheet->getCell("P$sumsRow")->getStyle()->applyFromArray($checkCell);
+        $sheet->getCell("P$totalsRow")->getStyle()->applyFromArray($checkCell);
+        $sheet->getCell("R$totalsRow")->getStyle()->applyFromArray($checkCell);
+        $sheet->getCell("T$totalsRow")->getStyle()->applyFromArray($checkCell);
+        $sheet->mergeCells("U$totalsRow:AB$totalsRow");
     }
-    
+
     public function processRowExport(): \Closure
     {
         return function ($row) {
             $invoice = $row->invoice;
-            $booking = Booking::where('ref_no', $row->bl_no)->firstWhere('company_id', auth()->user()->company_id);
+            $booking = $row->booking;
             $voyage = $booking->voyage;
-            $invoiceData = [
+            return [
                 'invoice_no' => $invoice->invoice_no,
                 'invoice_date' => $invoice->invoice_date,
                 'vessel' => $voyage->vessel->name,
                 'voyage' => $voyage->voyage_no,
                 'leg' => $voyage->leg->name,
+                'eta' => $row->eta,
                 'rate' => $invoice->exchange_rate,
                 'port_charge_name' => $row->portCharge->name,
-                'shipping_line' => $invoice->line->name
+                'shipping_line' => $invoice->line->name,
+                "service" => $row->service,
+                "bl_no" => $row->bl_no,
+                "container_no" => $row->container_no,
+                "is_transhipment" => $row->is_transhipment,
+                "shipment_type" => $row->shipment_type,
+                "quotation_type" => $row->quotation_type,
+                "currency" => $invoice->invoice_egp > 0 ? "EGP" : "USD",
+                "thc" => $row->thc,
+                "storage" => $row->storage,
+                "power" => $row->power,
+                "shifting" => $row->shifting,
+                "disinf" => $row->disinf,
+                "hand_fes_em" => $row->hand_fes_em,
+                "gat_lift_off_inbnd_em_ft40" => $row->gat_lift_off_inbnd_em_ft40,
+                "gat_lift_on_inbnd_em_ft40" => $row->gat_lift_on_inbnd_em_ft40,
+                "pti" => $row->pti,
+                "add_plan" => $row->add_plan,
+                "additional_fees" => $row->additional_fees,
+                "additional_fees_description" => $row->additional_fees_description,
             ];
-            $rowData = $row->makeHidden([
-                'rows',
-                'invoice',
-                'port_charge',
-                'id',
-                "port_charge_invoice_id",
-                "port_charge_id",
-                "created_at",
-                "updated_at",
-                "storage_days",
-                "power_days",
-                'pti_type',
-            ])->toArray();
-            unset($rowData['port_charge']); // For some reason makeHidden did not remove the port_charge :v
-            return array_merge($invoiceData, $rowData);
         };
     }
 

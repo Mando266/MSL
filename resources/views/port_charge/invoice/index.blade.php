@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     </div>
-                    <form id="search-form" method="GET" action="{{ route('port-charge-invoices.index') }}">
+                    <form id="search-form" class="ml-3" method="GET" action="{{ route('port-charge-invoices.index') }}">
                         @csrf
                         <input name="q" id="search-term" hidden value="{{ old('q') }}">
                         <div class="row">
@@ -78,14 +78,14 @@
                         </div>
                     </form>
                     <div class="widget-content widget-content-area">
-                        <label>Total USD
-                            <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
+                        <label>Invoice EGP
+                            <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
                         <label>Invoice USD
                             <input value="{{ number_format($invoiceUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
-                        <label>Invoice EGP
-                            <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}" class="form-control border-0" disabled>
+                        <label>Total USD
+                            <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
                         </label>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
