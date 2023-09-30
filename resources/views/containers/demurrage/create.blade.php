@@ -75,7 +75,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity From <span
                                                 class="text-warning"> * (Required.) </span></label>
-                                    <input type="date" class="form-control" id="currency" name="validity_from"
+                                    <input type="date" class="form-control" id="validity_from" name="validity_from"
                                            value="{{old('validity_from')}}"
                                            placeholder="Validity From" autocomplete="off" required>
                                     @error('validity_from')
@@ -87,7 +87,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="validity_from">Validity to <span
                                                 class="text-warning"> * (Required.) </span></label>
-                                    <input type="date" class="form-control" id="currency" name="validity_to"
+                                    <input type="date" class="form-control" id="validity_to" name="validity_to"
                                            value="{{old('validity_to')}}"
                                            placeholder="Validity To" autocomplete="off" required>
                                     @error('validity_to')
@@ -285,6 +285,26 @@
 @endsection
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        $("#createForm").on('submit', e => functionName(e))
+        const functionName = async e => {
+            e.preventDefault();
+            const portId = $('#port').val();
+            const from = $('#validity_from').val();
+            const to = $('#validity_to').val();
+            const triffType = $('#tariff_type_id').val();
+            let { data: { valid } }  = await axios.get(`/api/validate/demurrage/${portId}/${from}/${to}/${triffType}`)
+            if ( valid === true){
+                swal({
+                    title: `There is overlap`,
+                    icon: 'error'
+                });
+            }else{
+                $("#createForm").off('submit').submit();
+            }
+        }
+    </script>
     <script>
         var counter = 0
         var selectedTypes = []
@@ -431,7 +451,7 @@
 
         });
     </script>
-    
+
     <script>
         $(document).ready(function () {
             $('#tariff_type_id').on('change', function () {
