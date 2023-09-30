@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Booking\Booking;
 use App\Models\Master\Containers;
+use App\Models\Voyages\Voyages;
 use Illuminate\Database\Eloquent\Model;
 
 class PortChargeInvoiceRow extends Model
@@ -36,10 +37,20 @@ class PortChargeInvoiceRow extends Model
     {
         return $this->booking->voyage();
     }
+
+    public function voyagePorts()
+    {
+        return $this->voyage->voyagePorts();
+    }
     
     public function vessel()
     {
         return $this->booking->voyage->vessel();
+    }
+
+    public function getEtaAttribute()
+    {
+        return optional($this->voyagePorts->firstWhere('port_from_name', $this->invoice->port_id))->eta;
     }
 
     public function getServiceAttribute($value)

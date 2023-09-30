@@ -23,15 +23,24 @@ class PortChargeInvoiceController extends Controller
 
     public function index(Request $request)
     {
-
         $formViewData = $this->invoiceService->getFormViewData();
 
         $query = PortChargeInvoice::searchQuery($request);
-        
-        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])->latest()->paginate(20);
 
+        $invoicesMoney = $query->get(['total_usd', 'invoice_usd', 'invoice_egp']);
+        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])->latest()
+            ->paginate(20)->withQueryString();
+        $totalUsd = $invoicesMoney->sum('total_usd');
+        $invoiceUsd = $invoicesMoney->sum('invoice_usd');
+        $invoiceEgp = $invoicesMoney->sum('invoice_egp');
+        
         return view('port_charge.invoice.index', $formViewData)
-            ->with('invoices', $invoices);
+            ->with([
+                'invoices'=> $invoices,
+                'totalUsd' => $totalUsd,
+                'invoiceUsd' => $invoiceUsd,
+                'invoiceEgp' => $invoiceEgp,
+            ]);
     }
 
 
@@ -93,7 +102,7 @@ class PortChargeInvoiceController extends Controller
     public function edit(PortChargeInvoice $portChargeInvoice)
     {
         $formViewData = $this->invoiceService->getFormViewData();
-        $voyagesCosts = $portChargeInvoice->portChargeInvoiceVoyages->map(function($voyage){
+        $voyagesCosts = $portChargeInvoice->portChargeInvoiceVoyages->map(function ($voyage) {
             $data['id'] = $voyage->voyages_id;
             $data['empty'] = $voyage->empty_costs;
             $data['full'] = $voyage->full_costs;
@@ -117,7 +126,7 @@ class PortChargeInvoiceController extends Controller
         $portChargeInvoice->update($invoiceData);
         $portChargeInvoice->rows()->delete();
         $portChargeInvoice->portChargeInvoiceVoyages()->delete();
-        
+
         $voyageCosts = request()->voyage_costs;
         $voyages = Voyages::findMany(request()->voyage_id);
         foreach ($voyages as $voyage) {
@@ -145,9 +154,7 @@ class PortChargeInvoiceController extends Controller
 
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
-        $rows = $invoice->rows;
-
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_no_{$invoice->invoice_no}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoice->load('rows.booking.voyage')), "invoice_no_{$invoice->invoice_no}.xlsx");
     }
 
     public function doExportByDate()
@@ -155,27 +162,26 @@ class PortChargeInvoiceController extends Controller
         $from = request()->from_date;
         $to = request()->to_date;
 
-        $invoices = PortChargeInvoice::whereBetween('invoice_date', [$from, $to])->get()->load('rows');
+        $invoices = PortChargeInvoice::query()->whereBetween('invoice_date', [$from, $to])
+            ->orderByDesc('invoice_no')->get()->load('rows.booking.voyage');
 
-        $rows = $invoices->pluck('rows')->collapse();
-
-        if ($rows->isEmpty()) {
+        if ($invoices->isEmpty()) {
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoice_from_${from}_to_${to}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoices), "invoice_from_${from}_to_${to}.xlsx");
     }
+
     public function exportCurrent()
     {
-        $query = PortChargeInvoice::searchQuery(request());
-        $invoices = $query->get();
-
-        $rows = $invoices->pluck('rows')->collapse();
+        $query = PortChargeInvoice::searchQuery(request())->orderByDesc('invoice_no');
+        $invoices = $query->get()->load('rows.booking.voyage');
+        
         $now = now()->toDateString();
 
-        if ($rows->isEmpty()) {
+        if ($invoices->isEmpty()) {
             return redirect()->back()->withErrors(['invoices' => 'No invoices found with this date.']);
         }
-        return Excel::download(new PortChargeInvoiceExport($rows), "invoices_export_{$now}.xlsx");
+        return Excel::download(new PortChargeInvoiceExport($invoices), "invoices_export_{$now}.xlsx");
     }
 
 
