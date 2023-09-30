@@ -271,7 +271,7 @@
     }
 
     const processContainer = async (container, vesselId, voyage, service = null, ptiType = null, powerDay = null, storageDay = null, addPlan = null, additionalFee = null, additionalFeesDescription = null) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async resolve => {
             try {
                 const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
@@ -311,7 +311,7 @@
                 resolve();
             } catch (error) {
                 failedContainers.push(container);
-                reject(error);
+                resolve();
             }
         });
     };
@@ -620,8 +620,7 @@
             const country = $('#country').val();
             const portsSelect = $('#ports');
 
-            const response = await axios.get(`/api/master/ports/${country}/1`);
-            const data = response.data;
+            const { data } = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
 
             const ports = data.ports || [];
             const options = ports.map(port => `<option value="${port.id}">${port.name}</option>`);

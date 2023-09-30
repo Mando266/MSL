@@ -30,17 +30,17 @@
                         </div>
                     </div>
                     <div class="row mt-5 mb-3 mx-2">
-                        <div class="col-md-10">
+                        <div class="col-md-9">
                             <select id="searchSelect" class="js-example-basic-multiple js-states form-control">
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="d-flex flex-row">
                                 <div class="mr-2">
                                     <button class="btn btn-primary" id="searchButton">Search</button>
                                 </div>
                                 <div class="mr-2">
-                                    <button class="btn btn-dark" id="reset-select">Reset</button>
+                                    <button class="btn btn-dark" id="reset-search">Reset</button>
                                 </div>
                                 <div class="mr-2">
                                     <a href="{{ route('port-charge-invoices.index') }}"
@@ -55,17 +55,17 @@
                         <div class="row">
                             <div class="form-group col-md-3">
                                 <label for="from_date">From</label>
-                                <input class="form-control" id="from_date" type="date" name="from"
+                                <input class="form-control input-search" id="from_date" type="date" name="from"
                                        value="{{ old('from', request()->input('from')) }}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="to_date">To</label>
-                                <input class="form-control" id="to_date" type="date" name="to"
+                                <input class="form-control input-search" id="to_date" type="date" name="to"
                                        value="{{ old('to', request()->input('to')) }}">
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="line_ids">Shipping Line</label>
-                                <select class="selectpicker form-control" id="line_ids" data-live-search="true"
+                                <select class="selectpicker form-control input-search" id="line_ids" data-live-search="true"
                                         name="line_id[]" data-size="10"
                                         title="{{ trans('forms.select') }}" multiple>
                                     @foreach ($lines as $item)
@@ -176,6 +176,10 @@
         $(document).ready(function () {
             const searchForm = $("#search-form")
             
+            $("#reset-search").on('click',() => {
+                $(".input-search").val([])
+                $('.selectpicker').selectpicker('refresh')
+            })
             $('#searchSelect').select2({
                 ajax: {
                     url: "{{ route('port-charge-invoices.search') }}",
