@@ -691,7 +691,7 @@ class MovementController extends Controller
             $movements = $movements->where('voyage_id', request('voyage_id'));
         }
         if (request('port_location_id') != null) {
-            $movements = $movements->whereIn('port_location_id', request('port_location_id'));
+            $movements = $movements->whereIn('port_location_id', (array)request('port_location_id'));
         }
         if (request('movement_id') != null) {
             $movements = $movements->where('movement_id', request('movement_id'));
