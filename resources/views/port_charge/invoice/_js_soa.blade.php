@@ -31,6 +31,7 @@
         $(document).on('change', '.quotation_type', () => $(".voyage-costs").trigger('change'));
         $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
         $(document).on('click change keyup paste', () => calculateTotals());
+        $(document).on('change', '#country', loadPorts)
         $('#checkAll').change(function () {
             $('.in-egp').prop('checked', this.checked);
             calculateTotals()
@@ -270,7 +271,7 @@
     }
 
     const processContainer = async (container, vesselId, voyage, service = null, ptiType = null, powerDay = null, storageDay = null, addPlan = null, additionalFee = null, additionalFeesDescription = null) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async resolve => {
             try {
                 const response = await axios.get('{{ route('port-charges.get-ref-no') }}', {
                     params: {
@@ -280,7 +281,7 @@
                     }
                 });
 
-                const { ref_no, is_ts, shipment_type, quotation_type } = response.data;
+                const {ref_no, is_ts, shipment_type, quotation_type} = response.data;
                 let table = '';
                 let selectedCharge = null;
 
@@ -310,7 +311,7 @@
                 resolve();
             } catch (error) {
                 failedContainers.push(container);
-                reject(error);
+                resolve();
             }
         });
     };
@@ -612,6 +613,23 @@
                 resolve();
             });
         });
+    }
+
+    async function loadPorts() {
+        try {
+            const country = $('#country').val();
+            const portsSelect = $('#ports');
+
+            const { data } = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
+
+            const ports = data.ports || [];
+            const options = ports.map(port => `<option value="${port.id}">${port.name}</option>`);
+
+            portsSelect.html(options.join(''));
+            $('.selectpicker').selectpicker('refresh');
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 
 

@@ -1,14 +1,5 @@
 @extends('layouts.app')
-{{--@php--}}
-{{--    $a = \App\Models\PortChargeInvoiceVoyage::all();--}}
-{{--    $a->map(function($r){--}}
-{{--        if(! $r->vessel_id){--}}
-{{--            $vessel = \App\Models\Voyages\Voyages::find($r->voyages_id)->vessel;--}}
-{{--            $r->update(['vessel_id' => $vessel->id]);--}}
-{{--        }--}}
-{{--    });--}}
-{{--    dd('done');--}}
-{{--@endphp--}}
+
 @section('content')
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -24,57 +15,108 @@
                             </ol>
                         </nav>
                         <br>
-                        <div class="row">
-                            <div class="col-md-10 text-right mb-12">
-                                <a class="btn btn-success" id="export-date"
-                                   href="{{ route('port-charge-invoices.export-date') }}"
-                                >Export By Date
-                                </a>
-                            </div>
-                            <div class="col-md-2 text-right mb-12">
+                        <div class="d-flex justify-content-end">
+                            <div class="mx-1">
                                 <a href="{{ route('port-charge-invoices.create') }}" class="btn btn-primary">Create New
                                     Invoice</a>
+                            </div>
+                            <div class="mx-1">
+                                <a class="btn btn-dark" id="export-date"
+                                   href="{{ route('port-charge-invoices.export-date') }}">Export By Date</a>
+                            </div>
+                            <div class="mx-1">
+                                <button class="btn btn-dark" id="export-current">Export Current</button>
                             </div>
                         </div>
                     </div>
                     <div class="row mt-5 mb-3 mx-2">
-                        <div class="col-md-10">
+                        <div class="col-md-9">
                             <select id="searchSelect" class="js-example-basic-multiple js-states form-control">
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-primary" id="searchButton">Search</button>
+                        <div class="col-md-3">
+                            <div class="d-flex flex-row">
+                                <div class="mr-2">
+                                    <button class="btn btn-primary" id="searchButton">Search</button>
+                                </div>
+                                <div class="mr-2">
+                                    <button class="btn btn-dark" id="reset-search">Reset</button>
+                                </div>
+                                <div class="mr-2">
+                                    <a href="{{ route('port-charge-invoices.index') }}"
+                                       class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-
+                    <form id="search-form" class="ml-3" method="GET" action="{{ route('port-charge-invoices.index') }}">
+                        @csrf
+                        <input name="q" id="search-term" hidden value="{{ old('q') }}">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="from_date">From</label>
+                                <input class="form-control input-search" id="from_date" type="date" name="from"
+                                       value="{{ old('from', request()->input('from')) }}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="to_date">To</label>
+                                <input class="form-control input-search" id="to_date" type="date" name="to"
+                                       value="{{ old('to', request()->input('to')) }}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="line_ids">Shipping Line</label>
+                                <select class="selectpicker form-control input-search" id="line_ids" data-live-search="true"
+                                        name="line_id[]" data-size="10"
+                                        title="{{ trans('forms.select') }}" multiple>
+                                    @foreach ($lines as $item)
+                                        <option value="{{ $item->id }}" {{ in_array($item->id, (array)old('line_id', request()->input('line_id'))) ? 'selected' : '' }}>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                     <div class="widget-content widget-content-area">
+                        <label>Invoice EGP
+                            <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}" class="form-control border-0" disabled>
+                        </label>
+                        <label>Invoice USD
+                            <input value="{{ number_format($invoiceUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
+                        </label>
+                        <label>Total USD
+                            <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
+                        </label>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Invoice Number</th>
                                     <th>Country</th>
+                                    <th>Line</th>
                                     <th>Port</th>
                                     <th>Vessel</th>
                                     <th>Voyage</th>
                                     <th>Total USD</th>
-                                    <th>Invoice EGP</th>
                                     <th>Invoice USD</th>
+                                    <th>Invoice EGP</th>
                                     <th class='text-center' style='width:100px;'></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @forelse ($invoices as $invoice)
+                                @forelse ($invoices as $key => $invoice)
                                     <tr>
-                                        <th>{{ $invoice->invoice_no }}</th>
-                                        <th>{{ $invoice->country->name ?? '' }}</th>
-                                        <th>{{ $invoice->port->name ?? '' }}</th>
-                                        <th>{{ $invoice->vesselsNames() }}</th>
-                                        <th>{{ $invoice->voyagesNames() }}</th>
-                                        <th>{{ $invoice->total_usd }}</th>
-                                        <th>{{ $invoice->invoice_egp }}</th>
-                                        <th>{{ $invoice->invoice_usd }}</th>
+                                        <td>{{ $invoices->firstItem() +  $key }}</td>
+                                        <td>{{ $invoice->invoice_no }}</td>
+                                        <td>{{ $invoice->country->name ?? '' }}</td>
+                                        <td>{{ $invoice->line->name ?? '' }}</td>
+                                        <td>{{ $invoice->port->name ?? '' }}</td>
+                                        <td>{{ $invoice->vesselsNames() }}</td>
+                                        <td>{{ $invoice->voyagesNames() }}</td>
+                                        <td>{{ $invoice->total_usd }}</td>
+                                        <td>{{ $invoice->invoice_usd }}</td>
+                                        <td>{{ $invoice->invoice_egp }}</td>
                                         <td class="text-center">
                                             <ul class="table-controls">
                                                 <li>
@@ -129,10 +171,15 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var latestSearchTerm = "";
-
+            const searchForm = $("#search-form")
+            
+            $("#reset-search").on('click',() => {
+                $(".input-search").val([])
+                $('.selectpicker').selectpicker('refresh')
+            })
             $('#searchSelect').select2({
                 ajax: {
                     url: "{{ route('port-charge-invoices.search') }}",
@@ -180,15 +227,22 @@
             });
 
             $(document).on('input', '.select2-search__field', function () {
-                latestSearchTerm = $(this).val();
+                $("#search-term").val($(this).val())
             });
 
-            $('#searchButton').click(function () {
-                if (latestSearchTerm) {
-                    window.location.href = "{{ route('port-charge-invoices.index') }}?q=" + latestSearchTerm;
-                } else {
-                    swal("Please enter a search term.");
-                }
+            $('#export-current').click(() => {
+                searchForm.attr('method', 'post');
+                searchForm.attr('action', '{{ route('port-charge-invoices.export-current') }}');
+                
+                searchForm.submit();
+            });
+            
+            $('#searchButton').click(() => {
+                searchForm.attr('method', 'get');
+                searchForm.attr('action', '{{ route('port-charge-invoices.index') }}');
+                searchForm.find('input[name="_token"]').prop('disabled', true);
+                
+                searchForm.submit();
             });
 
             $('.show_confirm').click(function (event) {

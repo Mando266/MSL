@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Master\Country;
+use App\Models\Master\Lines;
 use App\Models\Master\Ports;
 use App\Models\Master\Vessels;
 use App\Models\Voyages\Voyages;
@@ -18,10 +19,16 @@ class PortChargeInvoice extends Model
     ];
 
     public const COSTS = [
-        'thc', 'storage','power', 'shifting',
-        'disinf','hand_fes_em',
-        'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
-        'pti', 'add_plan'
+        'thc',
+        'storage',
+        'power',
+        'shifting',
+        'disinf',
+        'hand_fes_em',
+        'gat_lift_off_inbnd_em_ft40',
+        'gat_lift_on_inbnd_em_ft40',
+        'pti',
+        'add_plan'
     ];
 
     public function rows(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -34,6 +41,11 @@ class PortChargeInvoice extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function line(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Lines::class, 'shipping_line_id');
+    }
+
     public function port(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Ports::class, 'port_id');
@@ -43,15 +55,25 @@ class PortChargeInvoice extends Model
     {
         return $this->hasMany(PortChargeInvoiceVoyage::class);
     }
-    
+
     public function voyages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Voyages::class, PortChargeInvoiceVoyage::class, 'port_charge_invoice_id', 'voyages_id');
+        return $this->belongsToMany(
+            Voyages::class,
+            PortChargeInvoiceVoyage::class,
+            'port_charge_invoice_id',
+            'voyages_id'
+        );
     }
 
     public function vessels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Vessels::class, 'port_charge_invoice_voyages', 'port_charge_invoice_id', 'vessel_id');
+        return $this->belongsToMany(
+            Vessels::class,
+            'port_charge_invoice_voyages',
+            'port_charge_invoice_id',
+            'vessel_id'
+        );
     }
 
 
@@ -70,17 +92,25 @@ class PortChargeInvoice extends Model
     }
 
 
-    public static function searchQuery($term): \Illuminate\Database\Eloquent\Builder
+    public static function searchQuery($request): \Illuminate\Database\Eloquent\Builder
     {
-        return static::query()
-            ->where('invoice_no', 'like', "%{$term}%")
-            ->orWhereHas('rows', fn($q) => $q->where('container_no', 'like', "%{$term}%"))
-            ->orWhereHas('rows', fn($q) => $q->where('bl_no', 'like', "%{$term}%"))
-            ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%{$term}%"))
-            ->orWhereHas('port', fn($q) => $q->where('name', 'like', "%{$term}%"))
-            ->orWhereHas('vessels', fn ($q) => $q->where('name', 'like', "%{$term}%"))
-            ->orWhereHas('voyages', fn($q) => $q->where('voyage_no', 'like', "%{$term}%"))
-            ->latest();
+        $term = $request->q;
+        $from = $request->from;
+        $to = $request->to;
+        $lineIds = $request->line_id;
+
+        return static::query()->where(function ($q) use ($term) {
+            $q->where('invoice_no', 'like', "%{$term}%")
+                ->orWhereHas('rows', fn($q) => $q->where('container_no', 'like', "%{$term}%"))
+                ->orWhereHas('rows', fn($q) => $q->where('bl_no', 'like', "%{$term}%"))
+                ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('port', fn($q) => $q->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('vessels', fn($q) => $q->where('name', 'like', "%{$term}%"))
+                ->orWhereHas('voyages', fn($q) => $q->where('voyage_no', 'like', "%{$term}%"));
+        })
+            ->when(isset($from), fn($q) => $q->whereDate('invoice_date', '>=', $from))
+            ->when(isset($to), fn($q) => $q->whereDate('invoice_date', '<=', $to))
+            ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds));
     }
 
     public function createVoyageCosts($voyage, $costs)

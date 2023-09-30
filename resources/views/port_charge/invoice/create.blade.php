@@ -110,14 +110,14 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="invoice_date">
-                                                    Invoice Date
+                                                    Invoice Date *
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="date" class="form-control" id="invoice_date"
                                                    name="invoice_date" value="{{old('invoice_date')}}"
-                                                   autocomplete="off">
+                                                   autocomplete="off" required>
                                         </div>
                                     </div>
                                     @error('invoice_date')
@@ -222,7 +222,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="shipping_line">
-                                                    Shipping Line
+                                                    Shipping Line *
                                                 </label>
                                             </div>
                                         </div>
@@ -230,7 +230,7 @@
                                             <select class="selectpicker form-control rounded-0" id="shipping_line"
                                                     name="shipping_line_id"
                                                     data-live-search="true" data-size="10"
-                                                    title="{{trans('forms.select')}}">
+                                                    title="{{trans('forms.select')}}" required>
                                                 @foreach ($lines as $item)
                                                     <option
                                                             value="{{$item->id}}" {{$item->id == old('shipping_line') ? 'selected':''}}>{{$item->name}}</option>
@@ -304,7 +304,7 @@
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text bg-transparent border-0"
                                                        for="dynamic_fields">
-                                                    Default Applied Costs
+                                                    Default Applied Costs *
                                                 </label>
                                             </div>
                                         </div>

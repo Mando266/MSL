@@ -223,7 +223,7 @@
                                 </div>
                                 <!-- Create Invoice Button -->
                                 <div class="button-container">
-                                    <form id="create-invoice-form" action="{{ route('invoice.create') }}" method="get">
+                                    <form id="create-invoice-form" action="{{ route('invoice.create_debit') }}" method="post">
                                         @csrf
                                         <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
                                         <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
