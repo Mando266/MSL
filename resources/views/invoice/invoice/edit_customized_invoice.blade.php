@@ -8,10 +8,10 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             @if($invoice->type == "invoice")
-                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
+                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Custmized Invoice</a></li>
                             @else
-                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
+                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Edit Custmized Depit</a></li>
                             @endif
                             <li class="breadcrumb-item"></li>
@@ -28,7 +28,7 @@
                                 <label for="Invoice">Invoice No</label>
                                     <input type="text" id="Invoice" class="form-control"  name="invoice_no"
                                     placeholder="Invoice No" autocomplete="off" value="{{old('invoice_no',$invoice->invoice_no)}}">
-                            </div> 
+                            </div>
                             <input type="hidden" name="bldraft_id" value="{{request()->input('bldraft_id')}}">
                                 <div class="form-group col-md-6">
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
@@ -52,12 +52,12 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Customer Name</label>
                                     <input type="text" id="notifiy" class="form-control"  name="customer"
                                     placeholder="Customer Name" autocomplete="off" value="{{old('customer',$invoice->customer)}}" required>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-row">
                         <div class="form-group col-md-3" >
@@ -73,7 +73,7 @@
                                         {{$message}}
                                     </div>
                                     @enderror
-                                </div> 
+                                </div>
 
                                 <div class="form-group col-md-3" >
                                     <label>Load Port</label>
@@ -88,7 +88,7 @@
                                            {{$message}}
                                        </div>
                                        @enderror
-                                </div> 
+                                </div>
                             <div class="form-group col-md-3" >
                                 <label for="Date">Booking Ref</label>
                                 <select class="selectpicker form-control" id="booking_ref" data-live-search="true" name="booking_ref" data-size="10"
@@ -103,7 +103,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id" name="voyage_id" data-live-search="true" data-size="10"
@@ -119,7 +119,7 @@
                                     @enderror
                             </div>
 
-                            </div> 
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
                                     <label>Discharge Port</label>
@@ -134,7 +134,7 @@
                                         {{$message}}
                                     </div>
                                     @enderror
-                                </div> 
+                                </div>
 
                                 <div class="form-group col-md-3" >
                                     <label>Port of Delivery</label>
@@ -149,7 +149,7 @@
                                         {{$message}}
                                     </div>
                                     @enderror
-                                </div> 
+                                </div>
                                 <div class="form-group col-md-3" >
                                     <label>Equipment Type</label>
                                     <select class="selectpicker form-control" id="equipment_type" data-live-search="true" name="equipment_type" data-size="10"
@@ -163,7 +163,7 @@
                                         {{$message}}
                                     </div>
                                     @enderror
-                                </div> 
+                                </div>
 
                                 @if($invoice->invoice_status != "confirm")
                                 <div class="form-group col-md-3">
@@ -183,7 +183,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
                                     <label for="Date">Date</label>
-                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',$invoice->date)}}">
+                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',date('Y-m-d'))}}">
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <label>QTY<span class="text-warning"> * (Required.) </span></label>
@@ -237,7 +237,7 @@
                                     </div>
                                 </div>
                                 @endif
-                            </div> 
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="status">Booking Status<span class="text-warning"> * </span></label>
@@ -246,14 +246,14 @@
                                         <option value="export" {{ old('booking_status',$invoice->booking_status) == "export" ? 'selected':'' }}>Export</option>
                                     </select>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="form-row">
                             @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3">
                                     <label for="vat">VAT %:</label>
                                     <input type="text" class="form-control" id="vat" name="vat" value="{{ old('vat',$invoice->vat) }}" required>
                                 </div>
-                            @endif    
+                            @endif
                                 <div class="form-group col-md-3" >
                                     <label>Total USD</label>
                                         <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
@@ -267,12 +267,12 @@
                                 <div class="col-md-12 form-group">
                                     <label> Notes </label>
                                     <textarea class="form-control" name="notes">{{old('notes',$invoice->notes)}}</textarea>
-                                </div> 
+                                </div>
                             </div>
                             <h4>Charges
                                 <h4>
                                     @if($invoice->type == "invoice")
-        
+
                                         <table id="charges" class="table table-bordered">
                                             <thead>
                                             <tr>
@@ -346,8 +346,8 @@
                                                                    for="item_{{$key}}_enabled_no">No</label>
                                                         </div>
                                                     </td>
-        
-        
+
+
                                                     <td><input type="text" class="form-control" id="usd_{{ $key }}"
                                                                name="invoiceChargeDesc[{{ $key }}][total_amount]"
                                                                value="{{old('total_amount',$item->total_amount)}}"
@@ -358,20 +358,20 @@
                                                                name="invoiceChargeDesc[{{ $key }}][usd_vat]"
                                                                class="form-control" autocomplete="off"
                                                                placeholder="USD After VAT" disabled></td>
-        
-        
+
+
                                                     <td><input type="text" class="form-control" id="egp_{{ $key }}"
                                                                name="invoiceChargeDesc[{{ $key }}][total_egy]"
                                                                value="{{old('total_egy',$item->total_egy)}}"
                                                                placeholder="Egp Amount" autocomplete="off"
                                                                style="background-color: white;" required disabled>
                                                     </td>
-        
+
                                                     <td><input id="egp_vat_{{ $key }}" type="text"
                                                                name="invoiceChargeDesc[{{ $key }}][egp_vat]"
                                                                class="form-control" autocomplete="off"
                                                                placeholder="Egp After VAT" disabled></td>
-        
+
                                                     @if($invoice->type == "invoice")
                                                         <td style="width:85px;">
                                                             <button type="button" class="btn btn-danger remove"
@@ -397,7 +397,7 @@
                                             </thead>
                                             <tbody>
                                             @foreach($invoice_details as $key => $item)
-        
+
                                                 <tr>
                                                     <input type="hidden" value="{{ $item->id }}"
                                                            name="invoiceChargeDesc[{{ $key }}][id]">
@@ -432,7 +432,7 @@
                                                                    for="item_{{$key}}_enabled_no">No</label>
                                                         </div>
                                                     </td>
-        
+
                                                     <td><input type="text" class="form-control" id="ofr"
                                                                name="invoiceChargeDesc[{{ $key }}][total_amount]"
                                                                value="{{(old('total_amount',$item->total_amount))}}"
@@ -446,11 +446,11 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-        
+
                                             </tbody>
                                         </table>
                                     @endif
-        
+
                                     <div class="row">
                                         <div class="col-md-12 text-center">
                                             <button type="submit" class="btn btn-primary mt-3">Confirm</button>
@@ -485,8 +485,8 @@
             var egpAmount = totalAmount * exchangeRate;
             $(this).find('input[name$="[total_egy]"]').val(egpAmount);
 
-            // update total_egp and usd to calculate all rows 
-            
+            // update total_egp and usd to calculate all rows
+
             var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
             totEgp = totEgp + parseFloat(egpAmount);
             totUsd = totUsd + parseFloat(usdAmount);
@@ -505,15 +505,15 @@
             var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
             var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
             $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-            
+
             var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
             totUsd = totUsd + parseFloat(usdAmount);
         });
             $('input[id="total_egp"]').val(0);
             $('input[id="total_usd"]').val(totUsd);
-            
+
         }
-        
+
     });
     $(document).on('input', 'input[name="customize_exchange_rate"]', function() {
         var qty = $('input[name="qty"]').val();
@@ -524,11 +524,11 @@
             var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
             $(this).find('input[name$="[total_amount]"]').val(totalAmount);
             // Calculate the total EGP Amount and update the Amount input field of the current row
-            
+
 
             var egpAmount = totalAmount * exchangeRate;
             $(this).find('input[name$="[total_egy]"]').val(egpAmount);
-            // update total_egp and usd to calculate all rows 
+            // update total_egp and usd to calculate all rows
             var totEgp = 0;
             var totUsd = 0;
             var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
@@ -562,7 +562,7 @@
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
 
-    // update total_egp and usd to calculate all rows 
+    // update total_egp and usd to calculate all rows
     var totEgp = 0;
     var totUsd = 0;
     var debitTable = $('#containerDepit');
@@ -583,7 +583,7 @@
         $('input[id="total_egp"]').val(totEgp);
         $('input[id="total_usd"]').val(totUsd);
     }
-    
+
 
 });
 $('body').on('change', 'input[name$="[enabled]"]', function() {
@@ -604,7 +604,7 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
 
-    // update total_egp and usd to calculate all rows 
+    // update total_egp and usd to calculate all rows
     var totEgp = 0;
     var totUsd = 0;
     var debitTable = $('#containerDepit');
@@ -625,7 +625,7 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
         $('input[id="total_egp"]').val(totEgp);
         $('input[id="total_usd"]').val(totUsd);
     }
-    
+
 });
 </script>
 <script>
@@ -658,7 +658,7 @@ $(document).ready(function(){
     $("#charges").on("click", ".remove", function () {
         $(this).closest("tr").remove();
 
-        // update total_egp and usd to calculate all rows 
+        // update total_egp and usd to calculate all rows
         var totEgp = 0;
         var totUsd = 0;
         $('#charges tbody tr').each(function() {
@@ -673,7 +673,7 @@ $(document).ready(function(){
 
     });
     var counter  = '<?= isset($key)? ++$key : 0 ?>';
-    
+
 });
 var removed = [];
 function removeItem( item )
@@ -689,7 +689,7 @@ $(document).ready(function(){
     var counter  = '<?= isset($key)? $key++ : 0 ?>';
 
     $("#addDepit").click(function(){
-       var tr = '<tr>'+ 
+       var tr = '<tr>'+
             '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
             '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;" required></td>'+
             '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+

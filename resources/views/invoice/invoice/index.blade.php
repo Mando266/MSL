@@ -134,7 +134,7 @@
                                         <th>Payment Status</th>
                                         <th>Receipts</th>
                                         <th class='text-center' style='width:100px;'></th>
-                                        <th class='text-center' style='width:100px;'>json</th>
+                                        <th class='text-center' style='width:100px;'>Portal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -278,11 +278,14 @@
                                                 </ul>
                                             </td>
                                             <td class="text-center">
-                                                @if($invoice->type == "invoice"  && $invoice->created_at >= '2023-08-27 10:55:28')
-
+                                                @if($invoice->type == "invoice" && $invoice->invoice_status == "confirm"  && $invoice->created_at >= '2023-08-27 10:55:28' && $invoice->portal_status == null)
                                                     <a href="{{route('invoice.get_invoice_json',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
                                                         <button type="submit" class="btn btn-primary mt-3">Json</button>
                                                     </a>
+                                                @elseif($invoice->portal_status == 'Valid')
+                                                        <button class="btn btn-info mt-3">Valid</button>
+                                                @elseif($invoice->portal_status == 'Submitted')
+                                                    <button class="btn btn-success mt-3">Submitted</button>
                                                 @endif
                                             </td>
                                         </tr>

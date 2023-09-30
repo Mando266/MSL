@@ -128,7 +128,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-3" >
                                     <label for="Date">Date</label>
-                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',$invoice->date)}}">
+                                        <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <label>QTY</label>
