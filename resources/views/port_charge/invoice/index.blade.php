@@ -43,8 +43,9 @@
                                     <button class="btn btn-dark" id="reset-search">Reset</button>
                                 </div>
                                 <div class="mr-2">
-                                    <a href="{{ route('port-charge-invoices.index') }}"
-                                       class="btn btn-danger">Cancel</a>
+                                    <button id="cancel-search"
+                                            class="btn btn-danger">Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +66,8 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="line_ids">Shipping Line</label>
-                                <select class="selectpicker form-control input-search" id="line_ids" data-live-search="true"
+                                <select class="selectpicker form-control input-search" id="line_ids"
+                                        data-live-search="true"
                                         name="line_id[]" data-size="10"
                                         title="{{ trans('forms.select') }}" multiple>
                                     @foreach ($lines as $item)
@@ -78,95 +80,120 @@
                         </div>
                     </form>
                     <div class="widget-content widget-content-area">
-                        <label>Invoice EGP
-                            <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}" class="form-control border-0" disabled>
-                        </label>
-                        <label>Invoice USD
-                            <input value="{{ number_format($invoiceUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
-                        </label>
-                        <label>Total USD
-                            <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0" disabled>
-                        </label>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-condensed mb-4">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Invoice Number</th>
-                                    <th>Country</th>
-                                    <th>Line</th>
-                                    <th>Port</th>
-                                    <th>Vessel</th>
-                                    <th>Voyage</th>
-                                    <th>Total USD</th>
-                                    <th>Invoice USD</th>
-                                    <th>Invoice EGP</th>
-                                    <th class='text-center' style='width:100px;'></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @forelse ($invoices as $key => $invoice)
+                        <div id="table-results">
+                            <label>Invoice EGP
+                                <input value="{{ number_format($invoiceEgp, 2, '.', ',') }}"
+                                       class="form-control border-0"
+                                       disabled>
+                            </label>
+                            <label>Invoice USD
+                                <input value="{{ number_format($invoiceUsd, 2, '.', ',') }}"
+                                       class="form-control border-0"
+                                       disabled>
+                            </label>
+                            <label>Total USD
+                                <input value="{{ number_format($totalUsd, 2, '.', ',') }}" class="form-control border-0"
+                                       disabled>
+                            </label>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-condensed mb-4">
+                                    <thead>
                                     <tr>
-                                        <td>{{ $invoices->firstItem() +  $key }}</td>
-                                        <td>{{ $invoice->invoice_no }}</td>
-                                        <td>{{ $invoice->country->name ?? '' }}</td>
-                                        <td>{{ $invoice->line->name ?? '' }}</td>
-                                        <td>{{ $invoice->port->name ?? '' }}</td>
-                                        <td>{{ $invoice->vesselsNames() }}</td>
-                                        <td>{{ $invoice->voyagesNames() }}</td>
-                                        <td>{{ $invoice->total_usd }}</td>
-                                        <td>{{ $invoice->invoice_usd }}</td>
-                                        <td>{{ $invoice->invoice_egp }}</td>
-                                        <td class="text-center">
-                                            <ul class="table-controls">
-                                                <li>
-                                                    <a href="{{route('port-charge-invoices.edit', $invoice->id)}}"
-                                                       data-toggle="tooltip" data-placement="top" title=""
-                                                       data-original-title="edit">
-                                                        <i class="far fa-edit text-success"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{route('port-charge-invoices.show', $invoice->id)}}"
-                                                       data-toggle="tooltip" data-placement="top" title=""
-                                                       data-original-title="show">
-                                                        <i class="far fa-eye text-primary"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <form action="{{route('port-charge-invoices.destroy', $invoice->id)}}"
-                                                          method="post">
-                                                        @method('DELETE')
-                                                        @csrf
-                                                        <button style="border: none; background: none;" type="submit"
-                                                                class="fa fa-trash text-danger show_confirm"></button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </td>
+                                        <th>#</th>
+                                        <th>Invoice Number</th>
+                                        <th>Country</th>
+                                        <th>Line</th>
+                                        <th>Port</th>
+                                        <th>Vessel</th>
+                                        <th>Voyage</th>
+                                        <th>Total USD</th>
+                                        <th>Invoice USD</th>
+                                        <th>Invoice EGP</th>
+                                        <th class='text-center' style='width:100px;'></th>
                                     </tr>
-                                @empty
-                                    <tr class="text-center">
-                                        <td colspan="20">{{ trans('home.no_data_found')}}</td>
-                                    </tr>
-                                @endforelse
+                                    </thead>
+                                    <tbody>
+                                    @forelse ($invoices as $key => $invoice)
+                                        <tr>
+                                            <td>{{ $invoices->firstItem() +  $key }}</td>
+                                            <td>{{ $invoice->invoice_no }}</td>
+                                            <td>{{ $invoice->country->name ?? '' }}</td>
+                                            <td>{{ $invoice->line->name ?? '' }}</td>
+                                            <td>{{ $invoice->port->name ?? '' }}</td>
+                                            <td>{{ $invoice->vesselsNames() }}</td>
+                                            <td>{{ $invoice->voyagesNames() }}</td>
+                                            <td>{{ $invoice->total_usd }}</td>
+                                            <td>{{ $invoice->invoice_usd }}</td>
+                                            <td>{{ $invoice->invoice_egp }}</td>
+                                            <td class="text-center">
+                                                <ul class="table-controls">
+                                                    <li>
+                                                        <a href="{{route('port-charge-invoices.edit', $invoice->id)}}"
+                                                           data-toggle="tooltip" data-placement="top" title=""
+                                                           data-original-title="edit">
+                                                            <i class="far fa-edit text-success"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{route('port-charge-invoices.show', $invoice->id)}}"
+                                                           data-toggle="tooltip" data-placement="top" title=""
+                                                           data-original-title="show">
+                                                            <i class="far fa-eye text-primary"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{route('port-charge-invoices.destroy', $invoice->id)}}"
+                                                              method="post">
+                                                            @method('DELETE')
+                                                            @csrf
+                                                            <button style="border: none; background: none;"
+                                                                    type="submit"
+                                                                    class="fa fa-trash text-danger show_confirm"></button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr class="text-center">
+                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
+                                        </tr>
+                                    @endforelse
 
-                                </tbody>
+                                    </tbody>
 
-                            </table>
-                        </div>
-                        <div class="paginating-container">
-                            {{ $invoices->links() }}
+                                </table>
+                            </div>
+                            <div class="paginating-container">
+                                {{ $invoices->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+    <div id="loadingSpinner" class="d-none">
+        <i class="fas fa-spinner fa-spin fa-4x"></i> Loading...
+    </div>
+
 @endsection
 @push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet"/>
+    <style>
+        #loadingSpinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 9999;
+        }
+
+    </style>
 @endpush
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
@@ -175,8 +202,17 @@
     <script type="text/javascript">
         $(document).ready(function () {
             const searchForm = $("#search-form")
-            
-            $("#reset-search").on('click',() => {
+            const spinner = $("#loadingSpinner")
+
+            $('#searchButton').click(() => {
+                handleSearch('search');
+            });
+
+            $("#cancel-search").click(() => {
+                $("#reset-search").trigger('click');
+                handleSearch('cancel');
+            });
+            $("#reset-search").on('click', () => {
                 $(".input-search").val([])
                 $('.selectpicker').selectpicker('refresh')
             })
@@ -233,18 +269,32 @@
             $('#export-current').click(() => {
                 searchForm.attr('method', 'post');
                 searchForm.attr('action', '{{ route('port-charge-invoices.export-current') }}');
-                
+
                 searchForm.submit();
             });
             
-            $('#searchButton').click(() => {
-                searchForm.attr('method', 'get');
-                searchForm.attr('action', '{{ route('port-charge-invoices.index') }}');
-                searchForm.find('input[name="_token"]').prop('disabled', true);
-                
-                searchForm.submit();
-            });
 
+            async function handleSearch(action) {
+                try {
+                    spinner.removeClass('d-none');
+                    searchForm.attr('method', 'get');
+                    searchForm.find('input[name="_token"]').prop('disabled', true);
+
+                    const query = searchForm.serialize();
+                    const { data } = await axios.get(`port-charge-invoices${action === 'search' ? '?' + query : ''}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+
+                    $("#table-results").html(data);
+                } catch (error) {
+                    console.error(error)
+                } finally {
+                    spinner.addClass('d-none');
+                }
+            }
+            
             $('.show_confirm').click(function (event) {
                 var form = $(this).closest("form");
                 var name = $(this).data("name");

@@ -34,6 +34,15 @@ class PortChargeInvoiceController extends Controller
         $invoiceUsd = $invoicesMoney->sum('invoice_usd');
         $invoiceEgp = $invoicesMoney->sum('invoice_egp');
         
+        if($request->ajax()){
+            return view('port_charge.invoice.__table-results')
+                ->with([
+                    'invoices'=> $invoices,
+                    'totalUsd' => $totalUsd,
+                    'invoiceUsd' => $invoiceUsd,
+                    'invoiceEgp' => $invoiceEgp,
+                ]);
+        }
         return view('port_charge.invoice.index', $formViewData)
             ->with([
                 'invoices'=> $invoices,
