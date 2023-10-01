@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Models\Voyages\VoyagePorts;
 
 class BLLoadListExport implements FromCollection,WithHeadings
 {
@@ -23,6 +24,8 @@ class BLLoadListExport implements FromCollection,WithHeadings
         "Line",
         "Vessel",
         "Voyage",
+        "ETA",
+        "ETD",
         "Container Type",
         "Container No",
         "OFR",
@@ -53,6 +56,9 @@ class BLLoadListExport implements FromCollection,WithHeadings
                     }else{
                         $bldarft->bl_status = "Draft";
                     }
+                    $shipping_status = optional(optional($bldarft->booking)->quotation)->shipment_type;
+                    $loadPort = VoyagePorts::where('voyage_id',optional($bldarft->voyage)->id)->where('port_from_name',optional($bldarft->loadPort)->id)->first();
+                    $dischargePort = VoyagePorts::where('voyage_id',optional($bldarft->voyage)->id)->where('port_from_name',optional($bldarft->dischargePort)->id)->first();
 
                     $tempCollection = collect([
                         'Booking No' => optional($bldarft->booking)->ref_no,
@@ -67,6 +73,8 @@ class BLLoadListExport implements FromCollection,WithHeadings
                         'line'=>optional($bldarft->booking->principal)->name,
                         'Vessel' => optional($bldarft->voyage)->vessel->name,
                         'Voyage' => optional($bldarft->voyage)->voyage_no,
+                        'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
+                        'etd' => $shipping_status == "Export"? optional($loadPort)->etd : optional($dischargePort)->etd,
                         'Container Type' => optional($bldarft->equipmentsType)->name,
                         'Container No' => optional($blDetail->container)->code,
                         'OFR' => optional($bldarft->booking->quotation)->ofr,
