@@ -89,7 +89,8 @@ class MovementController extends Controller
                     // End Get All movements and sort it and get the last movement before this movement
 
                     // dump($lastMove->movement_id != request('movement_id'));
-                    if ($lastMove->movement_id != request('movement_id')) {
+                    if (!in_array($lastMove->movement_id, (array)request('movement_id'))) {
+
                         unset($filteredData[$key]);
                     }
                 }
@@ -449,7 +450,8 @@ class MovementController extends Controller
                 $movements = $movements->first();
                 if (request('movement_id') != null) {
                     // dd($movements);
-                    if ($movements->movement_id != request('movement_id')) {
+                    if (!in_array($movements->movement_id, (array)request('movement_id'))) {
+
                         $movementsArray = true;
                     }
                 }
@@ -694,7 +696,7 @@ class MovementController extends Controller
             $movements = $movements->whereIn('port_location_id', (array)request('port_location_id'));
         }
         if (request('movement_id') != null) {
-            $movements = $movements->whereIn('movement_id', request('movement_id'));
+            $movements = $movements->whereIn('movement_id', (array)request('movement_id'));
             $movementId = true;
         }
         if (request('booking_no') != null) {
@@ -764,7 +766,7 @@ class MovementController extends Controller
 
             $container_id = $movements->first()->container_id;
             if (request('movement_id') != null) {
-                if ($movements->movement_id != request('movement_id')) {
+                if (!in_array($movements->movement_id, (array)request('movement_id'))) {
                     $movements = [];
                     $movementsArray = true;
                 }

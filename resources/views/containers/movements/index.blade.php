@@ -26,7 +26,7 @@
                             <a href="{{route('containerRefresh')}}" class="btn btn-success">Refresh Container Status</a>
                             @endpermission
                             @if(!$items->isEmpty())
-                                    <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a>
+                                    {{-- <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a> --}}
                                     <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
                                     'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export Last Movements</a>
 
@@ -140,11 +140,11 @@
                             </div> -->
                             <div class="form-group col-md-3">
                                 <label for="containersMovementsInput">Movement </label>
-                                <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    <option value="">Select...</option>
+                                <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id[]" data-size="10"
+                                 title="{{trans('forms.select')}}" multiple>
                                     @foreach ($containersMovements as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                    <option value="{{ $item->id }}"
+                                        {{ in_array($item->id, (array)request()->input('movement_id')) ? 'selected' : '' }}>{{ $item->code }}
                                     @endforeach
                                 </select>
                             </div>
@@ -335,7 +335,7 @@ function unlockupdate(){
         $('.selectpicker').selectpicker('refresh')
     })
     $(setTimeout(handlePasteContainers, 900))
-    
+
     function handlePasteContainers() {
         $("#ContainerInput").closest('div').find('.bs-searchbox input').off('paste').on('paste', function (e) {
             const clipboardData = getClipboardData(e)
@@ -353,7 +353,7 @@ function unlockupdate(){
             $('.selectpicker').selectpicker('refresh');
         });
     }
-    
+
     const getClipboardData = event => (event.originalEvent || event).clipboardData || window.clipboardData
 
     function getPastedContainerNumbers(clipboardData) {
