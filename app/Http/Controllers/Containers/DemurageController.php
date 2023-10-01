@@ -30,35 +30,35 @@ class DemurageController extends Controller
         $demurrages = Demurrage::where('company_id', Auth::user()->company_id)->filter(new ContainersIndexFilter(request()))->get();
         $countries = Country::orderBy('name')->get();
 
-        return view('containers.demurrage.index',[
-            'countries'=>$countries,
-            'items'=>$demurrages,
-            'demurrage'=>$demurrage,
+        return view('containers.demurrage.index', [
+            'countries' => $countries,
+            'items' => $demurrages,
+            'demurrage' => $demurrage,
         ]);
     }
 
     public function create()
     {
-        $this->authorize(__FUNCTION__,Demurrage::class);
+        $this->authorize(__FUNCTION__, Demurrage::class);
         $tariffTypes = TariffType::all();
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::orderBy('id')->where('company_id',Auth::user()->company_id)->get();
+        $ports = Ports::orderBy('id')->where('company_id', Auth::user()->company_id)->get();
         $triffs = Triff::get();
         $currency = Currency::all();
-        $terminals = Terminals::where('company_id',Auth::user()->company_id)->get();
+        $terminals = Terminals::where('company_id', Auth::user()->company_id)->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
-        return view('containers.demurrage.create',[
-            'terminals'=>$terminals,
-            'countries'=>$countries,
-            'bounds'=>$bounds,
-            'containersTypes'=>$containersTypes,
-            'ports'=>$ports,
-            'triffs'=>$triffs,
-            'currency'=>$currency,
-            'containerstatus'=>$containerstatus,
-            'tariffTypes'=>$tariffTypes,
+        return view('containers.demurrage.create', [
+            'terminals' => $terminals,
+            'countries' => $countries,
+            'bounds' => $bounds,
+            'containersTypes' => $containersTypes,
+            'ports' => $ports,
+            'triffs' => $triffs,
+            'currency' => $currency,
+            'containerstatus' => $containerstatus,
+            'tariffTypes' => $tariffTypes,
         ]);
     }
 
@@ -101,7 +101,7 @@ class DemurageController extends Controller
 
     public function show($id)
     {
-        $this->authorize(__FUNCTION__,Demurrage::class);
+        $this->authorize(__FUNCTION__, Demurrage::class);
         $demurrages = Demurrage::find($id);
         $slabs = DemuragePeriodsSlabs::where('demurage_id', $id)->with('periods')->get();
 
@@ -110,49 +110,49 @@ class DemurageController extends Controller
                 $periodData = $period->toArray();
             }
         }
-            // dd($slabs);
-        return view('containers.demurrage.show',[
-            'demurrages'=>$demurrages,
-            'slabs'=>$slabs,
-            'periodData'=>$periodData,
+        // dd($slabs);
+        return view('containers.demurrage.show', [
+            'demurrages' => $demurrages,
+            'slabs' => $slabs,
+            'periodData' => $periodData,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit(Demurrage $demurrage)
     {
-        $this->authorize(__FUNCTION__,Demurrage::class);
+        $this->authorize(__FUNCTION__, Demurrage::class);
         $user = Auth::user();
         $demurrage = $demurrage->load('periods');
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::where('company_id',$user->company_id)->orderBy('id')->get();
+        $ports = Ports::where('company_id', $user->company_id)->orderBy('id')->get();
         $triffs = Triff::all();
         $currency = Currency::all();
-        $terminals = Terminals::where('company_id',$user->company_id)->get();
+        $terminals = Terminals::where('company_id', $user->company_id)->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
-        return view('containers.demurrage.edit',[
-            'terminals'=>$terminals,
+        return view('containers.demurrage.edit', [
+            'terminals' => $terminals,
             'demurrage' => $demurrage,
-            'countries'=>$countries,
-            'bounds'=>$bounds,
-            'containersTypes'=>$containersTypes,
-            'ports'=>$ports,
-            'triffs'=>$triffs,
-            'currency'=>$currency,
-            'containerstatus'=>$containerstatus,
+            'countries' => $countries,
+            'bounds' => $bounds,
+            'containersTypes' => $containersTypes,
+            'ports' => $ports,
+            'triffs' => $triffs,
+            'currency' => $currency,
+            'containerstatus' => $containerstatus,
         ]);
     }
 
     public function update(Request $request, Demurrage $demurrage)
     {
-        $this->authorize(__FUNCTION__,Demurrage::class);
+        $this->authorize(__FUNCTION__, Demurrage::class);
         $demurrage = $demurrage->load('periods');
         $input = [
             'country_id' => $request->country_id,
@@ -169,14 +169,14 @@ class DemurageController extends Controller
         ];
         $demurrage->update($input);
         $demurrage->createOrUpdatePeriod($request->period);
-        Period::destroy(explode(',',$request->removed));
-        return redirect()->route('demurrage.index')->with('success',trans('Demurrage.updated.success'));
+        Period::destroy(explode(',', $request->removed));
+        return redirect()->route('demurrage.index')->with('success', trans('Demurrage.updated.success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
