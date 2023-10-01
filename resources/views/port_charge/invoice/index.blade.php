@@ -269,6 +269,7 @@
             $('#export-current').click(() => {
                 searchForm.attr('method', 'post');
                 searchForm.attr('action', '{{ route('port-charge-invoices.export-current') }}');
+                searchForm.find('input[name="_token"]').prop('disabled', false);
 
                 searchForm.submit();
             });
