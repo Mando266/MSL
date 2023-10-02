@@ -27,17 +27,23 @@ class PortChargeInvoiceController extends Controller
 
         $query = PortChargeInvoice::searchQuery($request);
 
+        if (isset($request->sort_by)) {
+            $query->orderBy($request->sort_by, $request->ascending);
+        } else {
+            $query->latest();
+        }
+
         $invoicesMoney = $query->get(['total_usd', 'invoice_usd', 'invoice_egp']);
-        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])->latest()
+        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])
             ->paginate(20)->withQueryString();
         $totalUsd = $invoicesMoney->sum('total_usd');
         $invoiceUsd = $invoicesMoney->sum('invoice_usd');
         $invoiceEgp = $invoicesMoney->sum('invoice_egp');
-        
-        if($request->ajax()){
+
+        if ($request->ajax()) {
             return view('port_charge.invoice.__table-results')
                 ->with([
-                    'invoices'=> $invoices,
+                    'invoices' => $invoices,
                     'totalUsd' => $totalUsd,
                     'invoiceUsd' => $invoiceUsd,
                     'invoiceEgp' => $invoiceEgp,
@@ -45,7 +51,7 @@ class PortChargeInvoiceController extends Controller
         }
         return view('port_charge.invoice.index', $formViewData)
             ->with([
-                'invoices'=> $invoices,
+                'invoices' => $invoices,
                 'totalUsd' => $totalUsd,
                 'invoiceUsd' => $invoiceUsd,
                 'invoiceEgp' => $invoiceEgp,
@@ -163,7 +169,10 @@ class PortChargeInvoiceController extends Controller
 
     public function doExportInvoice(PortChargeInvoice $invoice)
     {
-        return Excel::download(new PortChargeInvoiceExport($invoice->load('rows.booking.voyage')), "invoice_no_{$invoice->invoice_no}.xlsx");
+        return Excel::download(
+            new PortChargeInvoiceExport($invoice->load('rows.booking.voyage')),
+            "invoice_no_{$invoice->invoice_no}.xlsx"
+        );
     }
 
     public function doExportByDate()
@@ -184,7 +193,7 @@ class PortChargeInvoiceController extends Controller
     {
         $query = PortChargeInvoice::searchQuery(request())->orderByDesc('invoice_no');
         $invoices = $query->get()->load('rows.booking.voyage');
-        
+
         $now = now()->toDateString();
 
         if ($invoices->isEmpty()) {

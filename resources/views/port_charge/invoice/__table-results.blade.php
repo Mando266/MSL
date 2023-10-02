@@ -17,15 +17,15 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Invoice Number</th>
-            <th>Country</th>
-            <th>Line</th>
-            <th>Port</th>
+            <th><a class="sort-results" data-name="invoice_no">Invoice Number<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="country_id">Country<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="shipping_line_id">Line<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="port_id">Port<i class="fas fa-sort sort-icon"></a></th>
             <th>Vessel</th>
             <th>Voyage</th>
-            <th>Total USD</th>
-            <th>Invoice USD</th>
-            <th>Invoice EGP</th>
+            <th><a class="sort-results" data-name="total_usd">Total USD<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="invoice_usd">Invoice USD<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="invoice_egp">Invoice EGP<i class="fas fa-sort sort-icon"></a></th>
             <th class='text-center' style='width:100px;'></th>
         </tr>
         </thead>
