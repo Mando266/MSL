@@ -51,7 +51,7 @@
                     </div>
                     <form id="search-form" class="ml-3" method="GET" action="{{ route('port-charge-invoices.index') }}">
                         @csrf
-                        <input name="q" id="search-term" hidden value="{{ old('q') }}">
+                        <input name="q" id="search-term" class="input-search" hidden value="{{ old('q') }}">
                         <div class="row">
                             <div class="form-group col-md-3">
                                 <label for="from_date">From</label>
@@ -129,6 +129,7 @@
 
             $('#searchButton').click(() => {
                 handleSearch('search');
+                $(".select2-selection__rendered").html($("#search-term").val())
             });
 
             $("#cancel-search").click(() => {
@@ -137,6 +138,7 @@
             });
             $("#reset-search").on('click', () => {
                 $(".input-search").val([])
+                $(".select2-selection__rendered").html('')
                 $('.selectpicker').selectpicker('refresh')
             })
             $('#searchSelect').select2({

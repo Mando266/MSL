@@ -7,6 +7,7 @@ use App\Models\Booking\Booking;
 use App\Models\ChargesMatrix;
 use App\Models\Master\Containers;
 use App\Models\PortChargeInvoice;
+use App\Models\PortChargeInvoiceRow;
 use App\Models\Voyages\Voyages;
 use App\Services\PortChargeInvoiceService;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class PortChargeInvoiceController extends Controller
     public function index(Request $request)
     {
         $formViewData = $this->invoiceService->getFormViewData();
+
 
         $query = PortChargeInvoice::searchQuery($request);
 
@@ -116,6 +118,22 @@ class PortChargeInvoiceController extends Controller
 
     public function edit(PortChargeInvoice $portChargeInvoice)
     {
+        $wordsToRemove = ["power_days", "storage_days", "pti_type"];
+        $selectedArray = explode(",", $portChargeInvoice->selected_costs);
+        $filteredString = implode(", ", array_diff($selectedArray, $wordsToRemove));
+        $formViewData = $this->invoiceService->getFormViewData();
+
+
+        return view('port_charge.invoice.edit', $formViewData)
+            ->with([
+                'invoice' => $portChargeInvoice->load('rows'),
+                'selected' => explode(',', $portChargeInvoice->selected_costs),
+                'selectedCostsString' => $filteredString
+            ]);
+    }
+
+    public function detailEdit(PortChargeInvoice $portChargeInvoice)
+    {
         $formViewData = $this->invoiceService->getFormViewData();
         $voyagesCosts = $portChargeInvoice->portChargeInvoiceVoyages->map(function ($voyage) {
             $data['id'] = $voyage->voyages_id;
@@ -124,7 +142,7 @@ class PortChargeInvoiceController extends Controller
             return $data;
         });
 
-        return view('port_charge.invoice.edit', $formViewData)
+        return view('port_charge.invoice.detail-edit', $formViewData)
             ->with([
                 'invoice' => $portChargeInvoice,
                 'rows' => $portChargeInvoice->rows,
@@ -134,6 +152,21 @@ class PortChargeInvoiceController extends Controller
     }
 
     public function update(PortChargeInvoice $portChargeInvoice)
+    {
+        $portChargeInvoice->update(request()->invoice);
+        
+        $removedIds = explode(',', request()->removed_ids);
+        PortChargeInvoiceRow::findMany($removedIds)->each(fn($w) => $w->delete());
+        
+        $rows = $this->invoiceService->separateInputByIndex(request()->rows);
+        foreach ($rows as $row) {
+            PortChargeInvoiceRow::find($row->get('id'))->update($row->except('id')->toArray());
+        }
+
+        return redirect()->route('port-charge-invoices.index');
+    }
+    
+    public function detailUpdate(PortChargeInvoice $portChargeInvoice)
     {
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
         $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());

@@ -271,6 +271,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('port-charge-invoices/{invoice}/export', [PortChargeInvoiceController::class, 'doExportInvoice'])
         ->name('port-charge-invoices.show.export');
     Route::get('port-charge-invoices/search', [PortChargeInvoiceController::class, 'searchJson'])->name('port-charge-invoices.search');
+    Route::get('port-charge-invoices/{portChargeInvoice}/detail-edit', [PortChargeInvoiceController::class, 'detailEdit'])
+        ->name('port-charge-invoices.detail-edit');
+    Route::post('port-charge-invoices/{portChargeInvoice}/detail-update', [PortChargeInvoiceController::class, 'detailUpdate'])
+        ->name('port-charge-invoices.detail-update');
     Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
 
 });

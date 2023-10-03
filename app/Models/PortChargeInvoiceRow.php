@@ -59,4 +59,20 @@ class PortChargeInvoiceRow extends Model
             '' :
             $value;
     }
+
+    public function totalCosts()
+    {
+        return $this->thc +
+            $this->storage +
+            $this->power +
+            $this->shifting +
+            $this->disinf +
+            $this->hand_fes_em +
+            $this->gat_lift_off_inbnd_em_ft40 +
+            $this->gat_lift_on_inbnd_em_ft40 +
+            $this->pti +
+            $this->add_plan +
+            $this->additional_fees;
+    }
+
 }
