@@ -164,7 +164,10 @@
             $('.included').each(function () {
                 const table = $(this).closest('table');
                 const field = $(this).data('field');
-                const checkbox = table.find(`input[type="checkbox"].${field}`);
+                let checkbox = table.find(`input[type="checkbox"].${field}`);
+                if (checkbox.length === 0){
+                    checkbox = $("#checkAll")
+                }
 
                 if (checkbox.prop('checked')) {
                     USD_to_EGP += parseFloat($(this).val()) || 0;
