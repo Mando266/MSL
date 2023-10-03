@@ -12,11 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class PortChargeInvoice extends Model
 {
     protected $guarded = [];
-
-    protected $with = [
-        'country',
-        'port'
-    ];
+    
 
     public const COSTS = [
         'thc',
@@ -28,7 +24,8 @@ class PortChargeInvoice extends Model
         'gat_lift_off_inbnd_em_ft40',
         'gat_lift_on_inbnd_em_ft40',
         'pti',
-        'add_plan'
+        'add_plan',
+        'additional_fees'
     ];
 
     public function rows(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -91,6 +88,13 @@ class PortChargeInvoice extends Model
             : '';
     }
 
+    public function getSelectedCostsAttribute($value)
+    {
+        $wordsToRemove = ["power_days", "storage_days", "pti_type"];
+        $selectedArray = explode(",", $value);
+        return implode(",", array_diff($selectedArray, $wordsToRemove));
+    }
+
 
     public static function searchQuery($request): \Illuminate\Database\Eloquent\Builder
     {
@@ -113,7 +117,7 @@ class PortChargeInvoice extends Model
             ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds));
     }
 
-    public function createVoyageCosts($voyage, $costs)
+    public function createVoyageCosts($voyage, $costs): Model
     {
         return $this->portChargeInvoiceVoyages()->create([
             'voyages_id' => $voyage->id,
@@ -121,6 +125,15 @@ class PortChargeInvoice extends Model
             'empty_costs' => $costs['empty_costs'] ?? null,
             'full_costs' => $costs['full_costs'] ?? null,
         ]);
+    }
+
+    public function fullCount(): int
+    {
+        return $this->rows->pluck('quotation_type')->filter(fn($s) => strtolower($s) === "full")->count();
+    }
+    public function emptyCount(): int
+    {
+        return $this->rows->pluck('quotation_type')->filter(fn($s) => strtolower($s) === "empty")->count();
     }
 
 }

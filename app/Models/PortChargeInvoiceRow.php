@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Booking\Booking;
 use App\Models\Master\Containers;
-use App\Models\Voyages\Voyages;
 use Illuminate\Database\Eloquent\Model;
 
 class PortChargeInvoiceRow extends Model
@@ -32,7 +31,7 @@ class PortChargeInvoiceRow extends Model
     {
         return $this->belongsTo(Booking::class, 'bl_no', 'ref_no');
     }
-    
+
     public function voyage()
     {
         return $this->booking->voyage();
@@ -42,7 +41,7 @@ class PortChargeInvoiceRow extends Model
     {
         return $this->voyage->voyagePorts();
     }
-    
+
     public function vessel()
     {
         return $this->booking->voyage->vessel();
@@ -60,19 +59,42 @@ class PortChargeInvoiceRow extends Model
             $value;
     }
 
-    public function totalCosts()
+    public function totalCosts(): array
     {
-        return $this->thc +
-            $this->storage +
-            $this->power +
-            $this->shifting +
-            $this->disinf +
-            $this->hand_fes_em +
-            $this->gat_lift_off_inbnd_em_ft40 +
-            $this->gat_lift_on_inbnd_em_ft40 +
-            $this->pti +
-            $this->add_plan +
-            $this->additional_fees;
+        $costs = [
+            'thc' => $this->thc,
+            'storage' => $this->storage,
+            'power' => $this->power,
+            'shifting' => $this->shifting,
+            'disinf' => $this->disinf,
+            'hand_fes_em' => $this->hand_fes_em,
+            'gat_lift_off_inbnd_em_ft40' => $this->gat_lift_off_inbnd_em_ft40,
+            'gat_lift_on_inbnd_em_ft40' => $this->gat_lift_on_inbnd_em_ft40,
+            'pti' => $this->pti,
+            'add_plan' => $this->add_plan,
+            'additional_fees' => $this->additional_fees,
+        ];
+
+        $usdTotal = 0;
+        $egpTotal = 0;
+
+        foreach ($costs as $costName => $costValue) {
+            $currencyField = $costName . '_currency';
+            if (is_null($this->$currencyField)) {
+                if ($this->invoice->invoice_egp > 0) {
+                    $egpTotal += $costValue * $this->invoice->exchange_rate;
+                } else {
+                    $usdTotal += $costValue;
+                }
+            } elseif ($this->$currencyField === 'usd') {
+                $usdTotal += $costValue;
+            } else {
+                $egpTotal += $costValue * $this->invoice->exchange_rate;
+            }
+        }
+
+        return [$usdTotal, $egpTotal];
     }
+
 
 }

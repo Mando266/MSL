@@ -34,77 +34,77 @@
         <th data-field="thc">
             <label>
                 THC
-                <input type="checkbox" class="thc_cost in-egp">
+                <input type="checkbox" class="thc_cost in-egp" data-target="thc">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="storage">
             <label>
                 STORAGE
-                <input type="checkbox" class="storage_cost in-egp">
+                <input type="checkbox" class="storage_cost in-egp" data-target="storage">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="power">
             <label>
                 POWER
-                <input type="checkbox" class="power_cost in-egp">
+                <input type="checkbox" class="power_cost in-egp" data-target="power">
                 EGP
             </label>
         </th>
         <th data-field="shifting">
             <label>
                 SHIFTING
-                <input type="checkbox" class="shifting_cost in-egp">
+                <input type="checkbox" class="shifting_cost in-egp" data-target="shifting">
                 EGP
             </label>
         </th>
         <th data-field="disinf">
             <label>
                 DISINF
-                <input type="checkbox" class="disinf_cost in-egp">
+                <input type="checkbox" class="disinf_cost in-egp" data-target="disinf">
                 EGP
             </label>
         </th>
         <th data-field="hand-fes-em">
             <label>
                 HAND-FES-EM
-                <input type="checkbox" class="hand_fes_em_cost in-egp">
+                <input type="checkbox" class="hand_fes_em_cost in-egp" data-target="">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-off-inbnd-em-ft40">
             <label>
                 GAT-LIFT OFF-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40_cost in-egp">
+                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40_cost in-egp" data-target="gat_lift_off_inbnd_em_ft40">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-on-inbnd-em-ft40">
             <label>
                 GAT-LIFT ON-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40_cost in-egp">
+                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40_cost in-egp" data-target="gat_lift_on_inbnd_em_ft40">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="pti">
             <label>
                 PTI
-                <input type="checkbox" class="pti_cost in-egp">
+                <input type="checkbox" class="pti_cost in-egp" data-target="pti">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="add-plan">
             <label>
                 ADD-PLAN
-                <input type="checkbox" class="add_plan_cost in-egp">
+                <input type="checkbox" class="add_plan_cost in-egp" data-target="add_plan">
                 EGP
             </label>
         </th>
         <th colspan="2">
             <label>
                 Additional Fees
-                <input type="checkbox" class="additional_fees_cost in-egp">
+                <input type="checkbox" class="additional_fees_cost in-egp" name="rows" data-target="additional_fees">
                 EGP
             </label>
         </th>
@@ -184,9 +184,9 @@
                        class="shipment_type form-control"></td>
             <td><input type="text" name="rows[quotation_type][]"
                        class="quotation_type form-control"></td>
-            <td data-field="thc"><input type="text" name="rows[thc][]" class="form-control dynamic-input"
+            <td data-field="thc"><input type="text" name="rows[thc][egp][]" class="form-control dynamic-input"
                                         data-field="thc_cost"></td>
-            <td data-field="storage"><input type="text" name="rows[storage][]" class="form-control dynamic-input"
+            <td data-field="storage"><input type="text" name="rows[storage][usd][]" class="form-control dynamic-input"
                                             data-field="storage_cost"></td>
             <td data-field="storage">
                 <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
@@ -233,7 +233,7 @@
                     <option value="0" data-cost="0">Not added</option>
                 </select>
             </td>
-            <td><input type="number" name="rows[additional_fees][]"
+            <td><input type="number" name="rows[additional_fees][][usd]"
                        class="form-control included additional-cost"
                        step="0.01" placeholder="cost" data-field="additional_fees_cost">
             </td>

@@ -311,16 +311,15 @@
                                         <tr>
                                             <th>Remove</th>
                                             <th>#</th>
-                                            <th style="min-width: 222px">Type</th>
-                                            <th style="min-width: 222px">Service</th>
-                                            <th style="min-width: 222px">Voyage</th>
-                                            <th style="min-width: 222px">ETA</th>
-                                            <th style="min-width: 222px">BL NO</th>
-                                            <th style="min-width: 222px">CONTAINER NO</th>
-                                            <th style="min-width: 100px">CONTAINER TYPE</th>
-                                            <th style="min-width: 222px">TS</th>
-                                            <th style="min-width: 222px">SHIPMENT TYPE</th>
-                                            <th style="min-width: 222px">QUOTATION TYPE</th>
+                                            <th style="min-width: 190px">Type</th>
+                                            <th style="min-width: 170px">Service</th>
+                                            <th style="min-width: 200px">Voyage</th>
+                                            <th style="min-width: 200px">BL NO</th>
+                                            <th style="min-width: 200px">CONTAINER NO</th>
+                                            <th style="min-width: 80px">CONTAINER TYPE</th>
+                                            <th style="min-width: 144px">TS</th>
+                                            <th style="min-width: 142px">SHIPMENT TYPE</th>
+                                            <th style="min-width: 142px">QUOTATION TYPE</th>
                                             @foreach(['thc', 'storage', 'storage_days', 'power', 
                                                       'power_days', 'shifting', 'disinf', 'hand_fes_em',
                                                        'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40'
@@ -376,7 +375,6 @@
                                                     </select>
                                                 </td>
                                                 <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no} - {$row->voyage->leg->name}" }}</td>
-                                                <td>{{ $row->eta }}</td>
                                                 <td>{{ $row->bl_no }}</td>
                                                 <td>{{ $row->container_no }}</td>
                                                 <td>{{ optional($row->container)->containersTypes->name ?? '' }}</td>

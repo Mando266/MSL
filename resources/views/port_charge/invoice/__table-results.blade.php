@@ -18,11 +18,13 @@
         <tr>
             <th>#</th>
             <th><a class="sort-results" data-name="invoice_no">Invoice Number<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="country_id">Country<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="shipping_line_id">Line<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="port_id">Port<i class="fas fa-sort sort-icon"></a></th>
             <th>Vessel</th>
             <th>Voyage</th>
+            <th>Charges Applied</th>
+            <th>Full Containers</th>
+            <th>Empty Containers</th>
             <th><a class="sort-results" data-name="total_usd">Total USD<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="invoice_usd">Invoice USD<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="invoice_egp">Invoice EGP<i class="fas fa-sort sort-icon"></a></th>
@@ -34,11 +36,13 @@
             <tr>
                 <td>{{ $invoices->firstItem() +  $key }}</td>
                 <td>{{ $invoice->invoice_no }}</td>
-                <td>{{ $invoice->country->name ?? '' }}</td>
                 <td>{{ $invoice->line->name ?? '' }}</td>
                 <td>{{ $invoice->port->name ?? '' }}</td>
                 <td>{{ $invoice->vesselsNames() }}</td>
                 <td>{{ $invoice->voyagesNames() }}</td>
+                <td>{{ $invoice->selected_costs }}</td>
+                <td>{{ $invoice->fullCount() }}</td>
+                <td>{{ $invoice->emptyCount() }}</td>
                 <td>{{ $invoice->total_usd }}</td>
                 <td>{{ $invoice->invoice_usd }}</td>
                 <td>{{ $invoice->invoice_egp }}</td>

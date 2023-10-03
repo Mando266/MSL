@@ -105,14 +105,10 @@ class PortChargeInvoiceController extends Controller
 
     public function show(PortChargeInvoice $portChargeInvoice)
     {
-        $wordsToRemove = ["power_days", "storage_days", "pti_type"];
-        $selectedArray = explode(",", $portChargeInvoice->selected_costs);
-        $filteredString = implode(", ", array_diff($selectedArray, $wordsToRemove));
-
         return view('port_charge.invoice.show', [
             'invoice' => $portChargeInvoice->load('rows'),
             'selected' => explode(',', $portChargeInvoice->selected_costs),
-            'selectedCostsString' => $filteredString
+            'selectedCostsString' => $portChargeInvoice->selected_costs
         ]);
     }
 

@@ -160,6 +160,7 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             $invoice = $row->invoice;
             $booking = $row->booking;
             $voyage = $booking->voyage;
+            [$invoice_usd, $invoice_egp] = $row->totalCosts();
             return [
                 'invoice_no' => $invoice->invoice_no,
                 'invoice_date' => $invoice->invoice_date,
@@ -189,8 +190,8 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
                 "add_plan" => $row->add_plan,
                 "additional_fees" => $row->additional_fees,
                 "additional_fees_description" => $row->additional_fees_description,
-                "invoice_usd" => $invoice->invoice_usd > 0 ? $row->totalCosts() : 0,
-                "invoice_egp" => $invoice->invoice_egp > 0 ? ($row->totalCosts() * $invoice->exchange_rate) : 0,
+                "invoice_usd" => $invoice_usd,
+                "invoice_egp" => $invoice_egp,
             ];
         };
     }

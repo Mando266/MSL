@@ -126,6 +126,16 @@
                 handleSearch('search', sortBy, asc);
             });
 
+            $("#from_date, #to_date").on("input", function() {
+                let fromValue = $("#from_date").val();
+                let toValue = $("#to_date").val();
+
+                if (fromValue > toValue) {
+                    $("#to_date").val(fromValue);
+                } else if (toValue < fromValue) {
+                    $("#from_date").val(toValue);
+                }
+            });
 
             $('#searchButton').click(() => {
                 handleSearch('search');

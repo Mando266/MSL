@@ -67,7 +67,7 @@
                                     @foreach(['thc', 'storage', 'storage_days', 'power', 
                                               'power_days', 'shifting', 'disinf', 'hand_fes_em',
                                                'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40'
-                                               , 'pti', 'pti_type', 'add_plan'] as $field)
+                                               ,'pti', 'pti_type', 'add_plan'] as $field)
                                         @if(in_array($field, $selected))
                                             <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
                                         @endif

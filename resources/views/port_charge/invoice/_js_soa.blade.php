@@ -32,6 +32,7 @@
         $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
         $(document).on('click change keyup paste', () => calculateTotals());
         $(document).on('change', '#country', loadPorts)
+        $(document).on('click', '.in-egp', handleInEgpCheck);
         $('#checkAll').change(function () {
             $('.in-egp').prop('checked', this.checked);
             calculateTotals()
@@ -40,8 +41,24 @@
             setToZeroIfNull()
             deleteEmptyOnSubmit(e)
             addTypesToSelectedCosts(e)
+            setEgpUsd()
         });
         $("#add-many-containers").on('click', handleAddContainers);
+    }
+
+    function handleInEgpCheck() {
+        const target = $(this).data('target');
+        const isChecked = $(this).is(':checked');
+        const table = $(this).closest('table');
+
+        const inputs = table.find('input[name*="' + target + '"]');
+
+        inputs.each(function () {
+            const inputName = $(this).attr('name');
+            const newName = isChecked ? inputName.replace('usd', 'egp') : inputName.replace('egp', 'usd');
+            $(this).attr('name', newName);
+        });
+        
     }
 
     function handleVoyageChange() {
@@ -165,7 +182,7 @@
                 const table = $(this).closest('table');
                 const field = $(this).data('field');
                 let checkbox = table.find(`input[type="checkbox"].${field}`);
-                if (checkbox.length === 0){
+                if (checkbox.length === 0) {
                     checkbox = $("#checkAll")
                 }
 
@@ -444,6 +461,10 @@
         if (dynamicFieldsSelect.find('option:selected[value="storage"]').length > 0) {
             dynamicFieldsSelect.append('<option value="storage_days" selected>power days</option>');
         }
+        if ($('.additional-cost').filter((index, input) => parseFloat($(input).val()) > 0).length > 0) {
+            dynamicFieldsSelect.append('<option value="additional_fees" selected>additional_fees</option>');
+        }
+
     }
 
     function setToZeroIfNull() {
@@ -555,6 +576,10 @@
         }
     }
 
+    function setEgpUsd() {
+        $(".in-egp").trigger('click')
+    }
+
     function handleContainerNoChange() {
         const containerNumber = $(this).val().trim();
         const vesselId = $('#vessel_id').val();
@@ -623,7 +648,7 @@
             const country = $('#country').val();
             const portsSelect = $('#ports');
 
-            const { data } = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
+            const {data} = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
 
             const ports = data.ports || [];
             const options = ports.map(port => `<option value="${port.id}">${port.name}</option>`);
@@ -715,7 +740,7 @@
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
                     ${generateDynamicInputsHtml()}
-                    <td><input type="number" name="rows[additional_fees][]"
+                    <td><input type="number" name="rows[additional_fees][][usd]"
                        class="form-control additional-cost included"
                        step="0.01" placeholder="cost" data-field="additional_fees_cost">
                     </td>
@@ -776,7 +801,7 @@
 
             dynamicInputsHtml += `
                     <td data-field="${td_dat_field}">
-                        <input type="text" name="rows[${field}][]" class="form-control dynamic-input" data-field="${field}_cost">
+                        <input type="text" name="rows[${field}][][usd]" class="form-control dynamic-input" data-field="${field}_cost">
                     </td>
                     ${selectHtml}
                 `;
