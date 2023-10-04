@@ -114,7 +114,7 @@ class ReceiptController extends Controller
             $total_after_vat += ($vat * $chargeDesc->total_amount);
             $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
         }
-        $total = $total  + $vat - (($total_after_vat * $invoice->tax_discount)/100);
+        $total = $total  + $$total_after_vat - (($total_after_vat * $invoice->tax_discount)/100);
         $total_eg = $total_eg + $total_eg_after_vat - (($total_eg * $invoice->tax_discount)/100);
         if($invoice->add_egp == "false"){
             if($total <= $oldPayment){
@@ -159,7 +159,7 @@ class ReceiptController extends Controller
         elseif( $request->input('bank_deposit') < $request->input('total_payment') ){
             return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
         }
-        
+
         if ($request->input('bank_deposit') != Null){
             $request->validate([
                 'bank_id' => ['required'],
