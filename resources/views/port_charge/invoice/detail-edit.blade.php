@@ -10,16 +10,14 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Port Charge</a></li>
-                                <li class="breadcrumb-item active"><a href="{{route('movements.index')}}">Invoice</a>
+                                <li class="breadcrumb-item active"><a href="{{route('port-charge-invoices.index')}}">Invoice</a>
                                 </li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <a href="{{ route('port-charge-invoices.detail-edit', $invoice->id) }}"
-                           class="btn btn-success m-3">Detailed Edit</a>
-                        <form id="createForm" action="{{ route('port-charge-invoices.update', $invoice->id) }}"
+                        <form id="createForm" action="{{ route('port-charge-invoices.detail-update', $invoice->id) }}"
                               method="POST">
                             @method('patch')
                             @csrf
@@ -36,7 +34,7 @@
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <input type="text" class="form-control" id="payment_type"
-                                                   name="invoice[payment_type]"
+                                                   name="payment_type"
                                                    value="{{old('payment_type', $invoice->payment_type)}}"
                                                    autocomplete="off">
                                         </div>
@@ -59,7 +57,7 @@
                                         </div>
                                         <div class="col-md-6"> <!-- Adjust the width here -->
                                             <select class="selectpicker form-control rounded-0" id="invoice_type"
-                                                    name="invoice[invoice_type]"
+                                                    name="invoice_type"
                                                     data-live-search="true" data-size="10"
                                                     title="{{trans('forms.select')}}">
                                                 @foreach ([
@@ -93,8 +91,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_no"
-                                                   name="invoice[invoice_no]"
-                                                   value="{{old('invoice_no', $invoice->invoice_no)}}"
+                                                   name="invoice_no" value="{{old('invoice_no', $invoice->invoice_no)}}"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -116,7 +113,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="date" class="form-control" id="invoice_date"
-                                                   name="invoice[invoice_date]"
+                                                   name="invoice_date"
                                                    value="{{old('invoice_date', $invoice->invoice_date)}}"
                                                    autocomplete="off" required>
                                         </div>
@@ -139,7 +136,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="number" class="form-control" id="exchange_rate"
-                                                   name="invoice[exchange_rate]"
+                                                   name="exchange_rate"
                                                    value="{{old('exchange_rate', $invoice->exchange_rate)}}"
                                                    min="0" max="1000" step="0.01">
                                         </div>
@@ -162,7 +159,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="invoice_status"
-                                                   name="invoice[invoice_status]"
+                                                   name="invoice_status"
                                                    value="{{old('invoice_status', $invoice->invoice_status)}}"
                                                    autocomplete="off">
                                         </div>
@@ -185,7 +182,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="country"
-                                                    name="invoice[country_id]"
+                                                    name="country_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{ trans('forms.select') }}">
                                                 @foreach ($countries as $item)
@@ -210,7 +207,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="ports"
-                                                    name="invoice[port_id]"
+                                                    name="port_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{ trans('forms.select') }}" required>
                                                 @foreach ($ports as $item)
@@ -234,7 +231,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <select class="selectpicker form-control rounded-0" id="shipping_line"
-                                                    name="invoice[shipping_line_id]"
+                                                    name="shipping_line_id"
                                                     data-live-search="true" data-size="10"
                                                     title="{{ trans('forms.select') }}" required>
                                                 @foreach ($lines as $item)
@@ -255,12 +252,88 @@
                                     <div class="input-group">
                                         <div class="col-md-2">
                                             <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0" for="vessel_id">
+                                                    Vessel Name *
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"> <!-- Adjust the width here -->
+                                            <select class="selectpicker form-control rounded-0" id="vessel_id"
+                                                    name="vessel_id[]"
+                                                    data-live-search="true" data-size="10"
+                                                    title="{{trans('forms.select')}}" required multiple>
+                                                @foreach ($vessels as $item)
+                                                    <option value="{{$item->id}}"
+                                                            {{ in_array($item->id, $invoice->vessels->pluck('id')->unique()->toArray()) ? 'selected' : '' }}>
+                                                        {{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @error('vessel_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0" for="voyage_id">
+                                                    Voyage No *
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="selectpicker form-control rounded-0" id="voyage"
+                                                    name="voyage_id[]"
+                                                    data-live-search="true" data-size="10"
+                                                    title="{{trans('forms.select')}}" required multiple>
+                                                @foreach ($voyages as $item)
+                                                    <option value="{{ $item->id }}"
+                                                    >{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @error('voyage_id')
+                                    <div class="invalid-feedback">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-12 dynamic-fields-clone">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text bg-transparent border-0"
+                                                       for="dynamic_fields">
+                                                    Default Applied Costs
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-control" id="dynamic_fields" multiple
+                                                    data-size="10" name="selected_costs[]" required>
+                                                @foreach($costs as $field)
+                                                    <option value="{{ $field }}"
+                                                            {{ in_array($field, $selected) ? 'selected' : '' }}
+                                                    >{{ $field }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
                                                 <span class="input-group-text bg-transparent border-0">Invoice EGP</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="invoice[invoice_egp]" class="form-control"
-                                                   id="invoice_egp"
+                                            <input type="text" name="invoice_egp" class="form-control" id="invoice_egp"
                                                    value="{{ $invoice->invoice_egp }}" readonly>
                                         </div>
                                     </div>
@@ -273,8 +346,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="invoice[invoice_usd]" class="form-control"
-                                                   id="invoice_usd"
+                                            <input type="text" name="invoice_usd" class="form-control" id="invoice_usd"
                                                    value="{{ $invoice->invoice_usd }}" readonly>
                                         </div>
                                     </div>
@@ -287,8 +359,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="invoice[total_usd]" class="form-control"
-                                                   id="total_usd"
+                                            <input type="text" name="total_usd" class="form-control" id="total_usd"
                                                    value="{{ $invoice->total_usd }}"
                                                    readonly>
                                         </div>
@@ -301,108 +372,90 @@
                                     </label>
                                     <h6>All In EGP</h6>
                                 </div>
+                                <div class="container">
+                                    <div id="table2-selects" class="d-none">
+                                        <div class="text-center">
+                                            <label>Empty/Export</label>
+                                            <label class="col-md-3">From
+                                                <select name="empty_export_from_id" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_export_from_id ? 'selected' : '' }}>{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                            <label class="col-md-3">To
+                                                <select name="empty_export_to_id" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_export_to_id ? 'selected' : '' }}>{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div id="table3-selects" class="d-none">
+                                        <div class="text-center">
+                                            <label>Empty/Import</label>
+                                            <label class="col-md-3">From
+                                                <select name="empty_import_from_id" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_import_from_id ? 'selected' : '' }}>{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                            <label class="col-md-3">To
+                                                <select name="empty_import_to_id" class="form-control">
+                                                    <option hidden selected>Select</option>
+                                                    @foreach ($possibleMovements as $movement)
+                                                        <option value="{{ $movement->id }}" {{ $movement->id == $invoice->empty_import_to_id ? 'selected' : '' }}>{{ $movement->code }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link switch-table active" data-table="table1">
+                                            Full
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link switch-table" data-table="table2">
+                                            Empty/Export
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link switch-table" data-table="table3">
+                                            Empty/Import
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link switch-table" data-table="table4">
+                                            Transhipment
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
 
+                            <div>
+                                <button type="button" id="add-many-containers" class="btn btn-info m-3">Add Many
+                                    Containers
+                                </button>
+                                <button type="button" id="add-row" class="btn btn-info my-3 mx-1">Add Row</button>
+                            </div>
                             <div class="col-md-12">
                                 <div class="table-container">
-                                    <input name="removed_ids" id="removed-ids" hidden>
-                                    <table class='table table-bordered table-hover table-condensed mb-4'>
-                                        <thead>
-                                        <tr>
-                                            <th>Remove</th>
-                                            <th>#</th>
-                                            <th style="min-width: 190px">Type</th>
-                                            <th style="min-width: 170px">Service</th>
-                                            <th style="min-width: 200px">Voyage</th>
-                                            <th style="min-width: 200px">BL NO</th>
-                                            <th style="min-width: 200px">CONTAINER NO</th>
-                                            <th style="min-width: 80px">CONTAINER TYPE</th>
-                                            <th style="min-width: 144px">TS</th>
-                                            <th style="min-width: 142px">SHIPMENT TYPE</th>
-                                            <th style="min-width: 142px">QUOTATION TYPE</th>
-                                            @foreach(['thc', 'storage', 'storage_days', 'power', 
-                                                      'power_days', 'shifting', 'disinf', 'hand_fes_em',
-                                                       'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40'
-                                                       , 'pti', 'pti_type', 'add_plan'] as $field)
-                                                @if(in_array($field, $selected))
-                                                    <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
-                                                @endif
-                                            @endforeach
-                                            <th colspan="2">Additional Fees</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach ($invoice->rows as $row)
-                                            <tr>
-                                                <td style="width:85px;">
-                                                    <button type="button" class="btn btn-danger removeContact"><i
-                                                                class="fa fa-trash"></i></button>
-                                                </td>
-                                                <td class="row-number">{{ $loop->iteration }}</td>
-                                                <td>{{ $row->portCharge->name }}<input name="rows[id][]" class="row-id"
-                                                                                       value="{{ $row->id }}" hidden>
-                                                </td>
-                                                <td>
-                                                    <select name="rows[service][]" class="form-control service_type">
-                                                        <option value="" hidden>Select</option>
-                                                        @php
-                                                            $options = [
-                                                                "001-VSL-RE-STW-OPR",
-                                                                "005-VSL-DIS-OPR",
-                                                                "006-VSL-LOD-OPR",
-                                                                "007-VSL-TRNSHP-OPR",
-                                                                "011-VSL-HOL-WRK",
-                                                                "018-YARD-SERV",
-                                                                "019-LOG-SERV",
-                                                                "020-HAND-FES",
-                                                                "021-STRG-INBND-FL-CONTRS",
-                                                                "024-STRG-OUTBND-CONTRS-FL",
-                                                                "025-STRG-OUTBND-CONTRS-EM",
-                                                                "031-STRG-PR-DR-CONTRS",
-                                                                "033-REFR-CONTR-PWR-SUP",
-                                                                "037-MISC-REV-GAT-SERV",
-                                                                "038-MISC-REV-YARD-CRN-SHIFTING",
-                                                                "039-MISC-REV-GAT-SERV-LIFT OFF",
-                                                                "045-MISC-REV-ELEC-REP-SERV",
-                                                                "051-VSL-OPR-ADD-PLAN",
-                                                                "060-DISINFECTION OF CONTAINERS"
-                                                            ];
-                                                        @endphp
-
-                                                        @foreach ($options as $option)
-                                                            <option value="{{ $option }}" {{ $row->service === $option ? 'selected' : '' }}>{{ $option }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no} - {$row->voyage->leg->name}" }}</td>
-                                                <td>{{ $row->bl_no }}</td>
-                                                <td>{{ $row->container_no }}</td>
-                                                <td>{{ optional($row->container)->containersTypes->name ?? '' }}</td>
-                                                <td>{{ $row->ts }}</td>
-                                                <td>{{ $row->shipment_type }}</td>
-                                                <td>{{ $row->quotation_type }}</td>
-                                                @foreach(['thc', 'storage', 'storage_days', 'power', 
-                                                          'power_days', 'shifting', 'disinf', 'hand_fes_em',
-                                                          'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
-                                                          'pti', 'pti_type', 'add_plan'] as $field)
-                                                    @if(in_array($field, $selected))
-                                                        <td><input type="number" step="0.01"
-                                                                   class="form-control included"
-                                                                   value="{{ $row->{$field} }}"
-                                                                   name="rows[{{ $field }}][]"></td>
-                                                    @endif
-                                                @endforeach
-                                                <td><input type="number" step="0.01" class="form-control included"
-                                                           value="{{ $row->additional_fees }}"
-                                                           name="rows[additional_fees][]"></td>
-                                                <td style="min-width: 200px"><input type="text" class="form-control"
-                                                                                    value="{{ $row->additional_fees_description }}"
-                                                                                    name="rows[additional_fees_description][]">
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
+                                    <x-soa-table id="table1"/>
+                                    <x-soa-table id="table2" class="d-none"/>
+                                    <x-soa-table id="table3" class="d-none"/>
+                                    <x-soa-table id="table4" class="d-none"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -414,6 +467,7 @@
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -504,80 +558,89 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    @include('port_charge.invoice._js_soa')
     <script>
-        let removedIds = []
         $(document).ready(function () {
-            $(document).on('input', '.included', () => calculateTotals())
-            $(document).on('click', '.removeContact', handleRemoveRow)
-            $(document).on('click change keyup paste', () => calculateTotals());
-            $('form').on('submit', () => setToZeroIfNull())
+            setupPage()
         })
 
-        async function calculateTotals() {
-            const exchangeRate = parseFloat($('#exchange_rate').val());
-            let totalUSD = 0;
-            let invoiceUSD = 0;
-            let invoiceEGP = 0;
-            let USD_to_EGP = 0;
+        async function setupPage() {
+            $('tbody tr').remove()
+            await loadVoyages();
+            await selectVoyageCosts()
+            toggleAllEgpSwitch()
+            addCurrentInvoiceRows()
+        }
 
-            await new Promise((resolve) => {
-                $('.included').each(function () {
-                    totalUSD += parseFloat($(this).val()) || 0;
-                });
-                resolve();
-            });
+        async function addCurrentInvoiceRows() {
+            let containers = JSON.parse('@json($rows->pluck('container_no')->toArray())');
+            let selectedServices = JSON.parse('@json($rows->pluck('service')->toArray())');
+            let selectedPtiTypes = JSON.parse('@json($rows->pluck('pti_type')->toArray())');
+            let selectedPowerDays = JSON.parse('@json($rows->pluck('power_days')->toArray())');
+            let selectedStorageDays = JSON.parse('@json($rows->pluck('storage_days')->toArray())');
+            let selectedAddPlans = JSON.parse('@json($rows->pluck('add_plan')->map(fn($s) => (int) $s)->toArray())');
+            let additionalFees = JSON.parse('@json($rows->pluck('additional_fees')->toArray())');
+            let additionalFeesDescriptions = JSON.parse('@json($rows->pluck('additional_fees_description')->toArray())');
 
-            await new Promise((resolve) => {
-                $('.included').each(function () {
-                    const table = $(this).closest('table');
-                    const field = $(this).data('field');
-                    let checkbox = table.find(`input[type="checkbox"].${field}`);
-                    if (checkbox.length === 0) {
-                        checkbox = $("#checkAll")
-                    }
 
-                    if (checkbox.prop('checked')) {
-                        USD_to_EGP += parseFloat($(this).val()) || 0;
-                    }
-                });
-                resolve();
-            });
+            await addEditContainers(containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans, additionalFees, additionalFeesDescriptions)
+        }
 
-            invoiceUSD = totalUSD - USD_to_EGP;
-
-            if (!isNaN(exchangeRate)) {
-                invoiceEGP = USD_to_EGP * exchangeRate;
+        function toggleAllEgpSwitch() {
+            let isEgp = +{{ $invoice->invoice_egp }};
+            if (isEgp > 0) {
+                $("#checkAll").prop('checked', true).trigger('change')
             }
-
-            $("#total_usd").val(totalUSD);
-            $("#invoice_usd").val(invoiceUSD);
-            $("#invoice_egp").val(invoiceEGP);
         }
 
-        function handleRemoveRow() {
-            let row = $(this).closest("tr")
-            let id = row.find(".row-id").val()
-            removedIds.push(id)
-            row.remove()
-            calculateTotals()
-            updateRowNumbers()
+        async function selectVoyageCosts() {
+            await selectVoyages()
+            let voyageCosts = JSON.parse('@json($voyagesCosts)')
+            voyageCosts.forEach(voyageCost => {
+                const voyageId = voyageCost.id
+                $(`.voyage-${voyageId}-full`).val(voyageCost.full).trigger('change')
+                $(`.voyage-${voyageId}-empty`).val(voyageCost.empty).trigger('change')
+                $('.selectpicker').selectpicker('refresh')
+            })
         }
 
-        function updateRowNumbers() {
-            $('table').each(function (tableIndex, tableElement) {
-                $(tableElement).find('tr').each(function (rowIndex, rowElement) {
-                    $(rowElement).find('td.row-number').text(rowIndex);
-                });
-            });
+        async function selectVoyages() {
+            return new Promise(resolve => {
+                let selectedVoyages = JSON.parse('@json($invoice->voyages->pluck('id')->unique()->toArray())')
+                $("#voyage").val(selectedVoyages).trigger('change')
+                $("#dynamic_fields").trigger('change')
+                $('.selectpicker').selectpicker('refresh')
+                resolve()
+            })
         }
 
-        function setToZeroIfNull() {
-            $('.dynamic-input').each(function () {
-                if ($(this).val() === null || $(this).val() === '') {
-                    $(this).val('0');
+        const addEditContainers = async (containers, selectedServices, selectedPtiTypes, selectedPowerDays, selectedStorageDays, selectedAddPlans, additionalFees, additionalFeesDescriptions) => {
+            const vesselId = $('#vessel_id').val();
+            const voyage = $('#voyage').val();
+
+            if (containers.length > 0 && vesselId && voyage) {
+                for (let i = 0; i < containers.length; i++) {
+                    const container = containers[i];
+                    const service = selectedServices[i] !== "" ? selectedServices[i] : null;
+                    const ptiType = selectedPtiTypes[i];
+                    const powerDay = selectedPowerDays[i];
+                    const storageDay = selectedStorageDays[i];
+                    const addPlan = selectedAddPlans[i];
+                    const additionalFee = additionalFees[i];
+                    const additionalFeesDescription = additionalFeesDescriptions[i];
+
+                    await processContainer(container, vesselId, voyage, service, ptiType, powerDay, storageDay, addPlan, additionalFee, additionalFeesDescription);
                 }
-            });
-            $("#removed-ids").val(removedIds)
-        }
+                $(".storage-days").trigger('change')
+                $(".power-days").trigger('change')
+                $(".pti-type").trigger('change')
+                $(".add-plan-select").trigger('change')
+                handleDynamicFieldsChange()
+                updateChargeTypeOptions('table1')
+                updateChargeTypeOptions('table2')
+                updateChargeTypeOptions('table3')
+                updateChargeTypeOptions('table4')
+            }
+        };
     </script>
 @endpush

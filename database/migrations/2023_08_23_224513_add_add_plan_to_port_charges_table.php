@@ -13,15 +13,15 @@ class AddAddPlanToPortChargesTable extends Migration
      */
     public function up()
     {
-//        Schema::table('port_charges', function (Blueprint $table) {
-//            $table->dropColumn('wire_trnshp_20ft');
-//            $table->dropColumn('wire_trnshp_40ft');
-//            $table->decimal('power_free', 10, 2)->nullable();
-//            $table->decimal('add_plan_20ft', 10, 2)->nullable();
-//            $table->decimal('add_plan_40ft', 10, 2)->nullable();
-//            $table->integer('company_id')->nullable();
-//
-//        });
+        Schema::table('port_charges', function (Blueprint $table) {
+            $table->dropColumn('wire_trnshp_20ft');
+            $table->dropColumn('wire_trnshp_40ft');
+            $table->decimal('power_free', 10, 2)->nullable();
+            $table->decimal('add_plan_20ft', 10, 2)->nullable();
+            $table->decimal('add_plan_40ft', 10, 2)->nullable();
+            $table->integer('company_id')->nullable();
+
+        });
     }
 
     /**
