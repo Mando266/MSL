@@ -577,7 +577,7 @@
     }
 
     function setEgpUsd() {
-        $(".in-egp").trigger('click')
+        // $(".in-egp").trigger('click')
     }
 
     function handleContainerNoChange() {
@@ -710,11 +710,19 @@
     </td>
     <td>
         <select name="rows[service][]" class="form-control service_type" required>
-            <option selected hidden>Select</option>
+            <option selected>Select</option>
+            <option value="999990-HATCH-COVER-OPERATIONS">999990-HATCH-COVER-OPERATIONS</option>
+            <option value="DISCHARGING-OPERATIONS">DISCHARGING-OPERATIONS</option>
+            <option value="YARD-0060-AND-GATES-SERVICES">YARD-0060-AND-GATES-SERVICES</option>
             <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+            <option value="002-VSL-HATCH-CVR-OPR">002-VSL-HATCH-CVR-OPR</option>
+            <option value="0021-LOADING-OPRERATION">0021-LOADING-OPRERATION</option>
             <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
             <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+            <option value="0061-SERVICE-OF-YARD-AND-GATES-TO-EXPORTS">0061-SERVICE-OF-YARD-AND-GATES-TO-EXPORTS</option>
             <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+            <option value="009-VSL-OPR-IMDG">009-VSL-OPR-IMDG</option>
+            <option value="010-VSL-OPR-OOG">010-VSL-OPR-OOG</option>
             <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
             <option value="018-YARD-SERV">018-YARD-SERV</option>
             <option value="019-LOG-SERV">019-LOG-SERV</option>
@@ -722,14 +730,21 @@
             <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
             <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
             <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+            <option value="027-STRG-TRNSHP-CONTRS">027-STRG-TRNSHP-CONTRS</option>
+            <option value="02821-POWER-SUPPLY-OF-REEFR-CONTAINER">02821-POWER-SUPPLY-OF-REEFR-CONTAINER</option>
             <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
             <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
             <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
             <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
             <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
             <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+            <option value="048-MISC-REV-OTBND-CONTRS-DR">048-MISC-REV-OTBND-CONTRS-DR</option>
             <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-            <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+            <option value="059-WAR-MARTYRS">059-WAR-MARTYRS</option>
+            <option value="060-DISINFECTION-OF-CONTAINERS">060-DISINFECTION-OF-CONTAINERS</option>
+            <option value="0991-HANDLING-FEES">0991-HANDLING-FEES</option>
+            <option value="2981-ADMINISTRATIVE-EXPENSES">2981-ADMINISTRATIVE-EXPENSES</option>
+            <option value="50-ELECTRONIC-REPORTS-SERVICE">50-ELECTRONIC-REPORTS-SERVICE</option>
         </select>
     </td>
     <td><input type="text" class="form-control voyage-name"></td>

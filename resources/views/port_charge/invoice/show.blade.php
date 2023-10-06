@@ -8,25 +8,24 @@
                     <div class="widget-heading">
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a>
-                                </li>
-                                <li class="breadcrumb-item"><a
-                                            href="{{ route('port-charge-invoices.index') }}">Invoice</a>
-                                <li class="breadcrumb-item active"><a href="#">Create</a>
-                                </li>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('port-charge-invoices.index') }}">Invoice</a></li>
+                                <li class="breadcrumb-item active"><a href="#">Create</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         <br>
                         <div class="row">
+                            <div class="mx-3">
+                                <a href="{{ route('port-charge-invoices.edit', $invoice->id) }}" class="btn btn-success">
+                                    Edit <i class="fa fa-edit"></i>
+                                </a>
+                            </div>
                             <form action="{{ route('port-charge-invoices.show.export', $invoice->id) }}" method="post">
                                 @csrf
-                                <div class="col-md-11 text-right mb-12">
-                                    <input name="id" value="{{ $invoice->id }}" hidden>
-                                    <button type="submit" class="btn btn-success" id="export-date">Export</button>
-                                </div>
+                                <input name="id" value="{{ $invoice->id }}" hidden>
+                                <button type="submit" class="btn btn-success" id="export-date">Export</button>
                             </form>
-
                         </div>
                     </div>
                     <div class="col-md-12 mt-4">

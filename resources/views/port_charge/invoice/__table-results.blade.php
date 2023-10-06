@@ -18,6 +18,7 @@
         <tr>
             <th>#</th>
             <th><a class="sort-results" data-name="invoice_no">Invoice Number<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="invoice_date">Date<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="shipping_line_id">Line<i class="fas fa-sort sort-icon"></a></th>
             <th><a class="sort-results" data-name="port_id">Port<i class="fas fa-sort sort-icon"></a></th>
             <th>Vessel</th>
@@ -36,6 +37,7 @@
             <tr>
                 <td>{{ $invoices->firstItem() +  $key }}</td>
                 <td>{{ $invoice->invoice_no }}</td>
+                <td>{{ $invoice->invoice_date }}</td>
                 <td>{{ $invoice->line->name ?? '' }}</td>
                 <td>{{ $invoice->port->name ?? '' }}</td>
                 <td>{{ $invoice->vesselsNames() }}</td>
