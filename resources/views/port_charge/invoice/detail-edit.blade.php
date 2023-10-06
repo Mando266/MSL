@@ -365,6 +365,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group col-md-12">
+                                    <div class="input-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-transparent border-0">Old Total USD</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control"
+                                                   value="{{ $invoice->total_usd }}"
+                                                   disabled>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="ml-5">
                                     <label class="switch">
                                         <input type="checkbox" id="checkAll">

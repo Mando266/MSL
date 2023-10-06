@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class PortChargeInvoice extends Model
 {
     protected $guarded = [];
-    
+
 
     public const COSTS = [
         'thc',
@@ -102,6 +102,12 @@ class PortChargeInvoice extends Model
         $from = $request->from;
         $to = $request->to;
         $lineIds = $request->line_id;
+        $payer = $request->payer;
+        $portChargeIds = [
+            'local' => [1, 2],
+            'foreign' => [3, 4, 5, 6],
+        ];
+        $cost = $request->cost;
 
         return static::query()->where(function ($q) use ($term) {
             $q->where('invoice_no', 'like', "%{$term}%")
@@ -114,7 +120,12 @@ class PortChargeInvoice extends Model
         })
             ->when(isset($from), fn($q) => $q->whereDate('invoice_date', '>=', $from))
             ->when(isset($to), fn($q) => $q->whereDate('invoice_date', '<=', $to))
-            ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds));
+            ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds))
+            ->when(isset($cost), fn($q) => $q->where('selected_costs', 'like', "%$cost%"))
+            ->when(
+                isset($payer),
+                fn($q) => $q->whereHas('rows', fn($query) => $query->whereIn('port_charge_id', $portChargeIds[$payer]))
+            );
     }
 
     public function createVoyageCosts($voyage, $costs): Model
@@ -131,6 +142,7 @@ class PortChargeInvoice extends Model
     {
         return $this->rows->pluck('quotation_type')->filter(fn($s) => strtolower($s) === "full")->count();
     }
+
     public function emptyCount(): int
     {
         return $this->rows->pluck('quotation_type')->filter(fn($s) => strtolower($s) === "empty")->count();

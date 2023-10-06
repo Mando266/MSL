@@ -55,7 +55,7 @@ class PortChargeInvoiceService
                 if (in_array($cost, ["power_days", "storage_days", "pti_type"])){
                     continue;
                 }
-                foreach ($row[$cost] as $k => $v) {
+                foreach ($row[$cost] ?? [] as $k => $v) {
                     $row["{$cost}_currency"] = $k;
                     $row[$cost] = $v;
                 }

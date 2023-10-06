@@ -76,6 +76,40 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-3">
+                                <label for="payer">Payer</label>
+                                <select class="selectpicker form-control input-search" id="payer"
+                                        data-live-search="true"
+                                        name="payer" data-size="10"
+                                        title="{{ trans('forms.select') }}">
+                                    <option value="">
+                                        Select
+                                    </option>
+                                    <option value="local" {{ old('payer', request()->input('payer')) == 'local' ? 'selected' : '' }}>
+                                        Local Payer
+                                    </option>
+                                    <option value="foreign" {{ old('payer', request()->input('payer')) == 'foreign' ? 'selected' : '' }}>
+                                        Foreign Payer
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="payer">Costs</label>
+                                <select class="selectpicker form-control input-search" id="costs"
+                                        data-live-search="true"
+                                        name="cost" data-size="10"
+                                        title="{{ trans('forms.select') }}">
+                                    <option value="">
+                                        Select
+                                    </option>
+                                    @foreach ($costs as $cost)
+                                        <option value="{{ $cost }}" {{ old('payer', request()->input('costs')) == $cost ? 'selected' : '' }}>
+                                            {{ $cost }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+                            </div>
                         </div>
                     </form>
                     <div class="widget-content widget-content-area">
@@ -118,7 +152,7 @@
             const searchForm = $("#search-form")
             const spinner = $("#loadingSpinner")
             let asc = false
-            
+
             $(document).on('click', '.sort-results', function () {
                 console.log(asc)
                 asc = !asc
@@ -126,7 +160,7 @@
                 handleSearch('search', sortBy, asc);
             });
 
-            $("#from_date, #to_date").on("input", function() {
+            $("#from_date, #to_date").on("input", function () {
                 let fromValue = $("#from_date").val();
                 let toValue = $("#to_date").val();
 

@@ -84,7 +84,6 @@ class PortChargeInvoiceController extends Controller
         $request->validate([
             'invoice_no' => 'required|unique:port_charge_invoices',
         ]);
-
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
         $invoiceData = $this->invoiceService->extractInvoiceData(request()->all());
         $voyages = Voyages::findMany($request->voyage_id);
