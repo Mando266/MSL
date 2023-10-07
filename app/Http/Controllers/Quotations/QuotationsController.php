@@ -36,13 +36,13 @@ class QuotationsController extends Controller
             $customers = Customers::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             session()->flash('quotations',$exportQuotations);
-        
+
         return view('quotations.quotations.index',[
             'items'=>$quotations,
             'quotation'=>$quotation,
             'ports'=>$ports,
             'customers'=>$customers,
-        ]);    
+        ]);
     }
 
     public function create()
@@ -86,18 +86,18 @@ class QuotationsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'validity_from' => ['required'], 
-            'customer_id' => ['required'], 
-            'place_of_acceptence_id' => ['required'], 
-            'load_port_id' => ['required'], 
-            'equipment_type_id' => ['required'], 
-            'export_detention' => ['required'], 
+            'validity_from' => ['required'],
+            'customer_id' => ['required'],
+            'place_of_acceptence_id' => ['required'],
+            'load_port_id' => ['required'],
+            'equipment_type_id' => ['required'],
+            'export_detention' => ['required'],
             'import_detention' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
-            'validity_to' => ['required','after:validity_from'], 
-            'ofr' => ['required'], 
-            'commodity_des' =>['required'], 
+            'validity_to' => ['required','after:validity_from'],
+            'ofr' => ['required'],
+            'commodity_des' =>['required'],
         ],[
             'validity_to.after'=>'Validaty To Should Be After Validaty From ',
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
@@ -131,9 +131,9 @@ class QuotationsController extends Controller
         //         break;
         //     case "rate_fwd":
         //         $rate_fwd = true;
-        //         break;                
+        //         break;
         // }
-        // Admin 
+        // Admin
             $portOfLoad = Ports::find($request->input('load_port_id'));
             $portOfDischarge = Ports::find($request->input('discharge_port_id'));
             $shipment_type = '';
@@ -144,8 +144,11 @@ class QuotationsController extends Controller
             if($portOfDischarge->country_id == 61){
                 $shipment_type = 'Import';
             }
+            if($request->input('transportation_mode') == 'trucker'){
+                $shipment_type = 'Trucking';
+            }
         if(isset($request->agent_id)){
-            $oldQuotations = 
+            $oldQuotations =
             Quotation::where("customer_id",$request->input('customer_id'))
             ->where("place_of_acceptence_id",$request->input('place_of_acceptence_id'))
             ->where("place_of_delivery_id",$request->input('place_of_delivery_id'))
@@ -159,14 +162,14 @@ class QuotationsController extends Controller
             ->where("import_storage",$request->input('import_storage'))
             ->where("oog_dimensions",$request->input('oog_dimensions'))
             ->get();
-            
+
             if($oldQuotations->count() >0){
                 if($request->input('validity_from') < $oldQuotations[0]->validity_to){
                     return redirect()->back()->with('error', 'this quotation is dublicated with the same user in the same time');
-                }    
+                }
             }
             //  $request->agent_id ==> Import Agent  ,  $request->discharge_agent_id   ==> Discharge Agent
-            
+
             $quotations = Quotation::create([
                 'ref_no'=> "",
                 'agent_id'=>$request->agent_id,
@@ -178,7 +181,7 @@ class QuotationsController extends Controller
                 'vessel_name'=> $request->input('vessel_name'),
                 'principal_name'=> $request->input('principal_name'),
                 'validity_from'=> $request->input('validity_from'),
-                'validity_to'=> $request->input('validity_to'), 
+                'validity_to'=> $request->input('validity_to'),
                 'soc'=>$request->soc ? $request->soc : 0,
                 'imo'=>$request->imo ? $request->imo : 0,
                 'oog'=>$request->oog ? $request->oog : 0,
@@ -255,7 +258,7 @@ class QuotationsController extends Controller
             $quotations->ref_no = $refNo;
             $quotations->save();
         }
-    
+
         foreach($request->input('quotationDis',[]) as $quotationDis){
             QuotationDes::create([
                 'quotation_id'=>$quotations->id,
@@ -329,19 +332,19 @@ class QuotationsController extends Controller
     }
 
     public function update(Request $request,$id)
-    {   
+    {
         $request->validate([
-            'validity_from' => ['required'], 
-            'customer_id' => ['required'], 
-            'place_of_acceptence_id' => ['required'], 
-            'load_port_id' => ['required'], 
-            'equipment_type_id' => ['required'], 
-            'export_detention' => ['required'], 
-            'import_detention' => ['required'], 
+            'validity_from' => ['required'],
+            'customer_id' => ['required'],
+            'place_of_acceptence_id' => ['required'],
+            'load_port_id' => ['required'],
+            'equipment_type_id' => ['required'],
+            'export_detention' => ['required'],
+            'import_detention' => ['required'],
             'place_of_delivery_id' => ['required','different:place_of_acceptence_id'],
             'discharge_port_id' => ['required','different:load_port_id'],
             'validity_to' => ['required','after:validity_from'],
-            'commodity_des' =>['required'], 
+            'commodity_des' =>['required'],
         ],[
             'validity_to.after'=>'Validaty To Should Be After Validaty From ',
             'place_of_delivery_id.different'=>'Place Of Delivery The Same  Place Of Acceptence',
@@ -355,7 +358,7 @@ class QuotationsController extends Controller
         // dd($request->removedDesc);
         // dd($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id);
         // dd($request->input());
-        $input = [                    
+        $input = [
             'validity_from' => $request->validity_from,
             'validity_to' => $request->validity_to,
             'customer_id' => $request->customer_id,
@@ -420,8 +423,8 @@ class QuotationsController extends Controller
 
         $quotation->createOrUpdateDesc($request->quotationDis);
         // dd($quotation);
-        
-        
+
+
         $quotation->createOrUpdateLoad($request->quotationLoad);
         // dd($user);
         if(isset($request->discharge_agent_id)){
@@ -447,7 +450,7 @@ class QuotationsController extends Controller
     public function approve($id)
     {
         $quotation = Quotation::findOrFail($id);
-        
+
         if($quotation) {
             $quotation->status = "approved";
             $quotation->save();
@@ -458,7 +461,7 @@ class QuotationsController extends Controller
     public function reject($id)
     {
         $quotation = Quotation::findOrFail($id);
-        
+
         if($quotation) {
             $quotation->status = "rejected";
             $quotation->save();
@@ -470,7 +473,7 @@ class QuotationsController extends Controller
     {
         $quotation = Quotation::find($id);
         QuotationDes::where('quotation_id',$id)->delete();
-        $quotation->delete(); 
+        $quotation->delete();
         return redirect()->route('quotations.index')->with('success',trans('Quotation.deleted.success'));
     }
 }
