@@ -99,15 +99,34 @@
                                         data-live-search="true"
                                         name="cost" data-size="10"
                                         title="{{ trans('forms.select') }}">
-                                    <option value="">
-                                        Select
-                                    </option>
+                                    <option value="">Select</option>
                                     @foreach ($costs as $cost)
                                         <option value="{{ $cost }}" {{ old('payer', request()->input('costs')) == $cost ? 'selected' : '' }}>
                                             {{ $cost }}
                                         </option>
                                     @endforeach
-
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="booking_id">Booking No</label>
+                                <select class="selectpicker form-control input-search" id="booking_id"
+                                        data-live-search="true" name="bl_no" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                    <option value="">Select</option>
+                                    @foreach ($bookings as $item)
+                                        <option value="{{ $item }}" {{ $item == old('booking_id',request()->input('booking_id')) ? 'selected':'' }}>{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="container_no">Container No</label>
+                                <select class="selectpicker form-control input-search" id="container_no"
+                                        data-live-search="true" name="container_no" data-size="10"
+                                        title="{{ trans('forms.select') }}">
+                                    <option value="">Select</option>
+                                    @foreach ($containers as $item)
+                                        <option value="{{ $item }}" {{ $item == old('container_no',request()->input('container_no')) ? 'selected':'' }}>{{ $item }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

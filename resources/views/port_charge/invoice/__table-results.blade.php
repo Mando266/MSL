@@ -17,18 +17,19 @@
         <thead>
         <tr>
             <th>#</th>
-            <th><a class="sort-results" data-name="invoice_no">Invoice Number<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="invoice_date">Date<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="shipping_line_id">Line<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="port_id">Port<i class="fas fa-sort sort-icon"></a></th>
+            <th><a class="sort-results" data-name="invoice_no">Invoice Number<i class="fas fa-sort sort-icon"></i></a></th>
+            <th><a class="sort-results" data-name="invoice_date">Date<i class="fas fa-sort sort-icon"></i></a></th>
+            <th><a class="sort-results" data-name="shipping_line_id">Line<i class="fas fa-sort sort-icon"></i></a></th>
+            <th><a class="sort-results" data-name="port_id">Port<i class="fas fa-sort sort-icon"></i></a></th>
             <th>Vessel</th>
             <th>Voyage</th>
             <th>Charges Applied</th>
             <th>Full Containers</th>
             <th>Empty Containers</th>
-            <th><a class="sort-results" data-name="total_usd">Total USD<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="invoice_usd">Invoice USD<i class="fas fa-sort sort-icon"></a></th>
-            <th><a class="sort-results" data-name="invoice_egp">Invoice EGP<i class="fas fa-sort sort-icon"></a></th>
+            <th>Bookings</th>
+            <th><a class="sort-results" data-name="total_usd">Total USD<i class="fas fa-sort sort-icon"></i></a></th>
+            <th><a class="sort-results" data-name="invoice_usd">Invoice USD<i class="fas fa-sort sort-icon"></i></a></th>
+            <th><a class="sort-results" data-name="invoice_egp">Invoice EGP<i class="fas fa-sort sort-icon"></i></a></th>
             <th class='text-center' style='width:100px;'></th>
         </tr>
         </thead>
@@ -45,6 +46,7 @@
                 <td>{{ $invoice->selected_costs }}</td>
                 <td>{{ $invoice->fullCount() }}</td>
                 <td>{{ $invoice->emptyCount() }}</td>
+                <td>{{ $invoice->rows->pluck('bl_no')->unique()->implode("\n") }}</td>
                 <td>{{ $invoice->total_usd }}</td>
                 <td>{{ $invoice->invoice_usd }}</td>
                 <td>{{ $invoice->invoice_egp }}</td>
