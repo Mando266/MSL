@@ -132,7 +132,7 @@
                                                 {{$item->bookings->count()}}
                                             </td>
                                             <td>
-                                                {{ $item->bldrafts->count() == 0 ? $item->transhipmentBldrafts->count() : $item->bldrafts->count() }}
+                                                {{ $item->bldrafts->count() == 0 ? optional($item->transhipmentBldrafts)->count() : optional($item->bldrafts)->count() }}
                                             </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">

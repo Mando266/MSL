@@ -27,6 +27,9 @@
                             <div class="mx-1">
                                 <button class="btn btn-dark" id="export-current">Export Current</button>
                             </div>
+                            <div class="mx-1">
+                                <button class="btn btn-dark" id="open-dialog"">Search By Booking</button>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-5 mb-3 mx-2">
@@ -131,6 +134,20 @@
                             </div>
                         </div>
                     </form>
+                    <dialog id="booking-dialog">
+                        <label for="booking_show_id" class="mt-4">Show Containers On Specific Booking</label>
+                        <select class="form-control my-4" id="booking_show_id"
+                                data-live-search="true" name="bl_no" data-size="10"
+                                title="{{trans('forms.select')}}">
+                            <option value="">Select</option>
+                            @foreach ($bookings as $item)
+                                <option value="{{ $item }}" data-route="{{ route('port-charge-invoices.show-booking', $item) }}" {{ $item == old('booking_id',request()->input('booking_id')) ? 'selected':'' }}>
+                                    {{ $item }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn btn-danger m-2" id="close-dialog">Close</button>
+                    </dialog>
                     <div class="widget-content widget-content-area">
                         <div id="table-results">
                             @include('port_charge.invoice.__table-results')
@@ -159,6 +176,14 @@
             text-align: center;
             z-index: 9999;
         }
+        
+
+        /* Style the dialog */
+        dialog {
+            width: 600px; /* Set the width to make it bigger */
+            border-radius: 10px; /* Add rounded corners */
+            padding: 20px; /* Add some padding for content */
+        }
 
     </style>
 @endpush
@@ -168,12 +193,33 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+
+            const showBookingButton = document.getElementById("open-dialog");
+            const bookingDialog = document.getElementById("booking-dialog");
+            const closeDialogButton = document.getElementById("close-dialog");
+            
+            showBookingButton.addEventListener("click", () => {
+                bookingDialog.showModal();
+            });
+
+            closeDialogButton.addEventListener("click", () => {
+                bookingDialog.close();
+            });
+
+            $('#booking_show_id').on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                const route = selectedOption.data('route');
+
+                if (route) {
+                    window.location.href = route;
+                }
+            });
+            
             const searchForm = $("#search-form")
             const spinner = $("#loadingSpinner")
             let asc = false
 
             $(document).on('click', '.sort-results', function () {
-                console.log(asc)
                 asc = !asc
                 let sortBy = $(this).data("name")
                 handleSearch('search', sortBy, asc);

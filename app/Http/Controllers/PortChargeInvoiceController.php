@@ -48,7 +48,7 @@ class PortChargeInvoiceController extends Controller
                     'invoiceEgp' => $invoiceEgp,
                 ]);
         }
-        
+
         $formViewData = $this->invoiceService->getFormViewData();
         $rows = PortChargeInvoiceRow::query()->get(['container_no', 'bl_no']);
         $bookings = $rows->pluck('bl_no')->unique();
@@ -161,6 +161,22 @@ class PortChargeInvoiceController extends Controller
         }
 
         return redirect()->route('port-charge-invoices.index');
+    }
+
+    public function showBooking($booking)
+    {
+        $rows = PortChargeInvoiceRow::query()->where('bl_no', $booking)->get();
+        $selected = $rows->map(fn($row) => collect($rows->first())->filter(fn($item) => $item > 0))
+            ->collapse()->keys()
+            ->intersect(PortChargeInvoice::COSTS)->toArray();
+        
+        return view('port_charge.invoice.booking')
+            ->with([
+                'rows' => $rows->load('invoice'),
+                'selected' => $selected,
+                'booking' => $booking,
+                'invoices' => $rows->pluck('invoice')->unique(),
+            ]);
     }
 
     public function detailUpdate(PortChargeInvoice $portChargeInvoice)
@@ -325,7 +341,7 @@ class PortChargeInvoiceController extends Controller
                 'status' => 'success',
                 'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
-                'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? $booking->is_transhipment ? 'transhipment' : 'unknown',
+                'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? ($booking->is_transhipment ? 'transhipment' : 'unknown'),
                 'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
                 'container_type' => $containerType ?? 'unknown',
                 'voyage_name' => $voyage ? "{$voyage->voyage_no} - {$voyage->leg->name}" : 'unknown',

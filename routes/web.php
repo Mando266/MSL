@@ -264,6 +264,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::get('port-charge-invoices/export-by-date', [PortChargeInvoiceController::class, 'exportByDateView'])
         ->name('port-charge-invoices.export-date');
+    Route::get('port-charge-invoices/booking/{booking}', [PortChargeInvoiceController::class, 'showBooking'])
+        ->name('port-charge-invoices.show-booking');
     Route::post('port-charge-invoices/do-export-date', [PortChargeInvoiceController::class, 'doExportByDate'])
         ->name('port-charge-invoices.do-export-date');
     Route::post('port-charge-invoices/export-current', [PortChargeInvoiceController::class, 'exportCurrent'])

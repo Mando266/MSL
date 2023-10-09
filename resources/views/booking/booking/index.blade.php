@@ -108,7 +108,7 @@
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -122,7 +122,7 @@
                                 <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -188,7 +188,7 @@
                                 <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_both')
