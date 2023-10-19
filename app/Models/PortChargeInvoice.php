@@ -108,6 +108,8 @@ class PortChargeInvoice extends Model
             'foreign' => [3, 4, 5, 6],
         ];
         $cost = $request->cost;
+        $bl_no = $request->bl_no;
+        $container_no = $request->container_no;
 
         return static::query()->where(function ($q) use ($term) {
             $q->where('invoice_no', 'like', "%{$term}%")
@@ -122,6 +124,11 @@ class PortChargeInvoice extends Model
             ->when(isset($to), fn($q) => $q->whereDate('invoice_date', '<=', $to))
             ->when(isset($lineIds), fn($q) => $q->whereIn('shipping_line_id', $lineIds))
             ->when(isset($cost), fn($q) => $q->where('selected_costs', 'like', "%$cost%"))
+            ->when(isset($bl_no), fn($q) => $q->whereHas('rows', fn($query) => $query->where('bl_no', $bl_no)))
+            ->when(
+                isset($container_no),
+                fn($q) => $q->whereHas('rows', fn($query) => $query->where('container_no', $container_no))
+            )
             ->when(
                 isset($payer),
                 fn($q) => $q->whereHas('rows', fn($query) => $query->whereIn('port_charge_id', $portChargeIds[$payer]))

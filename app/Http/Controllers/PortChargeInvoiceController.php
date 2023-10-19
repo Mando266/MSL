@@ -24,9 +24,6 @@ class PortChargeInvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $formViewData = $this->invoiceService->getFormViewData();
-
-
         $query = PortChargeInvoice::searchQuery($request);
 
         if (isset($request->sort_by)) {
@@ -36,7 +33,7 @@ class PortChargeInvoiceController extends Controller
         }
 
         $invoicesMoney = $query->get(['total_usd', 'invoice_usd', 'invoice_egp']);
-        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country'])
+        $invoices = $query->with(['voyages.vessel', 'line', 'port', 'country', 'rows'])
             ->paginate(20)->withQueryString();
         $totalUsd = $invoicesMoney->sum('total_usd');
         $invoiceUsd = $invoicesMoney->sum('invoice_usd');
@@ -51,7 +48,12 @@ class PortChargeInvoiceController extends Controller
                     'invoiceEgp' => $invoiceEgp,
                 ]);
         }
-        return view('port_charge.invoice.index', $formViewData)
+
+        $formViewData = $this->invoiceService->getFormViewData();
+        $rows = PortChargeInvoiceRow::query()->get(['container_no', 'bl_no']);
+        $bookings = $rows->pluck('bl_no')->unique();
+        $containers = $rows->pluck('container_no')->unique();
+        return view('port_charge.invoice.index', $formViewData, compact('bookings', 'containers'))
             ->with([
                 'invoices' => $invoices,
                 'totalUsd' => $totalUsd,
@@ -149,10 +151,10 @@ class PortChargeInvoiceController extends Controller
     public function update(PortChargeInvoice $portChargeInvoice)
     {
         $portChargeInvoice->update(request()->invoice);
-        
+
         $removedIds = explode(',', request()->removed_ids);
         PortChargeInvoiceRow::findMany($removedIds)->each(fn($w) => $w->delete());
-        
+
         $rows = $this->invoiceService->separateInputByIndex(request()->rows);
         foreach ($rows as $row) {
             PortChargeInvoiceRow::find($row->get('id'))->update($row->except('id')->toArray());
@@ -160,7 +162,23 @@ class PortChargeInvoiceController extends Controller
 
         return redirect()->route('port-charge-invoices.index');
     }
-    
+
+    public function showBooking($booking)
+    {
+        $rows = PortChargeInvoiceRow::query()->where('bl_no', $booking)->get();
+        $selected = $rows->map(fn($row) => collect($rows->first())->filter(fn($item) => $item > 0))
+            ->collapse()->keys()
+            ->intersect(PortChargeInvoice::COSTS)->toArray();
+        
+        return view('port_charge.invoice.booking')
+            ->with([
+                'rows' => $rows->load('invoice'),
+                'selected' => $selected,
+                'booking' => $booking,
+                'invoices' => $rows->pluck('invoice')->unique(),
+            ]);
+    }
+
     public function detailUpdate(PortChargeInvoice $portChargeInvoice)
     {
         $rows = $this->invoiceService->prepareInvoiceRows(request()->rows);
@@ -323,7 +341,7 @@ class PortChargeInvoiceController extends Controller
                 'status' => 'success',
                 'ref_no' => $booking->ref_no,
                 'is_ts' => $booking->is_transhipment ?? '',
-                'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? 'unknown',
+                'shipment_type' => $quotation->shipment_type ?? $booking->shipment_type ?? ($booking->is_transhipment ? 'transhipment' : 'unknown'),
                 'quotation_type' => $quotation->quotation_type ?? $booking->booking_type ?? 'unknown',
                 'container_type' => $containerType ?? 'unknown',
                 'voyage_name' => $voyage ? "{$voyage->voyage_no} - {$voyage->leg->name}" : 'unknown',

@@ -10,44 +10,36 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('port-charges.index') }}">Port Charge</a></li>
                                 <li class="breadcrumb-item"><a href="{{ route('port-charge-invoices.index') }}">Invoice</a></li>
-                                <li class="breadcrumb-item active"><a href="#">{{ $invoice->invoice_no }}</a></li>
+                                <li class="breadcrumb-item active"><a href="#">{{ 1 }}</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         <br>
-                        <div class="row">
-                            <div class="mx-3">
-                                <a href="{{ route('port-charge-invoices.edit', $invoice->id) }}" class="btn btn-success">
-                                    Edit <i class="fa fa-edit"></i>
-                                </a>
-                            </div>
-                            <form action="{{ route('port-charge-invoices.show.export', $invoice->id) }}" method="post">
-                                @csrf
-                                <input name="id" value="{{ $invoice->id }}" hidden>
-                                <button type="submit" class="btn btn-success" id="export-date">Export</button>
-                            </form>
-                        </div>
+{{--                        <div class="row">--}}
+{{--                            <form action="{{ route('port-charge-invoices.show.export', $invoice->id) }}" method="post">--}}
+{{--                                @csrf--}}
+{{--                                <input name="id" value="{{ $invoice->id }}" hidden>--}}
+{{--                                <button type="submit" class="btn btn-success" id="export-date">Export</button>--}}
+{{--                            </form>--}}
+{{--                        </div>--}}
                     </div>
                     <div class="col-md-12 mt-4">
-                        <h1>Show Invoice Data</h1>
-                        <ul>
-                            <li><strong>Payment Type:</strong> {{ $invoice->payment_type }}</li>
-                            <li><strong>Invoice Type:</strong> {{ $invoice->invoice_type }}</li>
-                            <li><strong>Invoice No:</strong> {{ $invoice->invoice_no }}</li>
-                            <li><strong>Invoice Date:</strong> {{ $invoice->invoice_date }}</li>
-                            <li><strong>Exchange Rate:</strong> {{ $invoice->exchange_rate }}</li>
-                            <li><strong>Invoice Status:</strong> {{ $invoice->invoice_status }}</li>
-                            <li><strong>Country:</strong> {{ $invoice->country->name ?? '' }}</li>
-                            <li><strong>Port:</strong> {{ $invoice->port->name ?? '' }}</li>
-                            <li><strong>Shipping Line:</strong> {{ $invoice->line->name ?? '' }}</li>
-                            <li><strong>Vessel Name:</strong> {{ $invoice->vesselsNames() }}</li>
-                            <li><strong>Voyage No:</strong> {{ $invoice->voyagesNames() }}</li>
-                            <li><strong>Applied Costs:</strong> {{ $selectedCostsString }}</li>
-                            <li><strong>Total USD:</strong> {{ $invoice->total_usd }}</li>
-                            <li><strong>Invoice EGP:</strong> {{ $invoice->invoice_egp }}</li>
-                            <li><strong>Invoice USD:</strong> {{ $invoice->invoice_usd }}</li>
+                        <h1>Booking: {{ $booking }}</h1>
+                        <h3 class="mt-5">Invoices :</h3>
+                        <ul class="list-unstyled">
+                            @foreach ($invoices as $invoice)
+                                <li class="mb-3" style="display: inline-block; margin-right: 10px;">
+                                    <a href="{{ route('port-charge-invoices.show', $invoice->id) }}" class="text-decoration-none text-white bg-info border border-primary p-2 d-inline-block rounded">
+                                        <strong>{{ $invoice->invoice_no }}</strong>
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
-
+                        <ul>
+                            <li><strong>Total USD:</strong> {{ $rows->sums('total_usd') }}</li>
+                            <li><strong>Invoice EGP:</strong> {{ $rows->sums('invoice_egp') }}</li>
+                            <li><strong>Invoice USD:</strong> {{ $rows->sums('invoice_usd') }}</li>
+                        </ul>
                         <div class="table-container">
                             <table class='table table-bordered table-hover table-condensed mb-4'>
                                 <thead>
@@ -71,13 +63,13 @@
                                             <th data-field="{{ $field }}">{{ strtoupper($field) }}</th>
                                         @endif
                                     @endforeach
-                                    @if(! $invoice->rows->pluck('additional_fees')->filter()->isEmpty())
+                                    @if(! $rows->pluck('additional_fees')->filter()->isEmpty())
                                         <th colspan="2">Additional Fees</th>
                                     @endif
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($invoice->rows as $row)
+                                @foreach ($rows as $row)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $row->portCharge->name }}</td>
