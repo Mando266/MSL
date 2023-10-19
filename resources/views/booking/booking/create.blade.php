@@ -14,9 +14,8 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
+                    <form novalidate id="createForm" action="{{route('booking.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
-
                         <div class="form-row">
                             <input type="hidden" value="{{$quotation->id}}" name="quotation_id">
                             <div class="form-group col-md-4">
@@ -573,7 +572,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label>Exporter Number</label>
+                                <label>Exporter Number <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number"   required>
                             </div>
                             <div class="form-group col-md-4">
@@ -625,7 +624,11 @@
                                         <th class="text-center">Seal No</th>
                                         <th class="text-center">Container Type</th>
                                         <th class="text-center">QTY</th>
-                                        <th class="text-center">Activity Location</th>
+                                        @if(optional($quotation)->shipment_type == "Import")
+                                        <th class="text-center">Return Location</th>
+                                        @else
+                                        <th class="text-center">Pick Up Location</th>
+                                        @endif
                                         <th class="text-center">Container No</th>
                                         <th class="text-center">HAZ / Reefer/ OOG Details / Haz Approval Ref</th>
                                         <th class="text-center">weight</th>
@@ -641,7 +644,7 @@
                                     <input type="text" id="seal_no" name="containerDetails[0][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No">
                                 </td>
                                 <td class="container_type">
-                                    <select class="form-control" id="container_type" data-live-search="true" name="containerDetails[0][container_type]" data-size="10"
+                                    <select class="selectpicker form-control" id="container_type" data-live-search="true" name="containerDetails[0][container_type]" data-size="10"
                                             title="{{trans('forms.select')}}">
                                             @foreach ($equipmentTypes as $item)
                                             @if($quotation->equipment_type_id != null)
@@ -854,6 +857,5 @@
         });
     });
 </script>
-
 @endpush
 

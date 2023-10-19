@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class BLExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -33,9 +33,9 @@ class BLExport implements FromCollection,WithHeadings
         "Bl Status",
         ];
     }
-    
 
-    public function collection() 
+
+    public function collection()
     {
         $bldarfts = session('bldarft');
         $exportbls = collect();
@@ -47,7 +47,7 @@ class BLExport implements FromCollection,WithHeadings
                         $blstatus = "Confirm";
                     }else{
                         $blstatus = "Draft";
-                    }        
+                    }
                     $shipping_status = optional(optional($bldarft->booking)->quotation)->shipment_type;
                     $loadPort = VoyagePorts::where('voyage_id',optional($bldarft->voyage)->id)->where('port_from_name',optional($bldarft->loadPort)->id)->first();
                     $dischargePort = VoyagePorts::where('voyage_id',optional($bldarft->voyage)->id)->where('port_from_name',optional($bldarft->dischargePort)->id)->first();
@@ -65,7 +65,7 @@ class BLExport implements FromCollection,WithHeadings
                         'Voyage' => optional($bldarft->voyage)->voyage_no,
                         'leg' => optional($bldarft->voyage->leg)->name,
                         'eta' => $shipping_status == "Export"? optional($loadPort)->eta : optional($dischargePort)->eta,
-                        'shipping_status' => $shipping_status,
+                        'shipping_status' => optional(optional($bldarft->booking)->quotation)->shipment_type,
                         'Container Type' => optional($bldarft->equipmentsType)->name,
                         // 'qty' => "",
                         'OFR' => optional($bldarft->booking->quotation)->ofr,

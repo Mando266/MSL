@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.bldraft')
 @section('content')
 <div class="layout-px-spacing" style="background-color: #fff;">
     <div class="row layout-top-spacing">
@@ -21,6 +21,7 @@
                         <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
                     </div>
                     <div class="col-md-6 text-right">
+                        <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 290px; height: 100%;" alt="logo">
                     </div>
                 </div>
 
@@ -184,15 +185,15 @@
                             <td class="col-md-3 tableStyle text-center">Notes</td>
                             <td class="col-md-9  tableStyle text-center" colspan="6">
                                 <textarea style="width: 100%; border: none; height: 130px; font-size: 12px; font-weight: bolder !important; background-color: white; color: #000;" disabled>{!! $invoice->notes  !!}</textarea>
-        
+
                             </td>
                         </tr>
-                        
+
                     </tbody>
                 </table>
                 <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
                 <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
-    
+
                 </div>
                 <div class="row">
                         <div class="col-md-12 text-center">

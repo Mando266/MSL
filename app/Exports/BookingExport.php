@@ -8,7 +8,7 @@ use App\Models\Voyages\VoyagePorts;
 
 class BookingExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -32,7 +32,7 @@ class BookingExport implements FromCollection,WithHeadings
             "PLACE OF DELIVERY",
             "LOAD PORT",
             "DISCHARGE PORT",
-            "Pick Up Location", 
+            "Pick Up Location",
             "Place Of Return",
             "Transhipment Port",
             "EQUIPMENT TYPE",
@@ -50,11 +50,11 @@ class BookingExport implements FromCollection,WithHeadings
             "Payment Kind",
         ];
     }
-    
+
 
     public function collection()
     {
-        
+
         $bookings = session('bookings');
         $exportBookings = collect();
         foreach($bookings ?? [] as $booking){
@@ -75,7 +75,7 @@ class BookingExport implements FromCollection,WithHeadings
                 $qty += $bookingDetail->qty;
                 if($bookingDetail->qty == 1 && $bookingDetail->container_id == "000"){
                     $unassigned += 1;
-                }elseif($bookingDetail->qty == 1 && $bookingDetail->container_id == null){    
+                }elseif($bookingDetail->qty == 1 && $bookingDetail->container_id == null){
                     $unassigned += 1;
                 }elseif($bookingDetail->qty == 1){
                     $assigned += 1;
@@ -99,7 +99,7 @@ class BookingExport implements FromCollection,WithHeadings
                 }else{
                     $shipping_status = optional($booking->quotation)->shipment_type;
                 }
-                
+
                 $loadPort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->loadPort)->id)->first();
                 $dischargePort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->dischargePort)->id)->first();
                 $transhipmentPort = VoyagePorts::where('voyage_id',optional($booking->voyage)->id)->where('port_from_name',optional($booking->transhipmentPort)->id)->first();
@@ -120,7 +120,7 @@ class BookingExport implements FromCollection,WithHeadings
                     'voyage_id_second' => optional($booking->secondvoyage)->voyage_no,
                     'leg_2' => optional(optional($booking->secondvoyage)->leg)->name,
                     'eta_2' => $shipping_status == "Export" ? optional($loadPortSecond)->eta : ($shipping_status == "Import" ? optional($dischargePortSecond)->eta : optional($transhipmentPortSecond)->eta),
-                    'shipping_status' => $shipping_status,
+                    'shipping_status' => optional($booking->quotation)->shipment_type,
                     'main_line' => optional($booking->principal)->name,
                     'operator' => optional($booking->operator)->name,
                     'placeOfAcceptence' => optional($booking->placeOfAcceptence)->name,
@@ -149,5 +149,5 @@ class BookingExport implements FromCollection,WithHeadings
     }
 
         return $exportBookings;
-    }    
+    }
 }

@@ -28,7 +28,7 @@ class CustomersController extends Controller
             'items'=>$customers,
             'customer'=>$customer,
             'countries'=>$countries
-        ]); 
+        ]);
     }
 
     public function create()
@@ -51,26 +51,26 @@ class CustomersController extends Controller
     {
         $this->authorize(__FUNCTION__,Customers::class);
         if ($request->input('customer_kind') == 1){
-        $request->validate([ 
-            'name' => 'required', 
-            'country_id' => ['required'], 
-            'city' => ['required'], 
-            'phone' => ['required'], 
-            'email' => ['required'], 
-            'address' => ['required'], 
-            'currency' => ['required'], 
+        $request->validate([
+            'name' => 'required',
+            'country_id' => ['required'],
+            'city' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required'],
+            'address' => ['required'],
+            'currency' => ['required'],
             'othercurrency' => ['different:currency'],
-            'customer_kind' => ['required'],   
+            'customer_kind' => ['required'],
         ],[
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
         }else{
-            $request->validate([ 
-                'name' => 'required', 
-                'country_id' => ['required'],  
-                'customer_kind' => ['required'],   
-            ]); 
+            $request->validate([
+                'name' => 'required',
+                'country_id' => ['required'],
+                'customer_kind' => ['required'],
+            ]);
         }
         $user = Auth::user();
 
@@ -109,7 +109,7 @@ class CustomersController extends Controller
                 'customer_id'=>$customers->id,
                 'role_id'=>$customerRole['role_id'],
             ]);
-        }  
+        }
         $code .=$customers->id;
         $customers->code = $code;
         $customers->save();
@@ -124,14 +124,14 @@ class CustomersController extends Controller
     public function show(Customers $customer)
     {
         $this->authorize(__FUNCTION__,Customers::class);
-        $customer = $customer->load('country'); 
+        $customer = $customer->load('country');
         $customer_roles = CustomerRoles::where('customer_id',$customer->id)->with('role')->get();
         $roles = RoleCustomer::all();
         return view('master.customers.show',[
             'customer'=>$customer,
             'customer_roles'=>$customer_roles,
             'roles'=>$roles,
-        ]);    
+        ]);
     }
 
     public function edit(Customers $customer)
@@ -152,33 +152,33 @@ class CustomersController extends Controller
             'currency'=>$currency,
             'customer_role_id'=>$customer_role_id,
             'contactPeople' => $customer->contactPeople
-        ]); 
+        ]);
     }
 
     public function update(Request $request, Customers $customer)
     {
         $customer->storeContactPeople(request()->contactPeople);
         if ($request->input('customer_kind') == 1){
-        $request->validate([ 
-            'name' => 'required', 
-            'country_id' => ['required'], 
-            'city' => ['required'], 
-            'phone' => ['required'], 
-            'email' => ['required'], 
-            'address' => ['required'], 
-            'currency' => ['required'], 
+        $request->validate([
+            'name' => 'required',
+            'country_id' => ['required'],
+            'city' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required'],
+            'address' => ['required'],
+            'currency' => ['required'],
             'othercurrency' => ['different:currency'],
-            'customer_kind' => ['required'],   
+            'customer_kind' => ['required'],
         ],[
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
         }else{
-            $request->validate([ 
-                'name' => 'required', 
-                'country_id' => ['required'],  
-                'customer_kind' => ['required'],   
-            ]); 
+            $request->validate([
+                'name' => 'required',
+                'country_id' => ['required'],
+                'customer_kind' => ['required'],
+            ]);
         }
         $user = Auth::user();
 

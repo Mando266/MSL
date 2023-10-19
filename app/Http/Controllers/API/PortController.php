@@ -13,10 +13,10 @@ class PortController extends Controller
     public function getPorts(Request $request)
 {
     $voyageId = $request->input('id');
-    
+
     $ports = Ports::whereHas('voyagePorts',fn($q) => $q->where('voyage_id',$voyageId))
         ->get('id')->pluck('id');
-
+                
     return response()->json([
         'ports' => $ports
     ]);

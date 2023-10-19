@@ -261,8 +261,11 @@
                                     <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
                                     <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
                             @elseif(!Auth::user()->is_super_admin  && $quotation->status == 'MSL count')
-                                <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
-                                <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                                    <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
+                            @elseif(Auth::user()->is_super_admin || Auth::user()->id == 11)
+                                    <a href="{{route('quotation.approve',['quotation'=>$quotation->id])}}"  class="btn btn-success hide mt-3">Approve</a>
+                                    <a href="{{route('quotation.reject',['quotation'=>$quotation->id])}}" class="btn btn-danger hide mt-3">Reject</a>
                             @endif
                         <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Quotation</button>
 

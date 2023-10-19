@@ -151,23 +151,43 @@ class BookingController extends Controller
         }
 
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
-            'activityLocation',
-            function ($query) use ($quotation) {
-                $query->where('country_id', $quotation->countrydis)->where(
-                    'container_type_id',
-                    $quotation->equipment_type_id
-                );
-            }
-        )->where('status', 2)->get();
+        if($quotation->shipment_type == 'Export'){
+            $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
+                'activityLocation',
+                function ($query) use ($quotation) {
+                    $query->where('country_id', $quotation->countrydis)->where(
+                        'container_type_id',
+                        $quotation->equipment_type_id
+                    );
+                }
+            )->where('status', 2)->get();
+        }else{
+            $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
+                'activityLocation',
+                function ($query) use ($quotation) {
+                    $query->where('container_type_id',
+                        $quotation->equipment_type_id
+                    );
+                }
+            )->where('status', 2)->get();
+        }
+
         $transhipmentContainers = Containers::where('company_id', Auth::user()->company_id)->where(
             'is_transhipment',
             1
         )->get();
-        $activityLocations = Ports::where('country_id', $quotation->countrydis)->where(
-            'company_id',
-            Auth::user()->company_id
-        )->get();
+        if($quotation->shipment_type == 'Export'){
+            $activityLocations = Ports::where('country_id', $quotation->countrydis)->where(
+                'company_id',
+                Auth::user()->company_id
+            )->get();
+        }else{
+            $activityLocations = Ports::where('country_id', $quotation->countryload)->where(
+                'company_id',
+                Auth::user()->company_id
+            )->get();
+        }
+
         $line = Lines::where('company_id', Auth::user()->company_id)->get();
         return view('booking.booking.create', [
             'ffw' => $ffw,
@@ -224,15 +244,17 @@ class BookingController extends Controller
         }
 
         // Validate Expiration Date
-        // $quotation = Quotation::find($request->quotation_id);
-        // $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
+        $quotation = Quotation::find($request->quotation_id);
+        $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
 
-        // if($quotation != null){
-        //     if($etaDate >= $quotation->validity_from && $etaDate <= $quotation->validity_to){
-        //         return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
-        //         ->withInput($request->input());
-        //     }
-        // }
+        if($quotation->shipment_type == 'Export'){
+            if($quotation != null){
+                if($etaDate <= $quotation->validity_from && $etaDate >= $quotation->validity_to){
+                    return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
+                    ->withInput($request->input());
+                }
+            }
+        }
         $user = Auth::user();
 
         $booking = Booking::create([
@@ -385,12 +407,16 @@ class BookingController extends Controller
             'port_from_name',
             optional($booking->dischargePort)->id
         )->first();
-
+        $secondVoyagePortImport = VoyagePorts::where('voyage_id', $booking->voyage_id_second)->where(
+            'port_from_name',
+            optional($booking->dischargePort)->id
+        )->first();
         return view('booking.booking.deliveryOrder', [
             'booking' => $booking,
             'firstVoyagePort' => $firstVoyagePort,
             'secondVoyagePort' => $secondVoyagePort,
             'firstVoyagePortImport' => $firstVoyagePortImport,
+            'secondVoyagePortImport' => $secondVoyagePortImport,
         ]);
     }
 
@@ -426,7 +452,7 @@ class BookingController extends Controller
             'voyage.vessel',
             'secondvoyage.vessel'
         )->find($id);
-        $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $ports = Ports::where('company_id', Auth::user()->company_id)->where('pick_up_location' , '!=' ,null)->orderBy('id')->get();
         return view('booking.booking.selectGateInImport', [
             'booking' => $booking,
             'ports' => $ports,
@@ -534,12 +560,16 @@ class BookingController extends Controller
             'port_from_name',
             optional($booking->dischargePort)->id
         )->first();
-
+        $secondVoyagePortImport = VoyagePorts::where('voyage_id', $booking->voyage_id_second)->where(
+            'port_from_name',
+            optional($booking->dischargePort)->id
+        )->first();
         return view('booking.booking.showGateOut', [
             'booking' => $booking,
             'firstVoyagePort' => $firstVoyagePort,
             'secondVoyagePort' => $secondVoyagePort,
-            'firstVoyagePortImport' => $firstVoyagePortImport
+            'firstVoyagePortImport' => $firstVoyagePortImport,
+            'secondVoyagePortImport' => $secondVoyagePortImport,
         ]);
     }
 
@@ -617,21 +647,42 @@ class BookingController extends Controller
             )->get();
         }
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
-        $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
-            'activityLocation',
-            function ($query) use ($quotation) {
-                $query->where('country_id', $quotation->countrydis)->where(
-                    'container_type_id',
-                    $quotation->equipment_type_id
-                );
-            }
-        )->where('status', 2)->get();
+        if($quotation->shipment_type == 'Export'){
+            $containers = Containers::where('company_id', Auth::user()->company_id)->whereHas(
+                'activityLocation',
+                function ($query) use ($quotation) {
+                    $query->where('country_id', $quotation->countrydis)->where(
+                        'container_type_id',
+                        $quotation->equipment_type_id
+                    );
+                }
+            )->where('status', 2)->get();
+        }else{
+            $containers = Containers::where('company_id', Auth::user()->company_id)->where(
+            'container_type_id',
+            $quotation->equipment_type_id
+        )->get();
+        }
+
         $oldcontainers = Containers::where('company_id', Auth::user()->company_id)->where(
             'container_type_id',
             $quotation->equipment_type_id
         )->get();
         // $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
-        $activityLocations = Ports::where('company_id', Auth::user()->company_id)->get();
+        if($quotation->shipment_type == 'Export'){
+            $activityLocations = Ports::where('country_id', $quotation->countrydis)->where(
+                'company_id',
+                Auth::user()->company_id
+            )->get();
+        }elseif($quotation->shipment_type == 'Import'){
+            $activityLocations = Ports::where('country_id', $quotation->countryload)->where(
+                'company_id',
+                Auth::user()->company_id
+            )->get();
+        }else{
+            $activityLocations = Ports::where('company_id', Auth::user()->company_id)->get();
+        }
+
         $line = Lines::where('company_id', Auth::user()->company_id)->get();
         $transhipmentContainers = Containers::where('company_id', Auth::user()->company_id)->where(
             'is_transhipment',
@@ -673,14 +724,16 @@ class BookingController extends Controller
             'containerDetails.required' => 'Container Details Cannot be empty',
         ]);
 
-        // $quotation = Quotation::find($request->quotation_id);
-        // $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
-        // if($quotation != null){
-        //     if($etaDate >= $quotation->validity_from && $etaDate <= $quotation->validity_to){
-        //         return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
-        //         ->withInput($request->input());
-        //     }
-        // }
+        $quotation = Quotation::find($request->quotation_id);
+        $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
+        if($quotation->shipment_type == 'Export'){
+            if($quotation != null){
+                if($etaDate <= $quotation->validity_from && $etaDate >= $quotation->validity_to){
+                    return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
+                    ->withInput($request->input());
+                }
+            }
+        }
     if($request->input('movement') == 'FCL/FCL'){
         $uniqueContainers = array();
         foreach ($request->containerDetails as $container) {

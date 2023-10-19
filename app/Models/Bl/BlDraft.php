@@ -59,7 +59,7 @@ class BlDraft extends Model implements PermissionSeederContract
     }
     public function loadPort(){
         return $this->belongsTo(Ports::class,'load_port_id','id');
-    } 
+    }
     public function dischargePort(){
         return $this->belongsTo(Ports::class,'discharge_port_id','id');
     }
@@ -83,7 +83,7 @@ class BlDraft extends Model implements PermissionSeederContract
     {
         if (is_array($inputs) || is_object($inputs)){
         foreach($inputs as $input){
-            
+
             $input['bl_id'] = $this->id;
 
             BlDraftDetails::find($input['id'])

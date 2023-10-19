@@ -16,13 +16,13 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('users.store')}}" method="POST" enctype="multipart/form-data">
+                <form novalidate id="createForm" action="{{route('users.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="agent_id">Agent</label>
+                                <label for="agent_id">Agent <span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" id="agent_id" data-live-search="true" name="agent_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($user_agent as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('agent_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -37,9 +37,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="userName">{{trans('user.user_name')}} * <span class="text-warning"> ( between 4 to 30 characters without spaces.) </span></label>
+                                <label for="userName">{{trans('user.user_name')}}  <span class="text-warning"> * ( between 4 to 30 characters without spaces.) </span></label>
                             <input type="text" class="form-control" id="userName" name="name" value="{{old('name')}}"
-                                 placeholder="{{trans('user.user_name')}}" autocomplete="off" autofocus maxlength="30">
+                                 placeholder="{{trans('user.user_name')}}" autocomplete="off" maxlength="30" required>
                                 @error('name')
                                 <div style="color:red;">
                                     {{$message}}
@@ -47,9 +47,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="fullName">{{trans('user.full_name')}} *</label>
+                                <label for="fullName">{{trans('user.full_name')}} <span class="text-warning"> * </span></label>
                             <input type="text" class="form-control" id="fullName" name="full_name" value="{{old('full_name')}}"
-                                 placeholder="{{trans('user.full_name')}}" autocomplete="off" maxlength="128">
+                                 placeholder="{{trans('user.full_name')}}" autocomplete="off" maxlength="128" required>
                                 @error('full_name')
                                 <div style="color:red;">
                                     {{$message}}
@@ -60,9 +60,9 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="passwordInput">{{trans('login.password')}} * <span class="text-warning"> ( between 6 to 30 characters.) </span></label>
+                                <label for="passwordInput">{{trans('login.password')}} <span class="text-warning"> * ( between 6 to 30 characters.) </span></label>
                                 <input type="password" class="form-control" id="passwordInput" name="password" maxlength="30"
-                                    placeholder="{{trans('login.password')}}" autocomplete="off" >
+                                    placeholder="{{trans('login.password')}}" autocomplete="off" required>
                                 @error('password')
                                 <div style="color:red;">
                                     {{$message}}
@@ -70,16 +70,16 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="passwordConfirmInput">{{trans('login.password_confirmation')}} *</label>
+                                <label for="passwordConfirmInput">{{trans('login.password_confirmation')}} <span class="text-warning"> * </span></label>
                                 <input type="password" class="form-control" id="passwordConfirmInput" name="password_confirmation" maxlength="30"
-                                    placeholder="{{trans('login.password_confirmation')}}" autocomplete="off">
+                                    placeholder="{{trans('login.password_confirmation')}}" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-row mb-4">
                             <div class="form-group col-md-6">
-                                <label for="email">{{trans('user.email')}} *</label>
+                                <label for="email">{{trans('user.email')}} <span class="text-warning"> * </span></label>
                             <input type="text" class="form-control" id="email" name="email" value="{{old('email')}}" maxlength="128"
-                                 placeholder="{{trans('user.email')}}" autocomplete="off" >
+                                 placeholder="{{trans('user.email')}}" autocomplete="off" required>
                                 @error('email')
                                 <div style="color:red;">
                                     {{$message}}
@@ -100,10 +100,10 @@
                         <hr/>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="ownership"> Container Ownership</label>
+                                <label for="ownership"> Container Ownership <span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" id="ownership" data-live-search="true"
                                         name="lessor_id[][id]" data-size="10"
-                                        title="{{trans('forms.select')}}"  multiple="multiple">
+                                        title="{{trans('forms.select')}}"  multiple="multiple" required>
                                     <option value="0">All</option>
                                     @foreach ($lessors as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('lessor_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -117,7 +117,7 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>SOC/COC</label>
+                                <label>SOC/COC <span class="text-warning"> * </span></label>
                                 <select class="selectpicker show-tick form-control" id="soc_coc" data-live-search="true" name="soc_coc" title="{{trans('forms.select')}}" required>
                                     <option value="">All</option>
                                     <option value="SOC">SOC</option>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="ownership"> Container Ownership Type</label>
+                                <label for="ownership"> Container Ownership Type <span class="text-warning"> * </span></label>
                                 <select class="selectpicker form-control" id="ownershipType" data-live-search="true"
                                         name="container_ownership_type[][id]" data-size="10"
                                         title="{{trans('forms.select')}}"  multiple="multiple">

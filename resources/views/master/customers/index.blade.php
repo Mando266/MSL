@@ -83,6 +83,9 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
+                                    @php
+                                        $customer = $item->invoices->count();
+                                    @endphp
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
@@ -103,10 +106,10 @@
                                                 </ul>
                                             </td>
                                             <td>Credit: {{$item->credit_egp}} <br>
-                                                Debit:  &nbsp;{{$item->debit_egp}} 
+                                                Debit:  &nbsp;{{$item->debit_egp}}
                                             </td>
                                             <td>Credit: {{$item->credit}} <br>
-                                                Debit:  &nbsp;{{$item->debit}} 
+                                                Debit:  &nbsp;{{$item->debit}}
                                             </td>
                                             <td class="text-center">
                                                 @if($item->customer_kind == 0)
@@ -138,30 +141,33 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                    @if ($customer > 0)
+                                                    @else
                                                     @permission('Customers-Delete')
                                                     <li>
                                                         <form action="{{route('customers.destroy',['customer'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
+                                                    @endif
                                                 </ul>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr class="text-center">
-                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
-                                        </tr>
-                                    @endforelse
+                                        @empty
+                                            <tr class="text-center">
+                                                <td colspan="20">{{ trans('home.no_data_found')}}</td>
+                                            </tr>
+                                        @endforelse
 
                                 </tbody>
 
                             </table>
                         </div>
                         <div class="paginating-container">
-                            {{ $items->links() }}
+                            {{ $items->appends(request()->query())->links()}}
                         </div>
                     </div>
                 </div>
@@ -173,7 +179,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");

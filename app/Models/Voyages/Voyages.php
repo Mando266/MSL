@@ -4,6 +4,7 @@ namespace App\Models\Voyages;
 
 use App\Models\Bl\BlDraft;
 use App\Models\Containers\Movements;
+use App\Models\Master\Lines;
 use App\Models\Master\Vessels;
 use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Model;
@@ -44,15 +45,7 @@ class Voyages extends Model implements PermissionSeederContract
     }
     public function bldrafts()
     {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',0);
-        });;
-    }
-    public function transhipmentBldrafts()
-    {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',1);
-        });;
+        return $this->hasMany(BlDraft::class ,'voyage_id','id');
     }
 
     public function bookings()

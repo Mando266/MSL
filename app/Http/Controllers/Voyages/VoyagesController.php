@@ -28,7 +28,7 @@ class VoyagesController extends Controller
         // if ($FromPort) $where[] = ['port_from_name','>=', $FromPort];
         $ToPort = request()->input('To');
         // if ($ToPort) $where[] = ['port_from_name','<=', $ToPort];
-        
+
         $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
             ->select('voyages.*', 'voyage_port.port_from_name', 'voyage_port.terminal_name', 'voyage_port.road_no','voyage_port.eta')
             ->with(array('voyagePorts' => function($q) {
@@ -49,7 +49,7 @@ class VoyagesController extends Controller
         ->orderBy('eta', 'DESC')
             ->groupBy('id')
             ->get();
-            
+
             // SEARCH FROM PART
             if(isset($FromPort) && !isset($ToPort)){
                 $voyages = Voyages::join('voyage_port', 'voyage_port.voyage_id' ,'=','voyages.id')
@@ -73,7 +73,7 @@ class VoyagesController extends Controller
                     ->where('port_from_name','>=', $FromPort)
                     ->groupBy('id')
                     ->get();
-                
+
                 foreach ($voyages as $key => $voyage) {
                     $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
                     if(!isset($tempPortsFrom[0])){
@@ -84,7 +84,7 @@ class VoyagesController extends Controller
                                 unset($voyage->voyagePorts[$key]);
                             }
                         }
-                    } 
+                    }
                 }
             }//check for filter from : to
             elseif(isset($FromPort) && isset($ToPort)){
@@ -117,7 +117,7 @@ class VoyagesController extends Controller
                     })
                     ->groupBy('id')
                     ->get();
-                                
+
                 foreach ($voyages as $key => $voyage) {
                     $tempPortsFrom = $voyage->voyagePorts->where('port_from_name', $FromPort)->pluck('id')->toArray();
                     $tempPortsTo = $voyage->voyagePorts->where('port_from_name', $ToPort)->pluck('id')->toArray();
@@ -149,7 +149,7 @@ class VoyagesController extends Controller
         session()->flash('voyages',$voyagesExport);
         return view('voyages.voyages.index',[
             'items'=>$voyages,
-            'vessels'=>$vessels, 
+            'vessels'=>$vessels,
             'ports'=>$ports,
             'FromPort'=> $FromPort,
             'ToPort'=> $ToPort
@@ -186,7 +186,15 @@ class VoyagesController extends Controller
                 return back()->with('error','Voyage ETD Must Be Bigger Than or Equal ETA');
             }
         }
-
+        $uniqueVoyagePort = [];
+        foreach ($request->voyageport as $voyageport) {
+            $portName = $voyageport['port_from_name'];
+            if ($portName !== null && !in_array($portName, $uniqueVoyagePort, true)) {
+                array_push($uniqueVoyagePort, $portName);
+            } elseif ($portName !== null) {
+                return redirect()->back()->with('error', 'Voyage Port Must be unique')->withInput($request->input());
+            }
+        }
         $VoyagesDublicate  = Voyages::where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
             if($VoyagesDublicate != null && $VoyagesDublicate->vessel_id != null && $VoyagesDublicate->voyage_no != null && $VoyagesDublicate->leg_id != null ){
                 return back()->with('error','This Voyage Already Exists');
@@ -236,15 +244,15 @@ class VoyagesController extends Controller
                 $voyageports = VoyagePorts::where('voyage_id',$id)
                         ->where('port_from_name', $from)->get();
             }
-            
+
         }else{
-            // Here is trips when we search with from : to 
+            // Here is trips when we search with from : to
                 // here we check if we found ports for this voyage from and to our search
                 $tempPortsFrom = VoyagePorts::where('voyage_id',$id)->where('port_from_name', $from)->get();
                 $tempPortsTo = VoyagePorts::where('voyage_id',$id)->where('port_from_name', $to)->get();
-                
+
                 // dd(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0]));
-                
+
                 if(!isset($tempPortsFrom[0]) || !isset($tempPortsTo[0])){
                     $voyageports = [];
                 }else{
@@ -254,10 +262,10 @@ class VoyagesController extends Controller
                               ->orWhere('port_from_name', $to);
                     })->get();
                 }
-                
-            
+
+
         }
-        
+
         $voyageport = Voyages::where('id',$id)->first();
 
         return view('voyages.voyages.show',[
@@ -277,7 +285,7 @@ class VoyagesController extends Controller
         $lines = Lines::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
- 
+
         return view('voyages.voyages.edit',[
             'voyage_ports'=>$voyage_ports,
             'voyage'=>$voyage,
@@ -300,12 +308,19 @@ class VoyagesController extends Controller
         //dd($request->input());
         $user = Auth::user();
         $VoyageDublicate  = Voyages::where('id','!=',$voyage->id)->where('company_id',$user->company_id)->where('vessel_id',$request->vessel_id)->where('voyage_no',$request->voyage_no)->where('leg_id',$request->leg_id)->first();
-        
+        $uniqueVoyagePort = [];
+
         foreach($request->voyageport as $voyagePort){
             if($voyagePort['etd'] < $voyagePort['eta']){
                 return back()->with('error','Voyage ETD Must Be Bigger Than or Equal ETA');
             }
-        }  
+
+            if ($voyagePort['port_from_name'] !== null && !in_array($voyagePort['port_from_name'], $uniqueVoyagePort, true)) {
+                array_push($uniqueVoyagePort, $voyagePort['port_from_name']);
+            } elseif ($voyagePort['port_from_name'] !== null) {
+                return redirect()->back()->with('error', 'Voyage Port Must be unique')->withInput($request->input());
+            }
+        }
         if($VoyageDublicate != null){
             if($VoyageDublicate->count() > 0){
                     if($VoyageDublicate->vessel_id != null && $VoyageDublicate->voyage_no != null && $VoyageDublicate->leg_id != null){
@@ -326,7 +341,7 @@ class VoyagesController extends Controller
     {
         $voyage = Voyages::find($id);
         VoyagePorts::where('voyage_id',$id)->delete();
-        $voyage->delete(); 
+        $voyage->delete();
         return redirect()->route('voyages.index')->with('success',trans('voyage.deleted.success'));
     }
 }

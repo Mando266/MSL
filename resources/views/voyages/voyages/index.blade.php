@@ -86,7 +86,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
-                                        <tr>
+                                    @php
+                                            $booking = $item->bookings->count();
+                                    @endphp
+                                    <tr>
                                             <td>{{$loop->iteration}}</td>
                                             <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
@@ -155,6 +158,8 @@
                                                 @endpermission
 
                                             </td>
+                                        @if ($booking > 0)
+                                            @else
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Voyages-Delete')
@@ -166,6 +171,7 @@
                                                         </form>
                                                     </li>
                                                     @endpermission
+                                        @endif
                                                 </ul>
                                             </td>
                                         </tr>

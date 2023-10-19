@@ -225,6 +225,23 @@
             });
         });
     </script>
+<script>
+    (function () {
+        'use strict';
+        var form = document.getElementById('createForm');
+        form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    })();
+
+    // Initialize selectpicker
+    $('.selectpicker').selectpicker();
+</script>
     <script src="{{asset('assets/js/custom.js')}}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

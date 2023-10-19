@@ -17,16 +17,16 @@
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form id="createForm" action="{{route('customers.update',['customer'=>$customer])}}"
+                        <form novalidate id="createForm" action="{{route('customers.update',['customer'=>$customer])}}"
                               method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="customer_kind">Customer Kind<span style="color: red;">*</span></label>
+                                    <label for="customer_kind">Customer Kind <span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="customer_kind" data-live-search="true"
                                             name="customer_kind" data-size="10"
-                                            title="{{trans('forms.select')}}">
+                                            title="{{trans('forms.select')}}" required>
                                         <option value="0" {{$customer->id == old('customer_kind') ||  $customer->customer_kind == "0"? 'selected':''}}>
                                             Primary
                                         </option>
@@ -41,10 +41,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="nameInput">Name <span style="color: red;">*</span></label>
+                                    <label for="nameInput">Name <span class="text-warning"> * (Required.) </span></label>
                                     <input type="text" class="form-control" id="nameInput" name="name"
                                            value="{{old('name',$customer->name)}}"
-                                           placeholder="Name" autocomplete="off" autofocus>
+                                           placeholder="Name" autocomplete="off" required>
                                     @error('name')
                                     <div style="color: red;">
                                         {{$message}}
@@ -68,8 +68,7 @@
                                     <label for="countryInput">{{trans('company.country')}} <span
                                                 style="color: red;">*</span></label>
                                     <select class="selectpicker form-control" id="countryInput" data-live-search="true"
-                                            data-size="10"
-                                            name="country_id" title="{{trans('forms.select')}}">
+                                            data-size="10" name="country_id" title="{{trans('forms.select')}}" required>
                                         @foreach ($countries as $item)
                                             <option value="{{$item->id}}" {{$item->id == old('country_id',$customer->country_id) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach
@@ -81,10 +80,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="cityInput">City <span style="color: red;">*</span></label>
+                                    <label for="cityInput">City <span class="text-warning"> * (Required.) </span></label>
                                     <input type="text" class="form-control" id="cityInput" name="city"
                                            value="{{old('city',$customer->city)}}"
-                                           placeholder="City" autocomplete="off">
+                                           placeholder="City" autocomplete="off" required>
                                     @error('city')
                                     <div style="color: red;">
                                         {{$message}}
@@ -92,10 +91,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="cityInput">Address Line 1 <span style="color: red;">*</span></label>
+                                    <label for="cityInput">Address Line 1 <span class="text-warning"> * (Required.) </span></label>
                                     <input type="text" class="form-control" id="addressInput" name="address"
                                            value="{{old('address',$customer->address)}}"
-                                           placeholder="Address Line 1" autocomplete="off">
+                                           placeholder="Address Line 1" autocomplete="off" required>
                                     @error('city')
                                     <div style="color: red;">
                                         {{$message}}
@@ -116,10 +115,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="phoneInput">Phone <span style="color: red;">*</span></label>
+                                    <label for="phoneInput">Phone <span class="text-warning"> * (Required.) </span></label>
                                     <input type="text" class="form-control" id="phoneInput" name="phone"
                                            value="{{old('phone',$customer->phone)}}"
-                                           placeholder="Phone" autocomplete="off">
+                                           placeholder="Phone" autocomplete="off" required>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="landline">Landline</label>
@@ -131,10 +130,10 @@
 
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="emailInput">Email <span style="color: red;">*</span></label>
+                                    <label for="emailInput">Email <span class="text-warning"> * (Required.) </span></label>
                                     <input type="text" class="form-control" id="emailInput" name="email"
                                            value="{{old('email',$customer->email)}}"
-                                           placeholder="Email" autocomplete="off">
+                                           placeholder="Email" autocomplete="off" required>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="tax_card_noInput">Tax Card</label>
@@ -166,10 +165,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="countryInput">Currency<span style="color: red;">*</span></label>
+                                    <label for="countryInput">Currency<span class="text-warning"> * (Required.) </span></label>
                                     <select class="selectpicker form-control" id="currency" data-live-search="true"
                                             name="currency" data-size="10"
-                                            title="{{trans('forms.select')}}" autofocus>
+                                            title="{{trans('forms.select')}}" required>
                                         @foreach ($currency as $item)
                                             <option value="{{$item->name}}" {{$item->name == old('currency',$customer->currency) ? 'selected':''}}>{{$item->name}}</option>
                                         @endforeach

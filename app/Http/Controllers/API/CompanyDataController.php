@@ -11,6 +11,7 @@ use App\Models\Master\Ports;
 use App\Models\Voyages\Voyages;
 use App\Models\Master\Terminals;
 use Illuminate\Support\Facades\Response;
+use App\Models\Master\Lines;
 
 class CompanyDataController extends Controller
 {
@@ -88,6 +89,20 @@ class CompanyDataController extends Controller
 
         return Response::json([
             'invoices' => $invoices,
+        ], 200);
+    }
+
+    public function oprator($id, $company_id)
+    {
+        $lines = Lines::where('company_id', $company_id)
+            ->whereHas('types.type', function ($query) use ($id) {
+                $query->where('type_id', $id);
+            })
+            ->with('types.type')
+            ->get();
+
+        return response()->json([
+            'lines' => $lines,
         ], 200);
     }
 }

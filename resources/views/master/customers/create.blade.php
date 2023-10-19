@@ -16,16 +16,16 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('customers.store')}}" method="POST" enctype="multipart/form-data">
-                        @csrf 
+                <form novalidate id="createForm" action="{{route('customers.store')}}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         @if(session('alert'))
                             <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ session('alert') }}</p>
                         @endif
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="customer_kind">Customer Kind<span style="color: red;">*</span></label>
+                                <label for="customer_kind">Customer Kind <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_kind" data-live-search="true" name="customer_kind" data-size="10"
-                                    title="{{trans('forms.select')}}">
+                                    title="{{trans('forms.select')}}" required>
                                         <option value="0">Primary</option>
                                         <option value="1">Validated</option>
                                 </select>
@@ -37,9 +37,9 @@
                             </div>
 
                             <div class="form-group col-md-4">
-                                <label for="nameInput">Name <span style="color: red;">*</span></label>
+                                <label for="nameInput">Name <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="nameInput" name="name" value="{{old('name')}}"
-                                 placeholder="Name" autocomplete="off" autofocus>
+                                 placeholder="Name" autocomplete="off" required>
                                 @error('name')
                                 <div style="color: red;">
                                     {{$message}}
@@ -57,12 +57,12 @@
                                 @enderror
                             </div>
                         </div>
-  
+
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                                <label for="countryInput">{{trans('company.country')}} <span style="color: red;">*</span></label>
+                                <label for="countryInput">{{trans('company.country')}} <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="countryInput" data-live-search="true" name="country_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
+                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($countries as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('country_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -74,9 +74,9 @@
                                 @enderror
                             </div>
                         <div class="form-group col-md-4">
-                            <label for="cityInput">City <span style="color: red;">*</span></label>
+                            <label for="cityInput">City <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="cityInput" name="city" value="{{old('city')}}"
-                                placeholder="City" autocomplete="off">
+                                placeholder="City" autocomplete="off" required>
                             @error('city')
                             <div style="color: red;">
                                 {{$message}}
@@ -84,9 +84,9 @@
                             @enderror
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="cityInput">Address Line 1 <span style="color: red;">*</span></label>
+                            <label for="cityInput">Address Line 1 <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="addressInput" name="address" value="{{old('address')}}"
-                                placeholder="Address Line 1" autocomplete="off">
+                                placeholder="Address Line 1" autocomplete="off" required>
                             @error('address')
                             <div style="color: red;">
                                 {{$message}}
@@ -106,9 +106,9 @@
                             @enderror
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="phoneInput">Phone <span style="color: red;">*</span></label>
+                            <label for="phoneInput">Phone <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="phoneInput" name="phone" value="{{old('phone')}}"
-                                placeholder="Phone" autocomplete="off">
+                                placeholder="Phone" autocomplete="off" re>
                             @error('phone')
                             <div style="color: red;">
                                 {{$message}}
@@ -126,12 +126,12 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                            <label for="emailInput">Email <span style="color: red;">*</span></label>
+                            <label for="emailInput">Email <span class="text-warning"> * (Required.) </span></label>
                             <input type="text" class="form-control" id="emailInput" name="email" value="{{old('email')}}"
-                                placeholder="Email" autocomplete="off">
+                                placeholder="Email" autocomplete="off" required>
                             @error('email')
                             <div style="color: red;">
                                 {{$message}}
@@ -255,7 +255,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>  
+                                <td>
                                     <select class="selectpicker form-control" id="customer_roles" data-live-search="true" name="customerRole[0][role_id]" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                             @foreach ($customer_roles as $item)
@@ -273,7 +273,7 @@
                             <a href="{{route('customers.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                         </div>
                     </div>
-                
+
                     </form>
                 </div>
             </div>

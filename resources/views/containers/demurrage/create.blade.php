@@ -18,7 +18,7 @@
                         </nav>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form id="createForm" action="{{route('demurrage.store')}}" method="POST">
+                        <form novalidate id="createForm" action="{{route('demurrage.store')}}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-4">
