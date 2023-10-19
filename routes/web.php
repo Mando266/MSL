@@ -210,8 +210,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('invoice', 'InvoiceController');
         Route::get('selectBL', [InvoiceController::class, 'selectBL'])->name('invoice.selectBL');
         Route::get('selectBLinvoice', [InvoiceController::class, 'selectBLinvoice'])->name('invoice.selectBLinvoice');
-        Route::post('create/invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice');
-        Route::post('create/debit', [InvoiceController::class, 'create'])->name('invoice.create_debit');
+        // Route::post('create/invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice'); gogo please cheak it
+        // Route::post('create/debit', [InvoiceController::class, 'create'])->name('invoice.create_debit');
         Route::post('create_invoice', [InvoiceController::class, 'storeInvoice'])->name('invoice.store_invoice');
         Route::resource('receipt', 'ReceiptController');
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');

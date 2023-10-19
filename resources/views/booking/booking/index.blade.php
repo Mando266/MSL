@@ -291,7 +291,7 @@
                                                 @elseif($item->booking_confirm == 3)
                                                     <span class="badge badge-warning"> Draft </span>
                                                 @elseif($item->booking_confirm == 2)
-                                                <span class="badge badge-danger"> Cancelled </span>
+                                                    <span class="badge badge-danger"> Cancelled </span>
                                                 @endif
                                             </td>
                                             <td class="text-center">

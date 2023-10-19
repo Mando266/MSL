@@ -166,7 +166,7 @@
 
                                 @permission('Suppliers-List')
                                     <li>
-                                        <a href="{{route('seller.index')}}">Lessor or Seller</a>
+                                        <a href="{{route('seller.index')}}">Container Ownerships</a>
                                     </li>
                                 @endpermission
 

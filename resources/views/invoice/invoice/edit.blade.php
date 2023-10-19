@@ -80,10 +80,13 @@
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id"  data-size="10"
                                     title="{{trans('forms.select')}}" disabled>
                                     @foreach ($voyages as $item)
-                                    @if(optional($bldraft)->voyage_id != null)
-                                            <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
-                                        @endif
+                                    @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                    @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->booking->voyage_id_second) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                    @endif
                                     @endforeach
+
                                 </select>
                             </div>
 
@@ -144,12 +147,20 @@
                                     <div style="padding: 30px;">
                                         <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" {{ "eta" == old('rate',$invoice->rate) ? 'checked':''}}>
                                         <label class="form-check-label" for="exchange_rate">
-                                        ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                            ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                            @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                            @endif
                                         </label>
                                         <br>
                                         <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd"  {{ "etd" == old('rate',$invoice->rate) ? 'checked':''}}>
                                         <label class="form-check-label" for="exchange_rate">
-                                          ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                            ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                            @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
+                                            @endif
                                         </label>
                                     </div>
                                 </div>

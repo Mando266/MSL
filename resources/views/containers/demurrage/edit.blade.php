@@ -193,7 +193,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach($demurrage->periods as $key => $period)
+                                                            @foreach($demurrage->slabs as $key => $period)
                                                             <tr>
                                                             <input type="hidden" value ="{{ $period->id }}" name="period[{{ $key }}][id]" >
                                                                 <td>

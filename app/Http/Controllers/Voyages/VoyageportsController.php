@@ -25,7 +25,9 @@ class VoyageportsController extends Controller
 
     public function store(Request $request)
     {
+
         foreach($request->input('voyageport',[]) as $voyageport){
+            
             VoyagePorts::create([
                 'voyage_id'=> $request->input('voyage_id'),
                 'port_from_name'=>$voyageport['port_from_name'],
@@ -35,7 +37,7 @@ class VoyageportsController extends Controller
                 'etd'=>$voyageport['etd'],
             ]);
         }
-        
+
         return redirect()->route('voyages.index')->with('success',trans('voyage.created'));
     }
 

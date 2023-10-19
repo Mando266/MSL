@@ -147,7 +147,7 @@ class XmlController extends Controller
         $this->addItemToElement($xmlDoc, $generalInfo, 22, 'MNFSTWarehouse');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->vessel->call_sign, 'MNFSTCarrierCallSign');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->line->name, 'MNFSTCarrierName');
-        $this->addItemToElement($xmlDoc, $generalInfo, $voyage->line->country->name, 'MNFSTCarrierCountry');
+        $this->addItemToElement($xmlDoc, $generalInfo, optional(optional($voyage->line)->country)->name, 'MNFSTCarrierCountry');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->bldrafts->count(), 'MNFSTBillsOfLadingCount');
         $manifestData->appendChild($generalInfo);
         $cargoData = $xmlDoc->createElement('CargoData');
@@ -213,9 +213,9 @@ class XmlController extends Controller
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
-                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight + (float)optional($item->container)->tar_weight, 'ItemExpGrossWeight');
+                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight, 'ItemExpGrossWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
-                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
+                $this->addItemToElement($xmlDoc, $Item, $item->net_weight , 'ItemContentPackagesWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
                 $BillOfLading->appendChild($Item);

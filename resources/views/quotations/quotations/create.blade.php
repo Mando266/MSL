@@ -16,7 +16,21 @@
                 <div class="widget-content widget-content-area">
                     <form id="createForm" action="{{route('quotations.store')}}" method="POST">
                             @csrf
-                        @if($isSuperAdmin)
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label>Transportation Mode</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}">
+                                    <option value="vessel">Vessel</option>
+                                    <option value="trucker">Trucker</option>
+                                    <option value="train">Train</option>
+                                </select>
+                                @error('transportation_mode')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="countryInput">Export Country <span class="text-warning"> * (Required.) </span></label>
@@ -75,7 +89,6 @@
                                 @enderror
                             </div>
                         </div>
-                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
@@ -92,7 +105,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="vessel_name">Vessel Operator <span class="text-warning"> * (Required.) </span></label>
+                                <label for="vessel_name">Operator <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="vessel_name" data-live-search="true" name="vessel_name" data-size="10"
                                 title="{{trans('forms.select')}}" required>
                                     @foreach ($line as $item)
@@ -107,7 +120,7 @@
                             </div>
                         </div>
 
-                        <div class="form-row"> 
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Agreement Party <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
@@ -135,7 +148,7 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div> 
+                            </div>
                             @if($isSuperAdmin)
                             <div class="form-group col-md-2">
                                 <label for="rate">Show Import Triff</label><br>
@@ -167,11 +180,11 @@
                             <div class="form-group col-md-3" style="padding-top: 30px;">
                                 <div class="form-check">
                                 <input type="checkbox" id="soc" name="soc" value="1" ><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>
-                                
+
                                 <input type="checkbox" id="imo" name="imo" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> IMO </a>
-                                
+
                                 <input type="checkbox" id="oog" name="oog" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> OOG </a>
-                                
+
                                 <input type="checkbox" id="rf" name="rf" value="1"><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> RF </a>
                                 </div>
                             </div>
@@ -389,7 +402,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="status">Payment kind<span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required>
                                     <option value="Prepaid">Prepaid </option>
                                     <option value="Collect">Collect</option>
                                 </select>
@@ -402,21 +415,8 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label>Transportation Mode</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}"> 
-                                    <option value="vessel">Vessel</option>
-                                    <option value="trucker">Trucker</option>
-                                    <option value="train">Train</option>
-                                </select>
-                                @error('transportation_mode')
-                                <div style="color:red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-3">
                                 <label for="status">Quotation Type</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required> 
+                                <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required>
                                     <option value="full">Full</option>
                                     <option value="empty">Empty</option>
                                 </select>
@@ -466,7 +466,7 @@
                                         </th>
                                     </tr>
                                 </thead>
-                    
+
                             </table>
                             <div class="row">
                                 <div class="col-md-12 text-center">
@@ -490,7 +490,7 @@
     $("#quotationTriffLoad").on("click", ".remove", function () {
     $(this).closest("tr").remove();
     });
-    
+
     // var importCount = 1;
 
     $("#add").click(function(){
@@ -570,9 +570,9 @@
                         let agents = data.agents || '';
                         let list2 = [`<option value=''>Select...</option>`];
                         for(let i = 0 ; i < agents.length; i++){
-                            
+
                             list2.push(`<option value='${agents[i].id}'>${agents[i].name} </option>`);
-                            
+
                         }
                 let agent = $('#agentDis');
                 agent.html(list2.join(''));
@@ -599,7 +599,7 @@
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
                             var table = document.getElementById("quotationTriffLoad");
-                            
+
                             // Create an empty <tr> element and add it to the 1st position of the table:
                             var row = table.insertRow();
                             row.setAttribute("id", "quotationTriffLoadRow");
@@ -623,7 +623,7 @@
                                     input.classList.add("form-control");
                                     cell.appendChild(input);
                                 }
-                                
+
                             }
                             var buttonCell = row.insertCell()
                             var myButton = document.createElement("BUTTON")
@@ -636,7 +636,7 @@
                             importCount++;
                             // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
                         }
-                        
+
                 let agentTriffs = $('#load');
                 agentTriffs.html(list2.join(''));
                 });//api fn
@@ -661,7 +661,7 @@
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
                             var table = document.getElementById("quotationTriffDischarge");
-                            
+
                             // Create an empty <tr> element and add it to the 1st position of the table:
                             var row = table.insertRow();
                             row.setAttribute("id", "quotationTriffDischargeRow");
@@ -697,7 +697,7 @@
                             exportCount++;
                             // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
                         }
-                        
+
                 let agentTriffs = $('#Discharch');
                 agentTriffs.html(list2.join(''));
                 });
@@ -725,7 +725,7 @@
                         $('#quotationTriffLoadRow').remove();
                     }
                     let value = e.target.value;
-                    
+
                     if(superAdmin){
                         if(agentDis.val() != ''){
                         let response =    $.get(`/api/agent/dischargePrice/${agentDis.val()}/${equipment.val()}/${company_id}`).then(function(data){
@@ -733,7 +733,7 @@
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
                             var table = document.getElementById("quotationTriffDischarge");
-                            
+
                             // Create an empty <tr> element and add it to the 1st position of the table:
                             var row = table.insertRow();
                             row.setAttribute("id", "quotationTriffDischargeRow");
@@ -769,7 +769,7 @@
                             exportCount++;
                             // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
                         }
-                                
+
                         let agentTriffs = $('#Discharch');
                         agentTriffs.html(list2.join(''));
                         });
@@ -781,7 +781,7 @@
                         let list2 = [];
                         for(let i = 0 ; i < agentTriff.length; i++){
                             var table = document.getElementById("quotationTriffDischarge");
-                            
+
                             // Create an empty <tr> element and add it to the 1st position of the table:
                             var row = table.insertRow();
                             row.setAttribute("id", "quotationTriffDischargeRow");
@@ -817,20 +817,20 @@
                             exportCount++;
                             // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
                         }
-                                
+
                         let agentTriffs = $('#Discharch');
                         agentTriffs.html(list2.join(''));
                         });
                         }
                     }
-                    
-                    
-                    
+
+
+
                     if(agentLoad.val() != ''){
                         let response =    $.get(`/api/agent/loadPrice/${agentLoad.val()}/${equipment.val()}/${company_id}`).then(function(data){
                         let agentTriff = data.agentTriff || '';
                         let list2 = [];
-                        
+
                         for(let i = 0 ; i < agentTriff.length; i++){
                             var table = document.getElementById("quotationTriffLoad");
                             // Create an empty <tr> element and add it to the 1st position of the table:
@@ -838,7 +838,7 @@
                             row.setAttribute("id", "quotationTriffLoadRow");
                             for(x in agentTriff[i])
                             {
-                                
+
                                 if(x != "id" && x != "equipment_type_id" && x != "quotation_triff_id" && x != "id" && x != "add_to_quotation" && x != "created_at" && x != "updated_at"  && x != "is_import_or_export"  && x != "cost"  && x != "agency_revene"  && x != "liner" && x != "standard_or_customise"){
                                     var cell = row.insertCell();
                                     var input = document.createElement("INPUT");
@@ -846,7 +846,7 @@
                                     input.setAttribute("name", "quotationLoad["+importCount+"]["+x+"]");
                                     input.setAttribute('readonly', true);
                                     if(x == 'equipments_type'){
-                                        
+
                                         if(agentTriff[i]['equipment_type_id'] == 100){
                                             input.value = "ALL"
                                         }else{
@@ -858,7 +858,7 @@
                                     input.classList.add("form-control");
                                     cell.appendChild(input);
                                 }
-                                
+
                             }
                             var buttonCell = row.insertCell()
                             var myButton = document.createElement("BUTTON")
@@ -871,12 +871,12 @@
                             importCount++;
                             // list2.push(`<option value='${agentTriff[i].id}'>${agentTriff[i].charge_type} - ${agentTriff[i].unit} - ${agentTriff[i].selling_price} - ${agentTriff[i].cost} - ${agentTriff[i].currency}</option>`);
                         }
-                        
+
                         let agentTriffs = $('#load');
                         agentTriffs.html(list2.join(''));
                         });
                     }
-                    
+
             });
         });
 </script>

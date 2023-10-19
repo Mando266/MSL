@@ -16,7 +16,7 @@
                     </div>
                     <div class="widget-content widget-content-area">
                         <h3>Booking Reference No: {{ $booking->ref_no }}</h3>
-                        <form action="{{ route('temperature-discrepancy.send') }}" method="POST"
+                        <form novalidate id="createForm"  action="{{ route('temperature-discrepancy.send') }}" method="POST"
                               id="temperatureForm">
                             @csrf
                             <input value="{{ $booking->ref_no }}" name="booking_no" hidden>

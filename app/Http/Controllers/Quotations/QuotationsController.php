@@ -145,7 +145,7 @@ class QuotationsController extends Controller
                 $shipment_type = 'Import';
             }
             if($request->input('transportation_mode') == 'trucker'){
-                $shipment_type = 'Trucking';
+                $shipment_type = 'trucking';
             }
         if(isset($request->agent_id)){
             $oldQuotations =

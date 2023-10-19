@@ -126,20 +126,20 @@ class DemurageController extends Controller
      */
     public function edit(Demurrage $demurrage)
     {
-        $this->authorize(__FUNCTION__, Demurrage::class);
-        $user = Auth::user();
-        $demurrage = $demurrage->load('periods');
+        $this->authorize(__FUNCTION__,Demurrage::class);
+        $slabs = DemuragePeriodsSlabs::where('demurage_id', $demurrage)->with('periods')->get();
+        $tariffTypes = TariffType::all();
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::where('company_id', $user->company_id)->orderBy('id')->get();
-        $triffs = Triff::all();
+        $ports = Ports::orderBy('id')->where('company_id', Auth::user()->company_id)->get();
+        $triffs = Triff::get();
         $currency = Currency::all();
-        $terminals = Terminals::where('company_id', $user->company_id)->get();
+        $terminals = Terminals::where('company_id', Auth::user()->company_id)->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
-        return view('containers.demurrage.edit', [
-            'terminals' => $terminals,
+        return view('containers.demurrage.edit',[
             'demurrage' => $demurrage,
+            'terminals' => $terminals,
             'countries' => $countries,
             'bounds' => $bounds,
             'containersTypes' => $containersTypes,
@@ -147,12 +147,14 @@ class DemurageController extends Controller
             'triffs' => $triffs,
             'currency' => $currency,
             'containerstatus' => $containerstatus,
+            'tariffTypes' => $tariffTypes,
+            'slabs' => $slabs
         ]);
     }
 
     public function update(Request $request, Demurrage $demurrage)
     {
-        $this->authorize(__FUNCTION__, Demurrage::class);
+        $this->authorize(__FUNCTION__,Demurrage::class);
         $demurrage = $demurrage->load('periods');
         $input = [
             'country_id' => $request->country_id,
@@ -169,9 +171,10 @@ class DemurageController extends Controller
         ];
         $demurrage->update($input);
         $demurrage->createOrUpdatePeriod($request->period);
-        Period::destroy(explode(',', $request->removed));
-        return redirect()->route('demurrage.index')->with('success', trans('Demurrage.updated.success'));
+        Period::destroy(explode(',',$request->removed));
+        return redirect()->route('demurrage.index')->with('success',trans('Demurrage.updated.success'));
     }
+
 
     /**
      * Remove the specified resource from storage.
