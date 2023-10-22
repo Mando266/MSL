@@ -75,16 +75,6 @@
                             <td class="col-md-9 tableStyle text-right underline" ></td>
                             <td class="col-md-3 tableStyle text-right underline" ></td>
                         </tr>
-                        <!-- <tr>
-                            <td class="col-md-9 tableStyle text-right underline"></td>
-                            @if(optional($booking->principal)->code == 'PLS')
-                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} SOC</td>
-                            @elseif(optional($booking->principal)->code == 'MAS')
-                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
-                            @else
-                            <td class="col-md-3 tableStyle text-right underline" >{{optional($booking->principal)->code}} COC</td>
-                            @endif
-                        </tr> -->
 
                     @if(optional($booking->quotation)->shipment_type == "Import")
                         <tr>
@@ -112,18 +102,10 @@
                         @if(optional($booking->quotation)->shipment_type == "Import")
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->consignee)->name}} <br>
-                            <!-- &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->consignee)->address}} &nbsp {{optional($booking->consignee->country)->name}} &nbsp {{optional($booking->consignee)->landline}} -->
                         </td>
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         @else
-                        <!-- <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->name}} <br>
-                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->address}} &nbsp {{optional($booking->customer->country)->name}}
-                            &nbsp {{optional($booking->customer)->landline}}
-                        </td>
-                            <td class="col-md-3 tableStyle text-right underline" >العميل</td>
-                        </tr> -->
                         @endif
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->ref_no }}</td>
@@ -133,23 +115,26 @@
                             <td class="col-md-3 tableStyle text-right underline" >إذن شحن</td>
                         @endif
                         </tr>
+                        @if(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port == null)
                         <tr>
-                            @if(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port == null)
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            @elseif(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port != null)
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->secondvoyage->vessel->name }} / {{ $booking->secondvoyage->voyage_no}}</td>
                             @else
-                            <td class="col-md-9 tableStyle">&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ optional(optional($booking->secondvoyage)->vessel)->name }} / {{ $booking->secondvoyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
                             @endif
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
-
                         @if(optional($booking->quotation)->shipment_type != "Import")
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($firstVoyagePort)->eta}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >متوقع الوصول</td>
                         </tr>
-                        @elseif(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port != null)
-                        <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($secondVoyagePortImport)->eta}}</td>
-                        <td class="col-md-3 tableStyle text-right underline" >تاريخ الرحلة</td>
+                        @elseif(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port == null)
+                        <tr>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($secondVoyagePortImport)->eta}}</td>
+                            <td class="col-md-3 tableStyle text-right underline" >تاريخ الرحلة</td>
+                        </tr>
                         @else
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp {{optional($firstVoyagePortImport)->eta}}</td>
@@ -160,7 +145,7 @@
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{$containerCount}} X {{$containerType}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
-                        @if(optional($booking->quotation)->shipment_type != "Import")
+                        @if(optional($booking->quotation)->shipment_type != "Import" || optional($booking)->shipment_type != "Import")
                         <tr>
                         <td class="col-md-9 tableStyle"><textarea style="margin-bottom: -40px; border: none; resize: none; background-color: white;"></textarea></td>
                         <td class="col-md-3 tableStyle text-right underline">

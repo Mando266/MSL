@@ -700,10 +700,13 @@ class MovementController extends Controller
             $movementId = true;
         }
         if (request('booking_no') != null) {
-            $refNo = request()->booking_no;
-            $movements = $movements->whereHas('booking', function ($q) use ($refNo) {
-                $q->where('ref_no', 'like', "%{$refNo}%");
-            });
+            // $refNo = request()->booking_no;
+            // $movements = $movements->whereHas('booking', function ($q) use ($refNo) {
+            //     $q->where('ref_no', 'like', "%{$refNo}%");
+            // });
+            $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id', $id)->with(
+                'movementcode'
+            )->where('booking_no', request('booking_no'))->orderBy('movement_date', 'desc')->orderBy('id', 'desc');
         }
         if (request('movement_id') == null && request('port_location_id') == null) {
             // prepare Data for export

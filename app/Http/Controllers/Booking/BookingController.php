@@ -133,7 +133,7 @@ class BookingController extends Controller
                 $quotation->discharge_port_id
             )->get();
 //            dd($terminals,$quotation->discharge_port_id,Auth::user()->company_id);
-        }
+    }
 
         $agents = Agents::where('company_id', Auth::user()->company_id)->where('is_active', 1)->get();
         $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -659,15 +659,16 @@ class BookingController extends Controller
             )->where('status', 2)->get();
         }else{
             $containers = Containers::where('company_id', Auth::user()->company_id)->where(
-            'container_type_id',
-            $quotation->equipment_type_id
-        )->get();
+                'container_type_id',
+                $quotation->equipment_type_id
+            )->get();
         }
 
-        $oldcontainers = Containers::where('company_id', Auth::user()->company_id)->where(
+        $oldContainers = Containers::where('company_id', Auth::user()->company_id)->where(
             'container_type_id',
-            $quotation->equipment_type_id
-        )->get();
+                $quotation->equipment_type_id
+            )->get();
+
         // $activityLocations = Ports::where('country_id',$quotation->countrydis)->where('company_id',Auth::user()->company_id)->get();
         if($quotation->shipment_type == 'Export'){
             $activityLocations = Ports::where('country_id', $quotation->countrydis)->where(
@@ -696,7 +697,7 @@ class BookingController extends Controller
             'ffw' => $ffw,
             'consignee' => $consignee,
             'containers' => $containers,
-            'oldcontainers' => $oldcontainers,
+            'oldContainers' => $oldContainers,
             'agents' => $agents,
             'terminals' => $terminals,
             'equipmentTypes' => $equipmentTypes,

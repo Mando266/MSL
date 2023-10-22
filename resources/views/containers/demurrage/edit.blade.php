@@ -193,25 +193,31 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach($demurrage->slabs as $key => $period)
-                                                            <tr>
-                                                            <input type="hidden" value ="{{ $period->id }}" name="period[{{ $key }}][id]" >
-                                                                <td>
-                                                                    <input type="text" id="period" name="period[{{$key}}][period]" class="form-control" autocomplete="off" value="{{old('period[$key][period]',$period->period)}}">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="rate" name="period[{{$key}}][rate]" class="form-control" autocomplete="off" value="{{old('period[$key][rate]',$period->rate)}}">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="dayes" name="period[{{$key}}][number_off_dayes]" class="form-control" autocomplete="off" value="{{old('period[$key][number_off_dayes]',$period->number_off_dayes)}}">
-                                                                </td>
-                                                                <td style="width:85px;">
-                                                                    <button type="button" class="btn btn-danger remove" onclick="removeItem({{ $period->id }})"><i class="fa fa-trash"></i></button>
-                                                                </td>
-                                                            </tr>
+                                                            @foreach($slabs as $slab)
+                                                                @foreach ($slab->periods as $key => $period)
+                                                                {{-- @dd($period); --}}
+                                                                    <tr>
+                                                                        <input type="hidden" value ="{{ $period->id }}" name="period[{{ $key }}][id]" >
+                                                                        <td>
+                                                                            <input type="text" id="period" name="period[{{$key}}][period]" class="form-control period" autocomplete="off" value="{{old('slab[$key][period]',$period->period)}}">
+                                                                            <input name="period[{{$key}}][container_type]"
+                                                                            class="container_type" hidden>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" id="rate" name="period[{{$key}}][rate]" class="form-control rate" autocomplete="off" value="{{old('slab[$key][rate]',$period->rate)}}">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" id="days" name="period[{{$key}}][number_off_dayes]" class="form-control days" autocomplete="off" value="{{old('slab[$key][number_off_dayes]',$period->number_off_dayes)}}">
+                                                                        </td>
+                                                                        <td style="width:85px;">
+                                                                            <button type="button" class="btn btn-danger remove" onclick="removeItem({{ $period->id }})"><i class="fa fa-trash"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
                                                             @endforeach
                                                         </tbody>
                                                     </table>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -232,12 +238,23 @@
                                                         <tr>
                                                             <th>Equipment Type</th>
                                                             <th>Status</th>
-                                                            <th>Currency Code</th>
-                                                            <th>Container Status</th>
-                                                            <th>Actions</th>
+                                                            <th></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @foreach($slabs as $key => $slab)
+                                                            <tr>
+                                                            <input type="hidden" value ="{{ $slab->id }}" name="slab[{{ $key }}][id]" >
+                                                                <td>
+                                                                    <input type="text" id="slab" name="slab[{{$key}}][container_type_id]" class="form-control" autocomplete="off" value="{{old('slab[$key][container_type_id]',$slab->container_type_id)}}">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" id="rate" name="slab[{{$key}}][status]" class="form-control" autocomplete="off" value="{{old('slab[$key][rate]',$slab->status)}}">
+                                                                </td>
+
+
+                                                            </tr>
+                                                            @endforeach
                                                         </tbody>
                                                     </table>
                                                 </div>

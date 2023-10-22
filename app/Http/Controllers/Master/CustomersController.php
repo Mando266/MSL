@@ -20,7 +20,7 @@ class CustomersController extends Controller
     {
         $this->authorize(__FUNCTION__,Customers::class);
             $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(30);
-            $exportCustomers = Customers::select('id','name','contact_person','phone','tax_card_no','landline','country_id','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
+            $exportCustomers = Customers::select('id','name','contact_person','phone','tax_card_no','landline','country_id','city','email','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
             $customer = Customers::where('company_id',Auth::user()->company_id)->get();
             $countries = Country::orderBy('name')->get();
             session()->flash('customers',$exportCustomers);

@@ -670,7 +670,11 @@
                                     @enderror
                                 </td>
 
-                                <td class="ports">
+                                @if($quotation->shipment_type == 'Import')
+                                    <td>
+                                @else
+                                    <td class="ports">
+                                @endif
                                     <select class="selectpicker form-control" id="activity_location_id" data-live-search="true" name="containerDetails[0][activity_location_id]" data-size="10"
                                     title="{{trans('forms.select')}}">
                                         @foreach ($activityLocations as $activityLocation)

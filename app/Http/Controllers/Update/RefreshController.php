@@ -17,8 +17,8 @@ use App\Models\Quotations\Quotation;
 
 class RefreshController extends Controller
 {
-    
-    public function updateQuotation() 
+
+    public function updateQuotation()
     {
         $quotations = Quotation::all();
         foreach($quotations as $quotation){
@@ -36,34 +36,34 @@ class RefreshController extends Controller
         }
         dd("Done");
     }
-    public function updateContainers() 
+    public function updateContainers()
     {
         $movements = Movements::orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
-                        
+
             $new = $movements;
             $new = $new->groupBy('movement_date');
-            
+
             foreach($new as $key => $move){
                 $move = $move->sortByDesc('movementcode.sequence');
                 $new[$key] = $move;
             }
             $new = $new->collapse();
-            
+
             $movements = $new;
             $filteredData = $movements->unique('container_id');
             foreach($filteredData as $key => $move){
-                // Get All movements and sort it and get the last movement before this movement 
+                // Get All movements and sort it and get the last movement before this movement
                 $tempMovements = Movements::where('container_id',$move->container_id)->orderBy('movement_date','desc')->with('movementcode.containerstock')->get();
-                            
+
                 $new = $tempMovements;
                 $new = $new->groupBy('movement_date');
-                
+
                 foreach($new as $k => $move){
                     $move = $move->sortByDesc('movementcode.sequence');
                     $new[$k] = $move;
                 }
                 $new = $new->collapse();
-                
+
                 $tempMovements = $new;
                 $lastMove = $tempMovements->first();
                 $container = Containers::where('id',$lastMove->container_id)->first();
@@ -71,7 +71,7 @@ class RefreshController extends Controller
                 if($activity_location != null){
                     $container->update(['activity_location_id'=>$activity_location]);
                 }
-                // End Get All movements and sort it and get the last movement before this movement 
+                // End Get All movements and sort it and get the last movement before this movement
                 if($lastMove->container_status == 1){
                     $container->update(['status'=>$lastMove->container_status]);
                 }elseif($lastMove->container_status == 2 && $lastMove->movementcode->containerstock->code == "NOT AVAILABLE"){
@@ -79,8 +79,7 @@ class RefreshController extends Controller
                 }else{
                     $container->update(['status'=>$lastMove->container_status]);
                 }
-                
-                // dd($lastMove);
+
             }
         // $movements = Movements::where('container_status',2)->orderbyDesc('created_at')->groupBy('container_id')->get()->pluck('container_id');
         // $movements = Movements::where('container_status',1)->orderbyDesc('created_at')->first();
@@ -108,7 +107,7 @@ class RefreshController extends Controller
             $bldraftService->syncBldraftWithBooking($bldraft,$booking,$qty);
             return redirect()->route('bldraft.index')->with('success',"BOOKING UPDATED SUCCESSFULLY");
         }
-        
+
         // die();
         return redirect()->route('bldraft.index')->with('success',"BOOKINGS UPDATED SUCCESSFULLY");
     }

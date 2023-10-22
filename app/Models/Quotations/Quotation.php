@@ -12,6 +12,7 @@ use App\User as AppUser;
 use App\User;
 use App\Models\Master\Agents;
 use App\Models\Master\Lines;
+use App\Models\Booking\Booking;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +21,7 @@ class Quotation extends Model implements PermissionSeederContract
     use HasFilter;
     protected $table = 'quotations';
     protected $guarded = [];
-  
+
 
     use PermissionSeederTrait;
     public function getPermissionActions(){
@@ -31,6 +32,8 @@ class Quotation extends Model implements PermissionSeederContract
             'Delete'
         ]);
     }
+
+
     public function equipmentsType(){
         return $this->belongsTo(ContainersTypes::class,'equipment_type_id','id');
     }
@@ -81,6 +84,10 @@ class Quotation extends Model implements PermissionSeederContract
     {
         return $this->hasMany(QuotationLoad::class ,'quotation_id','id');
     }
+    public function booking()
+    {
+        return $this->hasMany(Booking::class ,'quotation_id','id');
+    }
     public function createOrUpdateDesc($inputs)
     {
         if($inputs != null){
@@ -110,7 +117,7 @@ class Quotation extends Model implements PermissionSeederContract
                     'equipment_type_id'=>$input['equipments_type'],
                 ]);
             }
-        }   
+        }
         }
     }
     public function createOrUpdateLoad($inputs)
@@ -141,7 +148,7 @@ class Quotation extends Model implements PermissionSeederContract
                     'equipment_type_id'=>$input['equipments_type'],
                 ]);
             }
-        }   
+        }
     }
     }
 

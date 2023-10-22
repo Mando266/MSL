@@ -55,16 +55,19 @@ class Demurrage extends Model implements PermissionSeederContract
     {
         return $this->hasMany(DemuragePeriodsSlabs::class,'demurage_id' ,'id');
     }
-    public function createOrUpdatePeriod($inputs)
+    public function periods()
     {
-        foreach($inputs as $input){
-            $input['demurrage_id'] = $this->id;
-            if( isset($input['id']) ){
-                Period::find($input['id'])
-                ->update($input);
-            }
-            else{
-                Period::create($input);
+        return $this->hasMany(Period::class, 'slab_id', 'id');
+    }
+
+    public function createOrUpdateSlabs($slabsData)
+    {
+        $slabs = DemuragePeriodsSlabs::where('demurage_id', $this->id)->with('periods')->get();
+        if (is_array($slabs) || is_object($slabs)){
+            foreach ($slabs as $slab) {
+
+                foreach($slab->periods as $period){
+                }
             }
         }
     }

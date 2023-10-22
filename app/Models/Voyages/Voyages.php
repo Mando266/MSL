@@ -52,7 +52,10 @@ class Voyages extends Model implements PermissionSeederContract
     {
         return $this->hasMany(Booking::class ,'voyage_id','id');
     }
-
+    public function bookingSecondVoyage()
+    {
+        return $this->hasMany(Booking::class ,'voyage_id_second','id');
+    }
     public function createOrUpdatevoyageport($inputs)
     {
 
