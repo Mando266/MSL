@@ -24,7 +24,7 @@
                     @endpermission
                     @permission('Booking-List')
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
-                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a>
+                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Load List / Discharge List</a>
                     @endpermission
                             </div>
                         </div>
@@ -231,7 +231,7 @@
                                         <th>Booking Creation</th>
                                         <th>Booking Status</th>
                                         <th class='text-center' style='width:100px;'>add bl</th>
-                                        <th>Shipping Order</th>
+                                        <th>S Order / D Order</th>
                                         <th>Gate In</th>
                                         <th>Gate Out</th>
                                         <th class='text-center' style='width:100px;'></th>
@@ -265,9 +265,16 @@
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->consignee)->name}}</td>
+                                        @if (optional($item->quotation)->shipment_type == "Import" && optional($item)->transhipment_port != null)
+                                            <td>{{optional(optional($item->secondvoyage)->vessel)->name}}</td>
+                                            <td>{{optional($item->secondvoyage)->voyage_no}}</td>
+                                            <td>{{optional(optional($item->secondvoyage)->leg)->name}}</td>
+                                            @else
                                             <td>{{optional(optional($item->voyage)->vessel)->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{optional(optional($item->voyage)->leg)->name}}</td>
+                                        @endif
+
                                             <td>{{optional($item->principal)->name}}</td>
                                             <td>{{optional($item->operator)->name}}</td>
                                             <td>{{optional($item->loadPort)->code}}</td>

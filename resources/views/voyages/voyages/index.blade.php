@@ -132,7 +132,7 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                {{$item->bookings->count()}}
+                                                {{$item->bookings->where('booking_confirm','!=','2')->count() + $item->bookingSecondVoyage->where('booking_confirm','!=','2')->count()}}
                                             </td>
                                             <td>
                                                 {{ $item->bldrafts->count() == 0 ? optional($item->transhipmentBldrafts)->count() : optional($item->bldrafts)->count() }}
