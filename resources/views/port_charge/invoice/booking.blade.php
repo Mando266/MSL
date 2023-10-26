@@ -36,9 +36,6 @@
                             @endforeach
                         </ul>
                         <ul>
-                            <li><strong>Total USD:</strong> {{ $rows->sums('total_usd') }}</li>
-                            <li><strong>Invoice EGP:</strong> {{ $rows->sums('invoice_egp') }}</li>
-                            <li><strong>Invoice USD:</strong> {{ $rows->sums('invoice_usd') }}</li>
                         </ul>
                         <div class="table-container">
                             <table class='table table-bordered table-hover table-condensed mb-4'>
@@ -49,7 +46,7 @@
                                     <th style="min-width: 222px">Service</th>
                                     <th style="min-width: 222px">Voyage</th>
                                     <th style="min-width: 222px">ETA</th>
-                                    <th style="min-width: 222px">BL NO</th>
+                                    <th style="min-width: 222px">Invoice No</th>
                                     <th style="min-width: 222px">CONTAINER NO</th>
                                     <th style="min-width: 100px">CONTAINER TYPE</th>
                                     <th style="min-width: 222px">TS</th>
@@ -76,7 +73,7 @@
                                         <td>{{ $row->service }}</td>
                                         <td>{{ "{$row->vessel->name} - {$row->voyage->voyage_no} - {$row->voyage->leg->name}" }}</td>
                                         <td>{{ $row->eta }}</td>
-                                        <td>{{ $row->bl_no }}</td>
+                                        <td>{{ $row->invoice->invoice_no }}</td>
                                         <td>{{ $row->container_no }}</td>
                                         <td>{{ optional($row->container)->containersTypes->name ?? '' }}</td>
                                         <td>{{ $row->ts }}</td>
