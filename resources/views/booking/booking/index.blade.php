@@ -13,6 +13,7 @@
                             </ol>
                         </nav>
                     </div>
+
                     @permission('Booking-Create')
                         <div class="row">
                             @if(Session::has('message'))
@@ -103,7 +104,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
+                            <!-- <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -116,8 +117,8 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
-                            <div class="form-group col-md-3">
+                            </div> -->
+                            <!-- <div class="form-group col-md-3">
                                 <label for="voyage_id_second">Second Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -130,10 +131,22 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div> -->
+                            <div class="form-group col-md-3">
+                                <label for="voyage_id_both">Vessel / Voyage </label>
+                                <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('voyage_id_both')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                        </div>
 
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="Principal">Principal Name  </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
@@ -148,6 +161,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="status">Booking Status </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}">
@@ -173,8 +189,6 @@
                                     <option value="0" {{"0" == old('is_transhipment',request()->input('is_transhipment')) ? 'selected':''}}>No</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="booking_type">Booking Type</label>
                                 <select class="selectpicker form-control" id="booking_type" data-live-search="true" name="booking_type" data-size="10"
@@ -182,20 +196,6 @@
                                     <option value="Import" {{"Import" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Import</option>
                                     <option value="Export" {{"Export" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Export</option>
                                 </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="voyage_id_both">First And Second Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('voyage_id_both')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
                             </div>
                         </div>
 
@@ -444,13 +444,6 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        document.getElementById('reset-select').addEventListener('click',() => {
-            $("option:selected").remove()
-            $('.selectpicker').selectpicker('refresh')
-        })
-    });
-
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");

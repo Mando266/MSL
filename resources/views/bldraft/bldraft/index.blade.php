@@ -85,13 +85,13 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="voyage_id">Vessel / Voyage </label>
-                            <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
+                            <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
                                 title="{{trans('forms.select')}}">
                                 @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id') ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                 @endforeach
                             </select>
-                            @error('voyage_id')
+                            @error('voyage_id_both')
                             <div style="color: red;">
                                 {{$message}}
                             </div>
@@ -102,6 +102,7 @@
                         <div class="form-row">
                             <div class="col-md-12 text-center">
                                 <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                <button type="button" id="reset-select" class="btn btn-info mt-3">Reset</button>
                                 <a href="{{route('bldraft.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
                         </div>
@@ -130,13 +131,21 @@
                                         <th>BL Manafest</th>
                                         <th>BL Service Manafest</th>
                                         <th>ADD BL</th>
-                                        {{-- <th>UPDATE BOOKING</th> --}}
 
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
+                                        @if ($item->invoice)
+                                            @php
+                                            $invoiceStatus = $item->invoice->paymentstauts;
+                                            @endphp
+                                        @else
+                                            @php
+                                            $invoiceStatus = '';
+                                            @endphp
+                                        @endif
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{optional($item->booking)->ref_no}}</td>
@@ -165,6 +174,10 @@
                                             <td>{{{$item->created_at}}}</td>
                                             <td>
                                                 @php
+                                                $user = Auth::user();
+                                                $usersToCheck = [7, 3, 20];
+                                                    $paymentstautsPaid =  0;
+                                                    $paymentstautsUnPaid = 0;
                                                     $draft_invoice=0;
                                                     $confirm_invoice=0;
                                                     foreach ($item->invoices as $invoice) {
@@ -173,12 +186,18 @@
                                                         }elseif($invoice->invoice_status == "confirm"){
                                                             $confirm_invoice ++;
                                                         }
+
+                                                        if($invoice->paymentstauts == 1){
+                                                            $paymentstautsPaid ++;
+                                                        }else{
+                                                            $paymentstautsUnPaid ++;
+                                                        }
                                                     }
+
                                                 @endphp
                                                 {{$draft_invoice}} Draft <br>
-                                                {{$confirm_invoice}} Confirm 
+                                                {{$confirm_invoice}} Confirm
                                             </td>
-
                                             <td class="text-center">
                                                 @if($item->bl_status == 1)
                                                     <span class="badge badge-info"> Confirm </span>
@@ -218,13 +237,7 @@
                                                 @endif
                                                 @endpermission
                                             </td>
-                                            {{-- <td class="text-center">
-                                                @permission('Booking-Edit')
-                                                    <a href="{{ route('bookingContainersRefresh',['id'=>$item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
-                                                        <i class="far fa-edit text-success">Sync</i>
-                                                    </a>
-                                                @endpermission
-                                            </td> --}}
+
                                             <td class="text-center">
                                                  <ul class="table-controls">
                                                     @permission('Booking-Edit')
@@ -234,17 +247,37 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                    
                                                     @permission('Booking-Show')
                                                     <li>
                                                     @if(optional(optional($item->booking)->principal)->code == 'Cstar')
-                                                        <a href="{{route('bldraft.showCstar',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
+                                                        @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))  
+                                                            <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                <i class="far fa-eye text-primary"></i>
+                                                            </a>
+                                                            @elseif((in_array($user->id, $usersToCheck)))
+                                                            <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                <i class="far fa-eye text-primary"></i>
+                                                            </a>
+                                                            @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0))
+                                                            <a data-original-title="show">
+                                                                <i class="far fa-eye text-primary show_alert"></i>
+                                                            </a>
+                                                        @endif
                                                     @else
-                                                        <a href="{{route('bldraft.show',['bldraft'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                            <i class="far fa-eye text-primary"></i>
-                                                        </a>
+                                                        @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))  
+                                                            <a href="{{ route('bldraft.show', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                <i class="far fa-eye text-primary"></i>
+                                                            </a>
+                                                        @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0))
+                                                            <a data-original-title="show">
+                                                                <i class="far fa-eye text-primary show_alert"></i>
+                                                            </a>
+                                                        @endif
                                                     @endif
+
+
+                                                    
                                                     </li>
                                                     @endpermission 
                                                     @permission('BlDraft-Delete')
@@ -301,7 +334,19 @@
             }
           });
       });
-  
+
+      $('.show_alert').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: `"The bill of lading cannot be printed due to outstanding unpaid invoices. Please ensure that all invoices are settled or request higher permission authority for resolution.".`,
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+        
+      });
 </script>
 <script>
 $(document).on('click', '.container-count', function() {
@@ -310,7 +355,6 @@ $(document).on('click', '.container-count', function() {
         url: '/api/bldrafts/' + blDraftId + '/containers',
         method: 'GET',
         success: function(data) {
-    console.log(data)
             var blNo = data.bl_no;
             var containers = data.containers;
             var containerList = '';

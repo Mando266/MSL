@@ -47,7 +47,17 @@ class Voyages extends Model implements PermissionSeederContract
     {
         return $this->hasMany(BlDraft::class ,'voyage_id','id');
     }
+    public function xmlBldrafts()
+    {
+        $voyageId = $this->id;
 
+        return $this->bldrafts()
+            ->whereHas('booking', function($query) use ($voyageId) {
+                $query->where('voyage_id', $voyageId)
+                    ->orWhere('voyage_id_second', $voyageId);
+            })
+            ->with('booking', 'blDetails.container');
+    }
     public function bookings()
     {
         return $this->hasMany(Booking::class ,'voyage_id','id');

@@ -842,7 +842,7 @@ code {
   #sidebar ul.menu-categories li.menu > .dropdown-toggle:hover svg {
     fill: rgba(136, 142, 168, 0.270588); }
   #sidebar ul.menu-categories li.menu > .dropdown-toggle:hover span {
-    color: #bfc9d4; }
+    color: #fff; }
   #sidebar ul.menu-categories li.menu > .dropdown-toggle svg.feather-chevron-right {
     vertical-align: middle;
     margin-right: 0;
@@ -863,7 +863,7 @@ code {
   padding-left: 61px;
   font-size: 13px;
   font-weight: 500;
-  color: #bfc9d4; }
+  color: #fff; }
 
 #sidebar ul.menu-categories li.menu ul.submenu > li a:before {
   content: '';

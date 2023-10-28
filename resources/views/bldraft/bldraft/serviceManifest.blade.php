@@ -20,7 +20,6 @@
                     </br>
                     </br>
 
-
                     @php
                         $net_weight = 0;
                         $gross_weight = 0;

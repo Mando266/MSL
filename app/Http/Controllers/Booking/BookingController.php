@@ -179,13 +179,15 @@ class BookingController extends Controller
         if($quotation->shipment_type == 'Export'){
             $activityLocations = Ports::where('country_id', $quotation->countrydis)->where(
                 'company_id',
-                Auth::user()->company_id
+            Auth::user()->company_id
             )->get();
-        }else{
+        }elseif($quotation->shipment_type == 'Import'){
             $activityLocations = Ports::where('country_id', $quotation->countryload)->where(
                 'company_id',
                 Auth::user()->company_id
             )->get();
+        }elseif(request('quotation_id') == 'draft'){
+            $activityLocations = Ports::where('company_id', Auth::user()->company_id)->get();
         }
 
         $line = Lines::where('company_id', Auth::user()->company_id)->get();
@@ -247,7 +249,7 @@ class BookingController extends Controller
         $quotation = Quotation::find($request->quotation_id);
         $etaDate = VoyagePorts::where('voyage_id',$request->voyage_id)->where('port_from_name',$request->load_port_id)->pluck('eta')->first();
 
-        if($quotation->shipment_type == 'Export'){
+        if($quotation->shipment_type == 'Export' && $request->input('quotation_id') != 'draft'){
             if($quotation != null){
                 if($etaDate <= $quotation->validity_from && $etaDate >= $quotation->validity_to){
                     return redirect()->back()->with('error','Invalid Date '.$etaDate.' Date Must Be Between '.$quotation->validity_from.' and '.$quotation->validity_to)
@@ -680,7 +682,7 @@ class BookingController extends Controller
                 'company_id',
                 Auth::user()->company_id
             )->get();
-        }else{
+        }elseif(request('quotation_id') == 'draft'){
             $activityLocations = Ports::where('company_id', Auth::user()->company_id)->get();
         }
 

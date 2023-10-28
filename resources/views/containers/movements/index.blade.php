@@ -28,7 +28,7 @@
                             @if(!$items->isEmpty())
                                     {{-- <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a> --}}
                                     <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no')]) }}">Export Last Movements</a>
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no'),'items'=>$items]) }}">Export Last Movements</a>
 
                                 @endif
                                 @endpermission
