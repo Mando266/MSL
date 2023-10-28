@@ -119,6 +119,7 @@ class ImportExportController extends Controller
 
     public function exportSearch()
     {
+        dd(request()->inputs());
         return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'items');
     }
 

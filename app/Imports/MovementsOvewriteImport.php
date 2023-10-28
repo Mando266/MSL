@@ -50,7 +50,7 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
         $pod = $row['pod_id'];
         $booking = $row['booking_no'];
 
-        $row['container_id'] = Containers::where('code',$row['container_id'])->pluck('id')->first();
+        $row['container_id'] = Containers::where('company_id',Auth::user()->company_id)->where('code',$row['container_id'])->pluck('id')->first();
         $row['leg'] = Legs::where('name',$row['leg'])->pluck('id')->first();
         $row['voyage_id'] = Voyages::where('company_id',Auth::user()->company_id)->where('voyage_no',$row['voyage_id'])->where('leg_id',$row['leg'])->pluck('id')->first();
         $row['port_location_id'] = Ports::where('company_id',Auth::user()->company_id)->where('code',$row['port_location_id'])->pluck('id')->first();

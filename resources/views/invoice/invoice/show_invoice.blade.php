@@ -82,7 +82,7 @@
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->loadPort)->code : optional($invoice->bldraft->loadPort)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center">Arrival Date</td>
                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($firstVoyagePortdis)->etd}}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->eta : optional($firstVoyagePortdis)->eta}}</span></td>
                             @else
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{optional($firstVoyagePort)->eta}}</span></td>
                             @endif

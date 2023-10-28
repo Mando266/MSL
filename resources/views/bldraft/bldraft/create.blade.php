@@ -318,7 +318,6 @@
                                 @enderror
                         </div>
                         @endif
-                        {{-- @dd("Original" == $blDraft->bl_kind ?? "selected") --}}
                         <div class="form-group col-md-3">
                                 <label for="status">Bl Kind</label>
                                 <select class="form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
