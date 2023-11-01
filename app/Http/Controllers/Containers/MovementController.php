@@ -78,9 +78,9 @@ class MovementController extends Controller
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
 
-                    foreach ($new as $k => $move) {
-                        $move = $move->sortByDesc('movementcode.sequence');
-                        $new[$k] = $move;
+                    foreach ($new as $k => $m) {
+                        $m = $m->sortByDesc('movementcode.sequence');
+                        $new[$k] = $m;
                     }
                     $new = $new->collapse();
 
@@ -105,9 +105,9 @@ class MovementController extends Controller
                     $new = $tempMovements;
                     $new = $new->groupBy('movement_date');
 
-                    foreach ($new as $k => $move) {
-                        $move = $move->sortByDesc('movementcode.sequence');
-                        $new[$k] = $move;
+                    foreach ($new as $k => $m) {
+                        $m = $m->sortByDesc('movementcode.sequence');
+                        $new[$k] = $m;
                     }
                     $new = $new->collapse();
 
@@ -596,9 +596,9 @@ class MovementController extends Controller
             $new = $movements;
             $new = $new->groupBy('movement_date');
 
-            foreach ($new as $key => $move) {
-                $move = $move->sortByDesc('movementcode.sequence');
-                $new[$key] = $move;
+            foreach ($new as $key => $m) {
+                $m = $m->sortByDesc('movementcode.sequence');
+                $new[$key] = $m;
             }
             $new = $new->collapse();
 
