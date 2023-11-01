@@ -47,28 +47,6 @@ class Movements extends Model implements PermissionSeederContract
 
     use PermissionSeederTrait;
 
-
-//    protected static function booted()
-//    {
-//        if (!app()->runningInConsole() && !request()->is('api/*')) {
-//            if (auth()->user()) {
-//                $lessor_id = (int)auth()->user()->lessor_id;
-//
-//                if ($lessor_id != 0) {
-//                    session()->put('lessorId', $lessor_id);
-//                }
-//            }
-//            $lessor_id = session('lessorId') ?? 0;
-//            if ($lessor_id != 0) {
-//                static::addGlobalScope('lessor', function (Builder $builder) use ($lessor_id) {
-//                    $builder->whereHas('container', function ($q) use ($lessor_id) {
-//                        $q->where('description', $lessor_id);
-//                    });
-//                });
-//            }
-//        }
-//    }
-
     public function getPermissionActions()
     {
         return config('permission_seeder.actions', [

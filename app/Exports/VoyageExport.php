@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class VoyageExport implements FromCollection,WithHeadings
 {
-  
+
     public function headings(): array
     {
         return [
@@ -25,14 +25,14 @@ class VoyageExport implements FromCollection,WithHeadings
             "Shipment Type",
         ];
     }
-    
+
 
     public function collection()
     {
-       
+
         $voyages = session('voyages');
         $exportVoyages = collect();
-        
+
         foreach($voyages  ?? [] as $voyage){
             $exportNum = 0;
             $importNum = 0;
@@ -55,13 +55,13 @@ class VoyageExport implements FromCollection,WithHeadings
                     'terminal'=> optional($voyagePort->terminal)->name,
                     'road_no'=> $voyagePort->road_no,
                     'bl_engaged'=> $voyage->bldrafts->count(),
-                    'booking_engaged'=> $voyage->bookings->count(),
+                    'booking_engaged'=>$voyage->bookings->where('booking_confirm','!=','2')->count() + $voyage->bookingSecondVoyage->where('booking_confirm','!=','2')->count(),
                     'shipment_type'=> $exportNum . ' Export - ' . $importNum . ' Import',
                 ]);
                 $exportVoyages->add($tempCollection);
             }
         }
-        
+
         return $exportVoyages;
-    }    
+    }
 }

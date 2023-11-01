@@ -79,8 +79,13 @@ class XmlController extends Controller
             $port = $request->dischargePort;
             $is_load_port = 0;
         }
-        $voyage = Voyages::where('id',$request->voyage_id)
-            ->with('bldrafts.blDetails.container')->first();
+        $voyageId = $request->voyage_id;
+        $bldrafts = Bldraft::whereHas('booking', function($query) use ($voyageId){
+            $query->where('voyage_id',$voyageId)
+            ->orWhere('voyage_id_second',$voyageId);
+        })->with('booking', 'blDetails.container')->get();
+        $voyage = Voyages::where('id',$voyageId)->first();
+        $voyage->bldrafts = $bldrafts;
         foreach($voyage->bldrafts as $bldraft){
             foreach($bldraft->blDetails as $item){
                 if($item->container == null){
@@ -116,12 +121,14 @@ class XmlController extends Controller
 
     private function createXml($voyage_id,$port){
         // Fetch the data from the database or any other source
-        $voyage = Voyages::where('id',$voyage_id)
-            ->with('bldrafts.booking.quotation','bldrafts.voyage.vessel',
-                'vessel','line.country','bldrafts.customer','bldrafts.blDetails.container.containersTypes',
-                'bldrafts.customerNotify','bldrafts.customerConsignee',
-                'bldrafts.loadPort.country','bldrafts.dischargePort.country')->first();
-
+        $voyageId = $voyage_id;
+        $bldrafts = Bldraft::whereHas('booking', function($query) use ($voyageId){
+            $query->where('voyage_id',$voyageId)
+            ->orWhere('voyage_id_second',$voyageId);
+        })->with('booking', 'blDetails.container.containersTypes','booking.quotation','voyage.vessel',
+        'customer','customerNotify','customerConsignee','loadPort.country','dischargePort.country')->get();
+        $voyage = Voyages::where('id',$voyageId)->with('vessel','line.country')->first();
+        $voyage->bldrafts = $bldrafts;
         $bldraft = $voyage->bldrafts->first();
         $xmlData = $voyage;
 
@@ -147,7 +154,7 @@ class XmlController extends Controller
         $this->addItemToElement($xmlDoc, $generalInfo, 22, 'MNFSTWarehouse');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->vessel->call_sign, 'MNFSTCarrierCallSign');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->line->name, 'MNFSTCarrierName');
-        $this->addItemToElement($xmlDoc, $generalInfo, $voyage->line->country->name, 'MNFSTCarrierCountry');
+        $this->addItemToElement($xmlDoc, $generalInfo, optional(optional($voyage->line)->country)->name, 'MNFSTCarrierCountry');
         $this->addItemToElement($xmlDoc, $generalInfo, $voyage->bldrafts->count(), 'MNFSTBillsOfLadingCount');
         $manifestData->appendChild($generalInfo);
         $cargoData = $xmlDoc->createElement('CargoData');
@@ -213,9 +220,9 @@ class XmlController extends Controller
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
-                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight + (float)optional($item->container)->tar_weight, 'ItemExpGrossWeight');
+                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight, 'ItemExpGrossWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
-                $this->addItemToElement($xmlDoc, $Item, $item->gross_weight , 'ItemContentPackagesWeight');
+                $this->addItemToElement($xmlDoc, $Item, $item->net_weight , 'ItemContentPackagesWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemContentPackagesQuantity');
                 $BillOfLading->appendChild($Item);

@@ -24,7 +24,7 @@ class BookingImport implements ToModel,WithHeadingRow
     {
         // CHECK if null
         $a = collect($row);
-        $z = $a->filter(fn($v)=>$v != null)->toArray();
+        $z = $a->filter(fn($v) => $v != null)->toArray();
         if(empty($z))
             return null;
 
@@ -36,15 +36,17 @@ class BookingImport implements ToModel,WithHeadingRow
         $containerDuplicate = BookingContainerDetails::where('booking_id',$row['booking_id'])->where('container_id',$row['container_id'])->count();
         // Validation
         if(!$row['container_id']){
-            return session()->flash('message',"This container Number: {$containerId} Not found and containers before this container imported successfully");
+            return session()->flash('message',"This Container Number: {$containerId} Not found and containers before this container imported successfully");
         }
         if($containerDuplicate > 0 ){
             return Session::flash('message', "This Container Number: {$containerId} Already in this booking and containers before this container imported successfully");
         }
         if($row['booking_id'] == null){
-            return Session::flash('message', "You must enter booking No");
+            return Session::flash('message', "You Must Enter booking No");
         }
-        
+        if($row['activity_location'] == null){
+            return Session::flash('message', "You Must enter Container Location");
+        }
         
         $bookingDetail = BookingContainerDetails::create([
             'booking_id' => $row['booking_id'],

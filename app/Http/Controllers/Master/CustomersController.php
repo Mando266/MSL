@@ -20,7 +20,7 @@ class CustomersController extends Controller
     {
         $this->authorize(__FUNCTION__,Customers::class);
             $customers = Customers::filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->paginate(30);
-            $exportCustomers = Customers::select('id','name','contact_person','phone','tax_card_no','landline','country_id','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
+            $exportCustomers = Customers::select('id','name','contact_person','phone','tax_card_no','landline','country_id','city','email','address','cust_address','sales_person_id','customer_role_id','customer_kind')->filter(new UserIndexFilter(request()))->where('company_id',Auth::user()->company_id)->with('CustomerRoles.role')->orderBy('id')->get();
             $customer = Customers::where('company_id',Auth::user()->company_id)->get();
             $countries = Country::orderBy('name')->get();
             session()->flash('customers',$exportCustomers);
@@ -28,7 +28,7 @@ class CustomersController extends Controller
             'items'=>$customers,
             'customer'=>$customer,
             'countries'=>$countries
-        ]); 
+        ]);
     }
 
     public function create()
@@ -51,26 +51,26 @@ class CustomersController extends Controller
     {
         $this->authorize(__FUNCTION__,Customers::class);
         if ($request->input('customer_kind') == 1){
-        $request->validate([ 
-            'name' => 'required', 
-            'country_id' => ['required'], 
-            'city' => ['required'], 
-            'phone' => ['required'], 
-            'email' => ['required'], 
-            'address' => ['required'], 
-            'currency' => ['required'], 
+        $request->validate([
+            'name' => 'required',
+            'country_id' => ['required'],
+            'city' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required'],
+            'address' => ['required'],
+            'currency' => ['required'],
             'othercurrency' => ['different:currency'],
-            'customer_kind' => ['required'],   
+            'customer_kind' => ['required'],
         ],[
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
         }else{
-            $request->validate([ 
-                'name' => 'required', 
-                'country_id' => ['required'],  
-                'customer_kind' => ['required'],   
-            ]); 
+            $request->validate([
+                'name' => 'required',
+                'country_id' => ['required'],
+                'customer_kind' => ['required'],
+            ]);
         }
         $user = Auth::user();
 
@@ -109,7 +109,7 @@ class CustomersController extends Controller
                 'customer_id'=>$customers->id,
                 'role_id'=>$customerRole['role_id'],
             ]);
-        }  
+        }
         $code .=$customers->id;
         $customers->code = $code;
         $customers->save();
@@ -124,14 +124,14 @@ class CustomersController extends Controller
     public function show(Customers $customer)
     {
         $this->authorize(__FUNCTION__,Customers::class);
-        $customer = $customer->load('country'); 
+        $customer = $customer->load('country');
         $customer_roles = CustomerRoles::where('customer_id',$customer->id)->with('role')->get();
         $roles = RoleCustomer::all();
         return view('master.customers.show',[
             'customer'=>$customer,
             'customer_roles'=>$customer_roles,
             'roles'=>$roles,
-        ]);    
+        ]);
     }
 
     public function edit(Customers $customer)
@@ -152,33 +152,33 @@ class CustomersController extends Controller
             'currency'=>$currency,
             'customer_role_id'=>$customer_role_id,
             'contactPeople' => $customer->contactPeople
-        ]); 
+        ]);
     }
 
     public function update(Request $request, Customers $customer)
     {
         $customer->storeContactPeople(request()->contactPeople);
         if ($request->input('customer_kind') == 1){
-        $request->validate([ 
-            'name' => 'required', 
-            'country_id' => ['required'], 
-            'city' => ['required'], 
-            'phone' => ['required'], 
-            'email' => ['required'], 
-            'address' => ['required'], 
-            'currency' => ['required'], 
+        $request->validate([
+            'name' => 'required',
+            'country_id' => ['required'],
+            'city' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required'],
+            'address' => ['required'],
+            'currency' => ['required'],
             'othercurrency' => ['different:currency'],
-            'customer_kind' => ['required'],   
+            'customer_kind' => ['required'],
         ],[
             'othercurrency.different'=>'Other Currency The Same Currency',
 
         ]);
         }else{
-            $request->validate([ 
-                'name' => 'required', 
-                'country_id' => ['required'],  
-                'customer_kind' => ['required'],   
-            ]); 
+            $request->validate([
+                'name' => 'required',
+                'country_id' => ['required'],
+                'customer_kind' => ['required'],
+            ]);
         }
         $user = Auth::user();
 

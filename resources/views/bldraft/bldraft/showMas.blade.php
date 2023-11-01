@@ -48,13 +48,27 @@
                                     {{ old('shipper',$blDraft->customer_shipper_details) }}
                                     </textarea>
                                 </th>
-                                @if(optional($blDraft)->number_of_original == "0" )
-                                <th class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
-                                @elseif($blDraft->bl_status == 0 && optional($blDraft)->number_of_original != "0")
-                                <th class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
-                                @else
-                                <th class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
-                                @endif
+                            @php
+                                $paymentstautsPaid =  0;
+                                $paymentstautsUnPaid = 0;
+                                foreach ($blDraft->invoices as $invoice) {
+                                    if($invoice->paymentstauts == 1){
+                                        $paymentstautsPaid ++;
+                                    }else{
+                                        $paymentstautsUnPaid ++;
+                                    }
+                                }
+                            @endphp
+
+                            @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) && ($blDraft->bl_status == 1) && ($blDraft->bl_kind != "Seaway BL") || ($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0) &&  ($blDraft->bl_kind != "Seaway BL"))  
+                                <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                            @elseif(($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 1) || ($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 0))
+                                <td class="col-md-6 tableStyle " colspan="2">Seaway Bill <h3 style="font-weight: 900;"></h3><br>
+                            @elseif(($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0) || ($blDraft->bl_status == 0))
+                                <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                            @elseif(($blDraft->bl_status == 1) && ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))
+                                <td class="col-md-6 tableStyle " colspan="2">Non Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                            @endif
                                 <div class="col-md-12 text-center">
                                     @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
                                     <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">

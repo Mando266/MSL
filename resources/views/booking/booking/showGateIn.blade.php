@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
@@ -25,7 +25,7 @@
                         <div class="col-md-3">
                         </div>
                         <table class="col-md-6 " style="height: 20px;">
-                        
+
                             <tbody>
                             <tr>
                                 <td style="height: 45px;"></td>
@@ -56,7 +56,7 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfReturn)->pick_up_location}}</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->placeOfAcceptence)->pick_up_location}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >السادة</td>
                         </tr>
                         <tr>
@@ -170,7 +170,7 @@
             {{$detail->weight}}
             </td>
                 <!-- {{$detail->qty}}  Containers -->
-  
+
         </tr>
         @endfor
         @endif

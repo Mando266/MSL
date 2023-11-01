@@ -25,8 +25,8 @@ class Containers extends Model implements PermissionSeederContract
             'Delete'
         ]);
     }
-    
-    
+
+
     public function containersOwner (){
         return $this->belongsto(ContinerOwnership::class,'container_ownership_id','id');
     }
@@ -38,7 +38,7 @@ class Containers extends Model implements PermissionSeederContract
     }
     public function movement()
     {
-        return $this->hasMany(Movements::class ,'movement_id','id');
+        return $this->hasMany(Movements::class ,'container_id','id');
     }
     public function activityLocation (){
         return $this->belongsto(Ports::class,'activity_location_id','id');
@@ -46,7 +46,7 @@ class Containers extends Model implements PermissionSeederContract
     public function seller (){
         return $this->belongsto(LessorSeller::class,'description','id');
     }
-    
+
     public function scopeUserContainers($query){
         if(is_null(Auth::user()->company_id))
         {

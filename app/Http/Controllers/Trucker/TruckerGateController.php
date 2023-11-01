@@ -29,17 +29,17 @@ class TruckerGateController extends Controller
             $truckers = Trucker::where('company_id',Auth::user()
             ->company_id)->get();
             session()->flash('truckergates',$exportTruckerGate);
-            
+
             return view('trucker.truckergate.index',[
                 'items'=>$truckerGates,
                 'booking'=>$booking,
                 'certificate'=>$certificate,
                 'truckers'=>$truckers,
                 'exportTruckerGate'=>$exportTruckerGate,
-            ]);  
+            ]);
         }
 
-    public function create()
+    public function create(Request $request)
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);
             $booking = Booking::where('company_id',Auth::user()->company_id)->where('booking_confirm','!=',0)->get();
@@ -47,7 +47,7 @@ class TruckerGateController extends Controller
             return view('trucker.truckergate.create',[
                 'booking'=>$booking,
                 'truckers'=>$truckers,
-            ]);    
+            ]);
     }
 
     public function store(Request $request)
@@ -87,7 +87,7 @@ class TruckerGateController extends Controller
         ]);
     }
 
-   
+
     public function update(Request $request, TruckerGates $truckergate)
     {
         $this->authorize(__FUNCTION__,TruckerGates::class);

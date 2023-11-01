@@ -34,77 +34,79 @@
         <th data-field="thc">
             <label>
                 THC
-                <input type="checkbox" class="thc_cost in-egp">
+                <input type="checkbox" class="thc_cost in-egp" data-target="thc">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="storage">
             <label>
                 STORAGE
-                <input type="checkbox" class="storage_cost in-egp">
+                <input type="checkbox" class="storage_cost in-egp" data-target="storage">
                 EGP
             </label>
         </th>
         <th colspan=2 data-field="power">
             <label>
                 POWER
-                <input type="checkbox" class="power_cost in-egp">
+                <input type="checkbox" class="power_cost in-egp" data-target="power">
                 EGP
             </label>
         </th>
         <th data-field="shifting">
             <label>
                 SHIFTING
-                <input type="checkbox" class="shifting_cost in-egp">
+                <input type="checkbox" class="shifting_cost in-egp" data-target="shifting">
                 EGP
             </label>
         </th>
         <th data-field="disinf">
             <label>
                 DISINF
-                <input type="checkbox" class="disinf_cost in-egp">
+                <input type="checkbox" class="disinf_cost in-egp" data-target="disinf">
                 EGP
             </label>
         </th>
         <th data-field="hand-fes-em">
             <label>
                 HAND-FES-EM
-                <input type="checkbox" class="hand_fes_em_cost in-egp">
+                <input type="checkbox" class="hand_fes_em_cost in-egp" data-target="">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-off-inbnd-em-ft40">
             <label>
                 GAT-LIFT OFF-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40_cost in-egp">
+                <input type="checkbox" class="gat_lift_off_inbnd_em_ft40_cost in-egp"
+                       data-target="gat_lift_off_inbnd_em_ft40">
                 EGP
             </label>
         </th>
         <th data-field="gat-lift-on-inbnd-em-ft40">
             <label>
                 GAT-LIFT ON-INBND-EM-FT40
-                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40_cost in-egp">
+                <input type="checkbox" class="gat_lift_on_inbnd_em_ft40_cost in-egp"
+                       data-target="gat_lift_on_inbnd_em_ft40">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="pti">
             <label>
                 PTI
-                <input type="checkbox" class="pti_cost in-egp">
+                <input type="checkbox" class="pti_cost in-egp" data-target="pti">
                 EGP
             </label>
         </th>
         <th colspan="2" data-field="add-plan">
             <label>
                 ADD-PLAN
-                <input type="checkbox" class="add_plan_cost in-egp">
+                <input type="checkbox" class="add_plan_cost in-egp" data-target="add_plan">
                 EGP
             </label>
         </th>
         <th colspan="2">
             <label>
                 Additional Fees
-                <input type="checkbox" class="additional_fees_cost in-egp">
+                <input type="checkbox" class="additional_fees_cost in-egp" data-target="additional_fees">
                 EGP
             </label>
         </th>
@@ -137,42 +139,31 @@
                     @endforeach
                 </select>
             </td>
-            <td><select name="rows[service][]" class="form-control service_type" required>
-                    <option hidden selected>Select</option>
-                    <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
-                    <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
-                    <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
-                    <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
-                    <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
-                    <option value="018-YARD-SERV">018-YARD-SERV</option>
-                    <option value="019-LOG-SERV">019-LOG-SERV</option>
-                    <option value="020-HAND-FES">020-HAND-FES</option>
-                    <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS
-                    </option>
-                    <option value="024-STRG-OUTBND-CONTRS-FL">
-                        024-STRG-OUTBND-CONTRS-FL
-                    </option>
-                    <option value="025-STRG-OUTBND-CONTRS-EM">
-                        025-STRG-OUTBND-CONTRS-EM
-                    </option>
-                    <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
-                    <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP
-                    </option>
-                    <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
-                    <option value="038-MISC-REV-YARD-CRN-SHIFTING">
-                        038-MISC-REV-YARD-CRN-SHIFTING
-                    </option>
-                    <option value="039-MISC-REV-GAT-SERV-LIFT OFF">
-                        039-MISC-REV-GAT-SERV-LIFT OFF
-                    </option>
-                    <option value="045-MISC-REV-ELEC-REP-SERV">
-                        045-MISC-REV-ELEC-REP-SERV
-                    </option>
-                    <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-                    <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF
-                        CONTAINERS
-                    </option>
-                </select></td>
+            <td>
+                <select name="rows[service][]" class="form-control service_type" required>
+                    <option selected>Select</option>
+                    @foreach(["999990-HATCH-COVER-OPERATIONS", "DISCHARGING-OPERATIONS",
+                            "YARD-0060-AND-GATES-SERVICES","001-VSL-RE-STW-OPR",
+                            "002-VSL-HATCH-CVR-OPR","0021-LOADING-OPRERATION",
+                            "005-VSL-DIS-OPR","006-VSL-LOD-OPR",
+                            "0061-SERVICE-OF-YARD-AND-GATES-TO-EXPORTS","007-VSL-TRNSHP-OPR",
+                            "009-VSL-OPR-IMDG","010-VSL-OPR-OOG",
+                            "011-VSL-HOL-WRK","018-YARD-SERV",
+                            "019-LOG-SERV","020-HAND-FES",
+                            "021-STRG-INBND-FL-CONTRS","024-STRG-OUTBND-CONTRS-FL",
+                            "025-STRG-OUTBND-CONTRS-EM","027-STRG-TRNSHP-CONTRS",
+                            "02821-POWER-SUPPLY-OF-REEFR-CONTAINER","031-STRG-PR-DR-CONTRS",
+                            "033-REFR-CONTR-PWR-SUP","037-MISC-REV-GAT-SERV",
+                            "038-MISC-REV-YARD-CRN-SHIFTING","039-MISC-REV-GAT-SERV-LIFT OFF",
+                            "045-MISC-REV-ELEC-REP-SERV","048-MISC-REV-OTBND-CONTRS-DR",
+                            "051-VSL-OPR-ADD-PLAN","059-WAR-MARTYRS",
+                            "060-DISINFECTION-OF-CONTAINERS","0991-HANDLING-FEES",
+                            "2981-ADMINISTRATIVE-EXPENSES","50-ELECTRONIC-REPORTS-SERVICE"
+                        ] as $option)
+                        <option value="{{ $option }}">{{ $option }}</option>
+                    @endforeach
+                </select>
+            </td>
             <td><input type="text" class="form-control voyage-name"></td>
             <td><input type="text" class="form-control ref-no-td" name="rows[bl_no][]"></td>
             <td><input type="text" name="rows[container_no][]"
@@ -184,9 +175,9 @@
                        class="shipment_type form-control"></td>
             <td><input type="text" name="rows[quotation_type][]"
                        class="quotation_type form-control"></td>
-            <td data-field="thc"><input type="text" name="rows[thc][]" class="form-control dynamic-input"
+            <td data-field="thc"><input type="text" name="rows[thc][egp][]" class="form-control dynamic-input"
                                         data-field="thc_cost"></td>
-            <td data-field="storage"><input type="text" name="rows[storage][]" class="form-control dynamic-input"
+            <td data-field="storage"><input type="text" name="rows[storage][usd][]" class="form-control dynamic-input"
                                             data-field="storage_cost"></td>
             <td data-field="storage">
                 <select style="min-width: 100px" class="form-control storage-days" name="rows[storage_days][]">
@@ -233,11 +224,12 @@
                     <option value="0" data-cost="0">Not added</option>
                 </select>
             </td>
-            <td><input type="number" name="rows[additional_fees][]"
+            <td><input type="number" name="rows[additional_fees][][usd]"
                        class="form-control included additional-cost"
                        step="0.01" placeholder="cost" data-field="additional_fees_cost">
             </td>
-            <td><input placeholder="description" class="form-control additional-description" name="rows[additional_fees_description][]"
+            <td><input placeholder="description" class="form-control additional-description"
+                       name="rows[additional_fees_description][]"
                        style="min-width: 200px">
             </td>
         </tr>

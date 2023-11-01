@@ -46,11 +46,22 @@ class PortChargeInvoiceService
             "is_transhipment",
             "shipment_type",
             "quotation_type",
-            "additional_fees",
             "additional_fees_description",
         ];
         $selectedItems = array_merge($selectedCosts, $identifiers);
-        return $rows->transform(fn($row) => $row->only($selectedItems))->toArray();
+        $rows->transform(fn($row) => $row->only($selectedItems));
+        foreach ($rows as $row) {
+            foreach ($selectedCosts as $cost) {
+                if (in_array($cost, ["power_days", "storage_days", "pti_type"])){
+                    continue;
+                }
+                foreach ($row[$cost] ?? [] as $k => $v) {
+                    $row["{$cost}_currency"] = $k;
+                    $row[$cost] = $v;
+                }
+            }
+        }
+        return $rows->toArray();
     }
 
 

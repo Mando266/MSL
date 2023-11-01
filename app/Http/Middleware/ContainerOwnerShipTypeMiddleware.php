@@ -17,8 +17,9 @@ class ContainerOwnerShipTypeMiddleware
 
         if (!empty($containerOwnershipTypes)) {
             // Convert the comma-separated string to an array
+            $containerOwnershipTypes = rtrim($containerOwnershipTypes, ', ');
             $containerOwnershipTypesArray = explode(',', $containerOwnershipTypes);
-
+            
             Movements::addGlobalScope('containerOwnerShipType', function ($builder) use ($containerOwnershipTypesArray) {
                 $builder->whereHas('container', function ($q) use ($containerOwnershipTypesArray) {
                     $q->whereIn('container_ownership_id', $containerOwnershipTypesArray);

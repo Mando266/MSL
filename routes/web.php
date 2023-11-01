@@ -210,8 +210,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('invoice', 'InvoiceController');
         Route::get('selectBL', [InvoiceController::class, 'selectBL'])->name('invoice.selectBL');
         Route::get('selectBLinvoice', [InvoiceController::class, 'selectBLinvoice'])->name('invoice.selectBLinvoice');
-        Route::post('create/invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice');
-        Route::post('create/debit', [InvoiceController::class, 'create'])->name('invoice.create_debit');
+        // Route::post('create/invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice'); gogo please cheak it
+        // Route::post('create/debit', [InvoiceController::class, 'create'])->name('invoice.create_debit');
         Route::post('create_invoice', [InvoiceController::class, 'storeInvoice'])->name('invoice.store_invoice');
         Route::resource('receipt', 'ReceiptController');
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
@@ -264,6 +264,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::get('port-charge-invoices/export-by-date', [PortChargeInvoiceController::class, 'exportByDateView'])
         ->name('port-charge-invoices.export-date');
+    Route::get('port-charge-invoices/booking/{booking}', [PortChargeInvoiceController::class, 'showBooking'])
+        ->name('port-charge-invoices.show-booking');
     Route::post('port-charge-invoices/do-export-date', [PortChargeInvoiceController::class, 'doExportByDate'])
         ->name('port-charge-invoices.do-export-date');
     Route::post('port-charge-invoices/export-current', [PortChargeInvoiceController::class, 'exportCurrent'])
@@ -271,6 +273,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('port-charge-invoices/{invoice}/export', [PortChargeInvoiceController::class, 'doExportInvoice'])
         ->name('port-charge-invoices.show.export');
     Route::get('port-charge-invoices/search', [PortChargeInvoiceController::class, 'searchJson'])->name('port-charge-invoices.search');
+    Route::get('port-charge-invoices/{portChargeInvoice}/detail-edit', [PortChargeInvoiceController::class, 'detailEdit'])
+        ->name('port-charge-invoices.detail-edit');
+    Route::patch('port-charge-invoices/{portChargeInvoice}/detail-update', [PortChargeInvoiceController::class, 'detailUpdate'])
+        ->name('port-charge-invoices.detail-update');
     Route::resource('port-charge-invoices', 'PortChargeInvoiceController');
 
 });

@@ -7,10 +7,10 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a a href="{{route('invoice.index')}}">Invoice</a></li> 
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">New Debit Invoice</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">System Serial Setting</a></li>
                             <li class="breadcrumb-item"></li>
-                        </ol>
+                        </ol> 
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">

@@ -27,6 +27,7 @@
                             @endpermission
                             @if(!$items->isEmpty())
                                     {{-- <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a> --}}
+
                                     <form action="{{route('export.search')}}" method="post">
                                         @csrf
                                         <input type="hidden" name="items" value="{{$exportMovement}}">
@@ -145,11 +146,11 @@
                             </div> -->
                             <div class="form-group col-md-3">
                                 <label for="containersMovementsInput">Movement </label>
-                                <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    <option value="">Select...</option>
+                                <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="movement_id[]" data-size="10"
+                                 title="{{trans('forms.select')}}" multiple>
                                     @foreach ($containersMovements as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('movement_id',request()->input('movement_id')) ? 'selected':''}}>{{$item->code}} - {{$item->name}}</option>
+                                    <option value="{{ $item->id }}"
+                                        {{ in_array($item->id, (array)request()->input('movement_id')) ? 'selected' : '' }}>{{ $item->code }}
                                     @endforeach
                                 </select>
                             </div>

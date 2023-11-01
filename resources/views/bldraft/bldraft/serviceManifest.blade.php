@@ -20,7 +20,6 @@
                     </br>
                     </br>
 
-
                     @php
                         $net_weight = 0;
                         $gross_weight = 0;
@@ -59,6 +58,8 @@
                                         <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                     </br>
                                         <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
+                                    @elseif($blDraft->booking->is_transhipment == 1 && optional(optional($blDraft->booking)->quotation)->shipment_type == "Import")
+                                    <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
                                     @else
                                         <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
                                     @endif
@@ -164,13 +165,15 @@
                                             @else
                                                 <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} EXPORT SERVICE MANIFEST </br></br>
                                             @endif
-                                        @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
-                                            <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
-                                        </br>
-                                            <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
-                                        @else
-                                            <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
-                                        @endif
+                                            @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
+                                                <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
+                                            </br>
+                                                <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
+                                                @elseif($blDraft->booking->is_transhipment == 1 && optional($blDraft->booking)->transhipment_port != null)
+                                                <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
+                                            @else
+                                                <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
+                                            @endif
                                         </td>
                                         </tbody>
                             </table>

@@ -18,13 +18,6 @@
                     </br>
                     </br>
 
-                    <!-- <table class="col-md-12 tableStyle">
-                        <thead>
-                            <tr>
-                                <th class="text-center thstyle">Booking Confirmation</th>
-                            </tr>
-                        </thead>
-                    </table> -->
                     @php
                             $net_weight = 0;
                             $gross_weight = 0;
@@ -57,26 +50,35 @@
                                         @php
                                             $draft_invoice=0;
                                             $confirm_invoice=0;
+                                            $paymentstautsPaid =  0;
+                                            $paymentstautsUnPaid = 0;
                                             foreach ($blDraft->invoices as $invoice) {
                                                 if($invoice->invoice_status == "draft"){
                                                     $draft_invoice ++;
                                                 }elseif($invoice->invoice_status == "confirm"){
                                                     $confirm_invoice ++;
                                                 }
+                                                if($invoice->paymentstauts == 1){
+                                                    $paymentstautsPaid ++;
+                                                }else{
+                                                    $paymentstautsUnPaid ++;
+                                                }
                                             }
                                         @endphp
                             <tr>
-                                @if(optional($blDraft)->number_of_original == "0" )
-                                <td class="col-md-6 tableStyle " colspan="2">Seaway <h3 style="font-weight: 900;"></h3><br>
-                                @elseif($blDraft->bl_status == 0 || $invoice->paymentstauts == 0)
-                                <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
-                                @elseif($blDraft->bl_status == 1 || $invoice->paymentstauts == 0)
-                                <td class="col-md-6 tableStyle " colspan="2">Non Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
-                                @else
-                                <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+
+                                @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) && ($blDraft->bl_status == 1) && ($blDraft->bl_kind != "Seaway BL") || ($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0) &&  ($blDraft->bl_kind != "Seaway BL"))  
+                                    <td class="col-md-6 tableStyle " colspan="2">Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @elseif(($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 1) || ($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 0))
+                                    <td class="col-md-6 tableStyle " colspan="2">Seaway Bill <h3 style="font-weight: 900;"></h3><br>
+                                @elseif(($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0) || ($blDraft->bl_status == 0))
+                                    <td class="col-md-6 tableStyle " colspan="2">Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @elseif(($blDraft->bl_status == 1) && ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))
+                                    <td class="col-md-6 tableStyle " colspan="2">Non Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
+
                                 <div class="col-md-12 text-center">
-                                        <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                 </div>
                                 </td>
                             </tr>
@@ -263,7 +265,7 @@
                             </tr>
                             <tr>
                                 <td class="col-md-3 tableStyle" colspan="2">Number of original Bills of Lading <br>
-                                &nbsp
+                                &nbsp {{$blDraft->number_of_original}}
                                 </td>
                             </tr>
                             <tr>

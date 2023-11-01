@@ -192,50 +192,56 @@
                             <div class="layout-px-spacing">
                                 <!-- ... Your existing HTML ... -->
                                 <div class="row">
-                                    <div class="col-md-1">
-                                        <form action="{{ route('preview.index') }}" method="post" id="preview-form">
-                                            @csrf
-                                            <input type="text"  name="preview-data" id="preview-data" hidden>
-                                            <button class="btn btn-primary">Preview</button>
-                                        </form>
-                                    </div>
+                                    
 
                                     <!-- Add a button to add the entire calculation to the cart -->
-                                    <form id="add-to-cart-form">
+                                     <form id="add-to-cart-form">
                                         @csrf
                                         <input type="hidden" name="bl_no" value="{{$input['bl_no']}}">
                                         <input type="hidden" name="calculation_data"
                                                value="{{json_encode($calculation)}}">
-                                        <button class="btn btn-primary" id="add-to-cart">Add to Invoice</button>
+                                        <button class="btn btn-primary" id="add-to-cart">Add to Cart</button>
                                     </form>
                                 </div>
 
-                                <!-- Display the Cart -->
-                                <div id="invoice-cart">
+                                 <div id="invoice-cart">
                                     <div class="cart-header">
                                         <h4>Invoice Cart</h4>
                                         <button type="button" class="btn btn-sm btn-danger" id="clear-cart">Clear Cart
                                         </button>
                                     </div>
                                     <ul id="cart-items" class="list-group">
-                                        <!-- Cart items will be dynamically added here -->
                                     </ul>
                                 </div>
 
-                                <div class="button-container">
+                                <!-- <div class="button-container"> -->
+                            <div class="form-row">
+                                <div class="col-md-2 text-center">
+                                </div>
+                                <div class="col-md-2 text-center">
+                                </div>
+                                <div class="col-md-2 text-center">
                                     <!-- Create Invoice Button -->
-                                    <form id="create-invoice-form" action="{{ route('invoice.create_invoice') }}"
+                                    <!-- <form id="create-invoice-form" action="{{ route('invoice.create_invoice') }}"
                                           method="post">
                                         @csrf
                                         <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
                                         <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
                                                value="">
-                                        <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice
-                                        </button>
-                                    </form>
-                                    <a class="btn btn-custom" href="{{ route('export.calculation') }}">Export</a>
+                                        <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice</button>
+                                    </form> -->
+                                        <form action="{{ route('preview.index') }}" method="post" id="preview-form">
+                                            @csrf
+                                            <input type="hidden"  name="preview-data" id="preview-data">
+                                            <button  class="btn btn-success mt-3">Preview</button>
+
+                                        </form>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <a class="btn btn-custom mt-3" href="{{ route('export.calculation') }}">Export</a>
                                 </div>
                             </div>
+ 
                         @endif
 
                     </div>
@@ -411,42 +417,7 @@
     <script>
         // Initialize the cart with data from localStorage or an empty array
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        {{--$('#preview-form').submit(function(event) {--}}
-        {{--    // Retrieve the cart data from local storage--}}
-        {{--    const cartData = localStorage.getItem('cart') || [];--}}
-
-        {{--    // Construct the request headers--}}
-        {{--    const headers = new Headers({--}}
-        {{--        'Content-Type': 'application/json',--}}
-        {{--        'X-CSRF-TOKEN': '{{csrf_token()}}',--}}
-        {{--    });--}}
-
-        {{--    // Construct the request object--}}
-        {{--    const requestOptions = {--}}
-        {{--        method: 'POST',--}}
-        {{--        headers: headers,--}}
-        {{--        body: cartData,--}}
-        {{--    };--}}
-
-        {{--    // Replace 'your-preview-url' with the actual URL for your preview page--}}
-        {{--    const previewUrl = `/preview`;--}}
-
-        {{--    // Send a POST request with the cart data and CSRF token in the headers--}}
-        {{--    fetch(previewUrl, requestOptions)--}}
-        {{--        .then(response => response.json())--}}
-        {{--        .then(data => {--}}
-        {{--            // Handle the response data here--}}
-        {{--            console.log(data);--}}
-        {{--        })--}}
-        {{--        .catch(error => {--}}
-        {{--            console.error('Error:', error);--}}
-        {{--        });--}}
-
-        {{--    // Prevent the default form submission behavior--}}
-        {{--    event.preventDefault();--}}
-        {{--});--}}
-
-
+        
         $('#preview-form').submit(function(event) {
             const storedItem = localStorage.getItem('cart');
             if (storedItem) {

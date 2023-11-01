@@ -86,7 +86,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
-                                        <tr>
+                                    @php
+                                            $booking = $item->bookings->count();
+                                    @endphp
+                                    <tr>
                                             <td>{{$loop->iteration}}</td>
                                             <td>{{{optional($item->vessel)->code}}}</td>
                                             <td>{{{optional($item->vessel)->name}}}</td>
@@ -129,10 +132,10 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                {{$item->bookings->count()}}
+                                                {{$item->bookings->where('booking_confirm','!=','2')->count() + $item->bookingSecondVoyage->where('booking_confirm','!=','2')->count()}}
                                             </td>
                                             <td>
-                                                {{ $item->bldrafts->count() == 0 ? $item->transhipmentBldrafts->count() : $item->bldrafts->count() }}
+                                                {{ $item->bldrafts->count() == 0 ? optional($item->transhipmentBldrafts)->count() : optional($item->bldrafts)->count() }}
                                             </td>
                                             <td class="text-center">
                                                 <ul class="table-controls">
@@ -155,6 +158,8 @@
                                                 @endpermission
 
                                             </td>
+                                        @if ($booking > 0)
+                                            @else
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('Voyages-Delete')
@@ -166,6 +171,7 @@
                                                         </form>
                                                     </li>
                                                     @endpermission
+                                        @endif
                                                 </ul>
                                             </td>
                                         </tr>

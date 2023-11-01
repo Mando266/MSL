@@ -86,7 +86,7 @@ class MovementsExportSearch implements FromCollection,WithHeadings
                 unset($movement['id']);
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                 $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
-                $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
+                $movement->container_type_id = optional(optional($movement->container)->containersTypes)->nameEx;//ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
                 $movement->container_status = ContainerStatus::where('id',$movement->container_status)->pluck('name')->first();
                 $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first();
                 $movement->voyage_id = Voyages::where('id',$movement->voyage_id)->pluck('voyage_no')->first();

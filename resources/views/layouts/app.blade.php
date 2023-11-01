@@ -153,6 +153,12 @@
     <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
 
     <script>
+        $(document).ready(function () {
+            document.getElementById('reset-select').addEventListener('click',() => {
+                $("option:selected").remove()
+                $('.selectpicker').selectpicker('refresh')
+            })
+        });
         $(document).ready(function() {
             App.init();
             function hasArabicCharacters(text){
@@ -225,6 +231,23 @@
             });
         });
     </script>
+<script>
+    (function () {
+        'use strict';
+        var form = document.getElementById('createForm');
+        form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    })();
+
+    // Initialize selectpicker
+    $('.selectpicker').selectpicker();
+</script>
     <script src="{{asset('assets/js/custom.js')}}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

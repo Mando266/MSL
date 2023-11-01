@@ -137,12 +137,20 @@
                                     <div style="padding: 30px;">
                                         <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
                                         <label class="form-check-label" for="exchange_rate">
+                                    @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
                                         ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                    @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                        ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                    @endif
                                         </label>
                                         <br>
                                         <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
                                         <label class="form-check-label" for="exchange_rate">
-                                          ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                    @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                        ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                    @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                        ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
+                                    @endif
                                         </label>
                                     </div>
                                 </div>

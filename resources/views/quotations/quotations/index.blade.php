@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-6">
                                     <label for="customer_id">Customer</label>
                                     <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
                                         title="{{trans('forms.select')}}">
@@ -74,7 +74,7 @@
                                 <label for="place_of_delivery_id">POD</label>
                                 <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item) 
+                                    @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',request()->input('discharge_port_id')) ? 'selected':''}}>{{$item->code}}</option>
                                     @endforeach
                                 </select>
@@ -111,7 +111,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    @php
+                                        $quotation = $item->quotation;
+                                    @endphp
                                     @forelse ($items as $item)
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
@@ -151,7 +153,7 @@
                                                         </a>
                                                     </li>
                                                     @elseif($item->status == 'pending' || $item->status == 'MSL count')
-                                                    
+
                                                     <li>
                                                         <a href="{{route('quotations.edit',['quotation'=>$item->id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
@@ -166,15 +168,17 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                    @if ($quotation && $quotation->booking->count() > 0)
                                                     @permission('Quotation-Delete')
                                                     <li>
                                                         <form action="{{route('quotations.destroy',['quotation'=>$item->id])}}" method="post">
                                                             @method('DELETE')
                                                             @csrf
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
-                                                        </form> 
+                                                        </form>
                                                     </li>
                                                     @endpermission
+                                                @endif
                                                 </ul>
                                             </td>
                                             <td class="text-center">
@@ -214,7 +218,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
+
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");
@@ -231,6 +235,6 @@
             }
           });
       });
-  
+
 </script>
 @endpush

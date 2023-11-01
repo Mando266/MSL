@@ -69,15 +69,17 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
             "add_plan",
             "additional_fees",
             "additional_fees_description",
+            "Invoice USD",
+            "Invoice EGP",
         ];
     }
 
     public function collection()
     {
         $rows = $this->rows;
-        $rows->transform($this->processRowExport());
+        $rows->transform($this->processRow());
 
-        $sums = $rows->reduce($this->calculateSumRowsExport());
+        $sums = $rows->reduce($this->calculateSums());
         $spacer = array_fill(0, 15, ''); // Fill with empty strings
         $sums = array_merge($spacer, $sums);
 
@@ -152,12 +154,13 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
         $sheet->mergeCells("U$totalsRow:AB$totalsRow");
     }
 
-    public function processRowExport(): \Closure
+    public function processRow(): \Closure
     {
         return function ($row) {
             $invoice = $row->invoice;
             $booking = $row->booking;
             $voyage = $booking->voyage;
+            [$invoice_usd, $invoice_egp] = $row->totalCosts();
             return [
                 'invoice_no' => $invoice->invoice_no,
                 'invoice_date' => $invoice->invoice_date,
@@ -187,11 +190,13 @@ class PortChargeInvoiceExport implements FromCollection, WithHeadings, ShouldAut
                 "add_plan" => $row->add_plan,
                 "additional_fees" => $row->additional_fees,
                 "additional_fees_description" => $row->additional_fees_description,
+                "invoice_usd" => $invoice_usd,
+                "invoice_egp" => $invoice_egp,
             ];
         };
     }
 
-    public function calculateSumRowsExport(): \Closure
+    public function calculateSums(): \Closure
     {
         return function ($carry, $row) {
             $carry['Total'] = 'TOTAL';

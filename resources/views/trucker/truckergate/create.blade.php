@@ -16,8 +16,8 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                <form id="createForm" action="{{route('truckergate.store')}}" method="POST">
-                        @csrf 
+                <form novalidate id="createForm" action="{{route('truckergate.store')}}" method="POST">
+                        @csrf
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="booking">Booking No <span class="text-warning"> * (Required.) </span> </label>
@@ -34,6 +34,7 @@
                             </div>
                             @enderror
                         </div>
+                        
                         <div class="form-group col-md-6">
                             <label for="booking">Trucker <span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" id="booking" data-live-search="true" name="trucker_id" data-size="10"
@@ -98,9 +99,9 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-3">
-                            <label for="tax">QTY</label>
+                            <label for="tax">QTY <span class="text-warning"> * (Required.) </span></label>
                         <input type="text" class="form-control" id="qty" name="qty" value="{{old('qty')}}"
-                                placeholder="QTY" autocomplete="off">
+                                placeholder="QTY" autocomplete="off" required>
                             @error('qty')
                             <div style="color: red;">
                                 {{$message}}
@@ -142,14 +143,14 @@
                         </div>
                     </div>
 
-           
+
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>
                             <a href="{{route('truckergate.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                         </div>
                     </div>
-                
+
                     </form>
                 </div>
             </div>
@@ -158,4 +159,5 @@
     </div>
 </div>
 @endsection
+
 

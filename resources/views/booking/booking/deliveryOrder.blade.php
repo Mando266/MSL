@@ -84,11 +84,19 @@
                             <td class="col-md-3 tableStyle text-right underline" > بوليصه رقم</td>
                         </tr>
                         <tr>
+                            @if(optional($booking)->transhipment_port == null)
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            @else
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ optional(optional($booking->secondvoyage)->vessel)->name }} / {{ $booking->secondvoyage->voyage_no}}</td>
+                            @endif
                             <td class="col-md-3 tableStyle text-right underline"> البضاعة المذكوره أدناه والواردة علي الباخرة</td>
                         </tr>
                         <tr>
+                            @if(optional($booking)->transhipment_port == null)
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($firstVoyagePortImport)->eta}}</td>
+                            @else
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($secondVoyagePortImport)->eta}}</td>
+                            @endif
                             <td class="col-md-3 tableStyle text-right underline" >تاريخ الوصول</td>
                         </tr>
                         <tr>

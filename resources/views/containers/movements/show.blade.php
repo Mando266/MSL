@@ -245,8 +245,8 @@ if(request()->input('container_id') != null){
                                             <td>{{optional($items->booking)->ref_no}}</td>
                                             <td>{{$items->bl_no}}</td>
                                             <td>{{$items->free_time}}</td>
-                                            <td>{{{optional($item->importAgent)->name}}}</td>
-                                            <td>{{{optional($item->bookingAgent)->name}}}</td>
+                                            <td>{{{optional($items->importAgent)->name}}}</td>
+                                            <td>{{{optional($items->bookingAgent)->name}}}</td>
                                             <td>{{$items->remarkes}}</td>
                                             <td></td>
 

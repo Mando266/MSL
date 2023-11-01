@@ -13,6 +13,7 @@
                             </ol>
                         </nav>
                     </div>
+
                     @permission('Booking-Create')
                         <div class="row">
                             @if(Session::has('message'))
@@ -24,7 +25,7 @@
                     @endpermission
                     @permission('Booking-List')
                             <a class="btn btn-warning" href="{{ route('export.booking') }}">Export</a>
-                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Loadlist</a>
+                            <a class="btn btn-info" href="{{ route('export.loadList') }}">Load List / Discharge List</a>
                     @endpermission
                             </div>
                         </div>
@@ -103,12 +104,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
+                            <!-- <div class="form-group col-md-3">
                                 <label for="voyage_id">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -116,13 +117,13 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
-                            <div class="form-group col-md-3">
+                            </div> -->
+                            <!-- <div class="form-group col-md-3">
                                 <label for="voyage_id_second">Second Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id_second')
@@ -130,10 +131,22 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div> -->
+                            <div class="form-group col-md-3">
+                                <label for="voyage_id_both">Vessel / Voyage </label>
+                                <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($voyages as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('voyage_id_both')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
                             </div>
-                        </div>
 
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="Principal">Principal Name  </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
@@ -148,6 +161,9 @@
                                 </div>
                                 @enderror
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="status">Booking Status </span></label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_confirm" title="{{trans('forms.select')}}">
@@ -173,8 +189,6 @@
                                     <option value="0" {{"0" == old('is_transhipment',request()->input('is_transhipment')) ? 'selected':''}}>No</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="booking_type">Booking Type</label>
                                 <select class="selectpicker form-control" id="booking_type" data-live-search="true" name="booking_type" data-size="10"
@@ -182,20 +196,6 @@
                                     <option value="Import" {{"Import" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Import</option>
                                     <option value="Export" {{"Export" == old('booking_type',request()->input('booking_type')) ? 'selected':''}}>Export</option>
                                 </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="voyage_id_both">First And Second Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true" name="voyage_id_both" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($voyages as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('voyage_id_both',request()->input('voyage_id_both')) ? 'selected':''}}>{{$item->vessel->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('voyage_id_both')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
                             </div>
                         </div>
 
@@ -231,7 +231,7 @@
                                         <th>Booking Creation</th>
                                         <th>Booking Status</th>
                                         <th class='text-center' style='width:100px;'>add bl</th>
-                                        <th>Shipping Order</th>
+                                        <th>S Order / D Order</th>
                                         <th>Gate In</th>
                                         <th>Gate Out</th>
                                         <th class='text-center' style='width:100px;'></th>
@@ -265,9 +265,16 @@
                                             <td>{{optional($item->customer)->name}}</td>
                                             <td>{{optional($item->forwarder)->name}}</td>
                                             <td>{{optional($item->consignee)->name}}</td>
+                                        @if (optional($item->quotation)->shipment_type == "Import" && optional($item)->transhipment_port != null)
+                                            <td>{{optional(optional($item->secondvoyage)->vessel)->name}}</td>
+                                            <td>{{optional($item->secondvoyage)->voyage_no}}</td>
+                                            <td>{{optional(optional($item->secondvoyage)->leg)->name}}</td>
+                                            @else
                                             <td>{{optional(optional($item->voyage)->vessel)->name}}</td>
                                             <td>{{optional($item->voyage)->voyage_no}}</td>
                                             <td>{{optional(optional($item->voyage)->leg)->name}}</td>
+                                        @endif
+
                                             <td>{{optional($item->principal)->name}}</td>
                                             <td>{{optional($item->operator)->name}}</td>
                                             <td>{{optional($item->loadPort)->code}}</td>
@@ -291,7 +298,7 @@
                                                 @elseif($item->booking_confirm == 3)
                                                     <span class="badge badge-warning"> Draft </span>
                                                 @elseif($item->booking_confirm == 2)
-                                                <span class="badge badge-danger"> Cancelled </span>
+                                                    <span class="badge badge-danger"> Cancelled </span>
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -437,13 +444,6 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        document.getElementById('reset-select').addEventListener('click',() => {
-            $("option:selected").remove()
-            $('.selectpicker').selectpicker('refresh')
-        })
-    });
-
      $('.show_confirm').click(function(event) {
           var form =  $(this).closest("form");
           var name = $(this).data("name");

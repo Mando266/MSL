@@ -24,7 +24,7 @@
                                 <select class="selectpicker form-control" id="bldraft" name="voyage_id" data-live-search="true" data-size="10"
                                     title="{{ trans('forms.select') }}">
                                     @foreach ($voyages as $item)
-                                        <option value="{{ $item->id }}" {{ $item->id == old('voyage_id') ? 'selected' : '' }}>{{ $item->voyage_no }}</option>
+                                        <option value="{{ $item->id }}" {{ $item->id == old('voyage_id') ? 'selected' : '' }}>{{ $item->voyage_no }}  - {{ optional($item->leg)->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('voyage_id')
@@ -34,14 +34,13 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="port">Select Disharge Port</label>
                                 <select class="selectpicker form-control" id="discharge_ports" name="discharge_port_id" data-live-search="true" data-size="10"
                                     title="{{ trans('forms.select') }}" disabled>
 
-                                    @foreach($voyages->pluck('voyagePorts')->flatmap(fn($s)=>$s->pluck('port'))->unique() as $port)
+                                    @foreach($voyages->pluck('voyagePorts')->flatmap(fn($s)=>$s->pluck('port'))->unique()->filter() as $port)
                                         <option class="portOption" value={{ $port->id }}>
                                             {{ $port->name }}
                                         </option>
@@ -59,7 +58,7 @@
                                 <select class="selectpicker form-control" id="load_ports" name="load_port_id" data-live-search="true" data-size="10"
                                     title="{{ trans('forms.select') }}" disabled>
 
-                                    @foreach($voyages->pluck('voyagePorts')->flatmap(fn($s)=>$s->pluck('port'))->unique() as $port)
+                                    @foreach($voyages->pluck('voyagePorts')->flatmap(fn($s)=>$s->pluck('port'))->unique()->filter() as $port)
                                         <option class="portOption" value={{ $port->id }}>
                                             {{ $port->name }}
                                         </option>

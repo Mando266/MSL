@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
@@ -25,7 +25,7 @@
                         <div class="col-md-3">
                         </div>
                         <table class="col-md-6 " style="height: 20px;">
-                        
+
                             <tbody>
                             <tr>
                                 <td style="height: 45px;"></td>
@@ -93,7 +93,11 @@
                             <td class="col-md-3 tableStyle text-right underline" >B/L NO </td>
                         </tr>
                         <tr>
+                            @if(optional($booking)->transhipment_port == null)
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            @else
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->secondvoyage->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            @endif
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
 
@@ -119,7 +123,7 @@
             <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                 Type
             </td>
-    
+
             <td class="col-md-2 tableStyle underline" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                 Notes
             </td>
@@ -137,7 +141,7 @@
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                 {{optional($detail->containerType)->code}}
             </td>
-         
+
             <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-left-style: hidden; font-size: 14px; padding: .75rem;">
                 {{$detail->haz}}
             </td>
@@ -163,7 +167,7 @@
             {{$detail->weight}}
             </td>
                 <!-- {{$detail->qty}}  Containers -->
-  
+
         </tr>
         @endfor
         @endif

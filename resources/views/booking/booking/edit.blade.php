@@ -40,7 +40,7 @@
                     </div>
                 </form>
                 @endif
-                    <form id="editForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
+                    <form novalidate id="createForm" action="{{route('booking.update',['booking'=>$booking])}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
                     <input type="hidden" name="quotation_id" value="{{old('quotation_id',$quotation->id)}}">
@@ -404,7 +404,7 @@
                         </div>
                         <div class="form-row">
                         @if($quotation->id != 0)
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -419,7 +419,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="voyage_id_second">Second Vessel / Voyage</label>
                                 <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -449,7 +449,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
                                  title="{{trans('forms.select')}}" disabled>
@@ -612,7 +612,7 @@
                             <div class="form-group col-md-3">
                                 <label for="commodity_description">Commodity Description <span class="text-warning"> * (Required.) </span></label>
                                 <input type="text" class="form-control" id="commodity_description" name="commodity_description" value="{{old('commodity_description',$booking->commodity_description)}}"
-                                    placeholder="Commodity Description" autocomplete="off">
+                                    placeholder="Commodity Description" autocomplete="off" required>
                                 @error('commodity_description')
                                 <div style="color: red;">
                                     {{$message}}
@@ -622,12 +622,12 @@
                         </div>
                         <div class="form-row">
                             @if($quotation->id != 0)
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label>Shipment Status</label>
                                 <input type="text" class="form-control" name="shipment_type" value="{{$quotation->shipment_type}}" readonly>
                             </div>
                             @else
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label>Shipment Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="shipment_type" title="{{trans('forms.select')}}" required>
                                    <option value="Import" {{$booking->id == old('shipment_type') ||  $booking->shipment_type == "Import"? 'selected':''}}>Import</option>
@@ -637,12 +637,12 @@
                             @endif
 
                             @if($quotation->id != 0)
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label>Booking Status</label>
                                 <input type="text" class="form-control" name="booking_type" value="{{$quotation->quotation_type}}" readonly>
                             </div>
                             @else
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label>Booking Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="booking_type" title="{{trans('forms.select')}}" required>
                                    <option value="Empty" {{$booking->id == old('booking_type') ||  $booking->booking_type == "Empty"? 'selected':''}}>Empty</option>
@@ -650,7 +650,22 @@
                                 </select>
                             </div>
                             @endif
-
+                            <div class="form-group col-md-3">
+                                <label>Exporter Number</label>
+                                <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number" value="{{old('exportal_id',$booking->exportal_id)}}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                    <label for="status">Movement</label>
+                                    <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
+                                        <option value="FCL/FCL" {{$booking->movement == old('movement') ||  $booking->movement == "FCL/FCL"? 'selected':''}}>FCL/FCL</option>
+                                        <option value="LCL/LCL" {{$booking->movement == old('movement') ||  $booking->movement == "LCL/LCL"? 'selected':''}}>LCL/LCL</option>
+                                    </select>
+                                    @error('movement')
+                                    <div style="color:red;">
+                                        {{$message}}
+                                    </div>
+                                    @enderror
+                            </div>
                             <div class="form-group col-md-5">
                                 <label for="details">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes"
@@ -674,25 +689,6 @@
                                 </div>
                             </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Exporter Number</label>
-                            <input type="text" class="form-control"  style="background-color:#fff" name="exportal_id" placeholder="Exporter Number" value="{{old('exportal_id',$booking->exportal_id)}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                                <label for="status">Movement</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="movement" title="{{trans('forms.select')}}">
-                                    <option value="FCL/FCL" {{$booking->movement == old('movement') ||  $booking->movement == "FCL/FCL"? 'selected':''}}>FCL/FCL</option>
-                                    <option value="LCL/LCL" {{$booking->movement == old('movement') ||  $booking->movement == "LCL/LCL"? 'selected':''}}>LCL/LCL</option>
-                                </select>
-                                @error('movement')
-                                <div style="color:red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                        </div>
-                    <div>
-
                         <h4>Container Details</h4>
                             @error('containerDetails')
                                 <div style="color: red; font-size: 30px; text-align: center;">
@@ -705,8 +701,11 @@
                                         <th class="text-center">Seal No</th>
                                         <th class="text-center">Container Type</th>
                                         <th class="text-center">QTY</th>
-                                        <th class="text-center">Activity Location</th>
-                                        <th class="text-center">Container No</th>
+                                        @if(optional($quotation)->shipment_type == "Import")
+                                        <th class="text-center">Return Location</th>
+                                        @else
+                                        <th class="text-center">Pick Up Location</th>
+                                        @endif                                        <th class="text-center">Container No</th>
                                         <th class="text-center">HAZ / Reefer/ OOG Details / Haz Approval Ref</th>
                                         <th class="text-center">weight</th>
                                         <th class="text-center">vgm</th>
@@ -771,14 +770,18 @@
                                                     <option value="{{$transhipmentContainer->id}}" {{$transhipmentContainer->id == old('container_id',$transhipmentContainer->container_id) ? 'selected':''}}>{{$transhipmentContainer->code}}</option>
                                                 @endforeach
                                             @else
-                                                @foreach ($oldcontainers as $container)
+                                                @foreach ($oldContainers as $container)
                                                     <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
                                     </td>
                                     @else
-                                    <td class="ports">
+                                    @if($quotation->shipment_type == 'Import')
+                                        <td>
+                                    @else
+                                        <td class="ports">
+                                    @endif
                                         <select class="selectpicker form-control" id="activity_location_id" name="containerDetails[{{ $key }}][activity_location_id]" data-live-search="true"  data-size="10"
                                         title="{{trans('forms.select')}}" disabled>
                                             @foreach ($activityLocations as $activityLocation)
@@ -794,7 +797,7 @@
                                                     <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
                                                 @endforeach
                                                 @else
-                                                @foreach ($oldcontainers as $container)
+                                                @foreach ($oldContainers as $container)
                                                     <option value="{{$container->id}}" {{$container->id == old('container_id',$item->container_id) ? 'selected':''}}>{{$container->code}}</option>
                                                 @endforeach
                                                 @endif
@@ -875,7 +878,7 @@ $(document).ready(function(){
                 '<td><input type="text" name="containerDetails['+counter+'][seal_no]" class="form-control" autocomplete="off" placeholder="Seal No"></td>'+
                 '<td><select class="selectpicker form-control" id="selectpicker" data-live-search="true" name="containerDetails['+counter+'][container_type]" data-size="10">@foreach ($equipmentTypes as $item)@if($quotation->equipment_type_id != null)<option value="{{$item->id}}" {{$item->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$item->name}}</option>@else<option value="{{$item->id}}" {{$item->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$item->name}}</option> @endif @endforeach</select></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][qty]" class="form-control input" autocomplete="off" id="number"  onchange="return check_value();" placeholder="QTY" required></td>'+
-                '<td class="ports"><select class="selectpicker form-control" id="selectpicker" data-live-search="true" required name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
+                '@if($quotation->shipment_type == 'Import')<td>@else<td class="ports">@endif<select class="selectpicker form-control" id="selectpicker" data-live-search="true" required name="containerDetails['+counter+'][activity_location_id]" data-size="10" title="{{trans('forms.select')}}">@foreach ($activityLocations as $activityLocation)<option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id') ? 'selected':''}}>{{$activityLocation->code}}</option> @endforeach </select></td>'+
                 '<td class="containerDetailsID"><select id="selectpicker" class="selectpicker form-control" data-live-search="true" name="containerDetails['+counter+'][container_id]" data-size="10"><option value="000">Select</option> @if($quotation->id == 0) @foreach ($transhipmentContainers as $item)<option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option> @endforeach @else @foreach ($containers as $item)<option value="{{$item->id}}" {{$item->id == old('container_id') ? 'selected':''}}>{{$item->code}}</option> @endforeach @endif</select></td>'+
                 '<td><input type="text" value="" name="containerDetails['+counter+'][haz]" class="form-control" autocomplete="off" placeholder="HAZ / REEFER/ OOG DETAILS / HAZ APPROVAL REF"></td>'+
                 '<td><input type="text" name="containerDetails['+counter+'][weight]" class="form-control" autocomplete="off" placeholder="Weight"></td>'+
@@ -972,7 +975,7 @@ $(function(){
     }
 </script>
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('select').removeAttr('disabled');
     });
 </script>

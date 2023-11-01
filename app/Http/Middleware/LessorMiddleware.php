@@ -15,6 +15,7 @@ class LessorMiddleware
 
             if (!empty($lessor_id)) {
                 // Convert the comma-separated string to an array
+                $lessor_id = rtrim($lessor_id, ', ');
                 $lessorArray = explode(',', $lessor_id);
 
                 Movements::addGlobalScope('lessor', function ($builder) use ($lessorArray) {

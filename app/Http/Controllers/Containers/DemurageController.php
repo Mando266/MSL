@@ -126,20 +126,20 @@ class DemurageController extends Controller
      */
     public function edit(Demurrage $demurrage)
     {
-        $this->authorize(__FUNCTION__, Demurrage::class);
-        $user = Auth::user();
-        $demurrage = $demurrage->load('periods');
+        $this->authorize(__FUNCTION__,Demurrage::class);
+        $slabs = DemuragePeriodsSlabs::where('demurage_id', $demurrage->id)->with('periods')->get();
+        $tariffTypes = TariffType::all();
         $countries = Country::orderBy('id')->get();
         $bounds = Bound::orderBy('id')->get();
         $containersTypes = ContainersTypes::orderBy('id')->get();
-        $ports = Ports::where('company_id', $user->company_id)->orderBy('id')->get();
-        $triffs = Triff::all();
+        $ports = Ports::orderBy('id')->where('company_id', Auth::user()->company_id)->get();
+        $triffs = Triff::get();
         $currency = Currency::all();
-        $terminals = Terminals::where('company_id', $user->company_id)->get();
+        $terminals = Terminals::where('company_id', Auth::user()->company_id)->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
-        return view('containers.demurrage.edit', [
-            'terminals' => $terminals,
+        return view('containers.demurrage.edit',[
             'demurrage' => $demurrage,
+            'terminals' => $terminals,
             'countries' => $countries,
             'bounds' => $bounds,
             'containersTypes' => $containersTypes,
@@ -147,14 +147,19 @@ class DemurageController extends Controller
             'triffs' => $triffs,
             'currency' => $currency,
             'containerstatus' => $containerstatus,
+            'tariffTypes' => $tariffTypes,
+            'slabs' => $slabs
         ]);
     }
 
     public function update(Request $request, Demurrage $demurrage)
     {
         $this->authorize(__FUNCTION__, Demurrage::class);
-        $demurrage = $demurrage->load('periods');
-        $input = [
+
+        // Load the associated periods for the demurrage model
+        $demurrage->load('slabs');
+
+        $slabsData = [
             'country_id' => $request->country_id,
             'terminal_id' => $request->terminal_id,
             'port_id' => $request->port_id,
@@ -167,11 +172,19 @@ class DemurageController extends Controller
             'is_storge' => $request->is_storge,
             'container_status' => $request->container_status,
         ];
-        $demurrage->update($input);
-        $demurrage->createOrUpdatePeriod($request->period);
+
+        // Update the Demurrage model with the slabsData
+        $demurrage->update($slabsData);
+
+        // Create or update the slabs data
+        $demurrage->createOrUpdateSlabs($request->slabs);
+
+        // Delete the periods based on the removed items
         Period::destroy(explode(',', $request->removed));
+
         return redirect()->route('demurrage.index')->with('success', trans('Demurrage.updated.success'));
     }
+
 
     /**
      * Remove the specified resource from storage.

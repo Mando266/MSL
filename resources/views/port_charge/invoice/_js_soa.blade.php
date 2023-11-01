@@ -32,6 +32,7 @@
         $(document).on('change', '.voyage-applied-costs select', handleVoyageCostsChange);
         $(document).on('click change keyup paste', () => calculateTotals());
         $(document).on('change', '#country', loadPorts)
+        $(document).on('click', '.in-egp', handleInEgpCheck);
         $('#checkAll').change(function () {
             $('.in-egp').prop('checked', this.checked);
             calculateTotals()
@@ -40,8 +41,24 @@
             setToZeroIfNull()
             deleteEmptyOnSubmit(e)
             addTypesToSelectedCosts(e)
+            setEgpUsd()
         });
         $("#add-many-containers").on('click', handleAddContainers);
+    }
+
+    function handleInEgpCheck() {
+        const target = $(this).data('target');
+        const isChecked = $(this).is(':checked');
+        const table = $(this).closest('table');
+
+        const inputs = table.find('input[name*="' + target + '"]');
+
+        inputs.each(function () {
+            const inputName = $(this).attr('name');
+            const newName = isChecked ? inputName.replace('usd', 'egp') : inputName.replace('egp', 'usd');
+            $(this).attr('name', newName);
+        });
+        
     }
 
     function handleVoyageChange() {
@@ -164,7 +181,10 @@
             $('.included').each(function () {
                 const table = $(this).closest('table');
                 const field = $(this).data('field');
-                const checkbox = table.find(`input[type="checkbox"].${field}`);
+                let checkbox = table.find(`input[type="checkbox"].${field}`);
+                if (checkbox.length === 0) {
+                    checkbox = $("#checkAll")
+                }
 
                 if (checkbox.prop('checked')) {
                     USD_to_EGP += parseFloat($(this).val()) || 0;
@@ -441,6 +461,10 @@
         if (dynamicFieldsSelect.find('option:selected[value="storage"]').length > 0) {
             dynamicFieldsSelect.append('<option value="storage_days" selected>power days</option>');
         }
+        if ($('.additional-cost').filter((index, input) => parseFloat($(input).val()) > 0).length > 0) {
+            dynamicFieldsSelect.append('<option value="additional_fees" selected>additional_fees</option>');
+        }
+
     }
 
     function setToZeroIfNull() {
@@ -552,6 +576,10 @@
         }
     }
 
+    function setEgpUsd() {
+        // $(".in-egp").trigger('click')
+    }
+
     function handleContainerNoChange() {
         const containerNumber = $(this).val().trim();
         const vesselId = $('#vessel_id').val();
@@ -620,7 +648,7 @@
             const country = $('#country').val();
             const portsSelect = $('#ports');
 
-            const { data } = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
+            const {data} = await axios.get(`/api/master/ports/${country}/{{ auth()->user()->company_id }}`);
 
             const ports = data.ports || [];
             const options = ports.map(port => `<option value="${port.id}">${port.name}</option>`);
@@ -682,11 +710,19 @@
     </td>
     <td>
         <select name="rows[service][]" class="form-control service_type" required>
-            <option selected hidden>Select</option>
+            <option selected>Select</option>
+            <option value="999990-HATCH-COVER-OPERATIONS">999990-HATCH-COVER-OPERATIONS</option>
+            <option value="DISCHARGING-OPERATIONS">DISCHARGING-OPERATIONS</option>
+            <option value="YARD-0060-AND-GATES-SERVICES">YARD-0060-AND-GATES-SERVICES</option>
             <option value="001-VSL-RE-STW-OPR">001-VSL-RE-STW-OPR</option>
+            <option value="002-VSL-HATCH-CVR-OPR">002-VSL-HATCH-CVR-OPR</option>
+            <option value="0021-LOADING-OPRERATION">0021-LOADING-OPRERATION</option>
             <option value="005-VSL-DIS-OPR">005-VSL-DIS-OPR</option>
             <option value="006-VSL-LOD-OPR">006-VSL-LOD-OPR</option>
+            <option value="0061-SERVICE-OF-YARD-AND-GATES-TO-EXPORTS">0061-SERVICE-OF-YARD-AND-GATES-TO-EXPORTS</option>
             <option value="007-VSL-TRNSHP-OPR">007-VSL-TRNSHP-OPR</option>
+            <option value="009-VSL-OPR-IMDG">009-VSL-OPR-IMDG</option>
+            <option value="010-VSL-OPR-OOG">010-VSL-OPR-OOG</option>
             <option value="011-VSL-HOL-WRK">011-VSL-HOL-WRK</option>
             <option value="018-YARD-SERV">018-YARD-SERV</option>
             <option value="019-LOG-SERV">019-LOG-SERV</option>
@@ -694,14 +730,21 @@
             <option value="021-STRG-INBND-FL-CONTRS">021-STRG-INBND-FL-CONTRS</option>
             <option value="024-STRG-OUTBND-CONTRS-FL">024-STRG-OUTBND-CONTRS-FL</option>
             <option value="025-STRG-OUTBND-CONTRS-EM">025-STRG-OUTBND-CONTRS-EM</option>
+            <option value="027-STRG-TRNSHP-CONTRS">027-STRG-TRNSHP-CONTRS</option>
+            <option value="02821-POWER-SUPPLY-OF-REEFR-CONTAINER">02821-POWER-SUPPLY-OF-REEFR-CONTAINER</option>
             <option value="031-STRG-PR-DR-CONTRS">031-STRG-PR-DR-CONTRS</option>
             <option value="033-REFR-CONTR-PWR-SUP">033-REFR-CONTR-PWR-SUP</option>
             <option value="037-MISC-REV-GAT-SERV">037-MISC-REV-GAT-SERV</option>
             <option value="038-MISC-REV-YARD-CRN-SHIFTING">038-MISC-REV-YARD-CRN-SHIFTING</option>
             <option value="039-MISC-REV-GAT-SERV-LIFT OFF">039-MISC-REV-GAT-SERV-LIFT OFF</option>
             <option value="045-MISC-REV-ELEC-REP-SERV">045-MISC-REV-ELEC-REP-SERV</option>
+            <option value="048-MISC-REV-OTBND-CONTRS-DR">048-MISC-REV-OTBND-CONTRS-DR</option>
             <option value="051-VSL-OPR-ADD-PLAN">051-VSL-OPR-ADD-PLAN</option>
-            <option value="060-DISINFECTION OF CONTAINERS">060-DISINFECTION OF CONTAINERS</option>
+            <option value="059-WAR-MARTYRS">059-WAR-MARTYRS</option>
+            <option value="060-DISINFECTION-OF-CONTAINERS">060-DISINFECTION-OF-CONTAINERS</option>
+            <option value="0991-HANDLING-FEES">0991-HANDLING-FEES</option>
+            <option value="2981-ADMINISTRATIVE-EXPENSES">2981-ADMINISTRATIVE-EXPENSES</option>
+            <option value="50-ELECTRONIC-REPORTS-SERVICE">50-ELECTRONIC-REPORTS-SERVICE</option>
         </select>
     </td>
     <td><input type="text" class="form-control voyage-name"></td>
@@ -712,7 +755,7 @@
                     <td><input type="text" name="rows[shipment_type][]" class="shipment_type form-control"></td>
                     <td><input type="text" name="rows[quotation_type][]" class="quotation_type form-control"></td>
                     ${generateDynamicInputsHtml()}
-                    <td><input type="number" name="rows[additional_fees][]"
+                    <td><input type="number" name="rows[additional_fees][][usd]"
                        class="form-control additional-cost included"
                        step="0.01" placeholder="cost" data-field="additional_fees_cost">
                     </td>
@@ -773,7 +816,7 @@
 
             dynamicInputsHtml += `
                     <td data-field="${td_dat_field}">
-                        <input type="text" name="rows[${field}][]" class="form-control dynamic-input" data-field="${field}_cost">
+                        <input type="text" name="rows[${field}][][usd]" class="form-control dynamic-input" data-field="${field}_cost">
                     </td>
                     ${selectHtml}
                 `;

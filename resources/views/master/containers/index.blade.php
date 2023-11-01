@@ -122,6 +122,9 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
+                                    @php
+                                            $container = $item->container;
+                                    @endphp
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->code}}</td>
@@ -143,6 +146,7 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                    @if ($container && $container->movement->count() > 0)
                                                     @permission('Containers-Delete')
                                                     <li>
                                                         <form action="{{route('containers.destroy',['container'=>$item->id])}}" method="post">
@@ -152,6 +156,7 @@
                                                         </form>
                                                     </li>
                                                     @endpermission
+                                                    @endif
                                                     @if($item->certificat == !null)
                                                     <li>
                                                         <a href='{{asset($item->certificat)}}' target="_blank">

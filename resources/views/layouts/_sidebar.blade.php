@@ -28,49 +28,34 @@
             </li>
         </ul>
         <div class="shadow-bottom"></div>
-        <ul class="list-unstyled menu-categories" id="accordionMenu">
-            <li class="menu">
-                <a href="{{route('home')}}" data-toggle="collapse" data-link="true" aria-expanded="true" class="dropdown-toggle">
-                    <div class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-home">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                        <span>Dashboard</span>
-                    </div>
-                </a>
-            </li>
-
-            @permission('User-List')
-            <li class="menu">
-                <a href="{{route('users.index')}}" data-toggle="collapse" data-link="true" aria-expanded="true" class="dropdown-toggle">
-                    <div class="">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        <span>Users</span>
-                    </div>
-                    <div>
-                    </div>
-                </a>
-            </li>
-                @endpermission
-
-                @permission('Role-List')
-                <li class="menu">
-                <a href="{{route('roles.index')}}" data-toggle="collapse" data-link="true" aria-expanded="true" class="dropdown-toggle">
-                    <div class="">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                        <span>Roles</span>
-                    </div>
-                    <div>
-                    </div>
-                </a>
-                </li>
-                @endpermission
+</br>
         <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
+
+        <li class="menu">
+                        <a href="#component66" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                            <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span>Administration</span>
+                            </div>
+                            <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="component66" data-parent="#accordionExample">
+
+                                @permission('User-List')
+                                    <li>
+                                        <a href="{{route('users.index')}}"> Users </a>
+                                    </li>
+                                @endpermission
+                                @permission('Role-List')
+                                    <li>
+                                        <a href="{{route('roles.index')}}"> Roles</a>
+                                    </li>
+                                @endpermission
+                                </ul>
+                </li>
+
             @permission('Ports-List')
             <li class="menu">
                         <a href="#components" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
@@ -166,7 +151,7 @@
 
                                 @permission('Suppliers-List')
                                     <li>
-                                        <a href="{{route('seller.index')}}">Lessor or Seller</a>
+                                        <a href="{{route('seller.index')}}">Container Ownerships</a>
                                     </li>
                                 @endpermission
 
@@ -196,7 +181,7 @@
             </li>
             @endpermission
         </ul>
-                @permission('Voyages-List')
+            @permission('Voyages-List')
                 <li class="menu">
                     <a href="{{route('voyages.index')}}" data-toggle="collapse" data-link="true" aria-expanded="true" class="dropdown-toggle">
                         <div class="">
@@ -207,9 +192,9 @@
                         </div>
                     </a>
                 </li>
-                @endpermission
+            @endpermission
 
-                    <li class="menu">
+                <li class="menu">
                         <a href="#component3" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -241,10 +226,9 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component3" data-parent="#accordionExample">
-
-                                @permission('Containers-List')
+                                @permission('StockTypes-List')
                                     <li>
-                                        <a href="{{route('containers.index')}}"> Containers </a>
+                                        <a href="{{route('stock-types.index')}}"> Stock Types </a>
                                     </li>
                                 @endpermission
                                 @permission('ContainersTypes-List')
@@ -252,12 +236,16 @@
                                         <a href="{{route('container-types.index')}}"> Container Types </a>
                                     </li>
                                 @endpermission
-
                                 @permission('Containers-List')
+                                    <li>
+                                        <a href="{{route('containers.index')}}"> Containers </a>
+                                    </li>
+                                @endpermission
+                                <!-- @permission('Containers-List')
                                     <li>
                                         <a href="{{route('tracking.create')}}"> Containers Tracking</a>
                                     </li>
-                                @endpermission
+                                @endpermission -->
 
                                 @permission('Movements-List')
                                     <li>
@@ -270,11 +258,7 @@
                                     </li>
                                 @endpermission
 
-                                @permission('StockTypes-List')
-                                    <li>
-                                        <a href="{{route('stock-types.index')}}"> Stock Types </a>
-                                    </li>
-                                @endpermission
+
                                 <!--
                                 @permission('Demurrage-List')
                                 <li>
@@ -282,7 +266,7 @@
                                 </li>
                                 @endpermission -->
                                 </ul>
-            </li>
+                </li>
 
             @permission('Demurrage-List')
                     <li class="menu">
@@ -348,12 +332,6 @@
                                     <a href="{{route('quotations.index')}}">Quotations Gates</a>
                                 </li>
                                 @endpermission
-
-                                <!-- @permission('Quotation-Create')
-                                    <li>
-                                        <a href="{{route('quotations.create')}}">Create New Quotation</a>
-                                    </li>
-                                @endpermission -->
                         </ul>
             </li>
             @endpermission

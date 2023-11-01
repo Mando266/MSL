@@ -4,6 +4,7 @@ namespace App\Models\Voyages;
 
 use App\Models\Bl\BlDraft;
 use App\Models\Containers\Movements;
+use App\Models\Master\Lines;
 use App\Models\Master\Vessels;
 use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Model;
@@ -44,22 +45,27 @@ class Voyages extends Model implements PermissionSeederContract
     }
     public function bldrafts()
     {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',0);
-        });;
+        return $this->hasMany(BlDraft::class ,'voyage_id','id');
     }
-    public function transhipmentBldrafts()
+    public function xmlBldrafts()
     {
-        return $this->hasMany(BlDraft::class ,'voyage_id','id')->whereHas('booking',function($q){
-            $q->where('is_transhipment',1);
-        });;
-    }
+        $voyageId = $this->id;
 
+        return $this->bldrafts()
+            ->whereHas('booking', function($query) use ($voyageId) {
+                $query->where('voyage_id', $voyageId)
+                    ->orWhere('voyage_id_second', $voyageId);
+            })
+            ->with('booking', 'blDetails.container');
+    }
     public function bookings()
     {
         return $this->hasMany(Booking::class ,'voyage_id','id');
     }
-
+    public function bookingSecondVoyage()
+    {
+        return $this->hasMany(Booking::class ,'voyage_id_second','id');
+    }
     public function createOrUpdatevoyageport($inputs)
     {
 
