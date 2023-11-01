@@ -119,8 +119,7 @@ class ImportExportController extends Controller
 
     public function exportSearch()
     {
-        dd(request()->inputs());
-        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'items');
+        return $this->exportWithValidation(new MovementsExportSearch(json_decode(request()->items,true)), 'Movements.xlsx', 'items');
     }
 
     public function agentSearch()
@@ -165,9 +164,9 @@ class ImportExportController extends Controller
 
     private function exportWithValidation($export, $filename, $sessionKey)
     {
-        if (!session()->has($sessionKey)) {
-            return $this->errorMsg();
-        }
+//        if (!session()->has($sessionKey)) {
+//            return $this->errorMsg();
+//        }
 
         return Excel::download($export, $filename);
     }

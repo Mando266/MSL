@@ -27,8 +27,14 @@
                             @endpermission
                             @if(!$items->isEmpty())
                                     {{-- <a class="btn btn-danger" href="{{ route('export.agent') }}">Agent Rep Report</a> --}}
+
+                                    <form action="{{route('export.search')}}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="items" value="{{$exportMovement}}">
+                                        <button type="submit">Submit</button>
+                                    </form>
                                     <a class="btn btn-info" href="{{ route('export.search',['container_id'=>request()->input('container_id'),'port_location_id'=>request()->input('port_location_id'),'voyage_id'=>request()->input('voyage_id'),
-                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no'),'items'=>$items]) }}">Export Last Movements</a>
+                                    'movement_id'=>request()->input('movement_id'),'bl_no'=>request()->input('bl_no'),'booking_no'=>request()->input('booking_no'),'items'=>$items->getCollection()]) }}">Export Last Movements</a>
 
                                 @endif
                                 @endpermission
