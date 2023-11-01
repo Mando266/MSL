@@ -6,6 +6,7 @@ use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainerStatus;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
@@ -17,8 +18,8 @@ use App\Models\Booking\Booking;
 class MovementsExport implements FromCollection,WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return array
+     */
     // use Exportable;
 
     public function headings(): array
@@ -65,9 +66,9 @@ class MovementsExport implements FromCollection,WithHeadings
     }
 
     /**
-    * @return \Illuminate\Support\Collection
+    * @return Collection
     */
-    public function collection()
+    public function collection(): Collection
     {
         $movements = session('items');
         // dd($movements);

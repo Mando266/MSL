@@ -103,7 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('loadlistBl', 'ImportExportController@loadlistBl')->name('export.BLloadList');
     Route::get('Bllist', 'ImportExportController@Bllist')->name('export.BLExport');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
-    Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
+    Route::post('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('agentSearch', 'ImportExportController@agentSearch')->name('export.agent');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');

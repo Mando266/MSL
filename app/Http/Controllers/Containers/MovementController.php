@@ -311,11 +311,10 @@ class MovementController extends Controller
         $containersMovements = ContainersMovement::orderBy('id')->get();
         $containerstatus = ContainerStatus::orderBy('id')->get();
         $vessels = Vessels::where('company_id', Auth::user()->company_id)->orderBy('name')->get();
-        // $items = Movements::where('company_id',Auth::user()->company_id)->wherein('id',$temp)->orderBy('movement_date','desc')->orderBy('id','desc')->groupBy('container_id')->with('container.containersOwner','movementcode.containerstock')->get();
-        session()->flash('items', $exportMovements);
         if (count($temp) != 1) {
             return view('containers.movements.index', [
                 'items' => $movements,
+                'exportMovement' => $exportMovements->pluck('id'),
                 'containerstatus' => $containerstatus,
                 'movementsBlNo' => $movementsBlNo,
                 'bookings' => $bookings,
@@ -335,6 +334,7 @@ class MovementController extends Controller
                 if ($movements->count() == 0) {
                     return view('containers.movements.index', [
                         'items' => $movements,
+                        'exportMovement' => $exportMovements->pluck('id'),
                         'movementsBlNo' => $movementsBlNo,
                         'bookings' => $bookings,
                         'containers' => $containers,
@@ -348,7 +348,6 @@ class MovementController extends Controller
                         'vessels' => $vessels,
                     ]);
                 }
-                // dd($movements);
                 $container_id = Containers::where('id', $movements->first()->container_id)->pluck('id')->first();
             }
             $movement = Movements::find($container_id);
@@ -480,7 +479,7 @@ class MovementController extends Controller
             $demurrages = Demurrage::get();
             $mytime = Carbon::now()->format('d-m-Y');
             is_array($container_id) ?? $container_id = $container_id[0];
-            // dd($exportMovements);
+             dd($exportMovements);
             session()->flash('items', $movements);
             session(['returnUrl' => url()->previous()]);
 
