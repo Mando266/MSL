@@ -17,11 +17,19 @@ use App\Models\Booking\Booking;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
+    protected $movements;
+
+    /**
+     * @param array $movements
+     */
+    public function __construct(array $movements)
+    {
+        $this->movements = Movements::whereIn('id',$movements)->with('container.containersTypes','container.seller','container.containersOwner')->get();
+    }
+
     /**
      * @return array
      */
-    // use Exportable;
-
     public function headings(): array
     {
         return [
@@ -70,8 +78,8 @@ class MovementsExport implements FromCollection,WithHeadings
     */
     public function collection(): Collection
     {
-        $movements = session('items');
-        // dd($movements);
+        $movements = $this->movements;
+
                 foreach($movements  ?? [] as $movement){
                     unset($movement['id']);
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
