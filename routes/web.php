@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
    | master routes
    |--------------------------------------------
    */
-    Route::get('cache/clear',function (){
+    Route::get('cache/clear', function () {
         Artisan::call('cache:clear');
         dd('done');
     });
@@ -94,7 +94,7 @@ Route::group(['middleware' => 'auth'], function () {
     /*Excel import export*/
     Route::get('export', 'ImportExportController@export')->name('export');
     Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
-    Route::get('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
+    Route::post('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
     Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
@@ -234,7 +234,7 @@ Route::group(['middleware' => 'auth'], function () {
     | Storage routes
     |--------------------------------------------
     */
-    Route::post('/preview', [PreviewController::class,'index'])->name('preview.index');
+    Route::post('/preview', [PreviewController::class, 'index'])->name('preview.index');
     Route::prefix('storage')->namespace('Storage')->group(function () {
         Route::resource('storage', 'StorageController');
 
