@@ -84,14 +84,20 @@ class ImportExportController extends Controller
         return Excel::download(new QuotationExport(request()), 'Quotations.xlsx');
     }
 
-    public function exportCalculationForInvoice()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportCalculationForInvoice(): BinaryFileResponse
     {
         return $this->exportWithValidation(new CalculationExport(), 'InvoiceCalculation.xlsx', 'calculations');
     }
 
-    public function exportContainers()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportContainers(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new ContainersExport, 'Containers.xlsx', 'containers');
+        return Excel::download(new ContainersExport(request()), 'Containers.xlsx');
     }
 
     public function importContainers()
@@ -110,14 +116,20 @@ class ImportExportController extends Controller
         return $this->exportWithValidation(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx', 'TriffNo');
     }
 
-    public function exportBooking()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportBooking(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new BookingExport, 'Bookings.xlsx', 'bookings');
+        return Excel::download(new BookingExport(request()), 'Bookings.xlsx');
     }
 
-    public function loadlistBooking()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function loadlistBooking(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new LoadListExport, 'Loadlist.xlsx', 'bookings');
+        return Excel::download(new LoadListExport(request()), 'Loadlist.xlsx');
     }
 
     public function exportVoyages()
