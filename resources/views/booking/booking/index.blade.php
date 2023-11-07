@@ -140,6 +140,8 @@
 
 
 
+
+
                             @endforeach
                             </select>
 @error('voyage_id')
@@ -154,6 +156,8 @@
                                  title="{{trans('forms.select')}}">
                                     @foreach ($voyages as $item)
                                 <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
+
+
 
 
 
@@ -272,7 +276,7 @@
 
                         <div class="form-row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-success mt-3">Search</button>
+                                <button id="search-btn" type="submit" class="btn btn-success mt-3">Search</button>
                                 <button type="button" id="reset-select" class="btn btn-info mt-3">Reset</button>
                                 <a href="{{route('booking.index')}}"
                                    class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
@@ -549,8 +553,8 @@
                     }
                 });
         });
+        const searchForm = $("#search-form");
         $('#export-current').click(() => {
-            let searchForm = $("#search-form");
             searchForm.attr('method', 'post');
             searchForm.attr('action', '{{ route('export.booking') }}');
             searchForm.find('input[name="_token"]').prop('disabled', false);
@@ -558,10 +562,15 @@
             searchForm.submit();
         });
         $('#export-current-loadlist').click(() => {
-            let searchForm = $("#search-form");
             searchForm.attr('method', 'post');
             searchForm.attr('action', '{{ route('export.loadList') }}');
             searchForm.find('input[name="_token"]').prop('disabled', false);
+
+            searchForm.submit();
+        });
+        $('#search-btn').click(() => {
+            searchForm.attr('method', 'get');
+            searchForm.attr('action', '{{ route('booking.index') }}');
 
             searchForm.submit();
         });

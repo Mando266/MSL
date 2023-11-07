@@ -95,7 +95,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-success mt-3">Search</button>
+                                <button id="search-btn" type="submit" class="btn btn-success mt-3">Search</button>
                                 <a href="{{route('quotations.index')}}"
                                    class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                             </div>
@@ -276,11 +276,17 @@
                     }
                 });
         });
+        const searchForm = $("#search-form");
         $('#export-current').click(() => {
-            let searchForm = $("#search-form");
             searchForm.attr('method', 'post');
             searchForm.attr('action', '{{ route('export.quotation') }}');
             searchForm.find('input[name="_token"]').prop('disabled', false);
+
+            searchForm.submit();
+        });
+        $('#search-btn').click(() => {
+            searchForm.attr('method', 'get');
+            searchForm.attr('action', '{{ route('quotations.index') }}');
 
             searchForm.submit();
         });
