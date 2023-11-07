@@ -97,9 +97,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
-    Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
+    Route::post('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
     Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate');
-    Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
+    Route::post('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('loadlistBl', 'ImportExportController@loadlistBl')->name('export.BLloadList');
     Route::get('Bllist', 'ImportExportController@Bllist')->name('export.BLExport');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
@@ -110,7 +110,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
     Route::post('overwritecont', 'ImportExportController@overwritecont')->name('overwritecont');
     Route::post('importContainers', 'ImportExportController@importContainers')->name('importContainers');
-    Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
+    Route::post('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('invoiceBreakdown', 'ImportExportController@invoiceBreakdown')->name('export.invoice.breakdown');
     Route::get('exportCalculationForInvoice', 'ImportExportController@exportCalculationForInvoice')->name('export.calculation');
