@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDemuragePeriodsSlabsTable extends Migration
+class CreateUserSessionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateDemuragePeriodsSlabsTable extends Migration
      */
     public function up()
     {
-        Schema::create('demurage_periods_slabs', function (Blueprint $table) {
+        Schema::create('user_sessions', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('status')->default(1);
-            $table->unsignedInteger('demurage_id')->nullable();
-            $table->unsignedInteger('container_type_id')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->string('session_id');
+            $table->string('ip_address');
+            $table->string('user_agent');
             $table->timestamps();
         });
     }
@@ -29,6 +30,8 @@ class CreateDemuragePeriodsSlabsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('demurage_periods_slabs');
+        Schema::dropIfExists('user_sessions');
     }
 }
+
+

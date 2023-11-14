@@ -153,6 +153,16 @@
     <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
 
     <script>
+        $(document).ready(function () {
+            const resetSelect = document.getElementById('reset-select');
+
+            if (resetSelect) {
+                resetSelect.addEventListener('click', () => {
+                    $("option:selected").remove();
+                    $('.selectpicker').selectpicker('refresh');
+                });
+            }
+        });
         $(document).ready(function() {
             App.init();
             function hasArabicCharacters(text){

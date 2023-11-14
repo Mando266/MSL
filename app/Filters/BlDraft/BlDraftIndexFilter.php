@@ -10,7 +10,7 @@ class BlDraftIndexFilter extends AbstractFilter{
         'customer_id'=>CustomerFilter::class,
         'load_port_id'=>POLFilter::class,
         'discharge_port_id'=>PODFilter::class,
-        'voyage_id'=>VoyageFilter::class,
+        'voyage_id_both'=>VoyageFilter::class,
         'ffw_id'=>FwwFilter::class,
     ];
 }

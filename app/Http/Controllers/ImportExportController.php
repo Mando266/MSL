@@ -11,23 +11,23 @@ use App\Exports\ContainersExport;
 use App\Exports\CustomerExport;
 use App\Exports\CustomerStatementsExport;
 use App\Exports\InvoiceBreakdownExport;
+use App\Exports\InvoiceListExport;
 use App\Exports\LoadListExport;
-use App\Imports\ContainersImport;
 use App\Exports\LocalPortTriffShowExport;
 use App\Exports\MovementsExport;
 use App\Exports\MovementsExportAll;
 use App\Exports\MovementsExportSearch;
 use App\Exports\QuotationExport;
+use App\Exports\ReceiptExport;
 use App\Exports\TruckerGateExport;
 use App\Exports\VoyageExport;
-use App\Exports\InvoiceListExport;
-use App\Exports\ReceiptExport;
 use App\Imports\BookingImport;
+use App\Imports\ContainersImport;
+use App\Imports\ContainersOvewriteImport;
 use App\Imports\MovementsImport;
 use App\Imports\MovementsOvewriteImport;
-use App\Imports\ContainersOvewriteImport;
-
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ImportExportController extends Controller
 {
@@ -60,30 +60,44 @@ class ImportExportController extends Controller
         return back();
     }
 
-
-    public function export()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function export(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new MovementsExport, 'Movements.xlsx', 'items');
+        return Excel::download(new MovementsExport(json_decode(request()->items, true)), 'Movements.xlsx');
     }
 
-    public function exportAll()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportAll(): BinaryFileResponse
     {
         return Excel::download(new MovementsExportAll, 'Movements.xlsx');
     }
 
-    public function exportQuotation()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportQuotation(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new QuotationExport, 'Quotations.xlsx', 'quotations');
+        return Excel::download(new QuotationExport(request()), 'Quotations.xlsx');
     }
 
-    public function exportCalculationForInvoice()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportCalculationForInvoice(): BinaryFileResponse
     {
         return $this->exportWithValidation(new CalculationExport(), 'InvoiceCalculation.xlsx', 'calculations');
     }
 
-    public function exportContainers()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportContainers(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new ContainersExport, 'Containers.xlsx', 'containers');
+        return Excel::download(new ContainersExport(request()), 'Containers.xlsx');
     }
 
     public function importContainers()
@@ -102,14 +116,20 @@ class ImportExportController extends Controller
         return $this->exportWithValidation(new LocalPortTriffShowExport, 'LocalPortTriff.xlsx', 'TriffNo');
     }
 
-    public function exportBooking()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function exportBooking(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new BookingExport, 'Bookings.xlsx', 'bookings');
+        return Excel::download(new BookingExport(request()), 'Bookings.xlsx');
     }
 
-    public function loadlistBooking()
+    /**
+     * @return BinaryFileResponse
+     */
+    public function loadlistBooking(): BinaryFileResponse
     {
-        return $this->exportWithValidation(new LoadListExport, 'Loadlist.xlsx', 'bookings');
+        return Excel::download(new LoadListExport(request()), 'Loadlist.xlsx');
     }
 
     public function exportVoyages()
@@ -119,7 +139,7 @@ class ImportExportController extends Controller
 
     public function exportSearch()
     {
-        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'items');
+        return $this->exportWithValidation(new MovementsExportSearch(json_decode(request()->items, true)), 'Movements.xlsx', 'items');
     }
 
     public function agentSearch()
@@ -164,9 +184,9 @@ class ImportExportController extends Controller
 
     private function exportWithValidation($export, $filename, $sessionKey)
     {
-        if (!session()->has($sessionKey)) {
-            return $this->errorMsg();
-        }
+//        if (!session()->has($sessionKey)) {
+//            return $this->errorMsg();
+//        }
 
         return Excel::download($export, $filename);
     }
