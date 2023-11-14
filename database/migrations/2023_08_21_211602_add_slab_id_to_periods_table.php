@@ -13,9 +13,9 @@ class AddSlabIdToPeriodsTable extends Migration
      */
     public function up()
     {
-//        Schema::table('period', function (Blueprint $table) {
-//            $table->unsignedInteger('slab_id')->nullable();
-//        });
+        Schema::table('period', function (Blueprint $table) {
+            $table->unsignedInteger('slab_id')->nullable();
+        });
     }
 
     /**
