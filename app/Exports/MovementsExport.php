@@ -6,6 +6,7 @@ use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainerStatus;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
@@ -16,11 +17,19 @@ use App\Models\Booking\Booking;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    // use Exportable;
+    protected $movements;
 
+    /**
+     * @param array $movements
+     */
+    public function __construct(array $movements)
+    {
+        $this->movements = Movements::whereIn('id',$movements)->with('container.containersTypes','container.seller','container.containersOwner')->get();
+    }
+
+    /**
+     * @return array
+     */
     public function headings(): array
     {
         return [
@@ -50,27 +59,27 @@ class MovementsExport implements FromCollection,WithHeadings
             "Containers Ownership Type",
             "SOC/COC",
         ];
-            if (auth()->user()->lessor_id != 0) {
+//            if (auth()->user()->lessor_id != 0) {
             // Remove the headings for lessor-specific fields
-            $headings = array_diff($headings, [
-                "company_id",
-                "terminal_id",
-                "booking_agent_id",
-                "created_at",
-                "updated_at",
-                "import_agent",
-                "free_time_origin",
-            ]);
-        }
+//            $headings = array_diff($headings, [
+//                "company_id",
+//                "terminal_id",
+//                "booking_agent_id",
+//                "created_at",
+//                "updated_at",
+//                "import_agent",
+//                "free_time_origin",
+//            ]);
+//        }
     }
 
     /**
-    * @return \Illuminate\Support\Collection
+    * @return Collection
     */
-    public function collection()
+    public function collection(): Collection
     {
-        $movements = session('items');
-        // dd($movements);
+        $movements = $this->movements;
+
                 foreach($movements  ?? [] as $movement){
                     unset($movement['id']);
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();

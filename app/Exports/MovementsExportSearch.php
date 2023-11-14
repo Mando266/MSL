@@ -2,10 +2,12 @@
 
 namespace App\Exports;
 
+use App\Models\Containers\Movements;
 use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainerStatus;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
@@ -18,9 +20,12 @@ class MovementsExportSearch implements FromCollection,WithHeadings
 {
     protected $movements;
 
-    public function __construct(collection $movements)
+    /**
+     * @param array $movements
+     */
+    public function __construct(array $movements)
     {
-        $this->movements = $movements;
+        $this->movements = Movements::whereIn('id',$movements)->with('container.containersTypes','container.seller','container.containersOwner')->get();
     }
 
     public function headings(): array
@@ -70,15 +75,13 @@ class MovementsExportSearch implements FromCollection,WithHeadings
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+    * @return array|void
+     */
     public function collection()
     {
         $movements = $this->movements;
-
         if (is_array($movements) || is_object($movements))
             {
-
             foreach($movements as $movement){
                 unset($movement['id']);
                 $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();

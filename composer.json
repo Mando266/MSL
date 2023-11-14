@@ -22,7 +22,8 @@
         "santigarcor/laratrust": "5.2.*",
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.3",
-        "tecnickcom/tcpdf": "^6.6"
+        "tecnickcom/tcpdf": "^6.6",
+      "ext-http": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

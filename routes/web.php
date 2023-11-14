@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
    | master routes
    |--------------------------------------------
    */
-    Route::get('cache/clear',function (){
+    Route::get('cache/clear', function () {
         Artisan::call('cache:clear');
         dd('done');
     });
@@ -94,23 +94,23 @@ Route::group(['middleware' => 'auth'], function () {
     /*Excel import export*/
     Route::get('export', 'ImportExportController@export')->name('export');
     Route::get('exportAll', 'ImportExportController@exportAll')->name('export.all');
-    Route::get('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
+    Route::post('exportQuotation', 'ImportExportController@exportQuotation')->name('export.quotation');
     Route::get('exportCustomers', 'ImportExportController@exportCustomers')->name('export.customers');
     Route::get('exportLocalporttriffshow', 'ImportExportController@LocalPortTriffShow')->name('export.Localportshow');
-    Route::get('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
+    Route::post('exportBooking', 'ImportExportController@exportBooking')->name('export.booking');
     Route::get('exportTruckerGate', 'ImportExportController@exportTruckerGate')->name('export.TruckerGate');
-    Route::get('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
+    Route::post('loadlistBooking', 'ImportExportController@loadlistBooking')->name('export.loadList');
     Route::get('loadlistBl', 'ImportExportController@loadlistBl')->name('export.BLloadList');
     Route::get('Bllist', 'ImportExportController@Bllist')->name('export.BLExport');
     Route::get('exportVoyages', 'ImportExportController@exportVoyages')->name('export.voyages');
-    Route::get('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
+    Route::post('exportSearch', 'ImportExportController@exportSearch')->name('export.search');
     Route::get('agentSearch', 'ImportExportController@agentSearch')->name('export.agent');
     Route::get('importExportView', 'ImportExportController@importExportView');
     Route::post('import', 'ImportExportController@import')->name('import');
     Route::post('overwrite', 'ImportExportController@overwrite')->name('overwrite');
     Route::post('overwritecont', 'ImportExportController@overwritecont')->name('overwritecont');
     Route::post('importContainers', 'ImportExportController@importContainers')->name('importContainers');
-    Route::get('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
+    Route::post('exportContainers', 'ImportExportController@exportContainers')->name('export.container');
     Route::get('invoiceList', 'ImportExportController@invoiceList')->name('export.invoice');
     Route::get('invoiceBreakdown', 'ImportExportController@invoiceBreakdown')->name('export.invoice.breakdown');
     Route::get('exportCalculationForInvoice', 'ImportExportController@exportCalculationForInvoice')->name('export.calculation');
@@ -234,7 +234,7 @@ Route::group(['middleware' => 'auth'], function () {
     | Storage routes
     |--------------------------------------------
     */
-    Route::post('/preview', [PreviewController::class,'index'])->name('preview.index');
+    Route::post('/preview', [PreviewController::class, 'index'])->name('preview.index');
     Route::prefix('storage')->namespace('Storage')->group(function () {
         Route::resource('storage', 'StorageController');
 
