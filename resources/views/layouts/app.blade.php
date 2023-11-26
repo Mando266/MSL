@@ -154,10 +154,14 @@
 
     <script>
         $(document).ready(function () {
-            document.getElementById('reset-select').addEventListener('click',() => {
-                $("option:selected").remove()
-                $('.selectpicker').selectpicker('refresh')
-            })
+            const resetSelect = document.getElementById('reset-select');
+
+            if (resetSelect) {
+                resetSelect.addEventListener('click', () => {
+                    $("option:selected").remove();
+                    $('.selectpicker').selectpicker('refresh');
+                });
+            }
         });
         $(document).ready(function() {
             App.init();

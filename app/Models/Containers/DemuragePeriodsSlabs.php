@@ -27,4 +27,9 @@ class DemuragePeriodsSlabs extends Model
     public function containersType(){
         return $this->belongsTo(ContainersTypes::class,'container_type_id','id');
     }
+
+    public function status()
+    {
+        return $this->status == 1 ? "Active" : 'Inactive';
+    }
 }
