@@ -8,6 +8,7 @@ class InvoiceIndexFilter extends AbstractFilter{
     protected $filters = [
         'type'=>TypeFilter::class,
         'bldraft_id'=>BlDraftFilter::class,
+        'booking_ref'=>BookingFilter::class,
         'customer_id'=>CustomerFilter::class,
         'invoice_no'=>InvoiceNoFilter::class,
         'payment_kind'=>PaymentFilter::class,

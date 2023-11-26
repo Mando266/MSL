@@ -14,13 +14,13 @@
                         </nav>
                     </div>
 
-                    @permission('Booking-Create')
                     <div class="row">
                         @if(Session::has('message'))
                             <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
                             @endif
                             </br>
                             <div class="col-md-12 text-right mb-5">
+                                @permission('Booking-Create')
                                 <a href="{{route('booking.selectQuotation')}}" class="btn btn-primary">New Booking</a>
                                 @endpermission
                                 @permission('Booking-List')
@@ -31,9 +31,10 @@
                                 @endpermission
                             </div>
                     </div>
-                    @permission('Booking-Create')
                     <div class="row">
                         <div class="col-md-12 text-right mb-6">
+                        @permission('Booking-Create')
+
                             <form action="{{route('importBooking')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
@@ -43,9 +44,9 @@
                                     Containers
                                 </button>
                             </form>
+                            @endpermission
                         </div>
                     </div>
-                    @endpermission
                     </br>
                     <form id="search-form">
                         @csrf
@@ -121,64 +122,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <!-- <div class="form-group col-md-3">
-                                <label for="voyage_id">Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($voyages as $item)
-                                <option value="{{$item->id}}" {{$item->id == old('voyage_id',request()->input('voyage_id')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            @endforeach
-                            </select>
-@error('voyage_id')
-                            <div style="color: red;">
-{{$message}}
-                            </div>
-@enderror
-                            </div> -->
-                            <!-- <div class="form-group col-md-3">
-                                <label for="voyage_id_second">Second Vessel / Voyage </label>
-                                <select class="selectpicker form-control" id="voyage_id_second" data-live-search="true" name="voyage_id_second" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($voyages as $item)
-                                <option value="{{$item->id}}" {{$item->id == old('voyage_id_second',request()->input('voyage_id_second')) ? 'selected':''}}>{{optional($item->vessel)->name}} / {{$item->voyage_no}}  - {{ optional($item->leg)->name }}</option>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            @endforeach
-                            </select>
-@error('voyage_id_second')
-                            <div style="color: red;">
-{{$message}}
-                            </div>
-@enderror
-                            </div> -->
                             <div class="form-group col-md-3">
                                 <label for="voyage_id_both">Vessel / Voyage </label>
                                 <select class="selectpicker form-control" id="voyage_id_both" data-live-search="true"

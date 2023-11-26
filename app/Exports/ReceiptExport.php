@@ -17,6 +17,7 @@ class ReceiptExport implements FromCollection,WithHeadings
             "Payment Methods",
             "Total",
             "Paid",
+            "Currancy",
             "User" ,
         ];
     }
@@ -29,6 +30,13 @@ class ReceiptExport implements FromCollection,WithHeadings
         $receiptexport = collect();
         foreach($receipts  ?? [] as $receipt){
             $PaymentMethods = '';
+            $Curency = '';
+                if(optional($receipt->invoice)->add_egp == 'false'){
+                    $Curency = 'USD';
+                }elseif(optional($receipt->invoice)->add_egp == 'onlyegp'){
+                    $Curency = 'EGP';
+                }
+
             if($receipt->bank_transfer != null){
                 $PaymentMethods = 'Bank Transfer';
             }
@@ -56,6 +64,7 @@ class ReceiptExport implements FromCollection,WithHeadings
                     'Payment Methods'=> $PaymentMethods,
                     'Total'=> $receipt->total,
                     'Paid'=> $receipt->paid,
+                    'currancy'=>$Curency,
                     'User'=> optional($receipt->user)->name,
                 ]);
                 $receiptexport->add($tempCollection);

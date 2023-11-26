@@ -55,17 +55,19 @@
                             </div>
                         </div>
                         <div class="form-row">
-
                             <div class="form-group col-md-3">
                                 <label for="Bldraft">Bl Number</label>
                                 <select class="selectpicker form-control" id="Bldraft" data-live-search="true" name="bldraft_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                  <option value="o">Customize</option>
                                     @foreach ($bldrafts as $item)
-                                        <option value="{{$item->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}}</option>
+                                        <option value="{{$item->id}}" data-code="{{$item->booking->id}}" {{$item->id == old('bldraft_id',request()->input('bldraft_id')) ? 'selected':''}}>{{$item->ref_no}} </option>
                                     @endforeach
                                 </select>
                             </div>
+
+                            <input type="text" class="form-control" id="bookingIdInput" name="booking_ref" value="{{request()->input('booking_ref')}}">
+
                             <div class="form-group col-md-3">
                                 <label for="Bldraft">Customer</label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true" name="customer_id" data-size="10"
@@ -171,6 +173,7 @@
                                     if($total_eg_after_vat != 0){
                                         $total_eg = $total_eg + $total_eg_after_vat;
                                     }
+                                    
                                         if($invoice->booking != null){
                                         $VoyagePort = $etd->where('voyage_id',optional($invoice->booking)->voyage_id)
                                             ->where('port_from_name',optional(optional($invoice->booking)->loadPort)->id)->first();
@@ -311,6 +314,17 @@
     </div>
 @endsection
 @push('scripts')
+
+<script>
+    const selectElement = document.getElementById('Bldraft');
+    const bookingIdInput = document.getElementById('bookingIdInput');
+    selectElement.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const dataCodeValue = selectedOption.getAttribute('data-code');
+    bookingIdInput.value = dataCodeValue;
+    });
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
 

@@ -111,11 +111,25 @@ class ReceiptController extends Controller
         foreach($invoice->chargeDesc as $chargeDesc){
             $total += $chargeDesc->total_amount;
             $total_eg += $chargeDesc->total_egy;
-            $total_after_vat += ($vat * $chargeDesc->total_amount);
-            $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
+            //Tax
+            $totalAftereTax = (($total * $invoice->tax_discount)/100);
+            $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100);
+            //End Tax
+           if($chargeDesc->add_vat == 1){
+                $total_after_vat += ($vat * $chargeDesc->total_amount);
+                $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
+            }
         }
-        $total = $total  + $$total_after_vat - (($total_after_vat * $invoice->tax_discount)/100);
-        $total_eg = $total_eg + $total_eg_after_vat - (($total_eg * $invoice->tax_discount)/100);
+            $total_before_vat = $total;
+            if($total_after_vat != 0){
+                $total = $total + $total_after_vat;
+            }
+
+            $total_eg_before_vat = $total_eg;
+            if($total_eg_after_vat != 0){
+                $total_eg = $total_eg + $total_eg_after_vat;
+            }
+
         if($invoice->add_egp == "false"){
             if($total <= $oldPayment){
                 return redirect()->back()->with('error','Sorry You Cant Create Receipt for this invoice its already Paid')->withInput(request()->input());
@@ -143,22 +157,22 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->input('bank_transfer') < $request->input('total_payment')){
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
-        }
-        elseif( $request->input('bank_cash') < $request->input('total_payment') ){
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
-        }
-        elseif( $request->input('matching') < $request->input('total_payment') ){
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
-        }
-        elseif ( $request->input('bank_check') < $request->input('total_payment') )
-        {
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
-        }
-        elseif( $request->input('bank_deposit') < $request->input('total_payment') ){
-            return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
-        }
+        // if ($request->input('bank_transfer') < $request->input('total_payment')){
+        //     return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        // }
+        // elseif( $request->input('bank_cash') < $request->input('total_payment') ){
+        //     return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        // }
+        // elseif( $request->input('matching') < $request->input('total_payment') ){
+        //     return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        // }
+        // elseif ( $request->input('bank_check') < $request->input('total_payment') )
+        // {
+        //     return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        // }
+        // elseif( $request->input('bank_deposit') < $request->input('total_payment') ){
+        //     return redirect()->back()->with('error','Receipt Amount Can Not Be Less Than Invoice Amount');
+        // }
 
         if ($request->input('bank_deposit') != Null){
             $request->validate([
