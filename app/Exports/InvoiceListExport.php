@@ -69,18 +69,43 @@ class InvoiceListExport implements FromCollection,WithHeadings
         }else{
             $Payment = 'UnPaid';
         }
-        $receipts = '';
+        $receipts = ''; 
         if($invoice->receipts->count() != 0){
             foreach($invoice->receipts as $receipt){
                 $receipts .= $receipt->receipt_no . "\n";
             }
         }
-            $totalusd = 0;
-            $totalegp = 0;
-            foreach($invoice->chargeDesc as $invoiceDesc ){
-                $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
-                $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
+    $vat = $invoice->vat;
+    $vat = $vat / 100;
+    $total = 0;
+    $total_eg = 0;
+    $total_after_vat = 0;
+    $total_before_vat = 0;
+    $total_eg_after_vat = 0;
+    $total_eg_before_vat = 0;
+    $totalAftereTax = 0;
+    $totalAftereTax_eg = 0;
+
+    foreach($invoice->chargeDesc as $chargeDesc){
+        $total += $chargeDesc->total_amount;
+        $total_eg += $chargeDesc->total_egy;
+
+        $totalAftereTax = (($total * $invoice->tax_discount)/100);
+        $totalAftereTax_eg = (($total_eg * $invoice->tax_discount)/100);
+
+        if($chargeDesc->add_vat == 1){
+                $total_after_vat += ($vat * $chargeDesc->total_amount);
+                $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
             }
+        }
+        $total_before_vat = $total;
+        if($total_after_vat != 0){
+            $total = $total + $total_after_vat;
+        }
+        if($total_eg_after_vat != 0){
+            $total_eg = $total_eg + $total_eg_after_vat;
+        }
+
                 $tempCollection = collect([
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
@@ -93,8 +118,8 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'date' => $invoice->date,
                     'type' => $invoice->type,
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
-                    'total usd' => $totalusd,
-                    'total egp' => $totalegp,
+                    'total usd' => $total,
+                    'total egp' => $total_eg,
                     'Curency' =>$Curency,
                     'STATUS' => $invoice->invoice_status,
                     'PaymentSTATUS' => $Payment,

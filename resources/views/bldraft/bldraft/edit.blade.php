@@ -263,7 +263,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                                 <label for="status">Bl Payment</label>
                                     <input type="text" name="payment_kind" class="form-control" placeholder="Bl Payment" autocomplete="off" value="{{old('payment_kind',$bldraft->payment_kind)}}" disabled>
                                 @error('bl_kind')
@@ -272,7 +272,7 @@
                                 </div>
                                 @enderror
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                                 <label for="status">Bl Kind</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
                                     <option value="Original" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Original"? 'selected':''}}>Original</option>
@@ -285,7 +285,7 @@
                                 @enderror
                         </div>
    
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" data-live-search="true" name="bl_status" data-live-search="true">
                                 <option value="1" {{$bldraft->id == old('bl_status') ||  $bldraft->bl_status == "1"? 'selected':''}}>Confirm</option>
@@ -293,6 +293,29 @@
                             </select>
                             @error('bl_status')
                             <div style="color:red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="status">Received For Shipment or Not<span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="received_shipment" data-live-search="true">
+                                <option value="1" {{$bldraft->id == old('received_shipment') ||  $bldraft->received_shipment == "1"? 'selected':''}}>Yes</option>
+                                <option value="0" {{$bldraft->id == old('received_shipment') ||  $bldraft->received_shipment == "0"? 'selected':''}}>No</option>
+                            </select>
+                            @error('received_shipment')
+                            <div style="color:red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label>shipment Date</label>
+                            <input type="date" name="shipment_date" class="form-control" placeholder="Date Of Issue" autocomplete="off" value="{{old('shipment_date',$bldraft->shipment_date)}}">
+                            @error('shipment_date')
+                            <div style="color: red;">
                                 {{$message}}
                             </div>
                             @enderror

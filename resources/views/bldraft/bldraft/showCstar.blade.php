@@ -256,9 +256,15 @@
                                 &nbsp <br>
                                 &nbsp <br>
                                 </td>
+                                @if($blDraft->received_shipment == 0)
                                 <td class="col-md-3 tableStyle" >Date shipped on board <br>
                                 &nbsp {{ optional($etdvoayege)->etd }}
                                 </td>
+                                @else
+                                <td class="col-md-3 tableStyle"> Received From Shipment <br>
+                                &nbsp {{ optional($blDraft)->shipment_date }}
+                                </td>
+                                @endif
                                 <td class="col-md-3 tableStyle" >Place and date of issue <br>
                                 &nbsp {{optional($blDraft->booking->agent)->city}} &nbsp {{optional($blDraft->booking->agent->country)->name}} &nbsp {{ optional($etdvoayege)->etd }}
                                 </td>
