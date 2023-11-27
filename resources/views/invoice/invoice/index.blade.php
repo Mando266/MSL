@@ -66,7 +66,7 @@
                                 </select>
                             </div>
 
-                            <input type="text" class="form-control" id="bookingIdInput" name="booking_ref" value="{{request()->input('booking_ref')}}">
+                            <input type="hidden" class="form-control" id="bookingIdInput" name="booking_ref" value="{{request()->input('booking_ref')}}">
 
                             <div class="form-group col-md-3">
                                 <label for="Bldraft">Customer</label>
@@ -104,6 +104,7 @@
                             <div class="form-row">
                                 <div class="col-md-12 text-center">
                                     <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                    <button type="button" id="reset-select" class="btn btn-info mt-3">Reset</button>
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                             </div>
