@@ -88,6 +88,14 @@
                        data-target="gat_lift_on_inbnd_em_ft40">
                 EGP
             </label>
+        </th>        
+        <th data-field="otbnd">
+            <label>
+                OTBND
+                <input type="checkbox" class="otbnd_cost in-egp"
+                       data-target="otbnd">
+                EGP
+            </label>
         </th>
         <th colspan="2" data-field="pti">
             <label>
@@ -207,6 +215,9 @@
             <td data-field="gat-lift-on-inbnd-em-ft40"><input type="text" name="rows[gat_lift_on_inbnd_em_ft40][]"
                                                               class="form-control dynamic-input"
                                                               data-field="gat_lift_on_inbnd_em_ft40"></td>
+            <td data-field="otbnd"><input type="text" name="rows[otbnd][]"
+                                                              class="form-control dynamic-input"
+                                                              data-field="otbnd"></td>
             <td data-field="pti"><input type="text" name="rows[pti][]" class="form-control dynamic-input"
                                         data-field="pti_cost"></td>
             <td data-field="pti">

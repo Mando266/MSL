@@ -293,7 +293,8 @@ class PortChargeInvoiceController extends Controller
             'hand_fes_em',
             'gat_lift_off_inbnd_em_ft40',
             'gat_lift_on_inbnd_em_ft40',
-            'add_plan'
+            'add_plan',
+            'otbnd'
         ];
 
         foreach ($chargeTypes as $chargeType) {

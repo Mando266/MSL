@@ -25,7 +25,8 @@ class PortChargeInvoice extends Model
         'gat_lift_on_inbnd_em_ft40',
         'pti',
         'add_plan',
-        'additional_fees'
+        'additional_fees',
+        'otbnd',
     ];
 
     public function rows(): \Illuminate\Database\Eloquent\Relations\HasMany

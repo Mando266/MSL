@@ -32,6 +32,7 @@
                                     <th colspan=2>HAND-FES-EM</th>
                                     <th colspan=2>GAT-LIFT OFF-INBND-EM-FT40</th>
                                     <th colspan=2>GAT-LIFT ON-INBND-EM-FT40</th>
+                                    <th colspan=2>OTBND</th>
                                     <th colspan=2>PTI</th>
                                     <th colspan=2>ADD-PLAN</th>
                                     <th rowspan="3">Edit</th>
@@ -43,6 +44,8 @@
                                     <th colspan=3>Slab1</th>
                                     <th colspan=3>Slab2</th>
                                     <th rowspan=2>Free Time</th>
+                                    <th rowspan=2>20FT</th>
+                                    <th rowspan=2>40FT</th>
                                     <th rowspan=2>20FT</th>
                                     <th rowspan=2>40FT</th>
                                     <th rowspan=2>20FT</th>
@@ -96,6 +99,8 @@
                                         <td class="editable">{{ $portCharge->gat_lift_off_inbnd_em_ft40_40ft }}</td>
                                         <td class="editable">{{ $portCharge->gat_lift_on_inbnd_em_ft40_20ft }}</td>
                                         <td class="editable">{{ $portCharge->gat_lift_on_inbnd_em_ft40_40ft }}</td>
+                                        <td class="editable">{{ $portCharge->otbnd_20ft }}</td>
+                                        <td class="editable">{{ $portCharge->otbnd_40ft }}</td>
                                         <td class="editable">{{ $portCharge->pti_failed }}</td>
                                         <td class="editable">{{ $portCharge->pti_passed }}</td>
                                         <td class="editable">{{ $portCharge->add_plan_20ft }}</td>
