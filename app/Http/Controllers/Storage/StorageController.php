@@ -41,7 +41,7 @@ class StorageController extends Controller
 // testing for demurrage calc
     public function create()
     {
-        $now = Carbon::now()->format('Y-m-d');  
+        $now = Carbon::now()->format('Y-m-d');
         $movementsBlNo = BlDraft::where('company_id', Auth::user()->company_id)->get();
         $containers = [];
         $demurrages = Demurrage::where('company_id', Auth::user()->company_id)
