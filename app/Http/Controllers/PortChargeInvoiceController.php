@@ -267,7 +267,6 @@ class PortChargeInvoiceController extends Controller
         $container_size = (int)$container->containersTypes->name;
         $portCharge = $chargeMatrix->portCharge;
 
-        dd($this->invoiceService->calculateDays($containerId, $storage_from, $storage_to, $blNo));
         $storageDaysInPort = $storage_from === "Select" ?
             0 :
             $this->invoiceService->calculateDays($containerId, $storage_from, $storage_to, $blNo);
@@ -294,7 +293,8 @@ class PortChargeInvoiceController extends Controller
             'hand_fes_em',
             'gat_lift_off_inbnd_em_ft40',
             'gat_lift_on_inbnd_em_ft40',
-            'add_plan'
+            'add_plan',
+            'otbnd'
         ];
 
         foreach ($chargeTypes as $chargeType) {

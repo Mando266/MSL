@@ -401,7 +401,7 @@
                         'thc', 'storage',
                         'power', 'shifting', 'disinf',
                         'hand_fes_em', 'gat_lift_off_inbnd_em_ft40',
-                        'gat_lift_on_inbnd_em_ft40', 'add_plan'
+                        'gat_lift_on_inbnd_em_ft40', 'add_plan','otbnd'
                     ]
                     dynamicFields.forEach(item => {
                         row.find(`[name*="[${item}]"]`).val(response.data[item]);
@@ -773,7 +773,7 @@
             'thc', 'storage', 'power',
             'shifting', 'disinf', 'hand_fes_em',
             'gat_lift_off_inbnd_em_ft40', 'gat_lift_on_inbnd_em_ft40',
-            'pti', 'add_plan'
+            'otbnd','pti', 'add_plan'
         ];
 
         const fieldSelectOptions = {

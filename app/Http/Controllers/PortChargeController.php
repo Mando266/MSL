@@ -84,6 +84,8 @@ class PortChargeController extends Controller
             'gat_lift_off_inbnd_em_ft40_40ft' => $data[$count++],
             'gat_lift_on_inbnd_em_ft40_20ft' => $data[$count++],
             'gat_lift_on_inbnd_em_ft40_40ft' => $data[$count++],
+            'otbnd_20ft' => $data[$count++],
+            'otbnd_40ft' => $data[$count++],
             'pti_failed' => $data[$count++],
             'pti_passed' => $data[$count++],
             'add_plan_20ft' => $data[$count++],
