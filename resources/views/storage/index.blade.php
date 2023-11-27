@@ -221,15 +221,6 @@
                                 <div class="col-md-2 text-center">
                                 </div>
                                 <div class="col-md-2 text-center">
-                                    <!-- Create Invoice Button -->
-                                    <!-- <form id="create-invoice-form" action="{{ route('invoice.create_invoice') }}"
-                                          method="post">
-                                        @csrf
-                                        <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
-                                        <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
-                                               value="">
-                                        <button type="button" class="btn btn-primary" id="create-invoice">Create Invoice</button>
-                                    </form> -->
                                         <form action="{{ route('preview.index') }}" method="post" id="preview-form">
                                             @csrf
                                             <input type="hidden"  name="preview-data" id="preview-data">
