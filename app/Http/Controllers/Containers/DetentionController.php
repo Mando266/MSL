@@ -29,8 +29,6 @@ class DetentionController extends Controller
         $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->where('is_storge','Detention')->get();
         $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
         $movements = [];
-        //dd($demurrages);
-
         return view('containers.detention.detentionView',[
             'items'=>$demurrages,
             'movementsBlNo'=>$movementsBlNo,

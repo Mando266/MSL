@@ -223,15 +223,15 @@
                                 </div>
                                 <!-- Create Invoice Button -->
                                 <div class="button-container">
-                                    <!-- <form id="create-invoice-form" action="{{ route('invoice.create_debit') }}" method="post">
-                                        @csrf
-                                        <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">
-                                        <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"
-                                               value="">
-                                        <button type="button" class="btn btn-primary" id="create-invoice">Create
-                                            Invoice
-                                        </button>
-                                    </form> -->
+                                    <!--<form id="create-invoice-form" action="{{ route('invoice.create_debit') }}" method="post">-->
+                                    <!--    @csrf-->
+                                    <!--    <input type="hidden" id="bl_no_for_invoice" name="bldraft_id" value="">-->
+                                    <!--    <input type="hidden" id="cart_data_for_invoice" name="cart_data_for_invoice"-->
+                                    <!--           value="">-->
+                                    <!--    <button type="button" class="btn btn-primary" id="create-invoice">Create-->
+                                    <!--        Invoice-->
+                                    <!--    </button>-->
+                                    <!--</form>-->
                                     <a class="btn btn-custom" href="{{ route('export.calculation') }}">Export</a>
                                 </div>
 
