@@ -28,7 +28,7 @@
                                 <button class="btn btn-dark" id="export-current">Export Current</button>
                             </div>
                             <div class="mx-1">
-                                <button class="btn btn-dark" id="open-dialog"">Search By Booking</button>
+                                <button class="btn btn-info" id="open-dialog">Search By Booking</button>
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                     </form>
                     <dialog id="booking-dialog">
                         <label for="booking_show_id" class="mt-4">Show Containers On Specific Booking</label>
-                        <select class="form-control my-4" id="booking_show_id"
+                        <select class="form-control selectpicker my-4" id="booking_show_id"
                                 data-live-search="true" name="bl_no" data-size="10"
                                 title="{{trans('forms.select')}}">
                             <option value="">Select</option>
