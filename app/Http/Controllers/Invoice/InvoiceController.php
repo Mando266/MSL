@@ -173,7 +173,7 @@ class InvoiceController extends Controller
         // id's of triff type export and import power charge
         $powerTriffs = [7,8];
         $cartData = json_decode(request('cart_data_for_invoice'));
-        foreach ($cartData as $cart){
+        foreach ($cartData ?? [] as $cart){
             if(in_array(Demurrage::where('id',$cart->triffValue)->pluck('tariff_type_id')->first(),$powerTriffs)){
                 $cart->triffText = "Power Charge";
             }else{
@@ -801,5 +801,110 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $invoiceModel = $invoice->getTaxInvoiceModel();
         return $invoiceModel->toJson();
+    }
+
+    public function createStorageInvoice()
+    {
+        request()->validate([
+            'bldraft_id' => ['required'],
+            'calculation_data' => ['required'],
+            'amount' => ['required'],
+        ]);
+//        dd(request()->all());
+        $calculationData = request()->calculation_data;
+        $notes = array_filter(explode('_', $calculationData));
+        $storageAmount = request()->amount;
+        $blId = request()->bldraft_id;
+        $bl = BlDraft::query()->find($blId);
+
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+
+        $bldraft = $bl;
+        $bldrafts = $bl;
+
+        $qty = $bldraft->blDetails->count();
+        $voyages = Voyages::with('vessel')->where('company_id', Auth::user()->company_id)->get();
+
+        if (optional(optional(optional($bldraft)->booking)->quotation)->shipment_type == "Export") {
+            $triffDetails = LocalPortTriff::where('port_id', $bldraft->load_port_id)
+                ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
+                ->with([
+                    "triffPriceDetailes" => function ($q) use ($bldraft) {
+                        $q->where("is_import_or_export", 1)
+                            ->where(function ($query) use ($bldraft) {
+                                $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
+                                    ->orWhere('equipment_type_id', '100');
+                            });
+                    },
+                    'triffPriceDetailes.charge'
+                ])
+                ->first();
+        } else {
+            $triffDetails = LocalPortTriff::where('port_id', $bldraft->discharge_port_id)
+                ->where('validity_to', '>=', Carbon::now()->format("Y-m-d"))
+                ->with([
+                    "triffPriceDetailes" => function ($q) use ($bldraft) {
+                        $q->where("is_import_or_export", 0);
+                        $q->where('standard_or_customise', 1)
+                            ->where(function ($query) use ($bldraft) {
+                                $query->where("equipment_type_id", optional($bldraft->equipmentsType)->id)
+                                    ->orWhere('equipment_type_id', '100');
+                            });
+                    },
+                    'triffPriceDetailes.charge'
+                ])
+                ->first();
+        }
+        $quotation = $bl->booking->quotation;
+        $shipmentType = $quotation->shipment_type ?? $booking->shipment_type ?? 'Export';
+        $quotationType = $quotation->quotation_type ?? $booking->booking_type ?? 'full';
+
+        $chargeName = "STORAGE " . strtoupper($quotationType) . " " . strtoupper($shipmentType);
+        return view('invoice.invoice.create_invoice', [
+            'bldrafts' => $bldrafts,
+            'cartData' => $cartData ?? null,
+            'qty' => $qty,
+            'bldraft' => $bldraft,
+            'triffDetails' => $triffDetails,
+            'voyages' => $voyages,
+            'charges' => $charges,
+            'notes' => $notes,
+            'chargeName' => $chargeName,
+            'storageAmount' => $storageAmount
+        ]);
+    }
+
+    public function createDetentionInvoice()
+    {
+        request()->validate([
+            'bldraft_id' => ['required'],
+            'calculation_data' => ['required', 'not'],
+            'amount' => ['required'],
+        ]);
+        $calculationData = request()->calculation_data;
+        $notes = array_filter(explode('_', $calculationData));
+        $detentionAmount = request()->amount;
+        $blId = request()->bldraft_id;
+        $bl = BlDraft::query()->find($blId);
+        $bldrafts = $bl;
+
+        $bl_id = $blId;
+        if($bl_id != null){
+            $bldraft = BlDraft::where('id',$bl_id)->with('blDetails')->first();
+        }else{
+            $bldraft = null;
+        }
+        $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
+        $qty = $bldraft->blDetails->count();
+        $cartData = json_decode(request('cart_data_for_invoice'));
+        return view('invoice.invoice.create_debit',[
+            'bldrafts'=>$bldrafts,
+            'cartData' => $cartData ?? null,
+            'qty'=>$qty,
+            'bldraft'=>$bldraft,
+            'voyages'=>$voyages,
+            'notes' => $notes,
+            'detentionAmount' => $detentionAmount
+        ]);
     }
 }

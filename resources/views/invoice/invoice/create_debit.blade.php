@@ -133,10 +133,12 @@
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
                                     <label> Notes </label>
-                                    <textarea class="form-control" name="notes"></textarea>
+                                    <textarea class="form-control" name="notes">
+                                        {{ isset($notes) ? implode("\n", $notes) : '' }}
+                                    </textarea>
                                 </div>
                             </div>
-                        <h4>Charges<h4>
+                        <h4>Charges</h4>
                         <table id="containerDepit" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -146,20 +148,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @if($cartData != null)
-                                        @foreach($cartData as $cart)
+                                @if($notes != null)
+{{--                                        @foreach($cartData ?? [] as $cart)--}}
                                             <tr>
                                                 <td>
-                                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Detention">
                                                 </td>
-                                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($cart->calculationData)->grandTotal)}}"
+                                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{ $detentionAmount  }}"
                                                            placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
                                                 </td>
-                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($cart->calculationData)->grandTotal)}}"
+                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{ $detentionAmount  }}"
                                                            placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                                 </td>
                                             </tr>
-                                        @endforeach
+{{--                                        @endforeach--}}
                                 @else
                                     <tr>
                                         <td>
@@ -192,6 +194,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        localStorage.removeItem('cart');
         $("#createForm").validate();
     });
     $('#createForm').submit(function() {

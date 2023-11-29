@@ -51,6 +51,7 @@ Route::get('booking/activityContainers/{id}/{company_id}/{equipment_id}', [Count
 Route::get('master/invoices/{id}', [CompanyDataController::class, 'blinvoice']);
 Route::get('master/invoicesCustomers/{id}', [CompanyDataController::class, 'customerInvoice']);
 Route::get('/bldrafts/{bldraft}/containers', [BlDraftController::class ,'containers']);
+Route::get('bl/is-export/{blDraft}', [BlDraftController::class, 'isExportJson']);
 Route::get('storage/bl/containers/{id}/{company_id}', [StorageContainersController::class, 'getStorageBlContainers']);
 Route::get('storage/triffs/{service}/{company_id}', [StorageContainersController::class, 'getStorageTriffs']);
 Route::get('/get-ports', [PortController::class, 'getPorts'])->name('api.get-ports');

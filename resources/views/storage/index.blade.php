@@ -53,7 +53,7 @@
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($movementsBlNo as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -63,7 +63,7 @@
                                             name="container_code[]" data-size="10"
                                             title="{{trans('forms.select')}}" required multiple>
                                         <option
-                                            value="all" {{ "all" == old('container_code',isset($input) ? $input['container_code'] : '') ? 'selected':'hidden'}}>
+                                                value="all" {{ "all" == old('container_code',isset($input) ? $input['container_code'] : '') ? 'selected':'hidden'}}>
                                             All
                                         </option>
                                     </select>
@@ -75,7 +75,7 @@
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($services as $service)
                                             <option
-                                                value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
+                                                    value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -95,7 +95,7 @@
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('from'))
@@ -109,7 +109,7 @@
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('to'))
@@ -192,10 +192,10 @@
                             <div class="layout-px-spacing">
                                 <!-- ... Your existing HTML ... -->
                                 <div class="row">
-                                    
+
 
                                     <!-- Add a button to add the entire calculation to the cart -->
-                                     <form id="add-to-cart-form">
+                                    <form id="add-to-cart-form">
                                         @csrf
                                         <input type="hidden" name="bl_no" value="{{$input['bl_no']}}">
                                         <input type="hidden" name="calculation_data"
@@ -204,7 +204,7 @@
                                     </form>
                                 </div>
 
-                                 <div id="invoice-cart">
+                                <div id="invoice-cart">
                                     <div class="cart-header">
                                         <h4>Invoice Cart</h4>
                                         <button type="button" class="btn btn-sm btn-danger" id="clear-cart">Clear Cart
@@ -215,390 +215,433 @@
                                 </div>
 
                                 <!-- <div class="button-container"> -->
-                            <div class="form-row">
-                                <div class="col-md-2 text-center">
-                                </div>
-                                <div class="col-md-2 text-center">
-                                </div>
-                                <div class="col-md-2 text-center">
+                                <div class="form-row">
+                                    <div class="col-md-2 text-center">
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                    </div>
+                                    <div class="col-md-2 text-center">
                                         <form action="{{ route('preview.index') }}" method="post" id="preview-form">
                                             @csrf
-                                            <input type="hidden"  name="preview-data" id="preview-data">
-                                            <button  class="btn btn-success mt-3">Preview</button>
+                                            <input type="hidden" name="preview-data" id="preview-data">
+                                            <button class="btn btn-success mt-3">Preview</button>
 
                                         </form>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <form action="{{ route('create-storage-invoice') }}" method="GET">
+                                            {{--                                        @csrf--}}
+                                            <input type="hidden" name="calculation_data" id="create-invoice-data">
+                                            <input type="hidden" name="bldraft_id" id="create-invoice-bl-no">
+                                            <input type="hidden" name="amount" id="create-invoice-amount">
+                                            <button class="btn btn-info mt-3">Create Invoice</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <a class="btn btn-custom mt-3"
+                                           href="{{ route('export.calculation') }}">Export</a>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 text-center">
-                                    <a class="btn btn-custom mt-3" href="{{ route('export.calculation') }}">Export</a>
-                                </div>
-                            </div>
- 
-                        @endif
 
+                                @endif
+
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-@endsection
-@push('styles')
-    <style>
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center buttons horizontally */
-            gap: 10px; /* Adjust the space between the buttons */
-        }
+        @endsection
+        @push('styles')
+            <style>
+                .button-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center; /* Center buttons horizontally */
+                    gap: 10px; /* Adjust the space between the buttons */
+                }
 
-        .btn-custom {
-            background-color: #ffc107; /* Set the background color to yellow */
-            color: #000; /* Set the text color to black */
-            border: none; /* Remove button border */
-            padding: 10px 20px; /* Adjust padding as needed */
-            border-radius: 5px; /* Add rounded corners */
-            text-decoration: none; /* Remove underlines from links */
-            transition: background-color 0.3s; /* Add a smooth hover effect */
-        }
+                .btn-custom {
+                    background-color: #ffc107; /* Set the background color to yellow */
+                    color: #000; /* Set the text color to black */
+                    border: none; /* Remove button border */
+                    padding: 10px 20px; /* Adjust padding as needed */
+                    border-radius: 5px; /* Add rounded corners */
+                    text-decoration: none; /* Remove underlines from links */
+                    transition: background-color 0.3s; /* Add a smooth hover effect */
+                }
 
-        .btn-custom:hover {
-            background-color: #ff9800; /* Change the background color on hover */
-        }
+                .btn-custom:hover {
+                    background-color: #ff9800; /* Change the background color on hover */
+                }
 
-        /* Style the cart container */
-        #invoice-cart {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-top: 20px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+                /* Style the cart container */
+                #invoice-cart {
+                    border: 1px solid #ddd;
+                    padding: 20px;
+                    margin-top: 20px;
+                    background-color: #f9f9f9;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
 
-        /* Style the cart header */
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+                /* Style the cart header */
+                .cart-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
 
-        /* Style the cart items list */
-        #cart-items {
-            list-style-type: none;
-            padding: 0;
-        }
+                /* Style the cart items list */
+                #cart-items {
+                    list-style-type: none;
+                    padding: 0;
+                }
 
-        /* Style individual cart items */
-        .cart-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+                /* Style individual cart items */
+                .cart-item {
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    background-color: #fff;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
 
-        /* Style the Create Invoice button */
-        #create-invoice {
-            margin-top: 20px;
-        }
+                /* Style the Create Invoice button */
+                #create-invoice {
+                    margin-top: 20px;
+                }
 
-        /* Style the Add to Invoice button */
-        #add-to-cart {
-            margin-bottom: 20px;
-        }
+                /* Style the Add to Invoice button */
+                #add-to-cart {
+                    margin-bottom: 20px;
+                }
 
-        /* Style the Clear Cart button */
-        #clear-cart {
-            margin-top: -10px;
-        }
+                /* Style the Clear Cart button */
+                #clear-cart {
+                    margin-top: -10px;
+                }
 
-        /* Style the remove button */
-        .remove-button {
-            background-color: #ff6961;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-left: 10px;
-        }
-    </style>
-@endpush
-@push('scripts')
-    <script>
-        let selectedCodes = '{{ implode(',',$input['container_code'] ??[]) }}'
-        selectedCodes = selectedCodes.split(',')
-        let selectedTriff = '{{ $input['Triff_id'] ?? '' }}'
+                /* Style the remove button */
+                .remove-button {
+                    background-color: #ff6961;
+                    color: #fff;
+                    border: none;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 16px;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-left: 10px;
+                }
+            </style>
+        @endpush
+        @push('scripts')
+            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        let service = $('#service');
-        let company_id = "{{auth()->user()->company_id}}";
+            <script>
+                let selectedCodes = '{{ implode(',',$input['container_code'] ??[]) }}'
+                selectedCodes = selectedCodes.split(',')
+                let selectedTriff = '{{ $input['Triff_id'] ?? '' }}'
 
-        $(document).ready(function () {
-            const getTriff = () => {
-                let value = service.val();
-                $.get(`/api/storage/triffs/${service.val()}/${company_id}`).then(function (data) {
-                    let triffs = data.triffs || '';
-                    let list2 = [];
-                    for (let i = 0; i < triffs.length; i++) {
-                        (triffs[i].id == selectedTriff) ?
-                            list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`) :
-                            list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`);
-                    }
-                    let triff = $('#triff_id');
-                    triff.html(list2.join(''));
-                    $('.selectpicker').selectpicker('refresh');
-                });
-            }
-            if (service.val()) {
-                getTriff()
-            }
-
-            service.on('change', () => getTriff())
-
-            const getContainers = () => {
-                let bl = $('#blno');
-                $('#bldraft_id').val(bl.val());
-                let isSelected = "";
+                let service = $('#service');
                 let company_id = "{{auth()->user()->company_id}}";
-                let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
-                    let containers = data.containers || '';
-                    let list2 = [`<option value='all' ${selectedCodes[0] == 'all' ? 'selected' : ''}>All</option>`];
-                    for (let i = 0; i < containers.length; i++) {
-                        (selectedCodes.includes(containers[i].id.toString())) ?
-                            list2.push(`<option value='${containers[i].id}' selected>${containers[i].code} </option>`) :
-                            list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`)
+
+                $(document).ready(function () {
+                    const getTriff = () => {
+                        let value = service.val();
+                        $.get(`/api/storage/triffs/${service.val()}/${company_id}`).then(function (data) {
+                            let triffs = data.triffs || '';
+                            let list2 = [];
+                            for (let i = 0; i < triffs.length; i++) {
+                                (triffs[i].id == selectedTriff) ?
+                                    list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`) :
+                                    list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`);
+                            }
+                            let triff = $('#triff_id');
+                            triff.html(list2.join(''));
+                            $('.selectpicker').selectpicker('refresh');
+                        });
                     }
-                    let container = $('#port');
-                    container.html(list2.join(''));
-                    $('.selectpicker').selectpicker('refresh');
-                });
-            }
-            if ($('#blno').val()) {
-                getContainers()
-            }
-            document.getElementById('blno').addEventListener('change', getContainers)
+                    if (service.val()) {
+                        getTriff()
+                    }
 
-            $('#port').change(function () {
-                var selectedValue = $(this).val();
-                if (selectedValue.length > 1 && selectedValue.includes('all')) {
-                    selectedValue = selectedValue.filter(function (value) {
-                        return value !== 'all';
-                    });
-                    $(this).val(selectedValue);
-                }
+                    service.on('change', () => getTriff())
 
-                if (selectedValue.includes('all')) {
-                    $('#port option:not(:selected)').prop('disabled', true);
-                } else {
-                    $('#port option').prop('disabled', false);
-                }
-                $('#port').selectpicker('refresh');
-            });
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script>
-        // Initialize the cart with data from localStorage or an empty array
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        
-        $('#preview-form').submit(function(event) {
-            const storedItem = localStorage.getItem('cart');
-            if (storedItem) {
-                $('#preview-data').val(storedItem);
-            }
-        });
+                    const getContainers = () => {
+                        let bl = $('#blno');
+                        $('#bldraft_id').val(bl.val());
+                        let isSelected = "";
+                        let company_id = "{{auth()->user()->company_id}}";
 
-        // function openPreview() {
-        //     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
-        //     const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
-        //
-        //     // Replace 'your-preview-url' with the actual URL for your preview page
-        //     const previewUrl = `/preview`;
-        //
-        //     // Open a new window or popup
-        //     const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
-        //
-        //     // Focus on the new window/popup (optional)
-        //     if (popup) {
-        //         popup.focus();
-        //     }
-        // }
+                        axios.get(`/api/bl/is-export/${bl.val()}`)
+                            .then(response => {
+                                const isExport = response.data.is_export;
 
-        // Add click event listener to "Add to Invoice" button
-        const addToCartButton = document.getElementById('add-to-cart');
-        addToCartButton.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const form = document.getElementById('add-to-cart-form');
-            const selectedBl = document.getElementById('blno');
-            const bl_no = selectedBl.options[selectedBl.selectedIndex];
-            const blNo = bl_no.value;
-            const blNoText = bl_no.text;
-            const selectedtriff = document.getElementById('triff_id');
-            const triff = selectedtriff.options[selectedtriff.selectedIndex];
-            const triffValue = triff.value;
-            const triffText = triff.text;
-            const calculationData = JSON.parse(form.querySelector('input[name="calculation_data"]').value);
+                                $('#service option').each(function () {
+                                    const text = $(this).text().toLowerCase();
+                                    const hasExport = text.includes('export');
 
-            // Check if the same data already exists in the cart
-            if (cart.some(item => item.blNo === blNo && item.triffValue === triffValue)) {
-                swal("Warning", "You cannot add the same data twice.", "warning");
-                return; // Don't proceed with adding to cart
-            }
+                                    if ((isExport && !hasExport) || (!isExport && hasExport)) {
+                                        $(this).hide();
+                                    } else {
+                                        $(this).show();
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
 
-            // Check if the blNo is different from existing cart items
-            if (cart.some(item => item.blNo !== blNo)) {
-                // BlNo is different, show confirmation dialog
-                swal({
-                    title: "Warning",
-                    text: "You are trying to add a different BL NO to the cart. Do you want to clear the cart and proceed?",
-                    icon: "warning",
-                    buttons: ["Back", "Clear Cart"],
-                    dangerMode: true,
-                }).then(async (choice) => {
-                    if (choice === null) {
-                        // User clicked "Back," do nothing
-                    } else if (choice) {
-                        // User clicked "Clear Cart," clear the cart
-                        let response = await clearCart();
-                        if (response === 'clear') {
-                            updateCartDisplay();
-                            addToCart();
+                        let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
+                            let containers = data.containers || '';
+                            let list2 = [`<option value='all' ${selectedCodes[0] == 'all' ? 'selected' : ''}>All</option>`];
+                            for (let i = 0; i < containers.length; i++) {
+                                (selectedCodes.includes(containers[i].id.toString())) ?
+                                    list2.push(`<option value='${containers[i].id}' selected>${containers[i].code} </option>`) :
+                                    list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`)
+                            }
+                            let container = $('#port');
+                            container.html(list2.join(''));
+                            $('.selectpicker').selectpicker('refresh');
+                        });
+                    }
+                    if ($('#blno').val()) {
+                        getContainers()
+                    }
+                    document.getElementById('blno').addEventListener('change', getContainers)
+
+                    $('#port').change(function () {
+                        var selectedValue = $(this).val();
+                        if (selectedValue.length > 1 && selectedValue.includes('all')) {
+                            selectedValue = selectedValue.filter(function (value) {
+                                return value !== 'all';
+                            });
+                            $(this).val(selectedValue);
                         }
+
+                        if (selectedValue.includes('all')) {
+                            $('#port option:not(:selected)').prop('disabled', true);
+                        } else {
+                            $('#port option').prop('disabled', false);
+                        }
+                        $('#port').selectpicker('refresh');
+                    });
+                });
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+            <script>
+                // Initialize the cart with data from localStorage or an empty array
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                $('#preview-form').submit(function (event) {
+                    const storedItem = localStorage.getItem('cart');
+                    if (storedItem) {
+                        $('#preview-data').val(storedItem);
                     }
                 });
-            } else {
-                // BlNo is the same, proceed to add to cart
-                addToCart();
-            }
 
-            function addToCart() {
-                // Add the entire calculation to the cart
-                cart.push({blNo, blNoText, calculationData, triffValue, triffText});
+                // function openPreview() {
+                //     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+                //     const cartDataParam = encodeURIComponent(JSON.stringify(cartData));
+                //
+                //     // Replace 'your-preview-url' with the actual URL for your preview page
+                //     const previewUrl = `/preview`;
+                //
+                //     // Open a new window or popup
+                //     const popup = window.open(previewUrl, 'Cart Preview', 'width=1280,height=900');
+                //
+                //     // Focus on the new window/popup (optional)
+                //     if (popup) {
+                //         popup.focus();
+                //     }
+                // }
 
-                // Update the cart display
-                updateCartDisplay();
+                // Add click event listener to "Add to Invoice" button
+                const addToCartButton = document.getElementById('add-to-cart');
+                addToCartButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const form = document.getElementById('add-to-cart-form');
+                    const selectedBl = document.getElementById('blno');
+                    const bl_no = selectedBl.options[selectedBl.selectedIndex];
+                    const blNo = bl_no.value;
+                    const blNoText = bl_no.text;
+                    const selectedtriff = document.getElementById('triff_id');
+                    const triff = selectedtriff.options[selectedtriff.selectedIndex];
+                    const triffValue = triff.value;
+                    const triffText = triff.text;
+                    const calculationData = JSON.parse(form.querySelector('input[name="calculation_data"]').value);
 
-                // Save the cart data to localStorage
-                localStorage.setItem('cart', JSON.stringify(cart));
-            }
-        });
+                    // Check if the same data already exists in the cart
+                    if (cart.some(item => item.blNo === blNo && item.triffValue === triffValue)) {
+                        swal("Warning", "You cannot add the same data twice.", "warning");
+                        return; // Don't proceed with adding to cart
+                    }
 
-        // Function to clear the entire cart
-        function clearCart() {
-            return new Promise((resolve, reject) => {
-                swal({
-                    title: "Clear Cart",
-                    text: "Are you sure you want to clear the entire cart?",
-                    icon: "warning",
-                    buttons: ["Cancel", "Clear"],
-                    dangerMode: true,
-                }).then((willClear) => {
-                    if (willClear === null) {
-                        resolve('cancel');
-                    } else if (willClear) {
-                        //success
-                        cart.length = 0;
-                        localStorage.removeItem('cart');
+                    // Check if the blNo is different from existing cart items
+                    if (cart.some(item => item.blNo !== blNo)) {
+                        // BlNo is different, show confirmation dialog
+                        swal({
+                            title: "Warning",
+                            text: "You are trying to add a different BL NO to the cart. Do you want to clear the cart and proceed?",
+                            icon: "warning",
+                            buttons: ["Back", "Clear Cart"],
+                            dangerMode: true,
+                        }).then(async (choice) => {
+                            if (choice === null) {
+                                // User clicked "Back," do nothing
+                            } else if (choice) {
+                                // User clicked "Clear Cart," clear the cart
+                                let response = await clearCart();
+                                if (response === 'clear') {
+                                    updateCartDisplay();
+                                    addToCart();
+                                }
+                            }
+                        });
+                    } else {
+                        // BlNo is the same, proceed to add to cart
+                        addToCart();
+                    }
+
+                    function addToCart() {
+                        // Add the entire calculation to the cart
+                        cart.push({blNo, blNoText, calculationData, triffValue, triffText});
+
+                        // Update the cart display
                         updateCartDisplay();
-                        resolve('clear');
+
+                        // Save the cart data to localStorage
+                        localStorage.setItem('cart', JSON.stringify(cart));
                     }
                 });
-            })
-        }
 
-        // ... Your existing JavaScript ...
+                // Function to clear the entire cart
+                function clearCart() {
+                    return new Promise((resolve, reject) => {
+                        swal({
+                            title: "Clear Cart",
+                            text: "Are you sure you want to clear the entire cart?",
+                            icon: "warning",
+                            buttons: ["Cancel", "Clear"],
+                            dangerMode: true,
+                        }).then((willClear) => {
+                            if (willClear === null) {
+                                resolve('cancel');
+                            } else if (willClear) {
+                                //success
+                                cart.length = 0;
+                                localStorage.removeItem('cart');
+                                updateCartDisplay();
+                                resolve('clear');
+                            }
+                        });
+                    })
+                }
 
-        // Add click event listener to "Clear Cart" button
-        const clearCartButton = document.getElementById('clear-cart');
-        clearCartButton.addEventListener('click', clearCart);
+                // ... Your existing JavaScript ...
+
+                // Add click event listener to "Clear Cart" button
+                const clearCartButton = document.getElementById('clear-cart');
+                clearCartButton.addEventListener('click', clearCart);
 
 
-        // Function to update the cart display
-        // function updateCartDisplay() {
-        //     const cartItems = document.getElementById('cart-items');
-        //     cartItems.innerHTML = '';
-        //
-        //     cart.forEach(item => {
-        //         const li = document.createElement('li');
-        //         li.textContent = `BL NO: ${item.blNo}, Grand Total: ${item.calculationData.grandTotal} , Triff: ${item.triffText}`;
-        //         cartItems.appendChild(li);
-        //     });
-        // }
+                // Function to update the cart display
+                // function updateCartDisplay() {
+                //     const cartItems = document.getElementById('cart-items');
+                //     cartItems.innerHTML = '';
+                //
+                //     cart.forEach(item => {
+                //         const li = document.createElement('li');
+                //         li.textContent = `BL NO: ${item.blNo}, Grand Total: ${item.calculationData.grandTotal} , Triff: ${item.triffText}`;
+                //         cartItems.appendChild(li);
+                //     });
+                // }
 
-        // Function to remove an item from the cart
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartDisplay();
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
+                // Function to remove an item from the cart
+                function removeFromCart(index) {
+                    cart.splice(index, 1);
+                    updateCartDisplay();
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                }
 
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cart-items');
-            cartItems.innerHTML = '';
+                function updateCartDisplay() {
+                    const cartItems = document.getElementById('cart-items');
+                    cartItems.innerHTML = '';
 
-            cart.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item cart-item';
+                    cart.forEach((item, index) => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item cart-item';
 
-                // Create a container for cart item details and remove button
-                const itemDetails = document.createElement('div');
-                itemDetails.innerHTML = `
-                <div>BL NO: ${item.blNoText}, Grand Total: ${item.calculationData.grandTotal}, Triff: ${item.triffText}</div>
+                        // Create a container for cart item details and remove button
+                        const itemDetails = document.createElement('div');
+                        const containers = item.calculationData.containers.map(container => container.container_no).join(', ')
+                        const text = `BL NO: ${item.blNoText}, Grand Total: ${item.calculationData.grandTotal}, Triff: ${item.triffText}, Containers: ${containers}`
+                        itemDetails.innerHTML = `
+                <div>${text}</div>
             `;
 
-                // Create the remove button
-                const removeButton = document.createElement('button');
-                removeButton.className = 'remove-button';
-                removeButton.innerHTML = 'X';
+                        const createInvoiceData = $("#create-invoice-data")
+                        const currentValue = createInvoiceData.val()
+                        const updatedValue = currentValue + '_' + text;
+                        createInvoiceData.val(updatedValue)
+                        const createInvoiceBlNo = $("#create-invoice-bl-no")
+                        createInvoiceBlNo.val(item.blNo)
+                        const createInvoiceAmount = $("#create-invoice-amount")
+                        createInvoiceAmount.val(item.calculationData.grandTotal)
 
-                // Add a click event listener to remove the item when the remove button is clicked
-                removeButton.addEventListener('click', () => {
-                    removeFromCart(index);
+                        // Create the remove button
+                        const removeButton = document.createElement('button');
+                        removeButton.className = 'remove-button';
+                        removeButton.innerHTML = 'X';
+
+                        // Add a click event listener to remove the item when the remove button is clicked
+                        removeButton.addEventListener('click', () => {
+                            removeFromCart(index);
+                        });
+
+                        // Append the item details and remove button to the cart item container
+                        li.appendChild(itemDetails);
+                        li.appendChild(removeButton);
+
+                        // Append the cart item to the cart list
+                        cartItems.appendChild(li);
+                    });
+                }
+
+                // Add click event listener to "Create Invoice" button
+                const createInvoiceButton = document.getElementById('create-invoice');
+                createInvoiceButton.addEventListener('click', () => {
+                    // Prepare the data to send with the form
+                    const blNoForInvoice = document.getElementById('bl_no_for_invoice');
+                    const cartDataForInvoice = document.getElementById('cart_data_for_invoice');
+
+                    // Set the values of the hidden form fields
+                    blNoForInvoice.value = cart[0].blNo; // Assuming there's only one BL NO in the cart
+                    cartDataForInvoice.value = JSON.stringify(cart);
+
+                    // Submit the form
+                    document.getElementById('create-invoice-form').submit();
+
+                    // Clear the cart and update the display
+                    cart.length = 0;
+                    localStorage.removeItem('cart');
+                    updateCartDisplay();
                 });
 
-                // Append the item details and remove button to the cart item container
-                li.appendChild(itemDetails);
-                li.appendChild(removeButton);
-
-                // Append the cart item to the cart list
-                cartItems.appendChild(li);
-            });
-        }
-
-        // Add click event listener to "Create Invoice" button
-        const createInvoiceButton = document.getElementById('create-invoice');
-        createInvoiceButton.addEventListener('click', () => {
-            // Prepare the data to send with the form
-            const blNoForInvoice = document.getElementById('bl_no_for_invoice');
-            const cartDataForInvoice = document.getElementById('cart_data_for_invoice');
-
-            // Set the values of the hidden form fields
-            blNoForInvoice.value = cart[0].blNo; // Assuming there's only one BL NO in the cart
-            cartDataForInvoice.value = JSON.stringify(cart);
-
-            // Submit the form
-            document.getElementById('create-invoice-form').submit();
-
-            // Clear the cart and update the display
-            cart.length = 0;
-            localStorage.removeItem('cart');
-            updateCartDisplay();
-        });
-
-        // Load and display the cart data when the page loads
-        window.addEventListener('load', () => {
-            updateCartDisplay();
-        });
+                // Load and display the cart data when the page loads
+                window.addEventListener('load', () => {
+                    updateCartDisplay();
+                });
 
 
-    </script>
+            </script>
 
-@endpush
+    @endpush
