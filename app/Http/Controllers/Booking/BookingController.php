@@ -274,6 +274,7 @@ class BookingController extends Controller
             'voyage_id' => $request->input('voyage_id'),
             'voyage_id_second' => $request->input('voyage_id_second'),
             'terminal_id' => $request->input('terminal_id'),
+            'load_terminal_id' => $request->input('load_terminal_id'),
             'agent_id' => $request->input('agent_id'),
             'discharge_etd' => $request->input('discharge_etd'),
             'load_port_cutoff' => $request->input('load_port_cutoff'),

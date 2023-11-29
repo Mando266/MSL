@@ -162,7 +162,6 @@ class BlDraftController extends Controller
             }
         }
         $user = Auth::user();
-
         if(isset($request->blDraft_id)){
             // Childs of Splitted BL Logic Here
             $ischild = 1;
@@ -174,6 +173,7 @@ class BlDraftController extends Controller
             foreach($blDraftParent->childs as $child){
                 $qtyCount = $qtyCount + count($child->blDetails);
             }
+        if($request->input('movement') == 'FCL/FCL'){
             $qtyCount = $qtyCount + count($request->input('blDraftdetails'));
             if($qtyCount == $booking->bookingContainerDetails->sum('qty')){
                 $blDraftParent->has_child = 0;
@@ -189,6 +189,8 @@ class BlDraftController extends Controller
                 $hasChild = 0;
             }
         }
+    }
+
         if($ischild){
             $serialNum = $numOfChilds + 2;
             $serialChar = strtoupper(chr($serialNum + 64));

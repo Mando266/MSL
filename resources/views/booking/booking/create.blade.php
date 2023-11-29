@@ -390,6 +390,7 @@
                                 @enderror
                             </div>
                             @else
+
                             <div class="form-group col-md-3">
                                 <label for="voyage_id">First Vessel / Voyage <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="voyage_id" data-live-search="true" name="voyage_id" data-size="10"
@@ -456,6 +457,20 @@
                             @endif
                         </div>
                         <div class="form-row">
+                        <div class="form-group col-md-3">
+                                <label for="load_terminal_id">Load Port Terminal <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="terminal" data-live-search="true" name="load_terminal_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($terminals as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('load_terminal_id') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('load_terminal_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
                             <div class="form-group col-md-4">
                                 <label for="discharge_etd">Discharge ETA</label>
                                 <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd')}}"

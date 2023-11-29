@@ -569,6 +569,9 @@ class InvoiceController extends Controller
         if($total_after_vat != 0){
             $total = $total + $total_after_vat;
         }
+
+        $total = round($total , 2);
+
         $exp = explode('.', $total);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
         if(count($exp) >1){
@@ -582,6 +585,9 @@ class InvoiceController extends Controller
         if($total_eg_after_vat != 0){
             $total_eg = $total_eg + $total_eg_after_vat;
         }
+
+        $total_eg = round($total_eg , 2);
+
         $exp = explode('.', $total_eg);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
         if(count($exp) >1){
