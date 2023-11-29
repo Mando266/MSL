@@ -46,7 +46,7 @@
                 $haz = $firstContainerDetail->haz;
                 foreach($booking->bookingContainerDetails as $detail){
                     $containerCount = $containerCount + $detail->qty;
-                    $containerType = optional($detail->containerType)->name;
+                    $containerType = optional($detail-containerType)->name;
                 }
                 @endphp
                 <table class="col-md-12 tableStyle" >

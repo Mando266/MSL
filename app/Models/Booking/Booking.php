@@ -62,6 +62,9 @@ class   Booking extends Model implements PermissionSeederContract
     public function terminals(){
         return $this->belongsTo(Terminals::class,'terminal_id','id');
     }
+    public function polterminals(){
+        return $this->belongsTo(Terminals::class,'load_terminal_id','id');
+    }
     public function placeOfAcceptence(){
         return $this->belongsTo(Ports::class,'place_of_acceptence_id','id');
     }

@@ -70,7 +70,7 @@ class TerminalsController extends Controller
     {
         $this->authorize(__FUNCTION__,Terminals::class);
         $countries = Country::orderBy('name')->get();
-        $ports = [];
+        $ports = Ports::where('company_id',Auth::user()->company_id)->get();
         return view('master.terminals.edit',[
             'countries'=>$countries,
             'terminal'=>$terminal,
