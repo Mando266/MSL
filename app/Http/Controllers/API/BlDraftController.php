@@ -19,4 +19,15 @@ class BlDraftController extends Controller
              'bl_no' => $bldraft->ref_no
              ]);
     }
+
+    public function isExportJson(BlDraft $blDraft)
+    {
+        $booking = $blDraft->booking;
+        $quotation = $booking->quotation;
+        $shipmentType = $quotation->shipment_type ?? $booking->shipment_type ?? 'export';
+        
+        return response()->json([
+            'is_export' => strtolower($shipmentType) === 'export'
+        ]);
+    }
 }

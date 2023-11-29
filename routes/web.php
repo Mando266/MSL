@@ -118,6 +118,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('customerStatementsExport', 'ImportExportController@customerStatementsExport')->name(
         'export.statements'
     );
+    Route::get('create-storage-invoice', [InvoiceController::class,'createStorageInvoice'])->name('create-storage-invoice');
+    Route::get('create-detention-invoice', [InvoiceController::class,'createDetentionInvoice'])->name('create-detention-invoice');
 
     /*
     |-------------------------------------------
@@ -212,11 +214,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('selectBLinvoice', [InvoiceController::class, 'selectBLinvoice'])->name('invoice.selectBLinvoice');
         Route::get('create_invoice', [InvoiceController::class, 'create_invoice'])->name('invoice.create_invoice');
         Route::post('create_invoice', [InvoiceController::class, 'storeInvoice'])->name('invoice.store_invoice');
+        Route::post('create/debit', [InvoiceController::class, 'create'])->name('invoice.create_debit');
         Route::resource('receipt', 'ReceiptController');
         Route::get('selectinvoice', [ReceiptController::class, 'selectinvoice'])->name('receipt.selectinvoice');
         Route::resource('refund', 'RefundController');
         Route::resource('creditNote', 'CreditController');
-        Route::get('get_invoice_json/{invoice}','InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
+        Route::get('get_invoice_json/{invoice}', 'InvoiceController@invoiceJson')->name('invoice.get_invoice_json');
     });
     /*
     |-------------------------------------------

@@ -54,7 +54,7 @@
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($movementsBlNo as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('bl_no',isset($input) ? $input['bl_no'] : '') ? 'selected':''}}>{{$item->ref_no}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -64,7 +64,7 @@
                                             name="container_code[]" data-size="10"
                                             title="{{trans('forms.select')}}" required multiple>
                                         <option
-                                            value="all" {{ "all" == old('container_code',isset($input) ? $input['container_code'] : '') ? 'selected':'hidden'}}>
+                                                value="all" {{ "all" == old('container_code',isset($input) ? $input['container_code'] : '') ? 'selected':'hidden'}}>
                                             All
                                         </option>
                                     </select>
@@ -76,7 +76,7 @@
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($services as $service)
                                             <option
-                                                value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
+                                                    value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -96,7 +96,7 @@
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('from',isset($input) ? $input['from'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('from'))
@@ -110,7 +110,7 @@
                                             title="{{trans('forms.select')}}">
                                         @foreach ($movementsCode as $item)
                                             <option
-                                                value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
+                                                    value="{{$item->id}}" {{$item->id == old('to',isset($input) ? $input['to'] : '') ? 'selected' : ''}}>{{$item->code}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('to'))
@@ -196,7 +196,7 @@
                                     <div class="col-md-1">
                                         <form action="{{ route('preview.index') }}" method="post" id="preview-form">
                                             @csrf
-                                            <input type="text"  name="preview-data" id="preview-data" hidden>
+                                            <input type="text" name="preview-data" id="preview-data" hidden>
                                             <button class="btn btn-primary">Preview</button>
                                         </form>
                                     </div>
@@ -233,6 +233,15 @@
                                     <!--    </button>-->
                                     <!--</form>-->
                                     <a class="btn btn-custom" href="{{ route('export.calculation') }}">Export</a>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <form action="{{ route('create-detention-invoice') }}" method="GET">
+                                        {{--                                        @csrf--}}
+                                        <input type="hidden" name="calculation_data" id="create-invoice-data">
+                                        <input type="hidden" name="bldraft_id" id="create-invoice-bl-no">
+                                        <input type="hidden" name="amount" id="create-invoice-amount">
+                                        <button class="btn btn-info mt-3">Create Invoice</button>
+                                    </form>
                                 </div>
 
                             </div>
@@ -336,6 +345,7 @@
     </style>
 @endpush
 @push('scripts')
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         let selectedCodes = '{{ implode(',',$input['container_code'] ??[]) }}'
         selectedCodes = selectedCodes.split(',')
@@ -371,6 +381,26 @@
                 $('#bldraft_id').val(bl.val());
                 let isSelected = "";
                 let company_id = "{{auth()->user()->company_id}}";
+
+                axios.get(`/api/bl/is-export/${bl.val()}`)
+                    .then(response => {
+                        const isExport = response.data.is_export;
+
+                        $('#service option').each(function () {
+                            const text = $(this).text().toLowerCase();
+                            const hasExport = text.includes('export');
+
+                            if ((isExport && !hasExport) || (!isExport && hasExport)) {
+                                $(this).hide();
+                            } else {
+                                $(this).show();
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+
                 let response = $.get(`/api/storage/bl/containers/${bl.val()}/${company_id}`).then(function (data) {
                     let containers = data.containers || '';
                     let list2 = [`<option value='all' ${selectedCodes[0] == 'all' ? 'selected' : ''}>All</option>`];
@@ -412,7 +442,7 @@
         // Initialize the cart with data from localStorage or an empty array
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        $('#preview-form').submit(function(event) {
+        $('#preview-form').submit(function (event) {
             const storedItem = localStorage.getItem('cart');
             if (storedItem) {
                 $('#preview-data').val(storedItem);
@@ -449,6 +479,7 @@
             const triffValue = triff.value;
             const triffText = triff.text;
             const calculationData = JSON.parse(form.querySelector('input[name="calculation_data"]').value);
+            const containerCount = $("#charges tbody tr").length
 
             // Check if the same data already exists in the cart
             if (cart.some(item => item.blNo === blNo && item.triffValue === triffValue)) {
@@ -553,9 +584,20 @@
 
                 // Create a container for cart item details and remove button
                 const itemDetails = document.createElement('div');
+                const containers = item.calculationData.containers.map(container => container.container_no).join(', ')
+                const text = `BL NO: ${item.blNoText}, Grand Total: ${item.calculationData.grandTotal}, Triff: ${item.triffText}, Containers: ${containers}`
                 itemDetails.innerHTML = `
-                <div>BL NO: ${item.blNoText}, Grand Total: ${item.calculationData.grandTotal}, Triff: ${item.triffText}</div>
+                <div>${text}</div>
             `;
+
+                const createInvoiceData = $("#create-invoice-data")
+                const currentValue = createInvoiceData.val()
+                const updatedValue = currentValue + '_' + text;
+                createInvoiceData.val(updatedValue)
+                const createInvoiceBlNo = $("#create-invoice-bl-no")
+                createInvoiceBlNo.val(item.blNo)
+                const createInvoiceAmount = $("#create-invoice-amount")
+                createInvoiceAmount.val(item.calculationData.grandTotal)
 
                 // Create the remove button
                 const removeButton = document.createElement('button');
