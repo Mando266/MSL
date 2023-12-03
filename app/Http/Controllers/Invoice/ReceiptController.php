@@ -120,14 +120,14 @@ class ReceiptController extends Controller
                 $total_eg_after_vat += ($vat * $chargeDesc->total_egy);
             }
         }
-            $total_before_vat = $total;
+            $total_before_vat = round($total, 2);
             if($total_after_vat != 0){
-                $total = $total + $total_after_vat;
+                $total = round($total , 2) + $total_after_vat; 
             }
-
-            $total_eg_before_vat = $total_eg;
+ 
+            $total_eg_before_vat = round($total_eg, 2);
             if($total_eg_after_vat != 0){
-                $total_eg = $total_eg + $total_eg_after_vat;
+                $total_eg = round($total_eg, 2) + $total_eg_after_vat;
             }
 
         if($invoice->add_egp == "false"){

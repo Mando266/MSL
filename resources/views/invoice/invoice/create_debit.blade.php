@@ -111,9 +111,10 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft">Draft</option>
-                                        @if($bldraft->bl_status == 1)
+                                        <option value="ready_confirm">Ready To Confirm</option>
+                                            @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
                                         <option value="confirm">Confirm</option>
-                                        @endif
+                                            @endif
                                    </select>
                                     @error('invoice_status')
                                     <div style="color:red;">

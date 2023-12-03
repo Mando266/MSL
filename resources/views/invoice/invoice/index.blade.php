@@ -224,7 +224,9 @@
                                             <td>{{$rate}}</td>
                                             <td class="text-center">
                                                 @if($invoice->invoice_status == "confirm")
-                                                    <span class="badge badge-info"> Confirm </span>
+                                                    <span class="badge badge-success"> Confirm </span>
+                                                @elseif($invoice->invoice_status == "ready_confirm")
+                                                    <span class="badge badge-info"> Ready To Confirm</span>
                                                 @else
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
@@ -254,7 +256,7 @@
                                                 @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15)
                                                     @permission('Invoice-Edit')
                                                     <li>
-                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" target="_blank" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
@@ -287,9 +289,9 @@
                                                         <button type="submit" class="btn btn-primary mt-3">Json</button>
                                                     </a>
                                                 @elseif($invoice->portal_status == 'Valid')
-                                                        <button class="btn btn-info mt-3">Valid</button>
+                                                        <button class="btn btn-success mt-3">Valid</button>
                                                 @elseif($invoice->portal_status == 'Submitted')
-                                                    <button class="btn btn-success mt-3">Submitted</button>
+                                                    <button class="btn btn-info mt-3">Submitted</button>
                                                 @endif
                                             </td>
                                         </tr>
