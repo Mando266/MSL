@@ -299,8 +299,6 @@ class InvoiceController extends Controller
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
             'notes'=>$request->notes,
-            'activity_code'=>$request->activity_code,
-
         ]);
         }else{
             $invoice = Invoice::create([

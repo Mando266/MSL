@@ -136,8 +136,9 @@
                                     <select class="form-control" data-live-search="true" name="invoice_status"
                                             title="{{trans('forms.select')}}" required>
                                             <option value="draft">Draft</option>
+                                            @if(Auth::user()->id == 2 || Auth::user()->id == 3)
                                             <option value="ready_confirm">Ready To Confirm</option>
-                                            @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
+                                            @elseif($bldraft->bl_status == 1 && Auth::user()->id == 15)
                                                 <option value="confirm">Confirm</option>
                                             @endif
                                     </select>
@@ -185,8 +186,7 @@
                                             @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
                                                 ETD
                                                 Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
-                                        @endif
-
+                                            @endif
                                     </div>
                                 </div>
                                 <div class="form-group col-md-2">

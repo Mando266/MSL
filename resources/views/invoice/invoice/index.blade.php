@@ -41,6 +41,7 @@
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
                                     <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
+                                    <option value="ready_confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Ready To Confirm</option>
                                     <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
