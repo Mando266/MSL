@@ -43,7 +43,8 @@ class QuotationsController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__, Quotation::class);
-        $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $paymentLocation = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $ports = [];
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
         $customers = Customers::where('company_id', Auth::user()->company_id)->orderBy('id')->with('CustomerRoles.role')->get();
@@ -52,7 +53,15 @@ class QuotationsController extends Controller
         })->with('CustomerRoles.role')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::where('company_id', Auth::user()->company_id)->get();
+        $principals = Lines::where('company_id', Auth::user()->company_id)
+        ->whereHas('types', function ($query) {
+            return $query->where('type_id', 5);
+        })->get();
+        $oprators = Lines::where('company_id', Auth::user()->company_id)
+        ->whereHas('types', function ($query) {
+            return $query->where('type_id', 4);
+        })->get();
+        $booking_agency = Agents::where('company_id',Auth::user()->company_id)->where('is_active', 1)->get();
 
         $isSuperAdmin = false;
         if (Auth::user()->is_super_admin) {
@@ -65,6 +74,7 @@ class QuotationsController extends Controller
         $user = Auth::user();
         return view('quotations.quotations.create', [
             'user' => $user,
+            'paymentLocation' => $paymentLocation,
             'ports' => $ports,
             'isSuperAdmin' => $isSuperAdmin,
             'agents' => $agents,
@@ -73,8 +83,10 @@ class QuotationsController extends Controller
             'customers' => $customers,
             'ffw' => $ffw,
             'country' => $country,
-            'line' => $line,
+            'principals' => $principals,
+            'oprators'  => $oprators,
             'equipment_types' => $equipment_types,
+            'booking_agency' => $booking_agency,
         ]);
     }
 
@@ -205,6 +217,10 @@ class QuotationsController extends Controller
                 'transportation_mode' => $request->input('transportation_mode'),
                 'status' => "pending",
                 'shipment_type' => $shipment_type,
+                'booking_agency' => $request->input('booking_agency'),
+                'agency_bookingr_ref' => $request->input('agency_bookingr_ref'),
+                'operator_frieght_payment' => $request->input('operator_frieght_payment'),
+                'payment_location' => $request->input('payment_location'),
             ]);
             $refNo .= $quotations->id;
             $quotations->ref_no = $refNo;
@@ -248,6 +264,10 @@ class QuotationsController extends Controller
                 'transportation_mode' => $request->input('transportation_mode'),
                 'status' => "pending",
                 'shipment_type' => $shipment_type,
+                'booking_agency' => $request->input('booking_agency'),
+                'agency_bookingr_ref' => $request->input('agency_bookingr_ref'),
+                'operator_frieght_payment' => $request->input('operator_frieght_payment'),
+                'payment_location' => $request->input('payment_location'),
             ]);
             $refNo .= $quotations->id;
             $quotations->ref_no = $refNo;
@@ -292,16 +312,26 @@ class QuotationsController extends Controller
         $this->authorize(__FUNCTION__, Quotation::class);
         $quotation = Quotation::with('quotationDesc', 'quotationLoad')->find($id);
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        $paymentLocation = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $container_types = ContainersTypes::orderBy('id')->get();
         $currency = Currency::orderBy('id')->get();
         $customers = Customers::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('name')->get();
         $equipment_types = ContainersTypes::orderBy('id')->get();
-        $line = Lines::where('company_id', Auth::user()->company_id)->get();
+        $principals = Lines::where('company_id', Auth::user()->company_id)
+        ->whereHas('types', function ($query) {
+            return $query->where('type_id', 5);
+        })->get();
+        $oprators = Lines::where('company_id', Auth::user()->company_id)
+        ->whereHas('types', function ($query) {
+            return $query->where('type_id', 4);
+        })->get();
         $ffw = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);
         })->with('CustomerRoles.role')->get();
 
+        $booking_agency = Agents::where('company_id',Auth::user()->company_id)->where('is_active', 1)->get();
+        
         $isSuperAdmin = false;
         if (Auth::user()->is_super_admin) {
             $isSuperAdmin = true;
@@ -315,15 +345,18 @@ class QuotationsController extends Controller
             'user' => $user,
             'quotation' => $quotation,
             'ports' => $ports,
+            'paymentLocation' => $paymentLocation,
             'isSuperAdmin' => $isSuperAdmin,
             'agents' => $agents,
             'container_types' => $container_types,
             'currency' => $currency,
             'customers' => $customers,
             'ffw' => $ffw,
-            'line' => $line,
+            'principals' => $principals,
+            'oprators'  => $oprators,
             'equipment_types' => $equipment_types,
             'country' => $country,
+            'booking_agency' => $booking_agency,
         ]);
     }
 
@@ -386,6 +419,10 @@ class QuotationsController extends Controller
             'payment_kind' => $request->payment_kind,
             'quotation_type' => $request->quotation_type,
             'transportation_mode' => $request->transportation_mode,
+            'booking_agency' => $request->booking_agency,
+            'agency_bookingr_ref' => $request->agency_bookingr_ref,
+            'operator_frieght_payment' => $request->operator_frieght_payment,
+            'payment_location' => $request->payment_location,
         ];
         if ($user->is_super_admin) {
             if ($quotation->discharge_agent_id != $request->discharge_agent_id || $request->equipment_type_id != $quotation->equipment_type_id) {

@@ -74,9 +74,13 @@
                             @endif
                         </tr> --}}
 
-                        <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->consignee)->name}} <br>
-                            </td>
+                        <tr> 
+                        @if (str_contains(optional($booking)->consignee->name, 'TO THE ORDER') || str_contains(optional($booking)->consignee->name, 'TO ORDER'))
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;"><br> {{optional(optional($booking->bldraft)->customerNotify)->name}}</td>
+                        @else
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;"><br>{{ optional($booking->consignee)->name }}</td>
+                        @endif
+
                             <td class="col-md-3 tableStyle text-right underline" >برجاء تسليم السادة</td>
                         </tr>
                         <tr>

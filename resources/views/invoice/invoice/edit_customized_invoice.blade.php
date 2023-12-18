@@ -20,7 +20,7 @@
                 </div>
                 <div class="widget-content widget-content-area">
 
-                <form id="editForm" action="{{route('invoice.update',['invoice'=>$invoice])}}" method="POST" >
+                <form  novalidate id="createForm" action="{{route('invoice.update',['invoice'=>$invoice])}}" method="POST" >
                             @csrf
                             @method('put')
                         <div class="form-row">
@@ -170,7 +170,9 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft" {{ old('invoice_status',$invoice->invoice_status) == "draft" ? 'selected':'' }}>Draft</option>
+                                        @permission('Invoice-Ready_to_Confirm')
                                         <option value="ready_confirm" {{ old('invoice_status',$invoice->invoice_status) == "ready_confirm" ? 'selected':'' }}>Ready To Confirm</option>
+                                        @endpermission
                                         @if(Auth::user()->id == 15)
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                         @endif
@@ -184,7 +186,7 @@
                                 @endif
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" value="{{old('date',date('Y-m-d'))}}">
                                 </div>
@@ -196,19 +198,6 @@
                                     <label>Bl No</label>
                                         <input type="text" class="form-control"  autocomplete="off" value="Customize" style="background-color:#fff" readonly>
                                 </div>
-                                <!-- <div class="col-md-3 form-group">
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>
-                                        <label class="form-check-label" for="exchange_rate">
-                                        ETA Rate {{ optional($invoice->voyage)->exchange_rate }}
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">
-                                        <label class="form-check-label" for="exchange_rate">
-                                          ETD Rate {{ optional($invoice->voyage)->exchange_rate_etd }}
-                                        </label>
-                                    </div>
-                                </div> -->
                                 @if($invoice->type == "invoice")
 
                                 <div class="form-group col-md-2" >
@@ -219,15 +208,8 @@
                                     <label>Exchange Rate</label>
                                         <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
-                                <div class="form-group col-md-3" >
+                                <div class="form-group col-md-2" >
                                     <div style="padding: 30px;">
-                                        {{-- @if($invoice->invoice_status != "confirm")
-                                        <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" {{ "true" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
-                                        <label class="form-check-label" for="add_egp">
-                                            EGP AND USD
-                                        </label>
-                                        <br>
-                                        @endif --}}
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{ "false" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
                                         <label class="form-check-label" for="add_egp">
                                           USD
@@ -243,14 +225,13 @@
                             </div> 
                             <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    <label for="status">Booking Status<span class="text-warning"> * </span></label>
-                                    <select class="selectpicker form-control" data-live-search="true" name="booking_status" title="{{trans('forms.select')}}" required>
+                                    <label for="status">Booking Status<span class="text-warning">  * (Required.)</span></label>
+                                    <select class="form-control" data-live-search="true" name="booking_status" title="{{trans('forms.select')}}" required>
+                                        <option value="">Select....</option>
                                         <option value="import" {{ old('booking_status',$invoice->booking_status) == "import" ? 'selected':'' }}>Import</option>
                                         <option value="export" {{ old('booking_status',$invoice->booking_status) == "export" ? 'selected':'' }}>Export</option>
                                     </select>
                                 </div>
-                            </div> 
-                            <div class="form-row">
                             @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3">
                                     <label for="vat">VAT %:</label>
@@ -632,7 +613,7 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
 });
 </script>
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
     });
 </script>

@@ -8,7 +8,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Gate In</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>

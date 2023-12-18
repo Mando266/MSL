@@ -8,7 +8,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Gate In</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -56,8 +56,8 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{request()->input('port_id')}}</td>
-                            <td class="col-md-3 tableStyle text-right underline" >السادة</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->bookingContainerDetails->first()->activityLocation)->pick_up_location}}</td>
+                            <td class="col-md-3 tableStyle text-right underline" >السادة</td> 
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle text-right underline" ></td>

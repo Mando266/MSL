@@ -63,6 +63,10 @@
                                 <label>Refund NO</label>
                                     <input type="text" class="form-control" placeholder="Refund NO" autocomplete="off" value="{{old('refund_no',$setting->refund_no )}}" style="background-color:#fff" name="refund_no">
                             </div>
+                            <div class="form-group col-md-3" >
+                                <label>Trucker Certificate NO</label>
+                                    <input type="text" class="form-control" placeholder="Trucker Certificate NO" autocomplete="off" value="{{old('trucker_cer_no',$setting->trucker_cer_no )}}" style="background-color:#fff" name="trucker_cer_no">
+                            </div>
                         </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">

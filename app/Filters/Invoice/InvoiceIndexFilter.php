@@ -14,5 +14,6 @@ class InvoiceIndexFilter extends AbstractFilter{
         'payment_kind'=>PaymentFilter::class,
         'voyage_id'=>VoyageFilter::class,
         'invoice_status'=>InvoiceStatusFilter::class,
+        'paymentstauts'=>PaymentStatusFilter::class,
     ];
 }

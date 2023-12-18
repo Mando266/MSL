@@ -65,7 +65,7 @@ class ImportExportController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return Excel::download(new MovementsExport(json_decode(request()->items, true)), 'Movements.xlsx');
+        return $this->exportWithValidation(new MovementsExport(json_decode(request()->items, true)), 'Movements.xlsx', 'items');
     }
 
     /**

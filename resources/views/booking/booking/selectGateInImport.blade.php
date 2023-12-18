@@ -8,7 +8,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a a href="{{route('booking.index')}}">Booking</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Show Gate Out</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Gate In</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -19,10 +19,10 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="activity_location_id">Select Gate In</label>
-                                <select class="selectpicker form-control" id="activity_location_id" name="port_id" data-live-search="true" data-size="10"
+                                <select class="selectpicker form-control" id="activity_location_id" name="activity_location_id" data-live-search="true" data-size="10"
                                     title="{{trans('forms.select')}}">
-                                    @foreach ($ports as $item)
-                                        <option value="{{$item->name}}">{{$item->pick_up_location}}</option>
+                                    @foreach ($gateIns as $item)
+                                        <option value="{{$item['id']}}" >{{$item['pick_up_location']}}</option>
                                     @endforeach
                                 </select>
                                 @error('activity_location_id')

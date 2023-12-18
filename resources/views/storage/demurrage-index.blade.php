@@ -236,7 +236,6 @@
                                 </div>
                                 <div class="col-md-2 text-center">
                                     <form action="{{ route('create-detention-invoice') }}" method="GET">
-                                        {{--                                        @csrf--}}
                                         <input type="hidden" name="calculation_data" id="create-invoice-data">
                                         <input type="hidden" name="bldraft_id" id="create-invoice-bl-no">
                                         <input type="hidden" name="amount" id="create-invoice-amount">

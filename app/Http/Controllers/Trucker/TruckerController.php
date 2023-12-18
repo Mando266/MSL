@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trucker;
 use App\Http\Controllers\Controller;
 use App\Models\Trucker\Trucker;
 use App\Models\Trucker\DelegatedPerson;
+use App\Filters\Trucker\TruckerIndexFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ class TruckerController extends Controller
     public function index()
     {
         $this->authorize(__FUNCTION__,Trucker::class);
-            $truckers = Trucker::where('company_id',Auth::user()
+            $truckers = Trucker::filter(new TruckerIndexFilter(request()))->where('company_id',Auth::user()
             ->company_id)->with('delegatedPersons')->paginate(30);
         // dd($truckers);
             return view('trucker.trucker.index',[

@@ -75,8 +75,8 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3">
-                                <label for="customer_id">Customer</label>
+                            <div class="form-group col-md-6">
+                                <label for="customer_id">Shipper</label>
                                 <select class="selectpicker form-control" id="customer_id" data-live-search="true"
                                         name="customer_id" data-size="10"
                                         title="{{trans('forms.select')}}">
@@ -86,8 +86,9 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            <div class="form-group col-md-3">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
                                 <label for="ffw_id">Fright Forwarder</label>
                                 <select class="selectpicker form-control" id="ffw_id" data-live-search="true"
                                         name="ffw_id" data-size="10"
@@ -98,7 +99,19 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label>Consignee</label>
+                                <select class="selectpicker form-control" id="customer_consignee_id" data-live-search="true"
+                                        name="customer_consignee_id" data-size="10"
+                                        title="{{trans('forms.select')}}">
+                                    @foreach ($consignee as $item)
+                                        <option
+                                            value="{{$item->id}}" {{$item->id == old('customer_consignee_id',request()->input('customer_consignee_id')) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
+   
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="POL">POL</label>

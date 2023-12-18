@@ -26,9 +26,19 @@
                             </div>
                         </div>
                     </br>
-                    <form>
+                    <form id="createForm">
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+
+                            <div class="form-group col-md-3">
+                                <label for="invoice">Invoice No</label>
+                                <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($invoiceRef as $item)
+                                        <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -36,8 +46,7 @@
                                         <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
-
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
                                     <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
@@ -45,13 +54,11 @@
                                     <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="invoice">Invoice No</label>
-                                <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($invoiceRef as $item)
-                                        <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
-                                    @endforeach
+                            <div class="form-group col-md-3">
+                                <label>Payment Status</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="paymentstauts" title="{{trans('forms.select')}}">
+                                    <option value="1" {{ request()->input('paymentstauts') == "1" ? 'selected':'' }}>Paid </option>
+                                    <option value="0" {{ request()->input('paymentstauts') == "0" ? 'selected':'' }}>UnPaid</option>
                                 </select>
                             </div>
                         </div>

@@ -35,15 +35,22 @@ class BookingController extends Controller
         $bookingNo = Booking::where('company_id', Auth::user()->company_id)->get();
         $quotation = Quotation::where('company_id', Auth::user()->company_id)->get();
         $ports = Ports::where('company_id', Auth::user()->company_id)->orderBy('id')->get();
+        
         $customers = Customers::where('company_id', Auth::user()->company_id)->whereHas(
             'CustomerRoles',
             function ($query) {
-                return $query->where('role_id', '!=', 6);
+                return $query->where('role_id', 1);
             }
         )->with('CustomerRoles.role')->orderBy('id')->get();
+
         $ffw = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);
         })->with('CustomerRoles.role')->get();
+
+        $consignee =  Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
+            return $query->where('role_id', 2);
+        })->with('CustomerRoles.role')->get();
+
         $line = Lines::where('company_id', Auth::user()->company_id)->get();
         $containers = Containers::where('company_id', Auth::user()->company_id)->get();
 
@@ -55,6 +62,7 @@ class BookingController extends Controller
             'quotation' => $quotation,
             'ports' => $ports,
             'customers' => $customers,
+            'consignee' => $consignee,
             'ffw' => $ffw,
             'line' => $line,
             'containers' => $containers,
@@ -442,7 +450,7 @@ class BookingController extends Controller
         ]);
     }
 
-    public function selectGateInImport($id)
+    public function selectGateInImport($id) 
     {
         $booking = Booking::with(
             'bookingContainerDetails.containerType',
@@ -450,21 +458,56 @@ class BookingController extends Controller
             'voyage.vessel',
             'secondvoyage.vessel'
         )->find($id);
-        $ports = Ports::where('company_id', Auth::user()->company_id)->where('pick_up_location' , '!=' ,null)->orderBy('id')->get();
+        $gateIns = collect();
+        foreach ($booking->bookingContainerDetails as $detail) {
+            if ($gateIns->count() == 0) {
+                $port = Ports::find($detail->activity_location_id);
+                $temp = collect([
+                    'id' => $port->id,
+                    'pick_up_location' => $port->pick_up_location,
+                ]);
+                $gateIns->add($temp->toArray());
+            } else {
+                $activityLocationAdded = false;
+                foreach ($gateIns as $gateout) {
+                    if ($gateout['id'] == $detail->activity_location_id) {
+                        $activityLocationAdded = true;
+                    }
+                }
+                if ($activityLocationAdded == false) {
+                    $port = Ports::find($detail->activity_location_id);
+                    $temp = collect([
+                        'id' => $port->id,
+                        'pick_up_location' => $port->pick_up_location,
+                    ]);
+                    $gateIns->add($temp->toArray());
+                }
+            }
+        }
+        if ($gateIns->count() == 1) {
+            return redirect()->route('booking.showGateInImport', [
+                'booking' => $booking->id,
+                'location' => $gateIns[0]['id']
+            ]);
+        }
         return view('booking.booking.selectGateInImport', [
             'booking' => $booking,
-            'ports' => $ports,
+            'gateIns' => $gateIns,
         ]);
     }
 
     public function showGateInImport($id)
     {
-        $booking = Booking::with(
-            'bookingContainerDetails.containerType',
-            'bookingContainerDetails.container',
-            'voyage.vessel',
-            'secondvoyage.vessel'
-        )->find($id);
+        if (request('location') == null) {
+            $activityLoc = request()->activity_location_id;
+        } else {
+            $activityLoc = request('location');
+        }
+        $booking = Booking::with([
+            'bookingContainerDetails' => function ($query) use ($activityLoc) {
+                $query->where('activity_location_id', $activityLoc)->with('containerType', 'container');
+            }
+        ])->with('voyage.vessel', 'secondvoyage.vessel')->find($id);
         $firstVoyagePort = VoyagePorts::where('voyage_id', $booking->voyage_id)->where(
             'port_from_name',
             optional($booking->loadPort)->id

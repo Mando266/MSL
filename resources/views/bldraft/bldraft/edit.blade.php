@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="editForm" action="{{route('bldraft.update',['bldraft'=>$bldraft])}}" method="POST">
+                    <form  novalidate id="createForm"  action="{{route('bldraft.update',['bldraft'=>$bldraft])}}" method="POST">
                             @csrf
                             @method('put')
                             @if(session('alert'))
@@ -276,7 +276,9 @@
                                 <label for="status">Bl Kind</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
                                     <option value="Original" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Original"? 'selected':''}}>Original</option>
+                                    @permission('BlDraft-Seaway')
                                     <option value="Seaway BL" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Seaway BL"? 'selected':''}}>Seaway BL</option>
+                                    @endpermission
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">
@@ -396,12 +398,12 @@
 @endsection
 @push('scripts')
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('select').removeAttr('disabled');
     });
 </script>
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
     });
 </script>

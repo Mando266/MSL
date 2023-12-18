@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MailableName ;
+use App\Setting;
 class TruckerGateController extends Controller
 {
 
@@ -62,10 +63,12 @@ class TruckerGateController extends Controller
 
         $certificate_type = 'PL-100-61-6004-2023-84/';
         $truckerGate = TruckerGates::create($request->except('_token'));
-        $certificate_type .=$truckerGate->id;
+        $setting = Setting::find(1);
+        $certificate_type .= $setting->trucker_cer_no += 1;
         $truckerGate->certificate_type = $certificate_type;
         $truckerGate->company_id = $user->company_id;
         $truckerGate->save();
+        $setting->save();
 
         return redirect()->route('truckergate.index')->with('success',trans('Trucker Gate.Created'));
     }

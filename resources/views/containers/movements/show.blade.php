@@ -18,7 +18,11 @@
 
                                 @permission('Movements-List')
                                 @if (Auth::user()->id != 18)
-                                    <a class="btn btn-warning" href="{{ route('export') }}">Export</a>
+                                <form class="export-form" action="{{ route('export') }}" method="post">
+                                        @csrf
+                                    <input type="hidden" name="items" value="">
+                                        <button class="btn btn-warning" type="submit">Export</button>
+                                </form>
                                 @endif
                                 @endpermission
                                 @permission('Movements-Create')
@@ -384,6 +388,19 @@ if(request()->input('container_id') != null){
 
 @push('styles')
 <link href="{{asset('plugins/bootstrap-select/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css" >
+<style>
+        .export-form {
+            display: inline; /* This ensures the form is displayed inline */
+        }
+
+        .export-form .btn-link {
+            background: none; /* Remove the background color */
+            border: none; /* Remove the border */
+            color: #007bff; /* Set the link color */
+            text-decoration: underline; /* Add underline to mimic link text */
+            cursor: pointer; /* Show pointer cursor on hover */
+        }
+    </style>
 @endpush
 @push('scripts')
 <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>

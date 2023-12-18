@@ -45,6 +45,10 @@
                                                 Shipper
                                             </option>
                                         @endif
+                                        <option value="add">Add</option>
+                                        @foreach($customers as $customer)
+                                            <option value="{{ $customer->id }}" class="additional-option">{{ $customer->name }}</option>
+                                        @endforeach
                                     </select>
                                     @error('customer_id')
                                     <div style="color: red;">
@@ -135,10 +139,11 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status"
                                             title="{{trans('forms.select')}}" required>
-                                            <option value="draft">Draft</option>
-                                            @if(Auth::user()->id == 2 || Auth::user()->id == 3)
-                                            <option value="ready_confirm">Ready To Confirm</option>
-                                            @elseif($bldraft->bl_status == 1 && Auth::user()->id == 15)
+                                                <option value="draft">Draft</option>
+                                            @permission('Invoice-Ready_to_Confirm')
+                                                <option value="ready_confirm">Ready To Confirm</option>
+                                            @endpermission
+                                            @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
                                                 <option value="confirm">Confirm</option>
                                             @endif
                                     </select>
@@ -515,6 +520,29 @@
     </div>
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        // Initially hide additional options
+        $('.additional-option').hide();
+
+        $('#customer').on('change', function() {
+            if ($(this).val() === 'add') {
+                // Remove the "Add" option
+                $(this).find('option[value="add"]').remove();
+
+                // Show additional options
+                $('.additional-option').show();
+
+                // Trigger the click event to open the dropdown
+                $('#customer').selectpicker('toggle');
+            } else {
+                // Hide additional options
+                $('.additional-option').hide();
+            }
+        });
+    });
+</script>
+
     <script>
         $('#createForm').submit(function () {
             $('input').removeAttr('disabled');
