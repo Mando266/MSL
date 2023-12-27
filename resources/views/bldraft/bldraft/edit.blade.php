@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="editForm" action="{{route('bldraft.update',['bldraft'=>$bldraft])}}" method="POST">
+                    <form  novalidate id="createForm"  action="{{route('bldraft.update',['bldraft'=>$bldraft])}}" method="POST">
                             @csrf
                             @method('put')
                             @if(session('alert'))
@@ -273,19 +273,6 @@
                                 @enderror
                         </div>
                         <div class="form-group col-md-3">
-                                <label for="status">Bl Kind</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
-                                    <option value="Original" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Original"? 'selected':''}}>Original</option>
-                                    <option value="Seaway BL" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Seaway BL"? 'selected':''}}>Seaway BL</option>
-                                </select>
-                                @error('bl_kind')
-                                <div style="color:red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                        </div>
-   
-                        <div class="form-group col-md-3">
                             <label for="status">Bl Status<span class="text-warning"> * (Required.) </span></label>
                             <select class="selectpicker form-control" data-live-search="true" name="bl_status" data-live-search="true">
                                 <option value="1" {{$bldraft->id == old('bl_status') ||  $bldraft->bl_status == "1"? 'selected':''}}>Confirm</option>
@@ -309,8 +296,6 @@
                             </div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>shipment Date</label>
                             <input type="date" name="shipment_date" class="form-control" placeholder="Date Of Issue" autocomplete="off" value="{{old('shipment_date',$bldraft->shipment_date)}}">
@@ -320,6 +305,23 @@
                             </div>
                             @enderror
                         </div>
+                    </div>
+                    <div class="form-row">
+                        @permission('BlDraft-Seaway')
+                        <div class="form-group col-md-3">
+                                <label for="status">Bl Kind</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
+                                    <option value="Original" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Original"? 'selected':''}}>Original</option>
+                                    <option value="Seaway BL" {{$bldraft->id == old('bl_kind') ||  $bldraft->bl_kind == "Seaway BL"? 'selected':''}}>Seaway BL</option>
+                                </select>
+                                @error('bl_kind')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        @endpermission
+                        
                     </div>
                     <table id="blDraft" class="table table-bordered">
                         <thead>
@@ -396,12 +398,12 @@
 @endsection
 @push('scripts')
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('select').removeAttr('disabled');
     });
 </script>
 <script>
-    $('#editForm').submit(function() {
+    $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
     });
 </script>

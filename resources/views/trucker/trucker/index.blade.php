@@ -21,7 +21,25 @@
                             </div>
                         </div>
                     </div>
-    
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                            <label for="name">Truckers</label>
+                            <select class="selectpicker form-control" id="company_name" data-live-search="true" name="company_name[]" data-size="10"
+                                title="{{trans('forms.select')}}"  multiple="multiple">
+                                @foreach ($items as $item)
+                                    <option value="{{$item->company_name}}" {{$item->company_name == old('company_name',request()->input('company_name')) ? 'selected':''}}>{{$item->company_name}}</option>
+                                @endforeach
+                            </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12 text-center">
+                        <button  type="submit" class="btn btn-success mt-3">Search</button>
+                        <a href="{{route('trucker.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
+                    </div>
+                </div>
+            </form>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-condensed mb-4">

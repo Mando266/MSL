@@ -452,7 +452,7 @@
                             <div class="form-group col-md-3">
                                 <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($terminals as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('terminal_id',$booking->terminal_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -512,7 +512,7 @@
                             <div class="form-group col-md-3">
                                 <label for="terminal_id">Discharge Terminal <span class="text-warning"> * (Required.) </span></label>
                                 <select class="form-control" id="terminal" data-live-search="true" name="terminal_id" data-size="10"
-                                 title="{{trans('forms.select')}}" disabled>
+                                 title="{{trans('forms.select')}}">
                                     @foreach ($terminals as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('terminal_id',$booking->terminal_id) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -527,7 +527,22 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
+                                <label for="load_terminal_id">Load Port Terminal <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="terminal" data-live-search="true" name="load_terminal_id" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($terminals as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('load_terminal_id',$booking->load_terminal_id) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('load_terminal_id')
+                                <div style="color: red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-3">
                                 <label for="discharge_etd">Discharge ETA</label>
                                 @if($booking->quotation_id == null)
                                 <input type="date" class="form-control" id="discharge_etd" name="discharge_etd" value="{{old('discharge_etd',$booking->discharge_etd)}}"
@@ -542,7 +557,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="load_port_cutoff">Load Port Cutoff</label>
                                 @if($booking->quotation_id == null)
                                 <input type="date" class="form-control" id="load_port_cutoff" name="load_port_cutoff" value="{{old('load_port_cutoff',$booking->load_port_cutoff)}}"
@@ -557,7 +572,7 @@
                                 </div>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="load_port_dayes">Load Port Days</label>
                                 @if($booking->quotation_id == null)
                                 <input type="text" class="form-control" id="load_port_dayes" name="load_port_dayes" value="{{old('load_port_dayes',$booking->load_port_dayes)}}"

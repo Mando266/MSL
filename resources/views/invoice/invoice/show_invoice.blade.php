@@ -156,7 +156,7 @@
                                     <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy / $invoice->blDraft->blDetails->count() }}</span></td>
                                 @endif
                                 @else
-                                    <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy }}</span></td>
+                                    <td class="col-md-2 tableStyle text-center"><span class="entry">{{  number_format($chargeDesc->total_egy, 2 )}}</span></td>
                                 @endif
                             @else
                             <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->size_small }}</span></td>
@@ -168,11 +168,11 @@
                             @endif
 
                             @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_amount }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($chargeDesc->total_amount, 2) }}</span></td>
                             @endif
 
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $chargeDesc->total_egy}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($chargeDesc->total_egy, 2)}}</span></td>
                             @endif
                         </tr>
                         @endforeach
@@ -185,20 +185,20 @@
                             <td class="col-md-6 tableStyle" colspan="5"><span class="entry">TOTAL</span></td>
                         @endif
                             @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_after_vat }}</span></td>
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_before_vat }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($total_after_vat, 2) }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($total_before_vat, 2) }}</span></td>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg_before_vat }}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($total_eg_before_vat, 2)}}</span></td>
                             @endif
                         </tr>
                         <tr>
                             <td class="col-md-6 tableStyle" colspan="5"><span class="entry">GRAND TOTAL</span></td>
                             @if( $invoice->add_egp != 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($total, 2)}}</span></td>
                             @endif
                             @if($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp')
-                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ $total_eg}}</span></td>
+                            <td class="col-md-2 tableStyle text-center"><span class="entry">{{ number_format($total_eg,2)}}</span></td>
                             @endif
                         </tr>
                         @if( $invoice->add_egp != 'onlyegp')

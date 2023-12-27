@@ -34,14 +34,19 @@
                                 <label for="customer">Customer<span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" name="customer_id" id="customer" data-live-search="true" data-size="10"
                                  title="{{trans('forms.select')}}" required>
-                                        @if($bldraft != null)
+                                    @if($bldraft != null)
                                         @if(optional($bldraft->booking->forwarder)->name != null)
-                                        <option value="{{optional($bldraft->booking)->ffw_id}}" {{optional($bldraft->booking)->ffw_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
+                                            <option value="{{optional($bldraft->booking)->ffw_id}}" {{optional($bldraft->booking)->ffw_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->booking->forwarder)->name }} Forwarder</option>
                                         @elseif(optional($bldraft->booking->consignee)->name != null)
-                                        <option value="{{optional($bldraft->booking)->customer_consignee_id}}" {{optional($bldraft->booking)->customer_consignee_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->booking->consignee)->name }} Consignee</option>
+                                            <option value="{{optional($bldraft->booking)->customer_consignee_id}}" {{optional($bldraft->booking)->customer_consignee_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->booking->consignee)->name }} Consignee</option>
+                                        @endif
+                                        @if(optional($bldraft->customerNotify)->name != null)
+                                            <option value="{{optional($bldraft)->customer_notifiy_id}}"{{optional($bldraft->booking)->customer_notifiy_id == old('customer_id',$invoice->customer_id) ? 'selected':''}} >{{ optional($bldraft->customerNotify)->name }}
+                                                Notify
+                                            </option>
                                         @endif
                                         <option value="{{optional($bldraft)->customer_id}}" {{optional($bldraft)->customer_id == old('customer_id',$invoice->customer_id) ? 'selected':''}}>{{ optional($bldraft->customer)->name }} Shipper</option>
-                                        @endif
+                                    @endif
                                 </select>
                                 @error('customer_id')
                                 <div style="color: red;">
@@ -115,7 +120,10 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft" {{ old('invoice_status',$invoice->invoice_status) == "draft" ? 'selected':'' }}>Draft</option>
-                                        @if($bldraft->bl_status == 1)
+                                        @permission('Invoice-Ready_to_Confirm')
+                                        <option value="ready_confirm" {{ old('invoice_status',$invoice->invoice_status) == "ready_confirm" ? 'selected':'' }}>Ready To Confirm</option>
+                                        @endpermission
+                                        @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                         @endif
                                     </select>

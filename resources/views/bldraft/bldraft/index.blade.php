@@ -175,7 +175,7 @@
                                             <td>
                                                 @php
                                                 $user = Auth::user();
-                                                $usersToCheck = [7, 3, 20];
+                                                $usersToCheck = [1, 7, 3, 20];
                                                     $paymentstautsPaid =  0;
                                                     $paymentstautsUnPaid = 0;
                                                     $draft_invoice=0;
@@ -230,7 +230,11 @@
                                             </td>
                                             <td class="text-center">
                                                 @permission('BlDraft-Create')
-                                                @if($item->has_child)
+                                                @if(optional($item->booking)->movement != 'FCL/FCL')
+                                                <a href="{{route('bldraft.create',['bldraft'=>$item->id,'booking_id'=>$item->booking_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <i class="fas fa-plus text-primary"></i>
+                                                    </a>
+                                                @elseif($item->has_child)
                                                     <a href="{{route('bldraft.create',['bldraft'=>$item->id,'booking_id'=>$item->booking_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
                                                         <i class="fas fa-plus text-primary"></i>
                                                     </a>
@@ -251,18 +255,18 @@
                                                     @permission('Booking-Show')
                                                     <li>
                                                     @if(optional(optional($item->booking)->principal)->code == 'Cstar')
-                                                        @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))  
+                                                            @if((in_array($user->id, $usersToCheck)))
+                                                                <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                    <i class="far fa-eye text-primary"></i>
+                                                                </a>
+                                                            @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))  
+                                                                <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                    <i class="far fa-eye text-primary"></i>
+                                                                </a>
+                                                            @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0) )
                                                             <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                                <i class="far fa-eye text-primary"></i>
-                                                            </a>
-                                                            @elseif((in_array($user->id, $usersToCheck)))
-                                                            <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
-                                                                <i class="far fa-eye text-primary"></i>
-                                                            </a>
-                                                            @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0))
-                                                            <a data-original-title="show">
-                                                                <i class="far fa-eye text-primary show_alert"></i>
-                                                            </a>
+                                                                    <i class="far fa-eye text-primary"></i>
+                                                                </a>
                                                         @endif
                                                     @else
                                                         @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid > 0) || ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))  
@@ -270,14 +274,11 @@
                                                                 <i class="far fa-eye text-primary"></i>
                                                             </a>
                                                         @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0))
-                                                            <a data-original-title="show">
-                                                                <i class="far fa-eye text-primary show_alert"></i>
+                                                            <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
+                                                                        <i class="far fa-eye text-primary"></i>
                                                             </a>
                                                         @endif
                                                     @endif
-
-
-                                                    
                                                     </li>
                                                     @endpermission 
                                                     @permission('BlDraft-Delete')

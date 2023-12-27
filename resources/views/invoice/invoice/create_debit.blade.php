@@ -111,9 +111,12 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft">Draft</option>
-                                        @if($bldraft->bl_status == 1)
-                                        <option value="confirm">Confirm</option>
-                                        @endif
+                                            @permission('Invoice-Ready_to_Confirm')
+                                                <option value="ready_confirm">Ready To Confirm</option>
+                                            @endpermission
+                                            @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
+                                                <option value="confirm">Confirm</option>
+                                            @endif
                                    </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
@@ -148,21 +151,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @if($notes != null)
-{{--                                        @foreach($cartData ?? [] as $cart)--}}
-                                            <tr>
-                                                <td>
-                                                    <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Detention">
-                                                </td>
-                                                <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{ $detentionAmount  }}"
-                                                           placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
-                                                </td>
-                                                <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{ $detentionAmount  }}"
-                                                           placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
-                                                </td>
-                                            </tr>
-{{--                                        @endforeach--}}
-                                @else
+  
                                     <tr>
                                         <td>
                                             <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
@@ -174,7 +163,6 @@
                                             placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                         </td>
                                     </tr>
-                                @endif
                             </tbody>
                         </table>
                             <div class="row">

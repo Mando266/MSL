@@ -81,14 +81,14 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-4">
                                     <label for="countryInput">Select Triff</label>
                                     <select class="selectpicker form-control" id="triff_id" data-live-search="true"
                                             name="Triff_id" data-size="10"
                                             title="{{trans('forms.select')}}" required>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-4">
                                     <label>From</label>
                                     <select class="selectpicker form-control" data-live-search="true" name="from"
                                             data-size="10"
@@ -102,7 +102,7 @@
                                         <span class="text-danger">{{ $errors->first('from') }}</span>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-4">
                                     <label>To</label>
                                     <select class="selectpicker form-control" data-live-search="true" name="to"
                                             data-size="10"
@@ -116,7 +116,17 @@
                                         <span class="text-danger">{{ $errors->first('to') }}</span>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-3">
+                            </div>
+                            <div class="form-row">
+                            <div class="form-group col-md-4">
+                                    <label>From Date</label>
+                                    <input type="date" name="from_date" class="form-control"
+                                           value="{{old('from_date',isset($input) ? $input['from_date'] : '')}}">
+                                    @if ($errors->has('from_date'))
+                                        <span class="text-danger">{{ $errors->first('from_date') }}</span>
+                                    @endif
+                                </div>
+                                <div class="form-group col-md-4">
                                     <label>Till Date</label>
                                     <input type="date" name="date" class="form-control"
                                            value="{{old('date',isset($input) ? $input['date'] : '')}}">
@@ -230,7 +240,6 @@
                                     </div>
                                     <div class="col-md-2 text-center">
                                         <form action="{{ route('create-storage-invoice') }}" method="GET">
-                                            {{--                                        @csrf--}}
                                             <input type="hidden" name="calculation_data" id="create-invoice-data">
                                             <input type="hidden" name="bldraft_id" id="create-invoice-bl-no">
                                             <input type="hidden" name="amount" id="create-invoice-amount">

@@ -14,7 +14,7 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="createForm" action="{{route('bldraft.store')}}" method="POST">
+                    <form novalidate id="createForm" action="{{route('bldraft.store')}}" method="POST">
                             @csrf
                         <h5>Booking No :{{$booking_no->ref_no}}<h5>
                         <div class="form-row">
@@ -47,22 +47,6 @@
                                     placeholder="Customer Shipper Details" autocomplete="off">@isset($blDraft){{$blDraft->customer_shipper_details}} @else Phone : {{optional($booking->customer)->phone}} - Email : {{optional($booking->customer)->email}} - Address : {{optional($booking->customer)->address}}  @endisset</textarea>
                                 @endif
                             </div>
-
-
-                            <!-- <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Phone <span class="text-warning"> * (Required.) </span></label>
-                                @if($booking->customer_id != null)
-                                    <input type="text" class="form-control" id="customer_phone" name="customer_phone" value="{{optional($booking->customer)->phone}}"
-                                    placeholder="Customer Phone" autocomplete="off">
-                                @endif
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="customer_id">Customer Address <span class="text-warning"> * (Required.) </span></label>
-                                @if($booking->customer_id != null)
-                                    <input type="text" class="form-control" id="customer_address" name="customer_address" value="{{optional($booking->customer)->address}}"
-                                    placeholder="Customer Address" autocomplete="off">
-                                @endif
-                            </div>  -->
                         </div>
                     <div class="form-row">
                             <div class="form-group col-md-4">
@@ -322,7 +306,9 @@
                                 <label for="status">Bl Kind</label>
                                 <select class="form-control" data-live-search="true" name="bl_kind" title="{{trans('forms.select')}}">
                                     <option value="Original" @isset($blDraft){{"Original" == $blDraft->bl_kind?? "selected"}} @endisset>Original</option>
-                                    <option value="Seaway BL" @isset($blDraft){{"Seaway BL" == $blDraft->bl_kind?? "selected"}} @endisset>Seaway BL</option>
+                                    @permission('BlDraft-Seaway')
+                                        <option value="Seaway BL" @isset($blDraft){{"Seaway BL" == $blDraft->bl_kind?? "selected"}} @endisset>Seaway BL</option>
+                                    @endpermission
                                 </select>
                                 @error('bl_kind')
                                 <div style="color:red;">

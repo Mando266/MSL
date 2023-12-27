@@ -60,6 +60,8 @@ class LoadListExport implements FromCollection, WithHeadings
             "Shipment Type",
             "BOOKING Type",
             "Payment Kind",
+            "Booking Agency",
+            "Payment As Per Agreement",
         ];
     }
 
@@ -119,7 +121,8 @@ class LoadListExport implements FromCollection, WithHeadings
                             'shipment_type' => optional(optional($booking)->quotation)->shipment_type,
                             'booking_type' => optional(optional($booking)->quotation)->quotation_type,
                             'payment_kind' => optional(optional($booking)->quotation)->payment_kind,
-
+                            'booking_agency' => optional($booking->quotation)->booking_agency,
+                            'Payment As Per Agreement' => optional($booking->quotation)->agency_bookingr_ref,
                         ]);
                         $exportBookings->add($tempCollection);
 
@@ -159,6 +162,8 @@ class LoadListExport implements FromCollection, WithHeadings
                                 'shipment_type' => optional(optional($booking)->quotation)->shipment_type,
                                 'booking_type' => optional(optional($booking)->quotation)->quotation_type ?: optional($booking)->booking_type,
                                 'payment_kind' => optional(optional($booking)->quotation)->payment_kind,
+                                'booking_agency' => optional($booking->quotation)->booking_agency,
+                                'Payment As Per Agreement' => optional($booking->quotation)->agency_bookingr_ref,
                             ]);
                             $exportBookings->add($tempCollection);
                         }

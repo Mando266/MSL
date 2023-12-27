@@ -114,7 +114,6 @@ class InvoiceController extends Controller
             $notify = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 3);
             })->with('CustomerRoles.role')->get();
-
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
@@ -133,7 +132,7 @@ class InvoiceController extends Controller
         ]);
     }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
-
+        $customers = Customers::where('company_id',Auth::user()->company_id)->get();
         $bl_id = request()->input('bldraft_id');
         if ($bl_id != null) {
             $bldraft = BlDraft::where('id', $bl_id)->with('blDetails')->first();
@@ -188,6 +187,8 @@ class InvoiceController extends Controller
             'triffDetails' => $triffDetails,
             'voyages' => $voyages,
             'charges' => $charges,
+            'customers' => $customers,
+
         ]);
     }
 
@@ -208,11 +209,11 @@ class InvoiceController extends Controller
                 return $query->where('role_id', 3);
 
             })->with('CustomerRoles.role')->get();
-
             $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
             $ports = Ports::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
             $bookings  = Booking::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
+            $customers = Customers::where('company_id',Auth::user()->company_id)->get();
 
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
@@ -224,6 +225,7 @@ class InvoiceController extends Controller
                 'ports'=>$ports,
                 'equipmentTypes'=>$equipmentTypes,
                 'bookings'=>$bookings,
+                'customers'=>$customers,
             ]);
         }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
@@ -299,8 +301,6 @@ class InvoiceController extends Controller
             'type'=>'debit',
             'invoice_status'=>$request->invoice_status,
             'notes'=>$request->notes,
-            'activity_code'=>$request->activity_code,
-
         ]);
         }else{
             $invoice = Invoice::create([
@@ -569,6 +569,9 @@ class InvoiceController extends Controller
         if($total_after_vat != 0){
             $total = $total + $total_after_vat;
         }
+
+        $total = round($total , 2);
+
         $exp = explode('.', $total);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
         if(count($exp) >1){
@@ -582,6 +585,9 @@ class InvoiceController extends Controller
         if($total_eg_after_vat != 0){
             $total_eg = $total_eg + $total_eg_after_vat;
         }
+
+        $total_eg = round($total_eg , 2);
+
         $exp = explode('.', $total_eg);
         $f = new \NumberFormatter("en_US", \NumberFormatter::SPELLOUT);
         if(count($exp) >1){
@@ -812,6 +818,7 @@ class InvoiceController extends Controller
         $bl = BlDraft::query()->find($blId);
 
         $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $customers = Customers::where('company_id',Auth::user()->company_id)->get();
 
         $bldraft = $bl;
         $bldrafts = $bl;
@@ -864,7 +871,8 @@ class InvoiceController extends Controller
             'charges' => $charges,
             'notes' => $notes,
             'chargeName' => $chargeName,
-            'storageAmount' => $storageAmount
+            'storageAmount' => $storageAmount,
+            'customers' => $customers,
         ]);
     }
 
@@ -897,7 +905,7 @@ class InvoiceController extends Controller
             'qty'=>$qty,
             'bldraft'=>$bldraft,
             'voyages'=>$voyages,
-            'notes' => $notes,
+            '$notes' => $$notes,
             'detentionAmount' => $detentionAmount
         ]);
     }

@@ -157,7 +157,10 @@
                                     <label for="status">Invoice Status<span class="text-warning"> * </span></label>
                                     <select class="form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}" required>
                                         <option value="draft">Draft</option>
-                                        <option value="confirm">Confirm</option>
+                                        <option value="ready_confirm">Ready To Confirm</option>
+                                        @if(Auth::user()->id == 15)
+                                            <option value="confirm">Confirm</option>
+                                        @endif
                                     </select>
                                     @error('invoice_status')
                                     <div style="color:red;">
@@ -183,25 +186,8 @@
                                     <label>Exchange Rate</label>
                                         <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate')}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
-                                <!--<div class="col-md-2 form-group">-->
-                                <!--    <div style="padding: 30px;">-->
-                                <!--        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="eta" checked>-->
-                                <!--        <label class="form-check-label" for="exchange_rate">-->
-                                <!--        ETA Rate -->
-                                <!--        </label>-->
-                                <!--        <br>-->
-                                <!--        <input class="form-check-input" type="radio" name="exchange_rate" id="exchange_rate" value="etd">-->
-                                <!--        <label class="form-check-label" for="exchange_rate">-->
-                                <!--          ETD Rate -->
-                                <!--        </label>-->
-                                <!--    </div>-->
                                 <div class="form-group col-md-2">
                                     <div style="padding: 30px;">
-                                        <!--<input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="true" checked>-->
-                                        <!--<label class="form-check-label" for="add_egp">-->
-                                        <!--    EGP AND USD-->
-                                        <!--</label>-->
-                                        <!--<br>-->
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" checked>
                                         <label class="form-check-label" for="add_egp">
                                           USD

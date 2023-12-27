@@ -8,7 +8,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Gate In</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -56,8 +56,8 @@
                             <td class="col-md-2 tableStyle text-right underline" ></td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle text-right underline" >{{request()->input('port_id')}}</td>
-                            <td class="col-md-3 tableStyle text-right underline" >السادة</td>
+                            <td class="col-md-9 tableStyle text-right underline" >{{optional($booking->bookingContainerDetails->first()->activityLocation)->pick_up_location}}</td>
+                            <td class="col-md-3 tableStyle text-right underline" >السادة</td> 
                         </tr>
                         <tr>
                             <td class="col-md-9 tableStyle text-right underline" ></td>
@@ -94,9 +94,9 @@
                         </tr>
                         <tr>
                             @if(optional($booking)->transhipment_port == null)
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ optional(optional($booking)->voyage)->vessel->name }} / {{ optional(optional($booking)->voyage)->voyage_no}}</td>
                             @else
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->secondvoyage->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ optional(optional($booking->voyage)->secondvoyage)->name }} / {{ optional($booking->voyage)->voyage_no}}</td>
                             @endif
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>

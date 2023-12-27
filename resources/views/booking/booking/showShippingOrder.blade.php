@@ -90,6 +90,11 @@
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >ميناء الشحن</td>
                         </tr>
                         <tr>
+                            <td class="col-md-4 tableStyle underline" >Transshipment Port</td>
+                            <td class="col-md-4 tableStyle text-center" >{{optional($booking->transhipmentPort)->name}}</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >ميناء الترنزيت</td>
+                        </tr>
+                        <tr>
                             <td class="col-md-4 tableStyle underline" >FPOD</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($booking->dischargePort)->name}}</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">ميناء الوصول</td>

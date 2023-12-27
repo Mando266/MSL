@@ -13,6 +13,7 @@ class QuotationIndexFilter extends AbstractFilter{
         'validity_to'=>ValidityToFilter::class,
         'customer_id'=>CustomerFilter::class,
         'ffw_id'=>FfwFilter::class,
+        'customer_consignee_id'=>ConsigneeFilter::class,
         'load_port_id'=>POLFilter::class,
         'discharge_port_id'=>PODFilter::class,
         'voyage_id'=>VoyageFilter::class,

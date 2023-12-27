@@ -65,8 +65,8 @@ class TruckerGateExport implements FromCollection,WithHeadings
                 $tempCollection = collect([
                     'ref_no' => optional($truckergate->booking)->ref_no,
                     'certificate_type' =>$truckergate->certificate_type,
-                    'Shipper_name' => optional($truckergate->booking->customer)->name,
-                    'vessel' => optional($truckergate->booking->voyage->vessel)->name,
+                    'Shipper_name' => optional($truckergate->booking)->shipment_type == "Export" ? optional($truckergate->booking->customer)->name : optional($truckergate->booking->consignee)->name,
+                    'vessel' => optional($truckergate->booking->voyage->vessel)->nam,
                     'voyage' => optional($truckergate->booking->voyage)->voyage_no,
                     'Truker_Name'=>optional($truckergate->trucker)->company_name,
                     'Beneficiary Name'=>$truckergate->beneficiry_name,

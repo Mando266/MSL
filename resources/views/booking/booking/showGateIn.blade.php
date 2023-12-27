@@ -8,7 +8,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('booking.index')}}">Booking </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Booking Confirmation</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Gate In</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -93,7 +93,7 @@
                             <td class="col-md-3 tableStyle text-right underline" >إذن شحن</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ optional(optional($booking->voyage)->vessel)->name }} / {{ $booking->voyage->voyage_no}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
                         <tr>

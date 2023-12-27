@@ -14,9 +14,65 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="editForm" action="{{route('quotations.update',['quotation'=>$quotation])}}" method="POST">
+                    <form  novalidate id="createForm"  action="{{route('quotations.update',['quotation'=>$quotation])}}" method="POST">
                             @csrf
                             @method('put')
+                            <h4> Quotation Ref N : {{$quotation->ref_no}} </h4>
+                    </br>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}">
+                                <option value="full" {{$quotation->id == old('quotation_type')  ||  $quotation->quotation_type == "full"? 'selected':''}}>Full</option>
+                                <option value="empty" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "empty"? 'selected':''}}>Empty</option>
+                            </select>
+                            @error('quotation_type')
+                            <div style="color:red;">
+                                {{$message}}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-3">
+                                <label>Transportation Mode <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}" required>
+                                    <option value="vessel" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "vessel"? 'selected':''}}>Vessel</option>
+                                    <option value="trucker" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "trucker"? 'selected':''}}>Trucker</option>
+                                    <option value="train" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "train"? 'selected':''}}>Train</option>
+                                </select>
+                                @error('transportation_mode')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                                <label>Booking Agency<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="" name="booking_agency" data-live-search="true" data-size="10"
+                                    title="{{trans('forms.select')}}" required>
+                                    @foreach ($booking_agency as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_agency',$quotation->booking_agency) ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('booking_agency')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Payment As Per Agreement <span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="agency_bookingr_ref" required  title="{{trans('forms.select')}}">
+                                <option value="EXW" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "EXW"? 'selected':''}}>EXW</option>
+                                <option value="FCA" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "FCA"? 'selected':''}}>FCA</option>
+                                <option value="FOB" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "FOB"? 'selected':''}}>FOB</option>
+                                <option value="CIF" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "CIF"? 'selected':''}}>CIF</option>
+                                <option value="CPT" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "CPT"? 'selected':''}}>CPT</option>
+
+                            </select>                
+                        </div>
+                    </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="countryInput">Export Country <span class="text-warning"> * (Required.) </span></label>
@@ -80,7 +136,7 @@
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
                                 title="{{trans('forms.select')}}" required>
-                                    @foreach ($line as $item)
+                                    @foreach ($principals as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('principal_name',$quotation->principal_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
@@ -94,7 +150,7 @@
                                 <label for="vessel_name">Vessel Operator <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="vessel_name" data-live-search="true" name="vessel_name" data-size="10"
                                 title="{{trans('forms.select')}}" required>
-                                    @foreach ($line as $item)
+                                    @foreach ($oprators as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_name',$quotation->vessel_name) ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
@@ -105,7 +161,15 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div id="additionalSelect" style="display: none;" class="form-group col-md-4">
+                                <label>Vessel Operator Frieght Payment <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="operator_frieght_payment" id="operator_frieght_payment">
+                                    <option value="agency" {{$quotation->id == old('operator_frieght_payment') ||  $quotation->operator_frieght_payment == "Prepaid"? 'selected':''}}>Agency (prepaid)</option>
+                                    <option value="liner" {{$quotation->id == old('operator_frieght_payment') ||  $quotation->operator_frieght_payment == "liner"? 'selected':''}}>Liner (Collect)</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Agreement Party <span class="text-warning"> * (Required.) </span></label>
@@ -195,7 +259,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
+                                <select class="form-control port" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id',$quotation->place_of_acceptence_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -209,7 +273,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
+                                <select class="form-control port" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id',$quotation->load_port_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -223,7 +287,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="pick_up_location">Pick Up Location</label>
-                                <select class="selectpicker form-control" id="pick_up_location" data-live-search="true" name="pick_up_location" data-size="10"
+                                <select class="form-control port" id="pick_up_location" data-live-search="true" name="pick_up_location" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location',$quotation->pick_up_location) ? 'selected':''}}>{{$item->name}}</option>
@@ -239,7 +303,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
+                                <select class="form-control importPort" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id',$quotation->place_of_delivery_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -253,7 +317,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
+                                <select class="form-control importPort" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id',$quotation->discharge_port_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -267,7 +331,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="place_return_id">Place Of Return</label>
-                                <select class="selectpicker form-control" id="place_return_id" data-live-search="true" name="place_return_id" data-size="10"
+                                <select class="form-control importPort" id="place_return_id" data-live-search="true" name="place_return_id" data-size="10"
                                  title="{{trans('forms.select')}}">
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id',$quotation->place_return_id) ? 'selected':''}}>{{$item->name}}</option>
@@ -327,16 +391,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <!-- <div class="form-group col-md-3">
-                                <label for="export_storage">Export Storage</label>
-                                <input type="text" class="form-control" id="export_storage" name="export_storage" value="{{old('export_storage',$quotation->export_storage)}}"
-                                    placeholder="Export Storage" autocomplete="off">
-                                @error('export_storage')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div> -->
+                          
                             <div class="form-group col-md-3">
                                 <label for="oog_dimensions">HAZ / Reefer/ OOG Details </label>
                                 <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions',$quotation->oog_dimensions)}}"
@@ -369,9 +424,10 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="status">Payment kind<span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" id="payment_kind" title="{{trans('forms.select')}}" required>
                                     <option value="Prepaid" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Prepaid"? 'selected':''}}>Prepaid</option>
                                     <option value="Collect" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "Collect"? 'selected':''}}>Collect</option>
+                                    <option value="else_where" {{$quotation->id == old('payment_kind') ||  $quotation->payment_kind == "else_where"? 'selected':''}}>Else Where</option>
                                 </select>
                                 @error('payment_kind')
                                 <div style="color:red;">
@@ -380,33 +436,22 @@
                                 @enderror
                             </div>
                         </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                                <label>Transportation Mode</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}">
-                                    <option value="vessel" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "vessel"? 'selected':''}}>Vessel</option>
-                                    <option value="trucker" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "trucker"? 'selected':''}}>Trucker</option>
-                                    <option value="train" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "train"? 'selected':''}}>Train</option>
+                        <div class="form-row">
+                            <div id="elseWhereSelect" style="display: none;"  class="form-group col-md-3">
+                                <label>Payment Location<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="payment_location" data-live-search="true" name="payment_location" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($paymentLocation as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('payment_location') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
                                 </select>
-                                @error('transportation_mode')
-                                <div style="color:red;">
+                                @error('payment_location')
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
-                            <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}">
-                                <option value="full" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "full"? 'selected':''}}>Full</option>
-                                <option value="empty" {{$quotation->id == old('quotation_type') ||  $quotation->quotation_type == "empty"? 'selected':''}}>Empty</option>
-                            </select>
-                            @error('quotation_type')
-                            <div style="color:red;">
-                                {{$message}}
                             </div>
-                            @enderror
                         </div>
-                    </div>
 
                         <h4>Export Price</h4>
                             <table id="quotationTriffDischarge" class="table table-bordered">
@@ -625,6 +670,69 @@
 </div>
 @endsection
 @push('scripts')
+    <script>
+        $(document).ready(function () {
+        $('#payment_kind').change(function () {
+            if ($(this).val() === 'else_where') {
+            $('#elseWhereSelect').show();
+            } else {
+            $('#elseWhereSelect').hide();
+            }
+        });
+        });
+    </script>
+
+    <script>
+            $(document).ready(function () {
+            $('#vessel_name').change(function () {
+                if ($('#Principal').val() !== $('#vessel_name').val()) {
+                $('#additionalSelect').show();
+                } else {
+                $('#additionalSelect').hide();
+                }
+            });
+            });
+    </script>
+
+    <script>
+        $(function(){
+                let country = $('#countryDis');
+                let company_id = "{{optional(Auth::user())->company->id}}";
+                $('#countryDis').on('change',function(e){
+                    let value = e.target.value;
+                    let response =   $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('.port');
+                port.html(list2.join(''));
+
+                });
+            });
+        });
+</script>
+
+<script>
+        $(function(){
+                let country = $('#country');
+                let company_id = "{{optional(Auth::user())->company->id}}";
+                $('#country').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('.importPort');
+                port.html(list2.join(''));
+                });
+            });
+        });
+</script>
+
 <script>
     var removedDesc = [];
     var removedLoad = [];

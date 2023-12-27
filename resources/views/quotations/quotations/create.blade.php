@@ -14,12 +14,24 @@
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form id="createForm" action="{{route('quotations.store')}}" method="POST">
+                    <form  novalidate id="createForm"  action="{{route('quotations.store')}}" method="POST">
                             @csrf
                         <div class="form-row">
                             <div class="form-group col-md-3">
-                                <label>Transportation Mode</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}">
+                                <label for="status">Quotation Type<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required>
+                                    <option value="full">Full</option>
+                                    <option value="empty">Empty</option>
+                                </select>
+                                @error('quotation_type')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Transportation Mode<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}" require>
                                     <option value="vessel">Vessel</option>
                                     <option value="trucker">Trucker</option>
                                     <option value="train">Train</option>
@@ -29,6 +41,31 @@
                                     {{$message}}
                                 </div>
                                 @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Booking Agency<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="" name="booking_agency" data-live-search="true" data-size="10"
+                                    title="{{trans('forms.select')}}" required>
+                                    @foreach ($booking_agency as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('booking_agency') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('booking_agency')
+                                <div style="color:red;">
+                                    {{$message}}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Payment As Per Agreement <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="agency_bookingr_ref" title="{{trans('forms.select')}}" required>
+                                    <option value="EXW">EXW</option>
+                                    <option value="FCA">FCA</option>
+                                    <option value="FOB">FOB</option>
+                                    <option value="CIF">CIF</option>
+                                    <option value="CPT">CPT</option>
+
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -94,7 +131,7 @@
                                 <label for="Principal">Principal Name <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="Principal" data-live-search="true" name="principal_name" data-size="10"
                                 title="{{trans('forms.select')}}" required>
-                                    @foreach ($line as $item)
+                                    @foreach ($principals as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('principal_name') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
@@ -108,7 +145,7 @@
                                 <label for="vessel_name">Operator <span class="text-warning"> * (Required.) </span></label>
                                 <select class="selectpicker form-control" id="vessel_name" data-live-search="true" name="vessel_name" data-size="10"
                                 title="{{trans('forms.select')}}" required>
-                                    @foreach ($line as $item)
+                                    @foreach ($oprators as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('vessel_name') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
                                 </select>
@@ -119,7 +156,15 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="form-row">
+                            <div id="additionalSelect" style="display: none;" class="form-group col-md-4">
+                                <label>Vessel Operator Frieght Payment <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="operator_frieght_payment" id="operator_frieght_payment">
+                                    <option value="agency">Agency (prepaid)</option>
+                                    <option value="liner">Liner (Collect)</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="customer_id">Agreement Party <span class="text-warning"> * (Required.) </span></label>
@@ -159,24 +204,6 @@
                             </div>
                             @else
                             @endif
-                            <!-- <div class="form-group col-md-3">
-                                <div class="form-check">
-                                    <label for="rate">Customer Role</label><br>
-                                    <input type="radio" name="rate" id="rate_sh" value="rate_sh">
-                                    <label for="rate_sh">SH</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_cn" value="rate_cn">
-                                    <label for="rate_cn">CN</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_nt" value="rate_nt">
-                                    <label for="rate_nt">NT</label>&nbsp;
-                                    <input type="radio" name="rate" id="rate_fwd" value="rate_fwd">
-                                    <label for="rate_fwd">FWD</label>
-                                </div>
-                                @error('rate')
-                                    <div style="color: red;">
-                                        {{$message}}
-                                    </div>
-                                @enderror
-                            </div> -->
                             <div class="form-group col-md-3" style="padding-top: 30px;">
                                 <div class="form-check">
                                 <input type="checkbox" id="soc" name="soc" value="1" ><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> SOC </a>
@@ -226,7 +253,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="place_of_acceptence_id">Place Of Acceptence <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
+                                <select class="form-control port" id="place_of_acceptence_id" data-live-search="true" name="place_of_acceptence_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_acceptence_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -240,7 +267,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="load_port_id">Load Port <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="load_port_id" data-live-search="true" name="load_port_id" data-size="10"
+                                <select class="form-control port" data-live-search="true" name="load_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('load_port_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -254,9 +281,8 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="pick_up_location">Pick Up Location</label>
-                                <select class="selectpicker form-control" id="pick_up_location" data-live-search="true" name="pick_up_location" data-size="10"
+                                <select class="form-control port" id="pick_up_location" data-live-search="true" name="pick_up_location" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                 <option value="">Select...</option>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('pick_up_location') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -271,7 +297,7 @@
                         <div class="form-row">
                         <div class="form-group col-md-4">
                                 <label for="place_of_delivery_id">Place Of Delivery <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
+                                <select class="form-control importPort" id="place_of_delivery_id" data-live-search="true" name="place_of_delivery_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_of_delivery_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -285,7 +311,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="discharge_port_id">Discharge Port <span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
+                                <select class="form-control importPort" id="discharge_port_id" data-live-search="true" name="discharge_port_id" data-size="10"
                                  title="{{trans('forms.select')}}" required>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('discharge_port_id') ? 'selected':''}}>{{$item->name}}</option>
@@ -299,9 +325,8 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="place_return_id">Place Of Return</label>
-                                <select class="selectpicker form-control" id="place_return_id" data-live-search="true" name="place_return_id" data-size="10"
+                                <select class="form-control importPort" id="place_return_id" data-live-search="true" name="place_return_id" data-size="10"
                                  title="{{trans('forms.select')}}">
-                                 <option value="">Select...</option>
                                     @foreach ($ports as $item)
                                         <option value="{{$item->id}}" {{$item->id == old('place_return_id') ? 'selected':''}}>{{$item->name}}</option>
                                     @endforeach
@@ -349,9 +374,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="power_charges ">Power Charges Free Dayes</label>
+                                <label for="power_charges ">Power Charges Free Days</label>
                                 <input type="text" class="form-control" id="power_charges" name="power_charges" value="{{old('power_charges')}}"
-                                    placeholder="Power Charges Free Dayes" autocomplete="off">
+                                    placeholder="Power Charges Free Days" autocomplete="off">
                                 @error('power_charges ')
                                 <div style="color: red;">
                                     {{$message}}
@@ -360,16 +385,6 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <!-- <div class="form-group col-md-3">
-                                <label for="export_storage">Export Storage</label>
-                                <input type="text" class="form-control" id="export_storage" name="export_storage" value="{{old('export_storage')}}"
-                                    placeholder="Export Storage" autocomplete="off">
-                                @error('export_storage')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div> -->
                             <div class="form-group col-md-3">
                                 <label for="oog_dimensions">HAZ / Reefer/ OOG Details</label>
                                 <input type="text" class="form-control" id="oog_dimensions" name="oog_dimensions" value="{{old('oog_dimensions')}}"
@@ -401,10 +416,11 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="status">Payment kind<span class="text-warning"> * (Required.) </span></label>
-                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" title="{{trans('forms.select')}}" required>
+                                <label for="status">Frieght Payment<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="payment_kind" id="payment_kind" title="{{trans('forms.select')}}" required>
                                     <option value="Prepaid">Prepaid </option>
                                     <option value="Collect">Collect</option>
+                                    <option value="else_where">Else Where</option>
                                 </select>
                                 @error('payment_kind')
                                 <div style="color:red;">
@@ -414,14 +430,16 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="status">Quotation Type</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="quotation_type" title="{{trans('forms.select')}}" required>
-                                    <option value="full">Full</option>
-                                    <option value="empty">Empty</option>
+                            <div id="elseWhereSelect" style="display: none;"  class="form-group col-md-3">
+                                <label>Payment Location<span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" id="payment_location" data-live-search="true" name="payment_location" data-size="10"
+                                title="{{trans('forms.select')}}">
+                                    @foreach ($paymentLocation as $item)
+                                        <option value="{{$item->id}}" {{$item->id == old('payment_location') ? 'selected':''}}>{{$item->name}}</option>
+                                    @endforeach
                                 </select>
-                                @error('quotation_type')
-                                <div style="color:red;">
+                                @error('payment_location')
+                                <div style="color: red;">
                                     {{$message}}
                                 </div>
                                 @enderror
@@ -483,6 +501,67 @@
 </div>
 @endsection
 @push('scripts')
+    <script>
+        $(document).ready(function () {
+        $('#payment_kind').change(function () {
+            if ($(this).val() === 'else_where') {
+            $('#elseWhereSelect').show();
+            } else {
+            $('#elseWhereSelect').hide();
+            }
+        });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+        $('#vessel_name').change(function () {
+            if ($('#Principal').val() !== $('#vessel_name').val()) {
+            $('#additionalSelect').show();
+            } else {
+            $('#additionalSelect').hide();
+            }
+        });
+        });
+    </script>
+    <script>
+        $(function(){
+                let country = $('#countryDis');
+                let company_id = "{{optional(Auth::user())->company->id}}";
+                $('#countryDis').on('change',function(e){
+                    let value = e.target.value;
+                    let response =   $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('.port');
+                port.html(list2.join(''));
+                
+                });
+            });
+        });
+</script>
+<script>
+        $(function(){
+                let country = $('#country');
+                let company_id = "{{optional(Auth::user())->company->id}}";
+                $('#country').on('change',function(e){
+                    let value = e.target.value;
+                    let response =    $.get(`/api/master/ports/${country.val()}/${company_id}`).then(function(data){
+                        let ports = data.ports || '';
+                        let list2 = [`<option value=''>Select...</option>`];
+                        for(let i = 0 ; i < ports.length; i++){
+                            list2.push(`<option value='${ports[i].id}'>${ports[i].name} </option>`);
+                        }
+                let port = $('.importPort');
+                port.html(list2.join(''));
+
+                });
+            });
+        });
+</script>
+
 <script>
     var importCount = 0;
     var exportCount = 0;
@@ -880,4 +959,5 @@
             });
         });
 </script>
+
 @endpush

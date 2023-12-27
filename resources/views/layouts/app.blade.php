@@ -9,7 +9,7 @@
     <link href="{{asset('assets/css/loader.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{asset('assets/js/loader.js')}}"></script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
@@ -145,7 +145,7 @@
     <!-- END MAIN CONTAINER -->
 
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="{{asset('assets/js/libs/jquery-3.1.1.min.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="{{asset('bootstrap/js/popper.min.js')}}"></script>
     <script src="{{asset('bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{asset('plugins/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
@@ -155,14 +155,14 @@
     <script>
         $(document).ready(function () {
             const resetSelect = document.getElementById('reset-select');
-
             if (resetSelect) {
                 resetSelect.addEventListener('click', () => {
-                    $("option:selected").remove();
+                    $("select").prop('selectedIndex', -1);
                     $('.selectpicker').selectpicker('refresh');
                 });
             }
         });
+
         $(document).ready(function() {
             App.init();
             function hasArabicCharacters(text){
@@ -235,23 +235,25 @@
             });
         });
     </script>
-<script>
-    (function () {
-        'use strict';
-        var form = document.getElementById('createForm');
-        form.addEventListener('submit', function (event) {
-            if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
 
-            form.classList.add('was-validated');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            'use strict';
+            var form = document.getElementById('createForm');
+            form.addEventListener('submit', function (event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            });
+
+            // Initialize selectpicker after the document is fully loaded
+            $('.selectpicker').selectpicker();
         });
-    })();
+    </script>
 
-    // Initialize selectpicker
-    $('.selectpicker').selectpicker();
-</script>
     <script src="{{asset('assets/js/custom.js')}}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

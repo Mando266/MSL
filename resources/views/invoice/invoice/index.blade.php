@@ -26,9 +26,19 @@
                             </div>
                         </div>
                     </br>
-                    <form>
+                    <form id="createForm">
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+
+                            <div class="form-group col-md-3">
+                                <label for="invoice">Invoice No</label>
+                                <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
+                                 title="{{trans('forms.select')}}">
+                                    @foreach ($invoiceRef as $item)
+                                        <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label for="Type">Invoice Type</label>
                                 <select class="selectpicker form-control" id="Type" data-live-search="true" name="type" data-size="10"
                                  title="{{trans('forms.select')}}">
@@ -36,21 +46,19 @@
                                         <option value="invoice" {{ request()->input('type') == "invoice" ? 'selected':'' }}>Invoice</option>
                                 </select>
                             </div>
-
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="status">Invoice Status</label>
                                 <select class="selectpicker form-control" data-live-search="true" name="invoice_status" title="{{trans('forms.select')}}">
                                     <option value="draft" {{ request()->input('invoice_status') == "draft" ? 'selected':'' }}>Draft</option>
+                                    <option value="ready_confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Ready To Confirm</option>
                                     <option value="confirm" {{ request()->input('invoice_status') == "confirm" ? 'selected':'' }}>Confirm</option>
                                </select>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="invoice">Invoice No</label>
-                                <select class="selectpicker form-control" id="invoice" data-live-search="true" name="invoice_no" data-size="10"
-                                 title="{{trans('forms.select')}}">
-                                    @foreach ($invoiceRef as $item)
-                                        <option value="{{$item->invoice_no}}" {{$item->invoice_no == old('invoice_no',request()->input('invoice_no')) ? 'selected':''}}>{{$item->invoice_no}}</option>
-                                    @endforeach
+                            <div class="form-group col-md-3">
+                                <label>Payment Status</label>
+                                <select class="selectpicker form-control" data-live-search="true" name="paymentstauts" title="{{trans('forms.select')}}">
+                                    <option value="1" {{ request()->input('paymentstauts') == "1" ? 'selected':'' }}>Paid </option>
+                                    <option value="0" {{ request()->input('paymentstauts') == "0" ? 'selected':'' }}>UnPaid</option>
                                 </select>
                             </div>
                         </div>
@@ -66,7 +74,7 @@
                                 </select>
                             </div>
 
-                            <input type="text" class="form-control" id="bookingIdInput" name="booking_ref" value="{{request()->input('booking_ref')}}">
+                            <input type="hidden" class="form-control" id="bookingIdInput" name="booking_ref" value="{{request()->input('booking_ref')}}">
 
                             <div class="form-group col-md-3">
                                 <label for="Bldraft">Customer</label>
@@ -104,6 +112,7 @@
                             <div class="form-row">
                                 <div class="col-md-12 text-center">
                                     <button  type="submit" class="btn btn-success mt-3">Search</button>
+                                    <button type="button" id="reset-select" class="btn btn-info mt-3">Reset</button>
                                     <a href="{{route('invoice.index')}}" class="btn btn-danger mt-3">{{trans('forms.cancel')}}</a>
                                 </div>
                             </div>
@@ -223,7 +232,9 @@
                                             <td>{{$rate}}</td>
                                             <td class="text-center">
                                                 @if($invoice->invoice_status == "confirm")
-                                                    <span class="badge badge-info"> Confirm </span>
+                                                    <span class="badge badge-success"> Confirm </span>
+                                                @elseif($invoice->invoice_status == "ready_confirm")
+                                                    <span class="badge badge-info"> Ready To Confirm</span>
                                                 @else
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
@@ -253,7 +264,7 @@
                                                 @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15)
                                                     @permission('Invoice-Edit')
                                                     <li>
-                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" data-placement="top" title="" data-original-title="edit">
+                                                        <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" target="_blank" data-placement="top" title="" data-original-title="edit">
                                                             <i class="far fa-edit text-success"></i>
                                                         </a>
                                                     </li>
@@ -286,9 +297,9 @@
                                                         <button type="submit" class="btn btn-primary mt-3">Json</button>
                                                     </a>
                                                 @elseif($invoice->portal_status == 'Valid')
-                                                        <button class="btn btn-info mt-3">Valid</button>
+                                                        <button class="btn btn-success mt-3">Valid</button>
                                                 @elseif($invoice->portal_status == 'Submitted')
-                                                    <button class="btn btn-success mt-3">Submitted</button>
+                                                    <button class="btn btn-info mt-3">Submitted</button>
                                                 @endif
                                             </td>
                                         </tr>

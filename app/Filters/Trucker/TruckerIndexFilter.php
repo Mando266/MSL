@@ -9,6 +9,7 @@ class TruckerIndexFilter extends AbstractFilter{
  
         'booking_id'=>BookingNoFilter::class,
         'certificate_type'=>CertificateFilter::class,
+        'company_name'=>NameFilter::class,
 
     ];
 }

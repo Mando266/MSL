@@ -27,7 +27,6 @@ class StorageController extends Controller
         $movementsCode = ContainersMovement::orderBy('id')->get();
         $tariffType = ['ESTO', 'ISTO', 'IEST', 'EEST', 'PCEX', 'PCIM'];
         $services = TariffType::whereIn('code', $tariffType)->get();
-        // dd(request()->input('calculation'));
 
         return view('storage.index', [
             'movementsBlNo' => $movementsBlNo,
@@ -64,7 +63,8 @@ class StorageController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'from' => 'required',
+            // 'from' => 'nullable_without_all:from_date',
+            // 'from_date' => 'nullable_without_all:from',
 //            'to' => 'nullable_without_all:date',
 //            'date' => 'nullable_without_all:to',
         ];
@@ -72,7 +72,7 @@ class StorageController extends Controller
         $request->validate($rules);
         $route = 'storage.index';
 
-        if(in_array($request->service,[1,3])){
+        if (in_array($request->service, [1, 3])) {
             $route = 'storage.create';
         }
         $bl_no = BlDraft::where('id', $request->bl_no)->pluck('ref_no')->first();
@@ -98,32 +98,45 @@ class StorageController extends Controller
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
+                    } else {
+                        $fromMovementDate = $fromMovement->movement_date;
                     }
+                    //No till date and no movement to selected
                     if ($request->date == null && $request->to == null) {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
                     } elseif ($request->date == null) {
                         $toMovement = Movements::where('container_id', $container->id)->where('movement_id', $request->to)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
                     } else {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
                         if ($toMovement == null) {
                             $toMovement = $request->date;
                         } elseif ($request->date < $toMovement->movement_date) {
                             $toMovement = $request->date;
                         }
                     }
+                    $diffBetweenDates = 0;
                     if ($toMovement != null) {
                         if (optional($toMovement)->movement_date != null) {
-                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement->movement_date)->diffInDays(request('from_date'));
+                            }
                         } else {
-                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement)->diffInDays(request('from_date'));
+                            }
                         }
                     } else {
                         // if there is no till movement
                         $now = Carbon::now()->format('Y-m-d');
-                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovementDate);
+                        if (request('from_date') != null) {
+                            $diffBetweenDates = Carbon::parse($now)->diffInDays(request('from_date'));
+                        }
                     }
                     $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
@@ -147,7 +160,10 @@ class StorageController extends Controller
                                                 // remaining days more than period days
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
-
+                                                if ($diffBetweenDates != 0) {
+                                                    $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $periodtotal = 0 * $period->number_off_dayes;
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
@@ -180,6 +196,18 @@ class StorageController extends Controller
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $days = $period->number_off_dayes - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                        $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -194,6 +222,18 @@ class StorageController extends Controller
                                                 // remaining days less than period days
                                                 $days = $tempDaysCount - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $tempDaysCount) {
+                                                        $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -214,6 +254,16 @@ class StorageController extends Controller
                                             // remaining days more than period days
                                             $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                             $periodtotal = $period->rate * $period->number_off_dayes;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                    $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($period->number_off_dayes - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -226,6 +276,16 @@ class StorageController extends Controller
                                         } else {
                                             // remaining days less than period days
                                             $periodtotal = $period->rate * $tempDaysCount;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $tempDaysCount) {
+                                                    $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($tempDaysCount - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -250,10 +310,10 @@ class StorageController extends Controller
                     $tempCollection = collect([
                         'container_no' => $container->code,
                         'container_type' => $container->containersTypes->name,
-                        'from' => $fromMovement->movement_date,
+                        'from' => $fromMovementDate,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
-                        'from_code'=>$fromMovement->movementcode->code,
-                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
+                        'from_code' => optional(optional($fromMovement)->movementcode)->code,
+                        'to_code' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
@@ -274,32 +334,44 @@ class StorageController extends Controller
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
+                    } else {
+                        $fromMovementDate = $fromMovement->movement_date;
                     }
                     if ($request->date == null && $request->to == null) {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                     } elseif ($request->date == null) {
                         $toMovement = Movements::where('container_id', $container->id)->where('movement_id', $request->to)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                     } else {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                         if ($toMovement == null) {
                             $toMovement = $request->date;
                         } elseif ($request->date < $toMovement->movement_date) {
                             $toMovement = $request->date;
                         }
                     }
+
                     if ($toMovement != null) {
                         if (optional($toMovement)->movement_date != null) {
-                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement->movement_date)->diffInDays(request('from_date'));
+                            }
                         } else {
-                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement)->diffInDays(request('from_date'));
+                            }
                         }
                     } else {
                         // if there is no till movement
                         $now = Carbon::now()->format('Y-m-d');
-                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovementDate);
+                        if (request('from_date') != null) {
+                            $diffBetweenDates = Carbon::parse($now)->diffInDays(request('from_date'));
+                        }
                     }
                     $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
@@ -323,6 +395,10 @@ class StorageController extends Controller
                                                 // remaining days more than period days
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
+                                                if ($diffBetweenDates != 0) {
+                                                    $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $periodtotal = 0 * $period->number_off_dayes;
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
@@ -355,6 +431,18 @@ class StorageController extends Controller
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $days = $period->number_off_dayes - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                        $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -369,6 +457,18 @@ class StorageController extends Controller
                                                 // remaining days less than period days
                                                 $days = $tempDaysCount - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $tempDaysCount) {
+                                                        $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -389,6 +489,16 @@ class StorageController extends Controller
                                             // remaining days more than period days
                                             $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                             $periodtotal = $period->rate * $period->number_off_dayes;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                    $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($period->number_off_dayes - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -401,6 +511,16 @@ class StorageController extends Controller
                                         } else {
                                             // remaining days less than period days
                                             $periodtotal = $period->rate * $tempDaysCount;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $tempDaysCount) {
+                                                    $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($tempDaysCount - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -423,19 +543,19 @@ class StorageController extends Controller
                     $tempCollection = collect([
                         'container_no' => $container->code,
                         'container_type' => $container->containersTypes->name,
-                        'from' => $fromMovement->movement_date,
+                        'from' => $from,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
-                        'from_code'=>$fromMovement->movementcode->code,
-                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
+                        'from_code' => optional(optional($fromMovement)->movementcode)->code,
+                        'to_code' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
                     $containerCalc->add($tempCollection);
                 }
             }
-        }else{
-            if(count(request()->container_code) > 0 ){
-                $containers = Containers::whereIn('id',request()->container_code)->get();
+        } else {
+            if (count(request()->container_code) > 0) {
+                $containers = Containers::whereIn('id', request()->container_code)->get();
                 // Searching in container movements For the begining movement to the end move to get the difference in days
                 $grandTotal = 0;
                 foreach ($containers as $container) {
@@ -449,16 +569,18 @@ class StorageController extends Controller
                             'error', 'there is No From Movement for Container No ' . $container->code,
                             'input' => $request->input()
                         ]);
+                    } else {
+                        $fromMovementDate = $fromMovement->movement_date;
                     }
                     if ($request->date == null && $request->to == null) {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                     } elseif ($request->date == null) {
                         $toMovement = Movements::where('container_id', $container->id)->where('movement_id', $request->to)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                     } else {
                         $toMovement = Movements::where('container_id', $container->id)
-                            ->where('movement_date', '>', $fromMovement->movement_date)->oldest()->first();
+                            ->where('movement_date', '>', $from)->oldest()->first();
                         if ($toMovement == null) {
                             $toMovement = $request->date;
                         } elseif ($request->date < $toMovement->movement_date) {
@@ -467,14 +589,23 @@ class StorageController extends Controller
                     }
                     if ($toMovement != null) {
                         if (optional($toMovement)->movement_date != null) {
-                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement->movement_date)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement->movement_date)->diffInDays(request('from_date'));
+                            }
                         } else {
-                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovement->movement_date);
+                            $daysCount = Carbon::parse($toMovement)->diffInDays($fromMovementDate);
+                            if (request('from_date') != null) {
+                                $diffBetweenDates = Carbon::parse($toMovement)->diffInDays(request('from_date'));
+                            }
                         }
                     } else {
                         // if there is no till movement
                         $now = Carbon::now()->format('Y-m-d');
-                        $daysCount = Carbon::parse($now)->diffInDays($fromMovement->movement_date);
+                        $daysCount = Carbon::parse($now)->diffInDays($fromMovementDate);
+                        if (request('from_date') != null) {
+                            $diffBetweenDates = Carbon::parse($now)->diffInDays(request('from_date'));
+                        }
                     }
                     $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
@@ -530,6 +661,18 @@ class StorageController extends Controller
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $days = $period->number_off_dayes - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                        $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -544,6 +687,18 @@ class StorageController extends Controller
                                                 // remaining days less than period days
                                                 $days = $tempDaysCount - $quotationFreeTime;
                                                 $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                if ($diffBetweenDates != 0) {
+                                                    if ($diffBetweenDates >= $tempDaysCount) {
+                                                        $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                        $days = 0;
+                                                        $periodtotal = 0;
+                                                    } else {
+                                                        $diffBetweenDates = 0;
+                                                        $days = $days - $diffBetweenDates;
+                                                        $periodtotal = (0 * $quotationFreeTime) + ($period->rate * $days);
+                                                    }
+                                                    $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                                }
                                                 $containerTotal = $containerTotal + $periodtotal;
                                                 $tempCollection = collect([
                                                     'name' => $period->period,
@@ -564,6 +719,16 @@ class StorageController extends Controller
                                             // remaining days more than period days
                                             $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                             $periodtotal = $period->rate * $period->number_off_dayes;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $period->number_off_dayes) {
+                                                    $diffBetweenDates = $diffBetweenDates - $period->number_off_dayes;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($period->number_off_dayes - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -576,6 +741,16 @@ class StorageController extends Controller
                                         } else {
                                             // remaining days less than period days
                                             $periodtotal = $period->rate * $tempDaysCount;
+                                            if ($diffBetweenDates != 0) {
+                                                if ($diffBetweenDates >= $tempDaysCount) {
+                                                    $diffBetweenDates = $diffBetweenDates - $tempDaysCount;
+                                                    $periodtotal = 0;
+                                                } else {
+                                                    $periodtotal = $period->rate * ($tempDaysCount - $diffBetweenDates);
+                                                    $diffBetweenDates = 0;
+                                                }
+                                                $diffBetweenDates = $diffBetweenDates < 0 ? 0 : $diffBetweenDates;
+                                            }
                                             $containerTotal = $containerTotal + $periodtotal;
                                             $tempCollection = collect([
                                                 'name' => $period->period,
@@ -598,10 +773,10 @@ class StorageController extends Controller
                     $tempCollection = collect([
                         'container_no' => $container->code,
                         'container_type' => $container->containersTypes->name,
-                        'from' => $fromMovement->movement_date,
+                        'from' => $from,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
-                        'from_code'=>$fromMovement->movementcode->code,
-                        'to_code'=>$toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
+                        'from_code' => optional(optional($fromMovement)->movementcode)->code,
+                        'to_code' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
                         'periods' => $periodCalc,
                     ]);
@@ -620,14 +795,14 @@ class StorageController extends Controller
             'freetime' => (request()->service == 3 || request()->service == 1) ? $exportFreeTime : 0,
             'input' => $request->input()
         ];
-        session(['calculations'=> $data]);
+        session(['calculations' => $data]);
         return redirect()->route($route)->with($data);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -638,7 +813,7 @@ class StorageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -649,8 +824,8 @@ class StorageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -661,7 +836,7 @@ class StorageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
