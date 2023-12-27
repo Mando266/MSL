@@ -17,6 +17,8 @@
                     <form  novalidate id="createForm"  action="{{route('quotations.update',['quotation'=>$quotation])}}" method="POST">
                             @csrf
                             @method('put')
+                            <h4> Quotation Ref N : {{$quotation->ref_no}} </h4>
+                    </br>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="status">Quotation Type <span class="text-warning"> * (Required.) </span></label>
@@ -32,8 +34,8 @@
                         </div>
 
                         <div class="form-group col-md-3">
-                                <label>Transportation Mode</label>
-                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}">
+                                <label>Transportation Mode <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="transportation_mode" title="{{trans('forms.select')}}" required>
                                     <option value="vessel" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "vessel"? 'selected':''}}>Vessel</option>
                                     <option value="trucker" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "trucker"? 'selected':''}}>Trucker</option>
                                     <option value="train" {{$quotation->id == old('transportation_mode') ||  $quotation->transportation_mode == "train"? 'selected':''}}>Train</option>
@@ -59,14 +61,15 @@
                                 @enderror
                         </div>
                         <div class="form-group col-md-3">
-                            <label>Agency Booking Ref</label>
-                            <input type="text" class="form-control" name="agency_bookingr_ref" value="{{old('agency_bookingr_ref,$quotation->agency_bookingr_ref')}}"
-                                    autocomplete="off" placeholder="Agency Booking Ref">
-                            @error('ofr')
-                            <div style="color: red;">
-                                {{$message}}
-                            </div>
-                            @enderror
+                            <label>Payment As Per Agreement <span class="text-warning"> * (Required.) </span></label>
+                            <select class="selectpicker form-control" data-live-search="true" name="agency_bookingr_ref" required  title="{{trans('forms.select')}}">
+                                <option value="EXW" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "EXW"? 'selected':''}}>EXW</option>
+                                <option value="FCA" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "FCA"? 'selected':''}}>FCA</option>
+                                <option value="FOB" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "FOB"? 'selected':''}}>FOB</option>
+                                <option value="CIF" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "CIF"? 'selected':''}}>CIF</option>
+                                <option value="CPT" {{$quotation->id == old('agency_bookingr_ref') ||  $quotation->agency_bookingr_ref == "CPT"? 'selected':''}}>CPT</option>
+
+                            </select>                
                         </div>
                     </div>
 

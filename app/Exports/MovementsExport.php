@@ -17,19 +17,6 @@ use App\Models\Booking\Booking;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
-    protected $movements;
-
-    /**
-     * @param array $movements
-     */
-    public function __construct(array $movements)
-    {
-        $this->movements = Movements::whereIn('id',$movements)->with('container.containersTypes','container.seller','container.containersOwner')->get();
-    }
-
-    /**
-     * @return array
-     */
     public function headings(): array
     {
         return [
@@ -59,18 +46,6 @@ class MovementsExport implements FromCollection,WithHeadings
             "Containers Ownership Type",
             "SOC/COC",
         ];
-//            if (auth()->user()->lessor_id != 0) {
-            // Remove the headings for lessor-specific fields
-//            $headings = array_diff($headings, [
-//                "company_id",
-//                "terminal_id",
-//                "booking_agent_id",
-//                "created_at",
-//                "updated_at",
-//                "import_agent",
-//                "free_time_origin",
-//            ]);
-//        }
     }
 
     /**
@@ -78,7 +53,7 @@ class MovementsExport implements FromCollection,WithHeadings
     */
     public function collection(): Collection
     {
-        $movements = $this->movements;
+        $movements = session('items');
 
                 foreach($movements  ?? [] as $movement){
                     unset($movement['id']);
@@ -97,16 +72,6 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                     $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
                     $movement->SOC_COC = optional($movement->container)->SOC_COC;
-                    if (auth()->user()->lessor_id != 0) {
-                        unset($movement['id']);
-                        unset($movement['company_id']);
-                        unset($movement['terminal_id']);
-                        unset($movement['created_at']);
-                        unset($movement['updated_at']);
-                        unset($movement['booking_agent_id']);
-                        unset($movement['import_agent']);
-                        unset($movement['free_time_origin']);
-                    }
                 }
 
 

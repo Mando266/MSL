@@ -46,7 +46,7 @@
                 $haz = $firstContainerDetail->haz;
                 foreach($booking->bookingContainerDetails as $detail){
                     $containerCount = $containerCount + $detail->qty;
-                    $containerType = optional($detail-containerType)->name;
+                    $containerType = optional($detail->containerType)->name;
                 }
                 @endphp
                 <table class="col-md-12 tableStyle" >
@@ -93,7 +93,7 @@
                             <td class="col-md-3 tableStyle text-right underline" >إذن شحن</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{ optional(optional($booking->voyage)->vessel)->name }} / {{ $booking->voyage->voyage_no}}</td>
                             <td class="col-md-3 tableStyle text-right underline" >الباخرة / رحلة</td>
                         </tr>
                         <tr>

@@ -35,7 +35,6 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
         
         $customers = session('statements');
         $exportinvoices = collect();
-
         foreach($customers  ?? [] as $customer){
             $total_invoice_amount = 0;
             $total_invoice_amount_egp = 0;
@@ -50,22 +49,42 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 $tax_hold_egp = 0;
                 $matching_usd = 0;
                 $matching_egp = 0;
+                $vat = $invoice->vat;
+                $vat = $vat / 100;
                 $totalusd = null;
                 $totalegp = null;
+                $total_after_vat = 0;
+                $total_before_vat = 0;
+                $total_eg_after_vat = 0;
+                $total_eg_before_vat = 0;
                 $receipts = null;
                 $totalreceipt = null;
                 $blanceEgp = null;
                 $blanceUSD = null; 
+
                 if($invoice->receipts->count() != 0){
                     foreach($invoice->receipts as $receipt){
                         $receipts .= $receipt->receipt_no . "\n";
                         $totalreceipt += $receipt->paid;
                     }   
                 }
-                foreach($invoice->chargeDesc as $invoiceDesc ){
-                    $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
-                    $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
+                foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
+                    $totalusd += $invoiceDesc->total_amount;
+                    $totalegp += $invoiceDesc->total_egy;
+
+                    if($invoiceDesc->add_vat == 1){
+                        $total_after_vat += ($vat * $invoiceDesc->total_amount);
+                        $total_eg_after_vat += ($vat * $invoiceDesc->total_egy);
+                    }
                 }
+                    $total_before_vat = round($totalusd ,2);
+                    if($total_after_vat != 0){
+                        $totalusd = round($totalusd + $total_after_vat,2);
+                    }
+                    if($total_eg_after_vat != 0){
+                        $totalegp = round($totalegp + $total_eg_after_vat ,2);
+                }
+
                 if($invoice->add_egp != 'onlyegp'){
                     $tax_hold_usd = $totalusd * ($invoice->tax_discount/100);
                     $total_tax_hold_usd += $tax_hold_usd;
@@ -118,37 +137,61 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                             'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
                             'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : (($invoice->add_egp != 'onlyegp') && ($matching_usd != null && $matching_usd != 0)? ('-'.$matching_usd) :'0'),
                             'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : (($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') && ($matching_egp != null && $matching_egp != 0 )? ('-'.$matching_egp) :'0'),
-                            'matching' => ($receipt->matching != null &&$receipt->matching != 0) ? 'Yes':'No',
+                            'matching' => ($receipt->matching != null && $receipt->matching != 0) ? 'Yes':'No',
                             'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
                         ]);
                         
                         $exportinvoices->add($tempCollection);
                     }
                 }else{
-                    foreach($invoice->receipts as $receipt){
+                    if($invoice->receipts->count() != 0){
+                        foreach($invoice->receipts as $receipt){
 
-                    $tempCollection = collect([
-                        'customer' => $customer->name,
-                        'type' => optional($invoice)->type,
-                        'bl no' => $invoice->bldraft_id == 0 ?  'Customize' : optional($invoice->bldraft)->ref_no,
-                        'invoice_no' => optional($invoice)->invoice_no,
-                        'date' => optional($invoice)->date,
-                        'invoice_amount' => $invoice->add_egp != 'onlyegp' ? $totalusd : '0',
-                        'invoice_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalegp : '0',
-                        'created_at' => '',
-                        'receipts' => '',
-                        'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
-                        'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
-                        'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
-                        'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
-                        'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : (($invoice->add_egp != 'onlyegp') && ($matching_usd != null && $matching_usd != 0)? ('-'.$matching_usd) :'0'),
-                        'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : (($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') && ($matching_egp != null && $matching_egp != 0 )? ('-'.$matching_egp) :'0'),
-                        'matching' => ($receipt->matching != null &&$receipt->matching != 0) ? 'Yes':'No',
-                        'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
-                    ]);
-                    
-                    $exportinvoices->add($tempCollection);
-                }
+                            $tempCollection = collect([
+                                'customer' => $customer->name,
+                                'type' => optional($invoice)->type,
+                                'bl no' => $invoice->bldraft_id == 0 ?  'Customize' : optional($invoice->bldraft)->ref_no,
+                                'invoice_no' => optional($invoice)->invoice_no,
+                                'date' => optional($invoice)->date,
+                                'invoice_amount' => $invoice->add_egp != 'onlyegp' ? $totalusd : '0',
+                                'invoice_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalegp : '0',
+                                'created_at' => '',
+                                'receipts' => '',
+                                'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
+                                'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
+                                'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
+                                'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
+                                'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : (($invoice->add_egp != 'onlyegp') && ($matching_usd != null && $matching_usd != 0)? ('-'.$matching_usd) :'0'),
+                                'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : (($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') && ($matching_egp != null && $matching_egp != 0 )? ('-'.$matching_egp) :'0'),
+                                'matching' => ($receipt->matching != null &&$receipt->matching != 0) ? 'Yes':'No',
+                                'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
+                            ]);
+                            
+                            $exportinvoices->add($tempCollection);
+                        }    
+                    }else{
+                        $tempCollection = collect([
+                            'customer' => $customer->name,
+                            'type' => optional($invoice)->type,
+                            'bl no' => $invoice->bldraft_id == 0 ?  'Customize' : optional($invoice->bldraft)->ref_no,
+                            'invoice_no' => optional($invoice)->invoice_no,
+                            'date' => optional($invoice)->date,
+                            'invoice_amount' => $invoice->add_egp != 'onlyegp' ? $totalusd : '0',
+                            'invoice_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalegp : '0',
+                            'created_at' => '',
+                            'receipts' => '',
+                            'receipt_amount_usd' => $invoice->add_egp != 'onlyegp' ? $totalreceipt : '0',
+                            'receipt_amount_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? $totalreceipt:'0',
+                            'tax_hold_usd' => $invoice->add_egp != 'onlyegp'? ($tax_hold_usd == 0? '0':$tax_hold_usd) : '0',
+                            'tax_hold_egp' => ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($tax_hold_egp == 0? '0':$tax_hold_egp) : '0',
+                            'balance_usd' =>  $invoice->add_egp != 'onlyegp' ? ($blanceUSD == 0 ? '0' : $blanceUSD) : (($invoice->add_egp != 'onlyegp') && ($matching_usd != null && $matching_usd != 0)? ('-'.$matching_usd) :'0'),
+                            'balance_egp' =>  ($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') ? ($blanceEgp == 0 ? '0' : $blanceEgp) : (($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp') && ($matching_egp != null && $matching_egp != 0 )? ('-'.$matching_egp) :'0'),
+                            'matching' => 'No',
+                            'vessel-voyage' => ($invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name) .' / '. ($invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no),
+                        ]);
+                        
+                        $exportinvoices->add($tempCollection);
+                    }
                 if($invoice->add_egp != 'onlyegp'){
                     $total_balance_usd += $blanceUSD;
                 }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
@@ -178,8 +221,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                     'receipt_amount_egp' => '0',
                     'tax_hold_usd' => '0',
                     'tax_hold_egp' => '0',
-                    'balance_usd' =>  $creditNote->currency == "credit_usd" ? $blanceUSD : '0',
-                    'balance_egp' =>  $creditNote->currency == "credit_egp" ? $blanceEgp : '0',
+                    'balance_usd' =>  $creditNote->currency == "credit_usd" ? '-'.$blanceUSD : '0',
+                    'balance_egp' =>  $creditNote->currency == "credit_egp" ? '-'.$blanceEgp : '0',
                     'matching' => 'No',
                     'vessel-voyage' => '',
                 ]);

@@ -57,14 +57,15 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-3">
-                                <label>Agency Booking Ref</label>
-                                <input type="text" class="form-control" name="agency_bookingr_ref" value="{{old('agency_bookingr_ref')}}"
-                                     autocomplete="off" placeholder="Agency Booking Ref">
-                                @error('ofr')
-                                <div style="color: red;">
-                                    {{$message}}
-                                </div>
-                                @enderror
+                                <label>Payment As Per Agreement <span class="text-warning"> * (Required.) </span></label>
+                                <select class="selectpicker form-control" data-live-search="true" name="agency_bookingr_ref" title="{{trans('forms.select')}}" required>
+                                    <option value="EXW">EXW</option>
+                                    <option value="FCA">FCA</option>
+                                    <option value="FOB">FOB</option>
+                                    <option value="CIF">CIF</option>
+                                    <option value="CPT">CPT</option>
+
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">

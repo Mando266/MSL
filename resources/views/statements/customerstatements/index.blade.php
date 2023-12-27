@@ -100,12 +100,20 @@
                                             <td rowspan="{{$customer->invoices->count() + $customer->creditNotes->count() + $customer->refunds->count() + 1}}">{{$customer->name}}</td>
                                             @foreach($customer->invoices as $invoice)
                                                 @php
-                                                    $totalusd = null;
-                                                    $totalegp = null;
+
+                                                    $totalusd = 0;
+                                                    $totalegp = 0;
                                                     $receipts = null;
                                                     $totalreceipt = null;
                                                     $blanceEgp = null;
                                                     $blanceUSD = null; 
+                                                    $total_after_vat = 0;
+                                                    $total_before_vat = 0;
+                                                    $total_eg_after_vat = 0;
+                                                    $total_eg_before_vat = 0;
+                                                    $vat = $invoice->vat;
+                                                    $vat = $vat / 100;
+
                                                     if($invoice->receipts->count() != 0){
                                                         foreach($invoice->receipts as $receipt){
                                                             $receipts .= $receipt->receipt_no . "\n";
@@ -113,11 +121,23 @@
                                                         }   
                                                     }
                                                     foreach($invoice->chargeDesc as $chargeskey => $invoiceDesc ){
-                                                        $totalusd = $totalusd + (float)$invoiceDesc->total_amount;
-                                                        $totalegp = $totalegp + (float)$invoiceDesc->total_egy;
+                                                        $totalusd += $invoiceDesc->total_amount;
+                                                        $totalegp += $invoiceDesc->total_egy;
+
+                                                        if($invoiceDesc->add_vat == 1){
+                                                            $total_after_vat += ($vat * $invoiceDesc->total_amount);
+                                                            $total_eg_after_vat += ($vat * $invoiceDesc->total_egy);
+                                                        }
                                                     }
-                                                        $blanceEgp = $totalreceipt - $totalegp;
-                                                        $blanceUSD = $totalreceipt - $totalusd;
+                                                        $total_before_vat = round($totalusd ,2);
+                                                        if($total_after_vat != 0){
+                                                            $totalusd = round($totalusd + $total_after_vat,2);
+                                                        }
+                                                        if($total_eg_after_vat != 0){
+                                                            $totalegp = round($totalegp + $total_eg_after_vat ,2);
+                                                        }
+                                                        $blanceEgp = round($totalreceipt - $totalegp ,2);
+                                                        $blanceUSD = round($totalreceipt - $totalusd ,2);
                                                 @endphp
                                                 <tr>
                                                     <td>{{optional($invoice)->type}}</td>

@@ -386,7 +386,7 @@
                                             <ul class="table-controls">
                                                 @if($item->booking_confirm == 1  && $item->is_transhipment == 0)
                                                     <li>
-                                                        @if(optional($item->quotation)->shipment_type == "Import")
+                                                        @if(optional($item)->shipment_type == "Import")
                                                             <a href="{{route('booking.selectGateInImport',['booking'=>$item->id])}}"
                                                                target="_blank">
                                                                 <i class="fas fa-file-pdf text-primary"

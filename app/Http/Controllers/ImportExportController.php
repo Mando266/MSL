@@ -60,25 +60,16 @@ class ImportExportController extends Controller
         return back();
     }
 
-    /**
-     * @return BinaryFileResponse
-     */
-    public function export(): BinaryFileResponse
+    public function export()
     {
-        return $this->exportWithValidation(new MovementsExport(json_decode(request()->items, true)), 'Movements.xlsx', 'items');
+        return $this->exportWithValidation(new MovementsExport, 'Movements.xlsx', 'items');
     }
 
-    /**
-     * @return BinaryFileResponse
-     */
-    public function exportAll(): BinaryFileResponse
+    public function exportAll()
     {
         return Excel::download(new MovementsExportAll, 'Movements.xlsx');
     }
 
-    /**
-     * @return BinaryFileResponse
-     */
     public function exportQuotation(): BinaryFileResponse
     {
         return Excel::download(new QuotationExport(request()), 'Quotations.xlsx');
@@ -139,7 +130,7 @@ class ImportExportController extends Controller
 
     public function exportSearch()
     {
-        return $this->exportWithValidation(new MovementsExportSearch(json_decode(request()->items, true)), 'Movements.xlsx', 'items');
+        return $this->exportWithValidation(new MovementsExportSearch, 'Movements.xlsx', 'items');
     }
 
     public function agentSearch()
