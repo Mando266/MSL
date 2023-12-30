@@ -6,7 +6,6 @@ use App\Models\Master\Agents;
 use App\Models\Master\Containers;
 use App\Models\Master\ContainersMovement;
 use App\Models\Master\ContainerStatus;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Master\ContainersTypes;
@@ -17,6 +16,11 @@ use App\Models\Booking\Booking;
 
 class MovementsExport implements FromCollection,WithHeadings
 {
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    // use Exportable;
+
     public function headings(): array
     {
         return [
@@ -42,24 +46,20 @@ class MovementsExport implements FromCollection,WithHeadings
             "container_status",
             "import_agent",
             "free_time_origin",
-            "Containers Ownership",
-            "Containers Ownership Type",
-            "SOC/COC",
+            "Lessor/Seller Refrence",
+            "Containers Ownership"
         ];
     }
 
-    /**
-    * @return Collection
-    */
-    public function collection(): Collection
+    public function collection()
     {
         $movements = session('items');
-
+        // dd($movements);
                 foreach($movements  ?? [] as $movement){
                     unset($movement['id']);
                     $movement->container_id = Containers::where('id',$movement->container_id)->pluck('code')->first();
                     $movement->movement_id = ContainersMovement::where('id',$movement->movement_id)->pluck('code')->first();
-                    $movement->container_type_id = optional(optional($movement->container)->containersTypes)->name;//ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
+                    $movement->container_type_id = ContainersTypes::where('id',$movement->container_type_id)->pluck('name')->first();
                     $movement->container_status = ContainerStatus::where('id',$movement->container_status)->pluck('name')->first();
                     $movement->vessel_id = Vessels::where('id',$movement->vessel_id)->pluck('name')->first();
                     $movement->voyage_id = Voyages::where('id',$movement->voyage_id)->pluck('voyage_no')->first();
@@ -71,10 +71,8 @@ class MovementsExport implements FromCollection,WithHeadings
                     $movement->pod_id = Ports::where('id',$movement->pod_id)->pluck('code')->first();
                     $movement->port_location_id = Ports::where('id',$movement->port_location_id)->pluck('code')->first();
                     $movement->booking_no = Booking::where('id',$movement->booking_no)->pluck('ref_no')->first();
-                    $movement->SOC_COC = optional($movement->container)->SOC_COC;
+                    //dd($movement->container->containersOwner->name);
                 }
-
-
         return $movements;
     }
 }

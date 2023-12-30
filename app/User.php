@@ -77,17 +77,6 @@ class User extends Authenticatable implements PermissionSeederContract
         return $this->belongsToMany(MarketSegment::class,'market_segment_users','user_id','market_segment_id');
     }
 
-    public function userSessions()
-    {
-        return $this->hasMany(UserSession::class ,'user_id','id');
-    }
-    
-    public function hasActiveSession()
-    {
-        $session = $this->userSessions()->where('active', true)->first();
-    
-        return $session ? true : false;
-    }
     
     public function getAvatarUrl(){
         if(is_null($this->avatar)){

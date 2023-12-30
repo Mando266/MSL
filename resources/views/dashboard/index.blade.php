@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-@if (Auth::user()->id != 18)
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -58,24 +57,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-            <div class="widget widget-chart-three">
-                <div class="widget-heading">
-                    <div class="">
-                        <h5 class="">Quotaions Status</h5>
-                    </div>
-
-                </div>
-
-                <div class="widget-content">
-                    <div id="uniqueVisits"></div>
-                </div>
-            </div>
-        </div> -->
-
-
-
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <div class="widget-four">
                 <div class="widget-heading">
@@ -253,13 +234,6 @@
             </div>
         </div>
     </div>
-    @else
-    <div class="form-image">
-        <div class="l-image">
-            <img src="{{asset('assets/img/msl.png')}}" alt="MSL Logo" style="width: 100%;">
-        </div>
-    </div>
-    @endif
 @endsection
 @push('styles')
     <link href="{{asset('plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">

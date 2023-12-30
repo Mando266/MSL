@@ -99,8 +99,8 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 }
                     $blanceUSD = ($totalreceipt + $tax_hold_usd) - $totalusd;
                     $blanceEgp = ($totalreceipt + $tax_hold_egp) - $totalegp;
-                    // dump($blanceUSD,$blanceEgp);
-                    
+                    // dump($totalegp);
+
                     //calculating total line for each customer
                     if($invoice->add_egp != 'onlyegp'){
                         $total_invoice_amount += $totalusd;
@@ -120,7 +120,6 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
                             $matching_egp = $receipt->matching;
                         }
-                        
                         $tempCollection = collect([
                             'customer' => $customer->name,
                             'type' => optional($invoice)->type,
@@ -142,11 +141,17 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         ]);
                         
                         $exportinvoices->add($tempCollection);
+                        
+                    }
+                    if($invoice->add_egp != 'onlyegp'){
+                        $total_balance_usd += $blanceUSD;
+                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                        $total_balance_egp += $blanceEgp;
                     }
                 }else{
                     if($invoice->receipts->count() != 0){
                         foreach($invoice->receipts as $receipt){
-
+                            
                             $tempCollection = collect([
                                 'customer' => $customer->name,
                                 'type' => optional($invoice)->type,
@@ -168,7 +173,12 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                             ]);
                             
                             $exportinvoices->add($tempCollection);
-                        }    
+                        }  
+                        if($invoice->add_egp != 'onlyegp'){
+                            $total_balance_usd += $blanceUSD;
+                        }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                            $total_balance_egp += $blanceEgp;
+                        }  
                     }else{
                         $tempCollection = collect([
                             'customer' => $customer->name,
@@ -192,13 +202,14 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                         
                         $exportinvoices->add($tempCollection);
                     }
-                if($invoice->add_egp != 'onlyegp'){
-                    $total_balance_usd += $blanceUSD;
-                }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
-                    $total_balance_egp += $blanceEgp;
-                }
-            }     
+                    if($invoice->add_egp != 'onlyegp'){
+                        $total_balance_usd += $blanceUSD;
+                    }elseif($invoice->add_egp == 'true' || $invoice->add_egp == 'onlyegp'){
+                        $total_balance_egp += $blanceEgp;
+                    }
+                }     
             }
+
             foreach($customer->creditNotes as $creditNote){
                 if($creditNote->currency == "credit_usd"){
                     $total_invoice_amount -= optional($creditNote)->total_amount;
@@ -230,9 +241,9 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 $exportinvoices->add($tempCollection);
 
                 if($creditNote->currency == "credit_usd"){
-                    $total_balance_usd += $blanceUSD;
+                    $total_balance_usd -= $blanceUSD;
                 }elseif($creditNote->currency == "credit_egp"){
-                    $total_balance_egp += $blanceEgp;
+                    $total_balance_egp -= $blanceEgp;
                 }
             }
 
@@ -280,7 +291,7 @@ class CustomerStatementsExport implements FromCollection,WithHeadings
                 'receipt_amount_egp' => $total_receipt_amount_egp == 0 ? '0':$total_receipt_amount_egp,
                 'tax_hold_usd' => $total_tax_hold_usd == 0 ? '0':$total_tax_hold_usd,
                 'tax_hold_egp' => $total_tax_hold_egp == 0 ? '0':$total_tax_hold_egp,
-                'balance_usd' =>  $total_balance_usd == 0 ? '0':$total_balance_usd,
+                'balance_usd' =>  $total_balance_usd == 0 ? '0':$total_balance_usd ,
                 'balance_egp' =>  $total_balance_egp == 0 ? '0':$total_balance_egp,
                 'matching' => '',
                 'vessel-voyage' => '',
