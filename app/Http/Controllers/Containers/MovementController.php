@@ -88,7 +88,8 @@ class MovementController extends Controller
                     // End Get All movements and sort it and get the last movement before this movement
 
                     // dump($lastMove->movement_id != request('movement_id'));
-                    if ($lastMove->movement_id != request('movement_id')) {
+                    if (!in_array($lastMove->movement_id, (array)request('movement_id'))) {
+
                         unset($filteredData[$key]);
                     }
                 }
@@ -113,7 +114,7 @@ class MovementController extends Controller
                     $tempMovements = $new;
                     $lastMove = $tempMovements->first();
                     // End Get All movements and sort it and get the last movement before this movement
-                    if ($lastMove->port_location_id != request('port_location_id')) {
+                    if (!in_array($lastMove->port_location_id, (array)request('port_location_id'))) {
                         unset($filteredData[$key]);
                     } else {
                         $move = $lastMove;
@@ -350,8 +351,8 @@ class MovementController extends Controller
                 // dd($movements);
                 $container_id = Containers::where('id', $movements->first()->container_id)->pluck('id')->first();
             }
-            $movement = Movements::find($container_id)->first();
-            $container = Containers::find($container_id)->first();
+            $movement = Movements::find($container_id);
+            $container = Containers::find($container_id);
             $movements = Movements::filter(new ContainersIndexFilter(request()))->where('container_id', $container_id);
 
             $movementId = false;
@@ -448,12 +449,13 @@ class MovementController extends Controller
                 $movements = $movements->first();
                 if (request('movement_id') != null) {
                     // dd($movements);
-                    if ($movements->movement_id != request('movement_id')) {
+                    if (!in_array($movements->movement_id, (array)request('movement_id'))) {
+
                         $movementsArray = true;
                     }
                 }
                 if (request('port_location_id') != null) {
-                    if ($movements->port_location_id != request('port_location_id')) {
+                    if (!in_array($movements->port_location_id, (array)request('port_location_id'))) {
                         $movementsArray = true;
                     }
                 }

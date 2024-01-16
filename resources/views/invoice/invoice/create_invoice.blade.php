@@ -603,8 +603,13 @@
                 var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
                 $(this).find('input[name$="[total]"]').val(totalAmount);
                 $(this).find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-                var eta = "{{optional($bldraft->voyage)->exchange_rate}}";
-                var etd = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+                @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                    var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+                    var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+                    @else
+                    var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+                    var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+                @endif
                 var exchangeRate = exchange === 'eta' ? eta : etd;
                 var egpAmount = totalAmount * exchangeRate;
                 var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
@@ -633,8 +638,13 @@
 
             // Calculate the total EGP Amount and update the Amount input field of the current row
             var exchange = $('input[name="exchange_rate"]:checked').val();
-            var eta = "{{optional($bldraft->voyage)->exchange_rate}}";
-            var etd = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+            @else
+                var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+                var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            @endif
             var exchangeRate = exchange === 'eta' ? eta : etd;
             var egpAmount = totalAmount * exchangeRate;
             var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
@@ -662,8 +672,13 @@
 
             // Calculate the total EGP Amount and update the Amount input field of the current row
             var exchange = $('input[name="exchange_rate"]:checked').val();
-            var eta = "{{optional($bldraft->voyage)->exchange_rate}}";
-            var etd = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+                var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+                @else
+                var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+                var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            @endif            
             var exchangeRate = exchange === 'eta' ? eta : etd;
             var egpAmount = totalAmount * exchangeRate;
             var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;

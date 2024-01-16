@@ -266,7 +266,7 @@
                                 <td></td>
                             </tr>
                             </tbody>
-                        </table>
+                    </table>
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <button type="submit" class="btn btn-primary mt-3">{{trans('forms.create')}}</button>

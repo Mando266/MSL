@@ -30,7 +30,7 @@
                                 <td style="height: 45px;"></td>
                             </tr>
                                 <tr>
-                                    <th class="text-center thstyle underline">  Shipping Order - إذن شحن</th>
+                                    <th class="text-center thstyle underline">  Shipping Order No {{ $booking->ref_no }}  إذن شحن رقم</th>
                                 </tr>
                             </tbody>
                         </table>

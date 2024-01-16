@@ -123,7 +123,7 @@
                                         @permission('Invoice-Ready_to_Confirm')
                                         <option value="ready_confirm" {{ old('invoice_status',$invoice->invoice_status) == "ready_confirm" ? 'selected':'' }}>Ready To Confirm</option>
                                         @endpermission
-                                        @if($bldraft->bl_status == 1 && Auth::user()->id == 15)
+                                        @if($bldraft->bl_status == 1)
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                         @endif
                                     </select>
@@ -191,21 +191,52 @@
                                         </label>
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-md-2 form-group " >
+                                    <div style="padding: 30px;">
+                                        <input class="form-check-input" type="radio" name="rate" id="rate1" value="eta" {{ "eta" == old('rate',$invoice->rate) ? 'checked':''}}>
+                                        <label class="form-check-label" for="exchange_rate">
+                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                            @elseif(optional($bldraft)->voyage_id != null)
+                                                ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                            @endif
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate2" value="etd"  {{ "etd" == old('rate',$invoice->rate) ? 'checked':''}}>
+                                        <label class="form-check-label" for="exchange_rate">
+                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
+                                            @elseif(optional($bldraft)->voyage_id != null)
+                                                ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
+                                            @endif
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="rate" id="custom_rate_radio" >
+                                            <label class="form-check-label" for="custom_rate_radio">Custom Rate</label>
+                                        <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;" placeholder="Enter custom rate">
+                                    </div>
+                                </div>
                                 @endif
                             </div> 
+
                             <div class="form-row">
+                                @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3">
                                     <label for="vat">VAT %:</label>
                                     <input type="text" class="form-control" id="vat" name="vat" value="{{old('vat',$invoice->vat)}}">
                                 </div>
+                                @endif
                                 <div class="form-group col-md-3" >
                                     <label>Total USD</label>
                                         <input type="text" class="form-control" id="total_usd"  value="{{round($total,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
+                                @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3" >
                                     <label>Total EGP</label>
                                         <input type="text" class="form-control" id="total_egp"  value="{{round($total_eg,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
+                                @endif
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
@@ -215,7 +246,6 @@
                             </div>
                         <h4>Charges<h4>
                     @if($invoice->type == "invoice")
-
                         <table id="charges" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -308,7 +338,13 @@
                             <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
 
                             <td>
-                                <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" >
+                                <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
+                                    title="{{trans('forms.select')}}" autofocus >
+                                    @foreach ($charges as $charge)
+                                        <option value="{{$charge->name}}" {{$charge->name == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
+                                    @endforeach
+                                </select>
+                                <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" > -->
                             </td>
                             <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
                                 placeholder="Rate" autocomplete="off" disabled style="background-color: white;">
@@ -340,6 +376,29 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    const rateRadio = document.getElementById('rate1');
+    const exchangeRateRadio = document.getElementById('exchange_rate2');
+    const customRateRadio = document.getElementById('custom_rate_radio');
+    const customRateInput = document.getElementById('custom_rate_input');
+
+    // Initial check on page load
+    toggleCustomRateInput();
+
+    // Event listeners for radio button changes
+    rateRadio.addEventListener('change', toggleCustomRateInput);
+    exchangeRateRadio.addEventListener('change', toggleCustomRateInput);
+    customRateRadio.addEventListener('change', toggleCustomRateInput);
+
+    // Function to toggle the display of the custom rate input field
+    function toggleCustomRateInput() {
+        if (customRateRadio.checked) {
+            customRateInput.style.display = 'inline-block';
+        } else {
+            customRateInput.style.display = 'none';
+        }
+    }
+</script>
     @include('invoice.invoice._js_vat_table')
     <script>
     $('#editForm').submit(function() {
@@ -371,8 +430,15 @@
             var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
             var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
             $(this).find('input[name$="[total_amount]"]').val(totalAmount);
+
+        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+        @else
             var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
             var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+        @endif
+
             var exchangeRate = exchange === 'eta' ? eta : etd;
             var egpAmount = totalAmount * exchangeRate;
             totEgp = totEgp + parseFloat(egpAmount);
@@ -396,9 +462,13 @@
 
     // Calculate the total EGP Amount and update the Amount input field of the current row
     var exchange = $('input[name="rate"]:checked').val();
-    var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-    var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-    var exchangeRate = exchange === 'eta' ? eta : etd;
+        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+        @else
+            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+        @endif    var exchangeRate = exchange === 'eta' ? eta : etd;
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
     // update total_egp and usd to calculate all rows
@@ -421,17 +491,20 @@ $('body').on('input', 'input[name$="[size_small]"]', function() {
     var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
 
     row.find('input[name$="[total_amount]"]').val(totalAmount);
-    var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-    var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-    // Calculate the total EGP Amount and update the Amount input field of the current row
+        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+        @else
+            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+        @endif   
+     // Calculate the total EGP Amount and update the Amount input field of the current row
     var exchangeRate = $('input[name="rate"]:checked').val();
     exchangeRate = exchangeRate === 'eta' ? eta : etd;
     var egpAmount = totalAmount * exchangeRate;
     row.find('input[name$="[total_egy]"]').val(egpAmount);
-
     // update total_egp and usd to calculate all rows
     calculateTotals()
-
 });
 </script>
 <script>

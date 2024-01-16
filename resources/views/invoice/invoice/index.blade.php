@@ -192,12 +192,23 @@
                                         }
 
                                         $rate = $invoice->rate ?? 1;
-                                        if($rate == 'eta'){
-                                            $rate = optional(optional($invoice->bldraft)->voyage)->exchange_rate;
-                                        }elseif($rate == 'etd'){
-                                            $rate = $invoice->bldraft->voyage->exchange_rate_etd;
+                                        if(optional(optional($invoice->bldraft)->booking)->voyage_id_second != null && optional(optional($invoice->bldraft)->booking)->transhipment_port != null){
+
+                                            if($rate == 'eta'){
+                                                $rate = optional(optional(optional($invoice->bldraft)->booking)->secondvoyage)->exchange_rate;
+                                            }elseif($rate == 'etd'){
+                                                $rate = optional(optional(optional($invoice->bldraft)->booking)->secondvoyage)->exchange_rate_etd;
+                                            }else{
+                                                $rate = $invoice->customize_exchange_rate;
+                                            }
                                         }else{
-                                            $rate = $invoice->customize_exchange_rate;
+                                            if($rate == 'eta'){
+                                                $rate = optional(optional($invoice->bldraft)->voyage)->exchange_rate;
+                                            }elseif($rate == 'etd'){
+                                                $rate = $invoice->bldraft->voyage->exchange_rate_etd;
+                                            }else{
+                                                $rate = $invoice->customize_exchange_rate;
+                                            }
                                         }
                                     @endphp
 
@@ -261,7 +272,7 @@
                                             <td class="text-center">
                                                  <ul class="table-controls">
 
-                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15)
+                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15 ||  Auth::user()->id == 1)
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" target="_blank" data-placement="top" title="" data-original-title="edit">
@@ -292,7 +303,7 @@
                                                 </ul>
                                             </td>
                                             <td class="text-center">
-                                                @if($invoice->type == "invoice" && $invoice->invoice_status == "confirm"  && $invoice->created_at >= '2023-08-27 10:55:28' && $invoice->portal_status == null)
+                                                @if($invoice->invoice_status == "confirm"  && $invoice->created_at >= '2024-01-01' && $invoice->portal_status == null)
                                                     <a href="{{route('invoice.get_invoice_json',['invoice'=>$invoice->id])}}" data-toggle="tooltip"  target="_blank"  data-placement="top" title="" data-original-title="show">
                                                         <button type="submit" class="btn btn-primary mt-3">Json</button>
                                                     </a>

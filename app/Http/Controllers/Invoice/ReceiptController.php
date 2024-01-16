@@ -24,35 +24,33 @@ class ReceiptController extends Controller
     {
         $this->authorize(__FUNCTION__,Receipt::class);
 
-        $receipts = Receipt::filter(new ReceiptIndexFilter(request()))
+        $paginator = Receipt::filter(new ReceiptIndexFilter(request()))
                     ->where('status', 'valid')
                     ->orderBy('id', 'desc')
-                    ->get(); // Get all receipts from the database
+                    ->paginate(30); // Get all receipts from the database
+        // $sortedReceipts = $receipts->sortByDesc(function ($receipt) {
+        //     $matches = [];
+        //     preg_match('/\d+/', $receipt->receipt_no, $matches); // Extract the number from the receipt number using a regular expression
+        //     return (int) $matches[0]; // Return the number as an integer for sorting
+        // });
+        // $perPage = 30;
+        // $page = request('page', 1);
+        // $offset = ($page - 1) * $perPage;
 
-        $sortedReceipts = $receipts->sortByDesc(function ($receipt) {
-            $matches = [];
-            preg_match('/\d+/', $receipt->receipt_no, $matches); // Extract the number from the receipt number using a regular expression
-            return (int) $matches[0]; // Return the number as an integer for sorting
-        });
+        // // Create a new collection containing the receipts for the current page
+        // $currentPageReceipts = collect($sortedReceipts->slice($offset, $perPage));
 
-        $perPage = 30;
-        $page = request('page', 1);
-        $offset = ($page - 1) * $perPage;
+        // // Create a paginator for the receipts
+        // $paginator = new LengthAwarePaginator(
+        //     $currentPageReceipts,
+        //     $sortedReceipts->count(),
+        //     $perPage,
+        //     $page,
+        //     ['path' => request()->url(), 'query' => request()->query()]
+        // );
 
-        // Create a new collection containing the receipts for the current page
-        $currentPageReceipts = collect($sortedReceipts->slice($offset, $perPage));
-
-        // Create a paginator for the receipts
-        $paginator = new LengthAwarePaginator(
-            $currentPageReceipts,
-            $sortedReceipts->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-
-        // Set the current page on the paginator
-        $paginator->setPageName('page');
+        // // Set the current page on the paginator
+        // $paginator->setPageName('page');
 
 
         $receiptno = Receipt::orderBy('id','desc')->where('status','valid')->get();
@@ -291,7 +289,7 @@ class ReceiptController extends Controller
             $receipt->receipt_no = request('receipt_no');
         }else{
             $setting = Setting::find(1);
-            $receipt->receipt_no = 'ALY/ '.$setting->receipt_no.' / 23';
+            $receipt->receipt_no = 'ALY/ '.$setting->receipt_no.' / 24';
             $setting->receipt_no += 1;
             $setting->save();
         }

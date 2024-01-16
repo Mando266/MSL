@@ -187,15 +187,15 @@ class CustomersController extends Controller
             return back()->with('alert','Customer Name Already Exists');
         }
         $this->authorize(__FUNCTION__,Customers::class);
-        $inputs = request()->except('customerRole', 'contactPeople', '_token', 'removed');
-        $customer->update($inputs);
-        CustomerRoles::destroy(explode(',',$request->removed));
-        $customer->createOrUpdateRoles($request->customerRole);
-        if($request->hasFile('certificat')){
-            $path = $request->file('certificat')->getClientOriginalName();
-            $request->certificat->move(public_path('certificat'), $path);
-            $customer->update(['certificat'=>"certificat/".$path]);
-        }
+            $inputs = request()->except('customerRole', 'contactPeople', '_token', 'removed');
+            $customer->update($inputs);
+            CustomerRoles::destroy(explode(',',$request->removed));
+            $customer->createOrUpdateRoles($request->customerRole);
+            if($request->hasFile('certificat')){
+                $path = $request->file('certificat')->getClientOriginalName();
+                $request->certificat->move(public_path('certificat'), $path);
+                $customer->update(['certificat'=>"certificat/".$path]);
+            }
         return redirect()->route('customers.index')->with('success',trans('customer.updated.success'));
     }
 
