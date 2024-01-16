@@ -167,13 +167,25 @@ class Invoice extends Model implements PermissionSeederContract
             }
 
             $rate = $this->rate ?? 1;
-            if($rate == 'eta'){
-                $rate = $this->bldraft->voyage->exchange_rate;
-            }elseif($rate == 'etd'){
-                $rate = $this->bldraft->voyage->exchange_rate_etd;
+            if(optional(optional($this->bldraft)->booking)->voyage_id_second != null && optional(optional($this->bldraft)->booking)->transhipment_port != null){
+
+                if($rate == 'eta'){
+                    $rate = optional(optional(optional($this->bldraft)->booking)->secondvoyage)->exchange_rate;
+                }elseif($rate == 'etd'){
+                    $rate = optional(optional(optional($this->bldraft)->booking)->secondvoyage)->exchange_rate_etd;
+                }else{
+                    $rate = $this->customize_exchange_rate;
+                }
             }else{
-                $rate = $this->customize_exchange_rate;
+                if($rate == 'eta'){
+                    $rate = optional(optional($this->bldraft)->voyage)->exchange_rate;
+                }elseif($rate == 'etd'){
+                    $rate = $this->bldraft->voyage->exchange_rate_etd;
+                }else{
+                    $rate = $this->customize_exchange_rate;
+                }
             }
+
            // });
             $line->unitType = "EA";
             $line->itemType =  "GS1";

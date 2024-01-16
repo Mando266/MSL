@@ -195,6 +195,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Invoice::class);
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
@@ -226,6 +227,7 @@ class InvoiceController extends Controller
                 'equipmentTypes'=>$equipmentTypes,
                 'bookings'=>$bookings,
                 'customers'=>$customers,
+                'charges' => $charges,
             ]);
         }
         $bldrafts = BlDraft::findOrFail(request('bldraft_id'));
@@ -245,6 +247,7 @@ class InvoiceController extends Controller
             'qty'=>$qty,
             'bldraft'=>$bldraft,
             'voyages'=>$voyages,
+            'charges' => $charges,
 
         ]);
     }
@@ -320,7 +323,7 @@ class InvoiceController extends Controller
         }
         $setting = Setting::find(1);
         if($invoice->invoice_status == "confirm"){
-            $invoice_no = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 23';
+            $invoice_no = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 24';
             $setting->debit_confirm += 1;
         }else{
             $invoice_no = 'DRAFTD';
@@ -455,9 +458,9 @@ class InvoiceController extends Controller
         if($request->bldraft_id != 'customize'){
             if($invoice->invoice_status == "confirm"){
                 if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
-                    $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
-                    $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }
                 $setting->invoice_confirm += 1;
             }else{
@@ -466,21 +469,20 @@ class InvoiceController extends Controller
                 $invoice->invoice_no = $invoice_no;
                 $setting->invoice_draft += 1;
             }
-        }else{
-            if($request->booking_status == "import" && $invoice->invoice_status == "confirm"){
-                $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+        }elseif($request->bldraft_id == 'customize'){
+            if($invoice->invoice_status == "confirm"){
+                if($invoice->booking_status == 0){
+                    $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                }elseif($invoice->booking_status == 1){
+                    $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                }
                 $setting->invoice_confirm += 1;
-            }elseif($request->booking_status == "export" && $invoice->invoice_status == "confirm"){
-                $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
-                $setting->invoice_confirm += 1;
-            }
-            elseif($invoice->invoice_status == "draft"){
-            $invoice_no = 'DRAFTV';
-            $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
-            $invoice->invoice_no = $invoice_no;
-            $setting->invoice_draft += 1;
-            }
-        }
+            }else{
+                $invoice_no = 'DRAFTV';
+                $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
+                $invoice->invoice_no = $invoice_no;
+                $setting->invoice_draft += 1;
+            }        }
         $setting->save();
         $invoice->save();
         // $egyrate = 0;
@@ -741,6 +743,7 @@ class InvoiceController extends Controller
     }
     public function update(Request $request, Invoice $invoice)
     {
+        // dd($request->input());
         $this->authorize(__FUNCTION__,Invoice::class);
         if($invoice->bldraft_id == 0){
             $totalAmount = 0;
@@ -764,21 +767,21 @@ class InvoiceController extends Controller
             // check if this invoice is customized
             if($invoice->bldraft_id != 0){
                 if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
-                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
-                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }
             }else{
                 if($inputs['booking_status'] == "import"){
-                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }elseif($inputs['booking_status'] == "export"){
-                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 23';
+                    $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
                 }
             }
             $setting->invoice_confirm += 1;
         } elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit") {
             $setting = Setting::find(1);
-            $inputs['invoice_no'] = 'DN' . ' ' . '/' . ' ' . $setting->debit_confirm . ' / 23';
+            $inputs['invoice_no'] = 'DN' . ' ' . '/' . ' ' . $setting->debit_confirm . ' / 24';
             $setting->debit_confirm += 1;
         }
         $setting->save();
@@ -878,11 +881,6 @@ class InvoiceController extends Controller
 
     public function createDetentionInvoice()
     {
-        request()->validate([
-            'bldraft_id' => ['required'],
-            'calculation_data' => ['required', 'not'],
-            'amount' => ['required'],
-        ]);
         $calculationData = request()->calculation_data;
         $notes = array_filter(explode('_', $calculationData));
         $detentionAmount = request()->amount;
@@ -899,14 +897,17 @@ class InvoiceController extends Controller
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $qty = $bldraft->blDetails->count();
         $cartData = json_decode(request('cart_data_for_invoice'));
+        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+
         return view('invoice.invoice.create_debit',[
             'bldrafts'=>$bldrafts,
             'cartData' => $cartData ?? null,
             'qty'=>$qty,
             'bldraft'=>$bldraft,
             'voyages'=>$voyages,
-            '$notes' => $$notes,
-            'detentionAmount' => $detentionAmount
+            'notes' => $notes,
+            'detentionAmount' => $detentionAmount,
+            'charges' => $charges,
         ]);
     }
 }

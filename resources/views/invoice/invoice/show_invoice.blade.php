@@ -114,7 +114,8 @@
                         </tr>
                         <tr>
                             <td class="col-md-2 tableStyle text-center" >B/L No.</td>
-                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->bldraft)->ref_no : optional($invoice->bldraft)->ref_no }}</span></td>
+                            <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no }}
+                            </span></td>
                             <td class="col-md-2 tableStyle text-center" >Final Dest</td>
                             <td class="col-md-2 tableStyle text-center" ><span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->placeOfDelivery)->code : optional($invoice->bldraft->placeOfDelivery)->code }}</span></td>
                             <td class="col-md-2 tableStyle text-center" ></td>

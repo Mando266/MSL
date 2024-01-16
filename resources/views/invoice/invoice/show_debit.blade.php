@@ -45,7 +45,8 @@
                     <tbody>
                         <tr>
                             <td class="col-md-3 tableStyle" >DEBIT NOTE NO. <span class="entry">{{ $invoice->invoice_no }}</span></td>
-                            <td class="col-md-6 tableStyle" colspan="2">B/L No. <span class="entry">{{ optional($invoice->bldraft)->ref_no }}</span></td>
+                            <td class="col-md-6 tableStyle" colspan="2">B/L No. <span class="entry">{{ $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no }}</span></td>
+                        
                             <td class="col-md-3 tableStyle" >Date: <span class="entry">{{Carbon\Carbon::parse($invoice->date)->format('Y-m-d')}}</span></td>
                         </tr>
                         <tr>

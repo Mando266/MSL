@@ -42,7 +42,9 @@ class QuotationExport implements FromCollection, WithHeadings
             "Quotation Type",
             "STATUS",
             "Import Free Time",
-            "Export free time"
+            "Export free time",
+            "Booking Agency",
+            "Payment As Per Agreement",
         ];
     }
 
@@ -74,6 +76,9 @@ class QuotationExport implements FromCollection, WithHeadings
                 "STATUS" => $quotation->status,
                 "Import Free Time" => $quotation->import_detention == 0 ? "0" : $quotation->import_detention,
                 "Export free time" => $quotation->export_detention == 0 ? "0" : $quotation->export_detention,
+                'booking_agency' => optional($quotation->bookingagancy)->name,
+                'Payment As Per Agreement' => optional($quotation)->agency_bookingr_ref,
+
             ]);
             $exportQuotations->add($tempCollection);
         }

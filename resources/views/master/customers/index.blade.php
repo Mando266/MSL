@@ -185,7 +185,7 @@
           var name = $(this).data("name");
           event.preventDefault();
           swal({
-              title: `Are you sure you want to delete this Customer?`,
+              title: `Are you sure you want to delete this Item?`,
               icon: "warning",
               buttons: true,
               dangerMode: true,

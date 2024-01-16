@@ -88,6 +88,12 @@ class Quotation extends Model implements PermissionSeederContract
     {
         return $this->hasMany(Booking::class ,'quotation_id','id');
     }
+
+    public function bookingagancy(){
+        return $this->belongsTo(Agents::class,'booking_agency','id');
+    }
+
+
     public function createOrUpdateDesc($inputs)
     {
         if($inputs != null){

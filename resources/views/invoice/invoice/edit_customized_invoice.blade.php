@@ -204,10 +204,13 @@
                                     <label>TAX Hold</label>
                                         <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
                                 </div>
+                                @endif
+
                                 <div class="form-group col-md-2" >
                                     <label>Exchange Rate</label>
                                         <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
+                                @if($invoice->type == "invoice")
                                 <div class="form-group col-md-2" >
                                     <div style="padding: 30px;">
                                         <input class="form-check-input" type="radio" name="add_egp" id="add_egp" value="false" {{ "false" == old('add_egp',$invoice->add_egp) ? 'checked':''}}>
@@ -228,8 +231,8 @@
                                     <label for="status">Booking Status<span class="text-warning">  * (Required.)</span></label>
                                     <select class="form-control" data-live-search="true" name="booking_status" title="{{trans('forms.select')}}" required>
                                         <option value="">Select....</option>
-                                        <option value="import" {{ old('booking_status',$invoice->booking_status) == "import" ? 'selected':'' }}>Import</option>
-                                        <option value="export" {{ old('booking_status',$invoice->booking_status) == "export" ? 'selected':'' }}>Export</option>
+                                        <option value="1" {{ old('booking_status',$invoice->booking_status) == "1" ? 'selected':'' }}>Import</option>
+                                        <option value="0" {{ old('booking_status',$invoice->booking_status) == "0" ? 'selected':'' }}>Export</option>
                                     </select>
                                 </div>
                             @if($invoice->type == "invoice")
@@ -386,11 +389,17 @@
                                                     <input type="hidden" value="{{ $item->id }}"
                                                            name="invoiceChargeDesc[{{ $key }}][id]">
                                                     <td>
-                                                        <input type="text" id="Charge Description"
+                                                        <!-- <input type="text" id="Charge Description"
                                                                name="invoiceChargeDesc[{{ $key }}][charge_description]"
                                                                class="form-control" autocomplete="off"
                                                                placeholder="Charge Description"
-                                                               value="{{(old('charge_description',$item->charge_description))}}">
+                                                               value="{{(old('charge_description',$item->charge_description))}}"> -->
+                                                               <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
+                                                                    title="{{trans('forms.select')}}" autofocus >
+                                                                    @foreach ($charges as $charge)
+                                                                        <option value="{{$charge->name}}" {{$charge->name == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
+                                                                    @endforeach
+                                                                </select>
                                                     </td>
                                                     <td><input type="text" class="form-control" id="size_small"
                                                                name="invoiceChargeDesc[{{ $key }}][size_small]"

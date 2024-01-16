@@ -132,6 +132,23 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
+                                <div style="padding: 30px;">
+                                <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" checked>
+                                        <label class="form-check-label" for="exchange_rate">
+
+                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                                ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
+                                            @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETA
+                                                Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                            @endif
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="rate" id="custom_rate_radio" >
+                                            <label class="form-check-label" for="custom_rate_radio">Custom Rate</label>
+                                        <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;" placeholder="Enter custom rate">
+
+                                    </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
@@ -151,10 +168,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-  
+                                @if(!isset($detentionAmount))
                                     <tr>
                                         <td>
-                                            <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" >
+                                        <select class="selectpicker form-control"
+                                                id="Charge Description" data-live-search="true"
+                                                name="invoiceChargeDesc[0][charge_description]"
+                                                data-size="10"
+                                                title="{{trans('forms.select')}}">
+                                            @foreach ($charges as $item)
+                                                <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>
+                                            @endforeach
+                                        </select>
+                                            <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" > -->
                                         </td>
                                         <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
                                             placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
@@ -162,7 +188,48 @@
                                         <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
                                             placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                         </td>
+                                        <td><input type="text" class="form-control" id="ofr"
+                                                   name="invoiceChargeDesc[0][total]" value="{{$total_storage}}"
+                                                   placeholder="Total" autocomplete="off" disabled
+                                                   style="background-color: white;">
+                                        </td>
+                                        <td><input type="text" name="invoiceChargeDesc[0][usd_vat]"
+                                                   class="form-control" autocomplete="off"
+                                                   placeholder="USD After VAT" disabled></td>
+
+                                        <td><input type="text" class="form-control" id="ofr"
+                                                   name="invoiceChargeDesc[0][egy_amount]"
+                                                   value="{{$total_storage}}"
+                                                   placeholder="Egp Amount  " autocomplete="off" disabled
+                                                   style="background-color: white;" disabled>
+                                        </td>
+                                        <td><input type="text" name="invoiceChargeDesc[0][egp_vat]"
+                                                   class="form-control" autocomplete="off"
+                                                   placeholder="Egp After VAT" disabled></td>
                                     </tr>
+                                    @else
+                                    <tr>
+                                        <td>
+                                        <select class="selectpicker form-control"
+                                                id="Charge Description" data-live-search="true"
+                                                name="invoiceChargeDesc[0][charge_description]"
+                                                data-size="10"
+                                                title="{{trans('forms.select')}}">
+                                            @foreach ($charges as $item)
+                                                <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>
+                                            @endforeach
+                                        </select>
+                                            <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" > -->
+                                        </td>
+                                        <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{$detentionAmount}}"
+                                            placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
+                                        </td>
+                                        <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{$detentionAmount}}"
+                                            placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
+                                        </td>
+
+                                    </tr>
+                                    @endif
                             </tbody>
                         </table>
                             <div class="row">
@@ -180,6 +247,29 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    const rateRadio = document.getElementById('rate');
+    const exchangeRateRadio = document.getElementById('exchange_rate');
+    const customRateRadio = document.getElementById('custom_rate_radio');
+    const customRateInput = document.getElementById('custom_rate_input');
+
+    // Initial check on page load
+    toggleCustomRateInput();
+
+    // Event listeners for radio button changes
+    rateRadio.addEventListener('change', toggleCustomRateInput);
+    exchangeRateRadio.addEventListener('change', toggleCustomRateInput);
+    customRateRadio.addEventListener('change', toggleCustomRateInput);
+
+    // Function to toggle the display of the custom rate input field
+    function toggleCustomRateInput() {
+        if (customRateRadio.checked) {
+            customRateInput.style.display = 'inline-block';
+        } else {
+            customRateInput.style.display = 'none';
+        }
+    }
+</script>
 <script>
     $(document).ready(function() {
         localStorage.removeItem('cart');

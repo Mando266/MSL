@@ -25,8 +25,10 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
             "INVOICE STATUS",
             "Payment STATUS",
             "Shipment STATUS",
+            "Shipment Type",
             "Receipts",
             "Charge Description",
+            "EQUIPMENT TYPE",
             "Quantity",
             "Amount USD",
             "Total USD",
@@ -47,6 +49,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
 
             $Curency = '';
             $Payment = '';
+            $booking_status = '';
 
             if($invoice->bldraft_id == 0){
                 if($invoice->booking != null){
@@ -88,6 +91,12 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
             $Payment = 'UnPaid';
         }
 
+        if($invoice->booking_status == '0'){
+            $booking_status = 'Export';
+        }else{
+            $booking_status = 'Import';
+        }
+
         $rate = $invoice->rate ?? 1;
         if($rate == 'eta'){
             $rate = optional(optional($invoice->bldraft)->voyage)->exchange_rate;
@@ -114,7 +123,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'invoice_no' => $invoice->invoice_no,
                     'customer' => $invoice->customer,
                     'tax no' => optional($invoice->customerShipperOrFfw)->tax_card_no,
-                    'bl no' => $invoice->bldraft_id == 0 ? optional(optional($invoice->bldraft)->booking)->ref_no : optional($invoice->bldraft)->ref_no,
+                    'bl no' => $invoice->bldraft_id == 0 ? optional($invoice->booking)->ref_no : optional($invoice->bldraft)->ref_no,
                     'voyage' => $invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no : optional($invoice->bldraft->voyage)->voyage_no,
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->eta : optional($VoyagePort)->eta,
@@ -124,9 +133,11 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
                     'STATUS' => $invoice->invoice_status,
                     'PaymentSTATUS' => $Payment,
-                    'ShipmentStatus' => $invoice->bldraft_id == 0 ? $invoice->booking_status : optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type ,
-                    'receipts' => $receipts,
+                    'ShipmentStatus' => $invoice->bldraft_id == 0 ? $booking_status : optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type ,
+                    'ShipmentType' =>$invoice->bldraft_id == 0 ? optional(optional($invoice->booking)->quotation)->quotation_type : optional(optional(optional($invoice->bldraft)->booking)->quotation)->quotation_type,
+                    'receipts' => $receipts, 
                     'charge_desc' => $desc->charge_description,
+                    'Container Type' => optional($invoice->equipmentsType)->name != null ? optional(optional($invoice)->equipmentsType)->name : optional(optional($invoice->bldraft)->equipmentsType)->name,
                     'qty' => $invoice->qty,
                     'amount_usd' => $desc->size_small,
                     'total usd' => $desc->total_amount,

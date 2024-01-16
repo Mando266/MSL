@@ -26,6 +26,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
             "TOTAL EGP",
             "Invoice Curency",
             "INVOICE STATUS",
+            "Shipment STATUS",
             "Payment STATUS",
             "Receipts",
         ];
@@ -122,6 +123,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'total egp' => $total_eg,
                     'Curency' =>$Curency,
                     'STATUS' => $invoice->invoice_status,
+                    'ShipmentType' =>$invoice->bldraft_id == 0 ? optional(optional($invoice->booking)->quotation)->quotation_type : optional(optional(optional($invoice->bldraft)->booking)->quotation)->quotation_type,
                     'PaymentSTATUS' => $Payment,
                     'receipts' => $receipts,
                 ]);

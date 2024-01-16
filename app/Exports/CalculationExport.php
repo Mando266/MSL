@@ -38,60 +38,65 @@ class CalculationExport implements FromCollection, WithHeadings
     public function collection(): Collection
     {
         $calculations = session()->pull('calculations');
-        $bl = BlDraft::find($calculations['input']['bl_no']);
-        $calculationexport = collect();
-        $count = 1;
-        $freeTime = $calculations['freetime'];
-        foreach ($calculations['calculation']['containers'] as $container) {
-            $fromTime = Carbon::parse($container['from']);
-            // dd($fromTime->format('Y-m-d'),);
-            $toTime = Carbon::parse($container['to']);
-            if ($freeTime == 0) {
-                $freeTime = $container['periods'][0]['days'];
+        if($calculations != null){
+            $bl = BlDraft::find($calculations['input']['bl_no']);
+            $calculationexport = collect();
+            $count = 1;
+            $freeTime = $calculations['freetime'];
+            foreach ($calculations['calculation']['containers'] as $container) {
+                $fromTime = Carbon::parse($container['from']);
+                // dd($fromTime->format('Y-m-d'),);
+                $toTime = Carbon::parse($container['to']);
+                if ($freeTime == 0) {
+                    if(count($container['periods']) != 0){
+                        $freeTime = $container['periods'][0]['days'];
+                    }
+                }
+                $totalDays = Carbon::parse($toTime)->diffInDays($fromTime); // total days
+                $chargableDays = $totalDays - $freeTime + 1; // chargable days
+                $freeTimeTillDate = $fromTime->addDays(($freeTime - 1));
+                $tempCollection = collect([
+                    "SR" => $count,
+                    "Booking No." => $bl->booking->ref_no,
+                    "CONTAINER NO" => $container['container_no'],
+                    "CONTAINER TYPE" => $container['container_type'],
+                    "DEPOT NAME" => $bl->booking->terminals->code,
+                    "GATE IN MOVE CODE" => $container['from_code'],
+                    "GATE IN MOVE DATE" => Carbon::parse($container['from'])->format('Y-m-d'),
+                    "NEXT MOVE CODE" => $container['to_code'],
+                    "FREE DAYS" => $calculations['freetime'],
+                    "FREE TIME END DATE" => $freeTimeTillDate->format('Y-m-d'),
+                    "STORAGE TILL DATE" => Carbon::parse($container['to'])->format('Y-m-d'),
+                    "CHARGABLE DAYS" => $chargableDays,
+                    "RATE" => 1,
+                    "AMOUNT" => $container['total'],
+                    "CURRENCY" => $calculations['calculation']['currency'],
+                ]);
+                $calculationexport->add($tempCollection);
+                $count++;
             }
-            $totalDays = Carbon::parse($toTime)->diffInDays($fromTime); // total days
-            $chargableDays = $totalDays - $freeTime + 1; // chargable days
-            $freeTimeTillDate = $fromTime->addDays(($freeTime - 1));
+    
             $tempCollection = collect([
-                "SR" => $count,
-                "Booking No." => $bl->booking->ref_no,
-                "CONTAINER NO" => $container['container_no'],
-                "CONTAINER TYPE" => $container['container_type'],
-                "DEPOT NAME" => $bl->booking->terminals->code,
-                "GATE IN MOVE CODE" => $container['from_code'],
-                "GATE IN MOVE DATE" => Carbon::parse($container['from'])->format('Y-m-d'),
-                "NEXT MOVE CODE" => $container['to_code'],
-                "FREE DAYS" => $calculations['freetime'],
-                "FREE TIME END DATE" => $freeTimeTillDate->format('Y-m-d'),
-                "STORAGE TILL DATE" => Carbon::parse($container['to'])->format('Y-m-d'),
-                "CHARGABLE DAYS" => $chargableDays,
-                "RATE" => 1,
-                "AMOUNT" => $container['total'],
-                "CURRENCY" => $calculations['calculation']['currency'],
+                "SR" => '',
+                "Booking No." => '',
+                "CONTAINER NO" => '',
+                "CONTAINER TYPE" => '',
+                "DEPOT NAME" => '',
+                "GATE IN MOVE CODE" => '',
+                "GATE IN MOVE DATE" => '',
+                "NEXT MOVE CODE" => '',
+                "FREE DAYS" => '',
+                "FREE TIME END DATE" => '',
+                "STORAGE TILL DATE" => '',
+                "CHARGABLE DAYS" => '',
+                "RATE" => 'Total: ',
+                "AMOUNT" => $calculations['calculation']['grandTotal'],
+                "CURRENCY" => '',
             ]);
             $calculationexport->add($tempCollection);
-            $count++;
+    
+            return $calculationexport;
         }
-
-        $tempCollection = collect([
-            "SR" => '',
-            "Booking No." => '',
-            "CONTAINER NO" => '',
-            "CONTAINER TYPE" => '',
-            "DEPOT NAME" => '',
-            "GATE IN MOVE CODE" => '',
-            "GATE IN MOVE DATE" => '',
-            "NEXT MOVE CODE" => '',
-            "FREE DAYS" => '',
-            "FREE TIME END DATE" => '',
-            "STORAGE TILL DATE" => '',
-            "CHARGABLE DAYS" => '',
-            "RATE" => 'Total: ',
-            "AMOUNT" => $calculations['calculation']['grandTotal'],
-            "CURRENCY" => '',
-        ]);
-        $calculationexport->add($tempCollection);
-
-        return $calculationexport;
+        
     }
 }
