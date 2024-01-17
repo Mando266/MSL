@@ -188,24 +188,6 @@
                                         <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
                                             placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                         </td>
-                                        <td><input type="text" class="form-control" id="ofr"
-                                                   name="invoiceChargeDesc[0][total]" value="{{$total_storage}}"
-                                                   placeholder="Total" autocomplete="off" disabled
-                                                   style="background-color: white;">
-                                        </td>
-                                        <td><input type="text" name="invoiceChargeDesc[0][usd_vat]"
-                                                   class="form-control" autocomplete="off"
-                                                   placeholder="USD After VAT" disabled></td>
-
-                                        <td><input type="text" class="form-control" id="ofr"
-                                                   name="invoiceChargeDesc[0][egy_amount]"
-                                                   value="{{$total_storage}}"
-                                                   placeholder="Egp Amount  " autocomplete="off" disabled
-                                                   style="background-color: white;" disabled>
-                                        </td>
-                                        <td><input type="text" name="invoiceChargeDesc[0][egp_vat]"
-                                                   class="form-control" autocomplete="off"
-                                                   placeholder="Egp After VAT" disabled></td>
                                     </tr>
                                     @else
                                     <tr>
