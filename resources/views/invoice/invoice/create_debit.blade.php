@@ -132,22 +132,28 @@
                                     <label for="Date">Date</label>
                                         <input type="date" class="form-control" name="date" placeholder="Date" autocomplete="off" required value="{{old('date',date('Y-m-d'))}}">
                                 </div>
-                                <div style="padding: 30px;">
-                                <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" checked>
+                                    <div style="padding: 30px;">
+                                        <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" checked>
                                         <label class="form-check-label" for="exchange_rate">
-
-                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                            @elseif(optional($bldraft)->voyage_id != null)
                                                 ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
-                                            @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                                                ETA
-                                                Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
+                                            @endif
+                                        </label>
+                                        <br>
+                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd" >
+                                        <label class="form-check-label" for="exchange_rate">
+                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                                                ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
+                                            @elseif(optional($bldraft)->voyage_id != null)
+                                                ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
                                             @endif
                                         </label>
                                         <br>
                                         <input class="form-check-input" type="radio" name="rate" id="custom_rate_radio" >
                                             <label class="form-check-label" for="custom_rate_radio">Custom Rate</label>
                                         <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;" placeholder="Enter custom rate">
-
                                     </div>
                             </div>
                             <div class="form-row">
