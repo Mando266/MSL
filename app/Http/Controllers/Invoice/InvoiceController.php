@@ -743,7 +743,7 @@ class InvoiceController extends Controller
     }
     public function update(Request $request, Invoice $invoice)
     {
-        // dd($request->input());
+        $inputs = request()->all();
         $this->authorize(__FUNCTION__,Invoice::class);
         if($invoice->bldraft_id == 0){
             $totalAmount = 0;

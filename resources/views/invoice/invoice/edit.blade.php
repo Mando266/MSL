@@ -431,13 +431,13 @@
             var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
             $(this).find('input[name$="[total_amount]"]').val(totalAmount);
 
-        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
-            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
-        @else
-            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-        @endif
+            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
+                var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
+                var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
+            @else
+                var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
+                var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
+            @endif
 
             var exchangeRate = exchange === 'eta' ? eta : etd;
             var egpAmount = totalAmount * exchangeRate;
