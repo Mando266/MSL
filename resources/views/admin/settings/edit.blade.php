@@ -59,6 +59,10 @@
                             </div>
                         </div>
                         <div class="form-row">
+                        <div class="form-group col-md-3" >
+                                <label>WinWin Deleviry Order NO</label>
+                                    <input type="text" class="form-control" placeholder="Deleviry Order NO" autocomplete="off" value="{{old('win_delivery_no',$setting->win_delivery_no )}}" style="background-color:#fff" name="win_delivery_no">
+                            </div>
                             <div class="form-group col-md-3" >
                                 <label>Refund NO</label>
                                     <input type="text" class="form-control" placeholder="Refund NO" autocomplete="off" value="{{old('refund_no',$setting->refund_no )}}" style="background-color:#fff" name="refund_no">

@@ -7,6 +7,7 @@ use App\Models\Master\Country;
 use App\Models\Master\LessorSeller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class LessorSellerController extends Controller
 {
@@ -22,7 +23,7 @@ class LessorSellerController extends Controller
     {
         $this->authorize(__FUNCTION__, LessorSeller::class);
 
-        $items = LessorSeller::paginate(30);
+        $items = LessorSeller::where('company_id',Auth::user()->company_id)->paginate(30);
 
         return view('master.lessor-seller.index')
             ->with([
@@ -43,8 +44,10 @@ class LessorSellerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate($this->rules());
-        LessorSeller::create($validated);
-        
+        $lessorSeller = LessorSeller::create($validated);
+        $user = Auth::user();
+        $lessorSeller->company_id = $user->company_id;
+        $lessorSeller->save();
         return redirect()->route('seller.index');
     }
 

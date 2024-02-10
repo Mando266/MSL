@@ -7,13 +7,18 @@ use Bitwise\PermissionSeeder\PermissionSeederContract;
 use Bitwise\PermissionSeeder\Traits\PermissionSeederTrait;
 use App\Traits\HasFilter;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Containers\Movements;
+ 
 class ContainersMovement extends Model implements PermissionSeederContract
 {
     use HasFilter;
     protected $table = 'containers_movement';
-    protected $guarded = [];
+    protected $guarded = []; 
 
+    public function movements()
+    {
+        return $this->hasMany(Movements::class ,'movement_id','id');
+    }
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[

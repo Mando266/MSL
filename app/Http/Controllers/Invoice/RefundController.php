@@ -18,8 +18,8 @@ class RefundController extends Controller
     { 
         $this->authorize(__FUNCTION__,Refund::class);
 
-            $refunds = Refund::filter(new RefundIndexFilter(request()))->orderBy('id','desc')->where('status','!=','valid')->paginate(30);
-            $refundno = Refund::orderBy('id','desc')->where('status','refund_egp')->orwhere('status','refund_usd')->get();
+            $refunds = Refund::where('company_id',Auth::user()->company_id)->filter(new RefundIndexFilter(request()))->orderBy('id','desc')->where('status','!=','valid')->paginate(30);
+            $refundno = Refund::where('company_id',Auth::user()->company_id)->orderBy('id','desc')->where('status','refund_egp')->orwhere('status','refund_usd')->get();
             $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
 
         return view('invoice.refund.index',[

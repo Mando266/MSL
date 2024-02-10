@@ -151,6 +151,8 @@
                                 <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                 @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
                                 <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                @elseif(Auth::user()->company_id == 3)
+                                <img src="{{asset('assets/img/winwin_maritime.png')}}" style="width: 260px;" alt="logo">
                                 @else
                                 <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                 @endif

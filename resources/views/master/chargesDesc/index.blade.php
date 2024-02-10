@@ -8,7 +8,7 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Accounting</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Desciption Of Charges</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Portal Charges</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
@@ -33,7 +33,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($items as $item)
+                                    @forelse ($items as $item) 
+                                    @php
+                                            $invoices = $item->invoices->count();
+                                    @endphp
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->code}}</td>
@@ -47,6 +50,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                            @if ($invoice > 0)
+                                                @else 
                                                     @permission('Invoice-Delete')
                                                     <li>
                                                         <form action="{{route('chargesDesc.destroy',['chargesDesc'=>$item->id])}}" method="post">
@@ -55,8 +60,8 @@
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger show_confirm"></button>
                                                         </form> 
                                                     </li>
-
                                                     @endpermission
+                                            @endif    
                                                 </ul>
                                             </td>
                                         </tr> 

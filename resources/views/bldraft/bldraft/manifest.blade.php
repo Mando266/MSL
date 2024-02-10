@@ -41,6 +41,8 @@
                                     <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                     @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
                                     <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    @elseif(Auth::user()->company_id == 3)
+                                    <img src="{{asset('assets/img/winwin_maritime.png')}}" alt="logo">
                                     @else
                                     <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                     @endif
@@ -52,15 +54,15 @@
                                             @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                                 <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
                                             @elseif($blDraft->booking->shipment_type == 'Export')
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} Cargo EXPORT MANIFEST </br></br>
+                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} Cargo EXPORT MANIFEST </br></br>
                                                 @else
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} Cargo IMport MANIFEST</br></br>
+                                                <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} Cargo IMport MANIFEST</br></br>
                                             @endif
                                             @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                                 <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                             </br>
                                                 <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
-                                            @elseif(optional($blDraft->booking)->transhipment_port != null)
+                                            @elseif(optional($blDraft->booking)->transhipment_port != null && $blDraft->booking->shipment_type != 'Export')
                                                 <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
                                             @else
                                                 <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>
@@ -127,7 +129,7 @@
 
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden; width: 300px !important;  font-size: 14px !important;">No. of Containers: {{ $blDraft->blDetails->count() }} <br> <br>
-                                <textarea style="width: 100%; height:400px; border: none; font-size: 12px; font-weight: bolder !important; resize: none; background-color: white; color: #000;" disabled>{!! $blDraft->descripions  !!}</textarea>
+                                <textarea style="width: 100%; height:425px; border: none; font-size: 12px; font-weight: bolder !important; resize: none; background-color: white; color: #000;" disabled>{!! $blDraft->descripions  !!}</textarea>
                             </td>
                             </td>
                             <td class="tableStyle" style="border-left-style: hidden;">{{ $gross_weight }}</td>
@@ -147,8 +149,6 @@
                         </br>
                         </br>
                         </br>
-
-
                         @php
                             $net_weight = 0;
                             $gross_weight = 0;
@@ -169,6 +169,8 @@
                                 <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
                                 @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
                                 <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                @elseif(Auth::user()->company_id == 3)
+                                <img src="{{asset('assets/img/winwin_maritime.png')}}" alt="logo">
                                 @else
                                 <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
                                 @endif
@@ -187,7 +189,7 @@
                                             <span style="font-size: 14px; margin-left: 12px;">Discharge VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }}</span>
                                         </br>
                                             <span style="font-size: 14px; margin-left: 12px;">Loading VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
-                                        @elseif(optional($blDraft->booking)->transhipment_port != null)
+                                        @elseif(optional($blDraft->booking)->transhipment_port != null && $blDraft->booking->shipment_type != 'Export')
                                             <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional(optional(optional($blDraft->booking)->secondvoyage)->vessel)->name}} &nbsp {{ optional(optional($blDraft->booking)->secondvoyage)->voyage_no }}</span>
                                         @else
                                             <span style="font-size: 14px; margin-left: 12px;">VESSEL / VOYAGE &nbsp &nbsp{{ optional($blDraft->voyage->vessel)->name }} &nbsp {{ optional($blDraft->voyage)->voyage_no }} </span>

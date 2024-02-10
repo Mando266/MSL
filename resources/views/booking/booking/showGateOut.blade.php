@@ -119,7 +119,7 @@
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
                             @elseif(optional($booking->quotation)->shipment_type == "Import" && optional($booking)->transhipment_port != null)
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->secondvoyage->vessel->name }} / {{ $booking->secondvoyage->voyage_no}}</td>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ optional(optional($booking->secondvoyage)->vessel)->name }} / {{ optional($booking->secondvoyage)->voyage_no}}</td>
                             @else
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->voyage->vessel->name }} / {{ $booking->voyage->voyage_no}}</td>
                             @endif

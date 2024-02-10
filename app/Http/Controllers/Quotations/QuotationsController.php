@@ -55,11 +55,11 @@ class QuotationsController extends Controller
         $equipment_types = ContainersTypes::orderBy('id')->get();
         $principals = Lines::where('company_id', Auth::user()->company_id)
         ->whereHas('types', function ($query) {
-            return $query->whereIn('type_id', [5, 7]);
+            return $query->whereIn('type_id', [5, 7, 9]);
         })->get();
         $oprators = Lines::where('company_id', Auth::user()->company_id)
         ->whereHas('types', function ($query) {
-            return $query->whereIn('type_id', [4, 2]);
+            return $query->whereIn('type_id', [4, 2, 8]);
         })->get();
         $booking_agency = Agents::where('company_id',Auth::user()->company_id)->where('is_active', 1)->get();
 
@@ -320,11 +320,11 @@ class QuotationsController extends Controller
         $equipment_types = ContainersTypes::orderBy('id')->get();
         $principals = Lines::where('company_id', Auth::user()->company_id)
         ->whereHas('types', function ($query) {
-            return $query->whereIn('type_id', [5, 7]);
+            return $query->whereIn('type_id', [5, 7, 9]);
         })->get();
         $oprators = Lines::where('company_id', Auth::user()->company_id)
         ->whereHas('types', function ($query) {
-            return $query->whereIn('type_id', [4, 2]);
+            return $query->whereIn('type_id', [4, 2 , 8]);
         })->get();
         $ffw = Customers::where('company_id', Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
             return $query->where('role_id', 6);

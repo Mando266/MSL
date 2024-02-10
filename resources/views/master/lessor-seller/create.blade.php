@@ -9,9 +9,9 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
-                                <li class="breadcrumb-item"><a href="{{route('seller.index')}}">Lessor/Seller</a></li>
+                                <li class="breadcrumb-item"><a href="{{route('seller.index')}}">Container Ownerships</a></li>
                                 <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New
-                                        Lessor/Seller</a></li>
+                                Container Ownership</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>

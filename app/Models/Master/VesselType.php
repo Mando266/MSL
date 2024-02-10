@@ -26,7 +26,9 @@ class VesselType extends Model implements PermissionSeederContract
     public function company (){
         return $this->belongsto(Company::class,'company_id','id');
     }
-    
+    public function vessels (){
+        return $this->hasMany(Vessels::class,'vessel_type_id','id');
+    }
     public function scopeUserVesselType($query){
         if(is_null(Auth::user()->company_id))
         {

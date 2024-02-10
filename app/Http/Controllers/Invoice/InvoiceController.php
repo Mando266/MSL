@@ -99,7 +99,7 @@ class InvoiceController extends Controller
     public function create_invoice()
     {
 
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
 
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
@@ -195,7 +195,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $this->authorize(__FUNCTION__,Invoice::class);
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
         if(request('bldraft_id') == "customize"){
             $ffws = Customers::where('company_id',Auth::user()->company_id)->whereHas('CustomerRoles', function ($query) {
                 return $query->where('role_id', 6);
@@ -669,7 +669,7 @@ class InvoiceController extends Controller
 
     public function edit(Request $request, Invoice $invoice)
     {
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
 
         if($invoice->bldraft_id != 0){
             $bldraft = BlDraft::where('id',$invoice->bldraft_id)->with('blDetails')->first();
@@ -820,7 +820,7 @@ class InvoiceController extends Controller
         $blId = request()->bldraft_id;
         $bl = BlDraft::query()->find($blId);
 
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
         $customers = Customers::where('company_id',Auth::user()->company_id)->get();
 
         $bldraft = $bl;
@@ -897,7 +897,7 @@ class InvoiceController extends Controller
         $voyages    = Voyages::with('vessel')->where('company_id',Auth::user()->company_id)->get();
         $qty = $bldraft->blDetails->count();
         $cartData = json_decode(request('cart_data_for_invoice'));
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
 
         return view('invoice.invoice.create_debit',[
             'bldrafts'=>$bldrafts,

@@ -13,7 +13,11 @@ class ChargesDesc extends Model implements PermissionSeederContract
     use HasFilter;
     protected $table = 'charges_des';
     protected $guarded = [];
-    
+
+    public function invoices()
+    {
+        return $this->hasMany(InvoiceChargeDesc::class ,'invoice_id','id');
+    }
     use PermissionSeederTrait;
     public function getPermissionActions(){
         return config('permission_seeder.actions',[

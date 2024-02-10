@@ -69,8 +69,8 @@
 
                                 @if(($paymentstautsPaid > 0) && ($paymentstautsUnPaid == 0) && ($blDraft->bl_status == 1) && ($blDraft->bl_kind != "Seaway BL"))  
                                 <td class="col-md-6 tableStyle" style="font-size: 23px; text-align: center;" colspan="2" >Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
-                                @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0) &&  ($blDraft->bl_kind != "Seaway BL") && Auth::user()->id == 3 )
-                                <td class="col-md-6 tableStyle" style="font-size: 23px; text-align: center;" colspan="2" >Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
+                                @elseif(($blDraft->bl_kind != "Seaway BL") && Auth::user()->id == 3)
+                                <td class="col-md-6 tableStyle" style="font-size: 23px; text-align: center;" colspan="2" >Non Knowledgeable Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @elseif(($paymentstautsPaid > 0) && ($paymentstautsUnPaid > 0) &&  ($blDraft->bl_kind != "Seaway BL"))
                                     <td class="col-md-6 tableStyle" style="font-size: 23px; text-align: center;" colspan="2" >Draft Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @elseif(($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 1) || ($blDraft->bl_kind == "Seaway BL") && ($blDraft->bl_status == 0))
@@ -80,9 +80,13 @@
                                 @elseif(($blDraft->bl_status == 1) && ($paymentstautsPaid == 0) && ($paymentstautsUnPaid == 0))
                                     <td class="col-md-6 tableStyle" style="font-size: 23px; text-align: center;" colspan="2">Non Bill OF Lading <h3 style="font-weight: 900;"></h3><br>
                                 @endif
-
                                 <div class="col-md-12 text-center">
+
+                                @if(Auth::user()->company_id == 2)
                                     <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                    @else
+                                    <img src="{{asset('assets/img/winwin_maritime.png')}}"  alt="logo"> 
+                                @endif
                                 </div>
                                 </td>
                             </tr>
@@ -332,7 +336,9 @@
                 <div class="row">
                         <div class="col-md-12 text-center">
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Bl</button>
-                <a href="{{route('bldraft.showPDF',['bldraft'=>$blDraft->id])}}" class="btn btn-success hide mt-3">Print Original</a>
+                @if(Auth::user()->company_id == 3)
+                <a href="{{route('bldraft.showWinPDF',['bldraft'=>$blDraft->id])}}" class="btn btn-success hide mt-3">Print Original</a>
+                @endif
                 <a href="{{route('bldraft.index')}}" class="btn btn-danger hide mt-3">{{trans('forms.cancel')}}</a>
                 </div>
     

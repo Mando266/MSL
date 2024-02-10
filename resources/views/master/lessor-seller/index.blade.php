@@ -9,17 +9,16 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data </a></li>
-                                <li class="breadcrumb-item"><a href="{{route('seller.index')}}">Lessor/Seller</a></li>
+                                <li class="breadcrumb-item"><a href="{{route('seller.index')}}">Container Ownerships</a></li>
                                 <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New
-                                        Lessor/Seller</a></li>
+                                Container Ownership</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         @permission('Suppliers-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                                <a href="{{route('seller.create')}}" class="btn btn-primary">Add New Lessor or
-                                    Seller</a>
+                                <a href="{{route('seller.create')}}" class="btn btn-primary">Add New Container Ownerships</a>
                             </div>
                         </div>
                         @endpermission
@@ -74,19 +73,23 @@
                                             </ul>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr class="text-center">
-                                        <td colspan="20">{{ trans('home.no_data_found')}}</td>
-                                    </tr>
-                                @endforelse
+                                    @empty
+                                        <tr class="text-center">
+                                            <td colspan="20">{{ trans('home.no_data_found')}}</td>
+                                        </tr>
+                                    @endforelse
+
                                 </tbody>
 
-
-                                </form>
+                            </table>
+                        </div>
+                        <div class="paginating-container">
+                            {{ $items->links() }}
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
+    </div>
 @endsection
