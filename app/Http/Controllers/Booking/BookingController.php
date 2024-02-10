@@ -355,7 +355,12 @@ class BookingController extends Controller
             $setting = Setting::find(1);
             $booking->deleviry_no = $setting->delivery_no += 1;
             $setting->save();
-        } else {
+        } elseif (Auth::user()->company_id == 3){
+            $booking->ref_no = $request->input('ref_no');
+            $setting = Setting::find(1);
+            $booking->win_delivery_no = $setting->win_delivery_no += 1;
+            $setting->save();
+        }else{
             $booking->ref_no = $request->input('ref_no');
         }
         $booking->save();

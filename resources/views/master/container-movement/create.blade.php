@@ -8,9 +8,8 @@
                 <div class="widget-heading">
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Containers Movement</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('container-movement.index')}}">Movement Code</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add New Movement Code</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('container-movement.index')}}">Movement Activity Codes</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Add Activity Code</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -71,7 +70,7 @@
                                 @enderror
                         </div>
                         <div class="form-group col-md-8">
-                                <label for="ContainerInput">ALLOWED NEXT MOVES</label>
+                                <label for="ContainerInput">Allowed Next Possible Activities</label>
                                 <select class="selectpicker form-control" id="ContainerInput" data-live-search="true" name="movement[][code]" data-size="10"
                                  title="{{trans('forms.select')}}"  multiple="multiple">
                                     @foreach ($containersMovements as $item)

@@ -8,14 +8,14 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Containers Movement</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movement Code</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0);">Movement Activity Codes</a></li>
                                 <li class="breadcrumb-item"></li>
                             </ol>
                         </nav>
                         @permission('ContainersMovement-Create')
                         <div class="row">
                             <div class="col-md-12 text-right mb-5">
-                            <a href="{{route('container-movement.create')}}" class="btn btn-primary">Add New Movement Code</a>
+                            <a href="{{route('container-movement.create')}}" class="btn btn-primary">Add New Movement Activity Code</a>
                             </div>
                         </div>
                         @endpermission
@@ -23,7 +23,7 @@
                 <form>
                     <div class="form-row">
                         <div class="form-group col-md-3">
-                            <label for="containersMovementsInput">Movement </label>
+                            <label for="containersMovementsInput">Movement Activity Codes</label>
                                 <select class="selectpicker form-control" id="containersMovementsInput" data-live-search="true" name="code" data-size="10"
                                     title="{{trans('forms.select')}}">
                                     @foreach ($movementscode as $item)
@@ -43,17 +43,21 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>code</th>
+                                        <th>Activity Name</th>
+                                        <th>Activity code</th>
                                         <th>container status</th>
                                         <th>stock type</th>
-                                        <th>ALLOWED NEXT MOVES</th>
+                                        <th>NEXT Possible Activity</th>
                                         
                                         <th class='text-center' style='width:100px;'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
+                                    @php
+                                            $movement = $item->movements->count();
+                                    @endphp
+
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
@@ -61,7 +65,7 @@
                                             <td>{{{optional($item->containerstatus)->name}}}</td>
                                             <td>{{{optional($item->containerstock)->code}}}</td>
                                             <td>{{$item->next_move}}</td>
-                                    
+                                     
                                             <td class="text-center">
                                                 <ul class="table-controls">
                                                     @permission('ContainersMovement-Edit')
@@ -71,6 +75,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                @if ($movement > 0)
+                                                    @else 
                                                     @permission('ContainersMovement-Delete')
                                                     <li>
                                                         <form action="{{route('container-movement.destroy',['container_movement'=>$item->id])}}" method="post">
@@ -79,8 +85,8 @@
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
                                                         </form> 
                                                     </li>
-
                                                     @endpermission
+                                                @endif
                                                 </ul>
                                             </td>
                                         </tr>

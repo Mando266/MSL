@@ -181,6 +181,7 @@ class BlDraftController extends Controller
             }elseif($qtyCount > $booking->bookingContainerDetails->sum('qty')){
                 return redirect()->back()->with('error','Containers is More than the booking containers')->withInput($request->input());
             }
+        }
         }else{
             $ischild = 0;
             if($booking->bookingContainerDetails->sum('qty') > count($request->input('blDraftdetails'))){
@@ -189,8 +190,7 @@ class BlDraftController extends Controller
                 $hasChild = 0;
             }
         }
-    }
-
+    
         if($ischild){
             $serialNum = $numOfChilds + 2;
             $serialChar = strtoupper(chr($serialNum + 64));

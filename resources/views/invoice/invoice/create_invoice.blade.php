@@ -45,10 +45,10 @@
                                                 Shipper
                                             </option>
                                         @endif
-                                        <option value="add">Add</option>
+                                        <!-- <option value="add">Add</option>
                                         @foreach($customers as $customer)
                                             <option value="{{ $customer->id }}" class="additional-option">{{ $customer->name }}</option>
-                                        @endforeach
+                                        @endforeach -->
                                     </select>
                                     @error('customer_id')
                                     <div style="color: red;">
@@ -95,7 +95,7 @@
                                             data-live-search="true" data-size="10"
                                             title="{{trans('forms.select')}}" disabled>
                                         @foreach ($voyages as $item)
-                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port == null)
+                                            @if(optional($bldraft)->voyage_id != null && optional($bldraft->booking)->transhipment_port != null)
                                                 <option value="{{$item->id}}" {{$item->id == old('voyage_id',$bldraft->voyage_id) ? 'selected':''}}>{{$item->vessel->name}}
                                                     / {{$item->voyage_no}} - {{ optional($item->leg)->name }}</option>
                                             @elseif(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)

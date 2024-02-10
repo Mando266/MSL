@@ -18,7 +18,7 @@ class CreditController extends Controller
      
     public function index()
     {
-        $creditNotes = CreditNote::filter(new CreditIndexFilter(request()))->orderBy('id','desc')->paginate(30);
+        $creditNotes = CreditNote::where('company_id',Auth::user()->company_id)->filter(new CreditIndexFilter(request()))->orderBy('id','desc')->paginate(30);
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         
         return view('invoice.creditNote.index',[

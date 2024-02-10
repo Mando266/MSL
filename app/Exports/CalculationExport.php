@@ -43,18 +43,21 @@ class CalculationExport implements FromCollection, WithHeadings
             $calculationexport = collect();
             $count = 1;
             $freeTime = $calculations['freetime'];
+
             foreach ($calculations['calculation']['containers'] as $container) {
                 $fromTime = Carbon::parse($container['from']);
-                // dd($fromTime->format('Y-m-d'),);
                 $toTime = Carbon::parse($container['to']);
+            
                 if ($freeTime == 0) {
-                    if(count($container['periods']) != 0){
+                    if (count($container['periods']) != 0) {
                         $freeTime = $container['periods'][0]['days'];
                     }
                 }
+            
                 $totalDays = Carbon::parse($toTime)->diffInDays($fromTime); // total days
-                $chargableDays = $totalDays - $freeTime + 1; // chargable days
-                $freeTimeTillDate = $fromTime->addDays(($freeTime - 1));
+                $chargableDays = $totalDays - $freeTime + 1; 
+                $freeTimeTillDate = $fromTime->copy()->addDays($freeTime - 1); // Calculate without modifying $fromTime
+          //dd($chargableDays);
                 $tempCollection = collect([
                     "SR" => $count,
                     "Booking No." => $bl->booking->ref_no,
@@ -94,9 +97,7 @@ class CalculationExport implements FromCollection, WithHeadings
                 "CURRENCY" => '',
             ]);
             $calculationexport->add($tempCollection);
-    
             return $calculationexport;
         }
-        
     }
 }

@@ -125,10 +125,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
+                                @forelse ($items as $item)
                                 @php
                                     $quotation = $item->quotation;
+                                    
                                 @endphp
-                                @forelse ($items as $item)
                                     <tr>
                                         <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                         <td>{{$item->ref_no}}</td>

@@ -17,11 +17,7 @@
                 <div class="col-md-12 text-center">
                 <img src="{{asset('assets/img/msl.png')}}" style="width: 400px;" alt="logo">
                 </div>
-</br>
-</br>
-
-                <!-- <h4 style="text-align:left; color:#000;">Agent Name :  {{optional($quotation->agent)->name}}</h4> -->
-                <!-- <h4 style="text-align:left; color:#000;">Customer Name :  </h4> -->
+                
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>

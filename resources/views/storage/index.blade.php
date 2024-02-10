@@ -489,10 +489,10 @@
                     const calculationData = JSON.parse(form.querySelector('input[name="calculation_data"]').value);
 
                     // Check if the same data already exists in the cart
-                    if (cart.some(item => item.blNo === blNo && item.triffValue === triffValue)) {
-                        swal("Warning", "You cannot add the same data twice.", "warning");
-                        return; // Don't proceed with adding to cart
-                    }
+                    // if (cart.some(item => item.blNo === blNo && item.triffValue === triffValue)) {
+                    //     swal("Warning", "You cannot add the same data twice.", "warning");
+                    //     return; // Don't proceed with adding to cart
+                    // }
 
                     // Check if the blNo is different from existing cart items
                     if (cart.some(item => item.blNo !== blNo)) {

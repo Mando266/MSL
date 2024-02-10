@@ -4,20 +4,25 @@
 
         <ul class="navbar-nav theme-brand flex-row  text-center">
             <li class="nav-item theme-logo">
-            @if (Auth::user()->company_id == 1)
+            @if(Auth::user()->company_id == 1)
                 <a href="{{route('home')}}">
                     <img src="{{asset('assets/img/logo.png')}}" style="width: 71px; height: 66px;" class="navbar-logo" alt="logo">
                 </a>
-                @else
+                @elseif(Auth::user()->company_id == 2)
                 <a href="{{route('home')}}">
                     <img src="{{asset('assets/img/cstar_line_logo.jpeg')}}" style="width: 81px; height: 72px;" class="navbar-logo" alt="logo">
                 </a>
+                @else
+                <a href="{{route('home')}}">
+                    <img src="{{asset('assets/img/winwin_maritime.png')}}" style="width: 95px; height: 80px;" class="navbar-logo" alt="logo">
+                </a>
             @endif
             </li>
-
-            <li class="nav-item theme-text">
-                    <a href="{{route('home')}}" class="nav-link">Cstar</a>
-            </li>
+            @if(Auth::user()->company_id == 1)
+                <li class="nav-item theme-text">
+                        <a href="{{route('home')}}" class="nav-link">Cstar</a>
+                </li>
+            @endif
             <li class="nav-item toggle-sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -30,8 +35,9 @@
         <div class="shadow-bottom"></div>
 </br>
         <ul class="list-unstyled menu-categories" id="accordionExample" style="padding:0px;">
+        @permission('User-List')
 
-        <li class="menu">
+            <li class="menu">
                         <a href="#component66" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -42,7 +48,6 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="component66" data-parent="#accordionExample">
-
                                 @permission('User-List')
                                     <li>
                                         <a href="{{route('users.index')}}"> Users </a>
@@ -55,6 +60,7 @@
                                 @endpermission
                                 </ul>
                 </li>
+                @endpermission
 
             @permission('Ports-List')
             <li class="menu">
@@ -128,11 +134,11 @@
                                                 <a href="{{route('demurrage.index')}}">Demurrage and Detention Tariffs</a>
                                             </li>
                                         @endpermission
-                                        @permission('SupplierPrice-List')
+                                        <!-- @permission('SupplierPrice-List')
                                             <li>
                                                 <a href="{{route('supplierPrice.index')}}"> Slot Rates Triffs </a>
                                             </li>
-                                        @endpermission
+                                        @endpermission -->
                                         </ul>
                                 </li>
                         @endpermission
@@ -254,7 +260,7 @@
                                 @endpermission
                                 @permission('ContainersMovement-List')
                                     <li>
-                                        <a href="{{route('container-movement.index')}}"> Movements codes </a>
+                                        <a href="{{route('container-movement.index')}}"> Movements Activity codes </a>
                                     </li>
                                 @endpermission
 
@@ -422,7 +428,7 @@
                         <ul class="collapse submenu list-unstyled" id="component10" data-parent="#accordionExample">
                                 @permission('Invoice-List')
                                 <li>
-                                    <a href="{{route('chargesDesc.index')}}">Charges Gates</a>
+                                    <a href="{{route('chargesDesc.index')}}">Portal Charges</a>
                                 </li>
                                 @endpermission
                                 @permission('Invoice-List')

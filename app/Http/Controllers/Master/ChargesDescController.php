@@ -13,7 +13,7 @@ class ChargesDescController extends Controller
     {
         $this->authorize(__FUNCTION__,ChargesDesc::class);
 
-        $chargesDesc = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->paginate(30);
+        $chargesDesc = ChargesDesc::orderBy('id')->paginate(30);
         //dd($chargesDesc);
         return view('master.chargesDesc.index',[
             'items'=>$chargesDesc,
@@ -36,7 +36,7 @@ class ChargesDescController extends Controller
         ]);
         $user = Auth::user();
 
-        $NameDublicate  = ChargesDesc::where('company_id',$user->company_id)->where('name',$request->name)->first();
+        $NameDublicate  = ChargesDesc::where('name',$request->name)->first();
         if($NameDublicate != null){
             return back()->with('alert','This Item Name Already Exists');
         }

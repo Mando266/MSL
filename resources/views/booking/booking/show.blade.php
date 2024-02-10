@@ -19,7 +19,6 @@
                 </div>
 </br>
 </br>
-
                 <table class="col-md-12 tableStyle">
                     <thead>
                         <tr>

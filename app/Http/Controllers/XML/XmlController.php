@@ -220,7 +220,7 @@ class XmlController extends Controller
                 $this->addItemToElement($xmlDoc, $Item, $item->description , 'ItemCargoDesc');
                 $this->addItemToElement($xmlDoc, $Item, $item->packs , 'ItemExpQuantity'); //
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemExpQTYUOM'); //
-                $this->addItemToElement($xmlDoc, $Item, (float)optional($item)->gross_weight, 'ItemExpGrossWeight');
+                $this->addItemToElement($xmlDoc, $Item, optional($item)->gross_weight, 'ItemExpGrossWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'KGM' , 'ItemExpGWUOM');
                 $this->addItemToElement($xmlDoc, $Item, $item->net_weight , 'ItemContentPackagesWeight');
                 $this->addItemToElement($xmlDoc, $Item, 'CNTS' , 'ItemContentQTYUOM');

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlDraft\BlDraftController;
 use App\Http\Controllers\BlDraft\PDFController;
+use App\Http\Controllers\BlDraft\WinPDFController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\Invoice\InvoiceController;
@@ -183,6 +184,8 @@ Route::group(['middleware' => 'auth'], function () {
         );
         Route::get('showCstar/{bldraft}', [BlDraftController::class, 'showCstar'])->name('bldraft.showCstar');
         Route::get('pdf', [PDFController::class, 'showPDF'])->name('bldraft.showPDF');
+        Route::get('winpdf', [WinPDFController::class, 'showWinPDF'])->name('bldraft.showWinPDF');
+
     });
 
     /*

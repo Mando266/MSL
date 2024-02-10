@@ -24,7 +24,7 @@ class ReceiptController extends Controller
     {
         $this->authorize(__FUNCTION__,Receipt::class);
 
-        $paginator = Receipt::filter(new ReceiptIndexFilter(request()))
+        $paginator = Receipt::where('company_id',Auth::user()->company_id)->filter(new ReceiptIndexFilter(request()))
                     ->where('status', 'valid')
                     ->orderBy('id', 'desc')
                     ->paginate(30); // Get all receipts from the database
@@ -53,11 +53,11 @@ class ReceiptController extends Controller
         // $paginator->setPageName('page');
 
 
-        $receiptno = Receipt::orderBy('id','desc')->where('status','valid')->get();
+        $receiptno = Receipt::where('company_id',Auth::user()->company_id)->orderBy('id','desc')->where('status','valid')->get();
         $customers  = Customers::where('company_id',Auth::user()->company_id)->get();
         $invoices  = Invoice::where('company_id',Auth::user()->company_id)->get();
         $bldrafts = BlDraft::where('has_bl',1)->where('bl_status','=',1)->where('company_id',Auth::user()->company_id)->get();
-        $receiptexport = Receipt::filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->get();
+        $receiptexport = Receipt::where('company_id',Auth::user()->company_id)->filter(new ReceiptIndexFilter(request()))->orderBy('id','desc')->get();
         session()->flash('receipts',$receiptexport);
 
         return view('invoice.receipt.index',[

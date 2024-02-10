@@ -32,6 +32,9 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($items as $item)
+                                    @php
+                                            $vessel = $item->vessels->count();
+                                    @endphp
                                         <tr>
                                             <td>{{ App\Helpers\Utils::rowNumber($items,$loop)}}</td>
                                             <td>{{$item->name}}</td>
@@ -44,6 +47,8 @@
                                                         </a>
                                                     </li>
                                                     @endpermission
+                                                @if ($vessel > 0)
+                                                    @else 
                                                     @permission('VesselType-Delete')
                                                     <li>
                                                         <form action="{{route('vessel-types.destroy',['vessel_type'=>$item->id])}}" method="post">
@@ -52,8 +57,8 @@
                                                         <button style="border: none; background: none;" type="submit" class="fa fa-trash text-danger"></button>
                                                         </form> 
                                                     </li>
-
                                                     @endpermission
+                                                @endif
                                                 </ul>
                                             </td>
                                         </tr>

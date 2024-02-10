@@ -9,7 +9,7 @@
                     <nav class="breadcrumb-two" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Accounting</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('chargesDesc.index')}}">Desciption Of Charges</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('chargesDesc.index')}}">Portal Charges</a></li>
                             <li class="breadcrumb-item active"><a href="javascript:void(0);"> {{trans('forms.edit')}}</a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>

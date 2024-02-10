@@ -254,7 +254,7 @@
                                                     
                                                     @permission('Booking-Show')
                                                     <li>
-                                                    @if(optional(optional($item->booking)->principal)->code == 'Cstar')
+                                                    @if(optional(optional($item->booking)->principal)->code == 'Cstar' || optional(optional($item->booking)->principal)->code  == 'Winwin' )
                                                             @if((in_array($user->id, $usersToCheck)))
                                                                 <a href="{{ route('bldraft.showCstar', ['bldraft' => $item->id]) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="show">
                                                                     <i class="far fa-eye text-primary"></i>

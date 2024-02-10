@@ -50,7 +50,7 @@ class LocalPortTriffController extends Controller
             $country = Country::orderBy('id')->get();
             $currency = Currency::all();
             $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
-            $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+            $charges = ChargesDesc::orderBy('id')->get();
 
             return view('quotations.localporttriff.create',[
                 'ports'=>$ports,
@@ -142,7 +142,7 @@ class LocalPortTriffController extends Controller
         $terminals = Terminals::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         $country = Country::orderBy('id')->get();
         $currency = Currency::all();
-        $charges = ChargesDesc::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
+        $charges = ChargesDesc::orderBy('id')->get();
         $agents = Agents::where('company_id',Auth::user()->company_id)->orderBy('id')->get();
         
         return view('quotations.localporttriff.edit',[
