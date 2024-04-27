@@ -74,8 +74,7 @@
                                             data-size="10" id="service"
                                             title="{{trans('forms.select')}}" required>
                                         @foreach($services as $service)
-                                            <option
-                                                    value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
+                                            <option value="{{$service->id}}" {{$service->id == old('service',isset($input)? $input['service'] : '') ? 'selected':''}}>{{$service->description}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -370,8 +369,8 @@
                             let list2 = [];
                             for (let i = 0; i < triffs.length; i++) {
                                 (triffs[i].id == selectedTriff) ?
-                                    list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`) :
-                                    list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`);
+                                    list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto} ${triffs[i].containersType}</option>`) :
+                                    list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto} ${triffs[i].containersType}</option>`); 
                             }
                             let triff = $('#triff_id');
                             triff.html(list2.join(''));
@@ -414,7 +413,7 @@
                             let list2 = [`<option value='all' ${selectedCodes[0] == 'all' ? 'selected' : ''}>All</option>`];
                             for (let i = 0; i < containers.length; i++) {
                                 (selectedCodes.includes(containers[i].id.toString())) ?
-                                    list2.push(`<option value='${containers[i].id}' selected>${containers[i].code} </option>`) :
+                                    list2.push(`<option value='${containers[i].id}' selected> ${containers[i].code} </option>`) :
                                     list2.push(`<option value='${containers[i].id}'>${containers[i].code} </option>`)
                             }
                             let container = $('#port');

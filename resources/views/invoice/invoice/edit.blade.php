@@ -123,7 +123,7 @@
                                         @permission('Invoice-Ready_to_Confirm')
                                         <option value="ready_confirm" {{ old('invoice_status',$invoice->invoice_status) == "ready_confirm" ? 'selected':'' }}>Ready To Confirm</option>
                                         @endpermission
-                                        @if($bldraft->bl_status == 1)
+                                        @if(Auth::user()->id == 15 || Auth::user()->id == 24 )
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                         @endif
                                     </select>
@@ -346,10 +346,10 @@
                                 </select>
                                 <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" > -->
                             </td>
-                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(optional($bldraft->booking->quotation)->ofr)}}"
+                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(old('size_small',$item->size_small))}}"
                                 placeholder="Rate" autocomplete="off" disabled style="background-color: white;">
                             </td> 
-                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty}}"
+                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
                                 placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                             </td>
                         </tr>

@@ -20,7 +20,7 @@ class TruckerGates extends Model implements PermissionSeederContract
             'Create',
             'Edit',
             'Delete'
-        ]);
+        ]); 
     }
     public function trucker()
     {

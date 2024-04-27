@@ -322,9 +322,12 @@ class InvoiceController extends Controller
             ]);
         }
         $setting = Setting::find(1);
-        if($invoice->invoice_status == "confirm"){
+        if($invoice->invoice_status == "confirm" && Auth::user()->company_id == 2){
             $invoice_no = 'DN'.' '.'/'.' '.$setting->debit_confirm.' / 24';
             $setting->debit_confirm += 1;
+        }elseif($invoice->invoice_status == "confirm" && Auth::user()->company_id == 3){
+            $invoice_no = 'DNwin'.' '.'/'.' '.$setting->debit_win_confirm.' / 24';
+            $setting->debit_win_confirm += 1;
         }else{
             $invoice_no = 'DRAFTD';
             $invoice_no = $invoice_no . str_pad( $setting->debit_draft, 4, "0", STR_PAD_LEFT );
@@ -457,12 +460,19 @@ class InvoiceController extends Controller
         $setting = Setting::find(1);
         if($request->bldraft_id != 'customize'){
             if($invoice->invoice_status == "confirm"){
-                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
+                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export" && Auth::user()->company_id == 2){
                     $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
-                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
+                    $setting->invoice_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import" && Auth::user()->company_id == 2){
                     $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                    $setting->invoice_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export" && Auth::user()->company_id == 3){
+                    $invoice->invoice_no = 'ALYEXPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import" && Auth::user()->company_id == 3){
+                    $invoice->invoice_no = 'ALYIMPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
                 }
-                $setting->invoice_confirm += 1;
             }else{
                 $invoice_no = 'DRAFTV';
                 $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
@@ -471,12 +481,19 @@ class InvoiceController extends Controller
             }
         }elseif($request->bldraft_id == 'customize'){
             if($invoice->invoice_status == "confirm"){
-                if($invoice->booking_status == 0){
+                if($invoice->booking_status == 0  && Auth::user()->company_id == 2){
                     $invoice->invoice_no = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
-                }elseif($invoice->booking_status == 1){
+                    $setting->invoice_confirm += 1;
+                }elseif($invoice->booking_status == 1  && Auth::user()->company_id == 2){
                     $invoice->invoice_no = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                    $setting->invoice_confirm += 1;
+                }elseif($invoice->booking_status == 0  && Auth::user()->company_id == 3){
+                    $invoice->invoice_no = 'ALYEXPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
+                }elseif($invoice->booking_status == 1  && Auth::user()->company_id == 3){
+                    $invoice->invoice_no = 'ALYIMPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
                 }
-                $setting->invoice_confirm += 1;
             }else{
                 $invoice_no = 'DRAFTV';
                 $invoice_no = $invoice_no . str_pad( $setting->invoice_draft, 4, "0", STR_PAD_LEFT );
@@ -524,11 +541,18 @@ class InvoiceController extends Controller
             $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id)
             ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
         }
-
+        elseif(optional(optional($invoice->booking)->quotation)->shipment_type == "Import"){
+            $firstVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id)
+            ->where('port_from_name',optional($invoice->booking->dischargePort)->id)->first();
+        }
         $secondVoyagePortdis =null;
         if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null){
             $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->bldraft->booking)->voyage_id_second)
             ->where('port_from_name',optional($invoice->bldraft->booking->dischargePort)->id)->first();
+        }
+        elseif(optional(optional($invoice->booking)->quotation)->shipment_type == "Import" && optional($invoice->booking)->transhipment_port != null){
+            $secondVoyagePortdis = VoyagePorts::where('voyage_id',optional($invoice->booking)->voyage_id_second)
+            ->where('port_from_name',optional($invoice->booking->dischargePort)->id)->first();
         }
 
         if($invoice->bldraft_id == 0){
@@ -762,27 +786,47 @@ class InvoiceController extends Controller
         $setting = Setting::find(1);
         $inputs = request()->all();
         unset($inputs['invoiceChargeDesc'],$inputs['_token'],$inputs['removed']);
-        if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice"){
-            $setting = Setting::find(1);
+        if($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "invoice" ){
             // check if this invoice is customized
+            $setting = Setting::find(1);
             if($invoice->bldraft_id != 0){
-                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export"){
+                if(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export" && Auth::user()->company_id == 2){
                     $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
-                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import"){
+                    $setting->invoice_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import" && Auth::user()->company_id == 2){
                     $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                    $setting->invoice_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Export" && Auth::user()->company_id == 3){
+                    $inputs['invoice_no'] = 'ALYEXPWin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
+                }elseif(optional($invoice->bldraft->booking->quotation)->shipment_type == "Import" && Auth::user()->company_id == 3){
+                    $inputs['invoice_no'] = 'ALYIMPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
                 }
             }else{
-                if($inputs['booking_status'] == "import"){
+                if($inputs['booking_status'] == "import" && Auth::user()->company_id == 2){
                     $inputs['invoice_no'] = 'ALYIMP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
-                }elseif($inputs['booking_status'] == "export"){
+                    $setting->invoice_confirm += 1;
+                }elseif($inputs['booking_status'] == "export" && Auth::user()->company_id == 2){
                     $inputs['invoice_no'] = 'ALYEXP'.' '.'/'.' '.$setting->invoice_confirm.' / 24';
+                    $setting->invoice_confirm += 1;
+                }elseif($inputs['booking_status'] == "export" && Auth::user()->company_id == 3){
+                    $inputs['invoice_no'] = 'ALYIMPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
+                }elseif($inputs['booking_status'] == "export" && Auth::user()->company_id == 2){
+                    $inputs['invoice_no'] = 'ALYEXPwin'.' '.'/'.' '.$setting->invoice_win_confirm.' / 24';
+                    $setting->invoice_win_confirm += 1;
                 }
             }
-            $setting->invoice_confirm += 1;
-        } elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit") {
+
+        } elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit" && Auth::user()->company_id == 2) {
             $setting = Setting::find(1);
             $inputs['invoice_no'] = 'DN' . ' ' . '/' . ' ' . $setting->debit_confirm . ' / 24';
             $setting->debit_confirm += 1;
+        }elseif ($invoice->invoice_status == "draft" && $request->invoice_status == "confirm" && $invoice->type == "debit" && Auth::user()->company_id == 3){
+            $setting = Setting::find(1);
+            $inputs['invoice_no'] = 'DNwin' . ' ' . '/' . ' ' . $setting->debit_win_confirm . ' / 24';
+            $setting->debit_win_confirm += 1;
         }
         $setting->save();
         $invoice->update($inputs);

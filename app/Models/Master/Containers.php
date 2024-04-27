@@ -47,13 +47,33 @@ class Containers extends Model implements PermissionSeederContract
         return $this->belongsto(LessorSeller::class,'description','id');
     }
 
+    public function containerRepairs()
+    {
+        return $this->hasMany(ContainerRepairs::class ,'container_id','id');
+    }
     public function scopeUserContainers($query){
         if(is_null(Auth::user()->company_id))
         {
-            $query;
+            $query;     
         }else{
             $query->where('company_id',Auth::user()->company_id);
         }
 
+    }
+        
+    public function createOrUpdateRepairs($inputs)
+    {
+        if (is_array($inputs) || is_object($inputs)){
+            foreach($inputs as $input){
+                $input['container_id'] = $this->id;
+                if( isset($input['id']) ){
+                    ContainerRepairs::find($input['id'])
+                    ->update($input);
+                }
+                else{
+                    ContainerRepairs::create($input);
+                }
+            }
+        }
     }
 }

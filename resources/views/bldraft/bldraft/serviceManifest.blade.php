@@ -221,7 +221,7 @@
                             </tr>
                         @foreach($chunk as  $bldetails)
                         <tr class="col-md-12 tableStyle" >
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->code }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">{{substr(optional(optional($bldetails->container)->containersTypes)->name, 0, 2)}} / {{optional($bldetails->container->containersTypes)->code}} </td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($blDraft->equipmentsType)->name }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->iso}}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->seal_no }}</td>

@@ -8,7 +8,7 @@
                         <nav class="breadcrumb-two" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('bldraft.index')}}">Bl Draft </a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> EXPORT CARGO MANIFEST</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);"> Cargo EXPORT MANIFEST </a></li>
                             <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
@@ -181,7 +181,7 @@
                                         @if($blDraft->booking->is_transhipment == 1 && $blDraft->booking->quotation_id == 0)
                                             <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">Transhipment MANIFEST</br></br>
                                         @elseif($blDraft->booking->shipment_type == 'Export')
-                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} EXPORT SERVICE MANIFEST </br></br>
+                                            <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} Cargo EXPORT MANIFEST  </br></br>
                                         @else
                                             <td class="col-md-6 tableStyle text-center" style="height: 150px; font-size:18px" colspan="6">{{$blDraft->booking->quotation->imo == 1 ? 'IMO' : ''}} IMport SERVICE MANIFEST</br></br>
                                         @endif
@@ -239,7 +239,9 @@
                         @foreach($chunk as  $bldetails)
                         <tr class="col-md-12 tableStyle" >
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->code }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ optional($blDraft->equipmentsType)->name }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">  
+                            {{substr(optional(optional($bldetails->container)->containersTypes)->name, 0, 2)}} / {{optional($bldetails->container->containersTypes)->code}}  
+                            </td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->iso}}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->seal_no }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }}</td>
@@ -283,7 +285,9 @@
                         @foreach($blDraft->blDetails as  $bldetails)
                         <tr class="col-md-12 tableStyle" >
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->code }}</td>
-                            <td class="tableStyle" style="border-right-style: hidden;">{{ optional($blDraft->equipmentsType)->name }}</td>
+                            <td class="tableStyle" style="border-right-style: hidden;">
+                            {{substr(optional(optional($bldetails->container)->containersTypes)->name, 0, 2)}} / {{optional($bldetails->container->containersTypes)->code}}  
+                        </td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ optional($bldetails->container)->iso}}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->seal_no }}</td>
                             <td class="tableStyle" style="border-right-style: hidden;">{{ $bldetails->packs }}</td>

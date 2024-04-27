@@ -21,7 +21,12 @@
                         <img src="{{asset('assets/img/msl.png')}}" style="width: 350px;" alt="logo">
                     </div>
                     <div class="col-md-6 text-right">
+                    @if(Auth::user()->company_id == 3)
+                        <img src="{{asset('assets/img/winwin_maritime.png')}}" alt="logo" style="height: 141px;
+    width: 180px;">
+                        @else
                         <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 290px; height: 100%;" alt="logo">
+                    @endif
                     </div>
                 </div>
 
@@ -61,11 +66,12 @@
                             <td class="col-md-3 tableStyle" >Vessel: <span class="entry">{{$invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name :  optional(optional(optional($invoice->bldraft)->voyage)->vessel)->name }}</span></td>
                             <td class="col-md-3 tableStyle" >Voyage: <span class="entry">{{$invoice->bldraft_id == 0 ? optional($invoice->voyage)->voyage_no :  optional(optional($invoice->bldraft)->voyage)->voyage_no }}</span></td>
                             @endif
-                            
                             @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
-                            <td class="col-md-2 tableStyle text-center" >ATD: <span class="entry">{{optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($firstVoyagePortdis)->etd}}</span></td>
+                                <td class="col-md-2 tableStyle text-center" >ETD: <span class="entry">{{optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($firstVoyagePortdis)->etd}}</span></td>
+                            @elseif(optional(optional($invoice->booking)->quotation)->shipment_type == "Import")
+                            <td class="col-md-2 tableStyle text-center" >ETD: <span class="entry">{{optional($invoice->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($firstVoyagePortdis)->etd}}</span></td>
                             @else
-                            <td class="col-md-2 tableStyle text-center" >ATD: <span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
+                            <td class="col-md-2 tableStyle text-center" >ETD: <span class="entry">{{optional($firstVoyagePort)->etd}}</span></td>
                             @endif
                         </tr>
                         <tr>
@@ -202,10 +208,16 @@
 
                     </tbody>
                 </table>
-                <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
-                <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
-
+                @if(Auth::user()->company_id == 2)
+                    <h4 style="font-size: 16px; color:#000;">Bank USD details: Ahli United Bank – AUB &nbsp; 0007169620002 &nbsp; IBAN:	EG020020000700000007169620002<h4>
+                    <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Ahli United Bank – AUB &nbsp; 0007169620001 &nbsp; IBAN:	EG290020000700000007169620001<h4>
+                    @else
+                    <h4 style="font-size: 16px; color:#000;">Bank USD details: Commercial International Bank – CIB &nbsp; 100040346184 &nbsp; IBAN: EG130010020400000100061900866<h4>
+                    <h4 style="font-size: 16px; color:#000;">Bank EGP &nbsp;details: Commercial International Bank – CIB &nbsp; 100040346157 &nbsp; IBAN: EG950010020400000100040346184<h4>
+                @endif
                 </div>
+                <h4 style="font-size: 16px; color:#000; text-align: right;">الساده العملاء نود أن  نلفت انتباهكم إلى أهمية إجراء الإيداعات البنكية لكل عميل بشكل منفصل بما يتطابق مع العميل المصدره باسمه الفواتير. يرجى العلم بأنه لن يكون بإمكاننا قبول إيداعات مجمعة لعملاء مختلفين لضمان دقه معالجه المدفوعات . نقدر تعاونكم وفهمكم لهذه الضرورة <h4>
+
                 <div class="row">
                         <div class="col-md-12 text-center">
                 <button onclick="window.print()" class="btn btn-primary hide mt-3">Print This Invoice</button>

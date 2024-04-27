@@ -311,7 +311,7 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
         var counter  = 1;
         $("#add").click(function(){
            var tr = '<tr>'+
-               '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>' +
+               '<td><select class="selectpicker form-control" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10" title="{{trans('forms.select')}}"> @foreach ($charges as $item) <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>' +
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Rate" required></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" disabled required></td>'+
@@ -319,6 +319,9 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
            '</tr>';
            counter++;
           $('#debit').append(tr);
+          $('.selectpicker').selectpicker("render");
+          $('#selectpickers').selectpicker();
+
         });
     }); 
     </script>
