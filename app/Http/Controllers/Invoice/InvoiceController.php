@@ -179,6 +179,7 @@ class InvoiceController extends Controller
                 $cart->triffText = "Port Storage";
             }
         }
+
         return view('invoice.invoice.create_invoice', [
             'bldrafts' => $bldrafts,
             'cartData' => $cartData ?? null,
@@ -215,6 +216,7 @@ class InvoiceController extends Controller
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
             $bookings  = Booking::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->get();
+
 
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
@@ -345,7 +347,7 @@ class InvoiceController extends Controller
                 InvoiceChargeDesc::create([
                     'invoice_id' => $invoice->id,
                     'charge_description' => $chargeDesc['charge_description'],
-                    'size_large' => $chargeDesc['size_small'],
+                    'size_small' => $chargeDesc['size_small'],
                     'total_amount' => ($chargeDesc['size_small'] == $chargeDesc['total_amount'] && $qty > 1) ? $chargeDesc['size_small'] : $qty * $chargeDesc['size_small'],
                     // 'enabled'=>$chargeDesc['enabled'],
                 ]);
