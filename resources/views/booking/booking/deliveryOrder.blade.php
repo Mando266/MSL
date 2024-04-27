@@ -44,15 +44,27 @@
                 </br>
                 @php
                 $mytime = Carbon\Carbon::now();
-                $containerCount = 0;
-                $firstContainerDetail = $booking->bookingContainerDetails->first();
-                $containerType = optional($firstContainerDetail->containerType)->name;
-                $haz = $firstContainerDetail->haz;
-                foreach($booking->bookingContainerDetails as $detail){
-                    $containerCount = $containerCount + $detail->qty;
+                $containerTypes = []; 
+
+                foreach ($booking->bookingContainerDetails as $detail) {
                     $containerType = optional($detail->containerType)->name;
+                    $haz = $detail->haz;
+                    
+                    if (!isset($containerTypes[$containerType])) {
+                        $containerTypes[$containerType] = 0;
+                    }
+                    
+                    $containerTypes[$containerType] += $detail->qty;
                 }
+
+                $containerDetailsDisplay = [];
+                foreach ($containerTypes as $type => $count) {
+                    $containerDetailsDisplay[] = "$type * $count";
+                }
+
                 @endphp
+
+
                 <table class="col-md-12 tableStyle" >
                     <tbody>
                         <tr>
@@ -108,8 +120,12 @@
                             <td class="col-md-3 tableStyle text-right underline" >تاريخ الوصول</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{$containerCount}} X {{$containerType}}</td>
-                            <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
+                        <td class="col-md-9 tableStyle" style="padding-left: 80px;">
+                            @foreach($containerDetailsDisplay as $containerType => $count)
+                                {{ $count }}<br>
+                            @endforeach
+                        </td>
+                        <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
                         <!-- <tr>
                             <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{optional($booking->quotation)->payment_kind}} </td>
@@ -277,7 +293,7 @@
                                         {{optional($detail->container)->code}}
                                     </td>
                                     <td class="col-md-3 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                    {{substr(optional($booking->bldraft->equipmentsType)->name, 0, 2)}} / {{optional($booking->bldraft->equipmentsType)->code}}
+                                    {{substr(optional(optional($detail->container)->containersTypes)->name, 0, 2)}} / {{optional($detail->container->containersTypes)->code}}  
                                     </td>
                                     <td class="col-md-3 tableStyle" style="border: 1px solid #000; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                         {{$detail->seal_no}}
@@ -337,9 +353,10 @@
 
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; font-size: 14px; padding: .75rem;">
                                     {{optional($detail->container)->code}}
+                                    
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: hidden; border-left-style: hidden; font-size: 14px; padding: .75rem;">
-                                {{substr(optional($booking->bldraft->equipmentsType)->name, 0, 2)}} / {{optional($booking->bldraft->equipmentsType)->code}}
+                                {{substr(optional(optional($detail->container)->containersTypes)->name, 0, 2)}} / {{optional($detail->container->containersTypes)->code}}  
                                 </td>
                                 <td class="col-md-2 tableStyle" style="border: 1px solid #000; border-right-style: 1px solid #000; border-left-style: 1px solid #000; font-size: 14px; padding: .75rem;">
                                     {{$detail->seal_no}}

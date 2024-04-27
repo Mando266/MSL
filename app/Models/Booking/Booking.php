@@ -17,6 +17,8 @@ use App\Models\Voyages\Voyages;
 use App\User;
 use App\Traits\HasFilter;
 use App\Models\Master\Lines;
+use App\Models\Trucker\TruckerGates;
+
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -106,7 +108,12 @@ class   Booking extends Model implements PermissionSeederContract
     public function transhipmentPort(){
         return $this->belongsTo(Ports::class,'transhipment_port','id');
     }
-    
+
+    public function truckerGates()
+    {
+        return $this->hasMany(TruckerGates::class,'booking_id','id');
+    }
+
     public function createOrUpdateContainerDetails($inputs)
     {
         $has_gate_in = 0;

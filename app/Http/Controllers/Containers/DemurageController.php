@@ -69,7 +69,7 @@ class DemurageController extends Controller
         $demurrages = Demurrage::create([
             'country_id' => $request->input('country_id'),
             'terminal_id' => $request->input('terminal_id'),
-//            'container_type_id'=> $request->input('container_type_id'),
+            'container_type_id'=> $request->input('container_type_id'),
             'port_id' => $request->input('port_id'),
             'validity_from' => $request->input('validity_from'),
             'validity_to' => $request->input('validity_to'),

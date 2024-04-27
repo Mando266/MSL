@@ -17,7 +17,7 @@
                     <div class="row">
                         @if(Session::has('message'))
                             <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('message') }}</p>
-                            @endif
+                        @endif
                             </br>
                             <div class="col-md-12 text-right mb-5">
                                 @permission('Booking-Create')
@@ -262,6 +262,7 @@
                                     <th>qty</th>
                                     <th>Containers Status</th>
                                     <th>Booking Creation</th>
+                                    <th>MT/FL</th>
                                     <th>Booking Status</th>
                                     <th class='text-center' style='width:100px;'>add bl</th>
                                     <th>S Order / D Order</th>
@@ -325,6 +326,7 @@
                                             {{ $unassigned }} Unassigned
                                         </td>
                                         <td>{{{$item->created_at}}}</td>
+                                        <td>{{{$item->booking_type}}}</td>  
                                         <td class="text-center">
                                             @if($item->booking_confirm == 1)
                                                 <span class="badge badge-info"> Confirm </span>

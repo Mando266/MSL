@@ -173,7 +173,7 @@
                                         @permission('Invoice-Ready_to_Confirm')
                                         <option value="ready_confirm" {{ old('invoice_status',$invoice->invoice_status) == "ready_confirm" ? 'selected':'' }}>Ready To Confirm</option>
                                         @endpermission
-                                        @if(Auth::user()->id == 15)
+                                        @if(Auth::user()->id == 15 || Auth::user()->id == 24 )
                                         <option value="confirm" {{ old('invoice_status',$invoice->invoice_status) == "confirm" ? 'selected':'' }}>Confirm</option>
                                         @endif
                                     </select>

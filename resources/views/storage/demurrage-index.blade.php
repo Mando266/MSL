@@ -361,8 +361,8 @@
                     let list2 = [];
                     for (let i = 0; i < triffs.length; i++) {
                         (triffs[i].id == selectedTriff) ?
-                            list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`) :
-                            list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto}</option>`);
+                            list2.push(`<option value="${triffs[i].id}" selected>${triffs[i].tariffTypeCode} ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto} ${triffs[i].containersType}</option>`) :
+                            list2.push(`<option value="${triffs[i].id}">${triffs[i].tariffTypeCode}  ${triffs[i].portsCode} ${triffs[i].validfrom} ${triffs[i].validto} ${triffs[i].validto} ${triffs[i].containersType}</option>`);
                     }
                     let triff = $('#triff_id');
                     triff.html(list2.join(''));

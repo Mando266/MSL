@@ -342,11 +342,27 @@ class BookingController extends Controller
         // check if quotation Export create serial No else will not create serial No
         $quotation = Quotation::find($request->input('quotation_id'));
 
-        if (optional($quotation)->shipment_type == "Export") {
+        if (Auth::user()->company_id == 3 && optional($booking)->shipment_type == "Import"){
+            $booking->ref_no = $request->input('ref_no');
             $setting = Setting::find(1);
-            $booking->ref_no = 'CS' . $booking->loadPort->code . substr($booking->dischargePort->code, -3) . sprintf(
+            $booking->win_delivery_no = $setting->win_delivery_no += 1;
+            $setting->save();
+        }elseif (Auth::user()->company_id == 3 &&  optional($quotation)->shipment_type == "Export") {
+            $setting = Setting::find(1);
+            $booking->ref_no = 'WIN' . substr($booking->loadPort->code, -3) . substr($booking->dischargePort->code, -3) 
+            . sprintf(
                     '%06u',
-                    $setting->booking_ref_no
+            $setting->win_booking_ref_no
+                );
+            $setting->win_booking_ref_no += 1;
+            $setting->save();
+    
+        }elseif (optional($quotation)->shipment_type == "Export") {
+            $setting = Setting::find(1);
+            $booking->ref_no = 'CSDALY' //. $booking->loadPort->code . substr($booking->dischargePort->code, -3) 
+            . sprintf(
+                    '%06u',
+            $setting->booking_ref_no
                 );
             $setting->booking_ref_no += 1;
             $setting->save();
@@ -355,11 +371,7 @@ class BookingController extends Controller
             $setting = Setting::find(1);
             $booking->deleviry_no = $setting->delivery_no += 1;
             $setting->save();
-        } elseif (Auth::user()->company_id == 3){
-            $booking->ref_no = $request->input('ref_no');
-            $setting = Setting::find(1);
-            $booking->win_delivery_no = $setting->win_delivery_no += 1;
-            $setting->save();
+
         }else{
             $booking->ref_no = $request->input('ref_no');
         }

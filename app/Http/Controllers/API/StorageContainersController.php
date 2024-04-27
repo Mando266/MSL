@@ -17,7 +17,6 @@ class StorageContainersController extends Controller
     {
         $bl = BlDraft::where('id',$id)->first();
         $mov = Movements::where('bl_no', $bl->ref_no)->where('company_id',$company_id)->distinct()->get()->pluck('container_id')->toarray();
-
         $containers = Containers::whereIn('id',$mov)->get();
 
         return Response::json([
@@ -28,9 +27,7 @@ class StorageContainersController extends Controller
     public function getStorageTriffs($service,$company_id)
     {
         $now = Carbon::now()->format('Y-m-d');
-
         $triffs = Demurrage::where('company_id', $company_id)->where('validity_to', '>=', $now)->where('tariff_type_id', $service)->with('tarriffType')->get();
-
         $data = [];
         foreach ($triffs as $triff) {
             $rowData = [
@@ -38,6 +35,7 @@ class StorageContainersController extends Controller
                 'tariffTypeCode' => $triff->tarriffType->code,
                 'tariffTypeDesc' => $triff->tarriffType->description,
                 'portsCode' => optional($triff->ports)->code,
+                'containersType'=>optional($triff->containersType)->name,
                 'validfrom' => $triff->validity_from,
                 'validto' => $triff->validity_to,
             ];
@@ -45,7 +43,7 @@ class StorageContainersController extends Controller
         }
 
         return Response::json([
-            'triffs' => $data
+            'triffs' => $dat
         ],200);
     }
 }

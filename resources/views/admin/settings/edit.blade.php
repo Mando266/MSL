@@ -20,23 +20,23 @@
                         <div class="form-row">
                             <div class="form-group col-md-3" >
                                 <label>Invoice Draft Serial</label>
-                                    <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{old('invoice_draft',$setting->invoice_draft)}}" style="background-color:#fff" name="invoice_draft">
+                                    <input type="text" class="form-control" placeholder="Invoice Draft Serial" autocomplete="off" value="{{old('invoice_draft',$setting->invoice_draft)}}" style="background-color:#fff" name="invoice_draft">
                                     
                             </div> 
                             <div class="form-group col-md-3" >
                                 <label>Invoice Confirmed Serial</label>
-                                    <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{old('invoice_confirm',$setting->invoice_confirm)}}" style="background-color:#fff" name="invoice_confirm">
+                                    <input type="text" class="form-control" placeholder="Invoice Confirmed Serial" autocomplete="off" value="{{old('invoice_confirm',$setting->invoice_confirm)}}" style="background-color:#fff" name="invoice_confirm">
                                     
                             </div>
                             <div class="form-group col-md-3" >
                                 <label>Debit Draft Serial</label>
-                                    <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{old('debit_draft',$setting->debit_draft)}}" style="background-color:#fff" name="debit_draft">
+                                    <input type="text" class="form-control" placeholder="Debit Draft Serial" autocomplete="off" value="{{old('debit_draft',$setting->debit_draft)}}" style="background-color:#fff" name="debit_draft">
                                     
                             </div>
                             <div class="form-group col-md-3" >
                                 <label>Debit Confirmed Serial</label>
                                     
-                                    <input type="text" class="form-control" placeholder="Place Of Acceptence" autocomplete="off" value="{{old('debit_confirm',$setting->debit_confirm)}}" style="background-color:#fff" name="debit_confirm">
+                                    <input type="text" class="form-control" placeholder="Debit Confirmed Serial" autocomplete="off" value="{{old('debit_confirm',$setting->debit_confirm)}}" style="background-color:#fff" name="debit_confirm">
                                     
                             </div>
                         </div>
@@ -59,9 +59,13 @@
                             </div>
                         </div>
                         <div class="form-row">
-                        <div class="form-group col-md-3" >
+                            <div class="form-group col-md-3" >
                                 <label>WinWin Deleviry Order NO</label>
                                     <input type="text" class="form-control" placeholder="Deleviry Order NO" autocomplete="off" value="{{old('win_delivery_no',$setting->win_delivery_no )}}" style="background-color:#fff" name="win_delivery_no">
+                            </div>
+                            <div class="form-group col-md-3" >
+                                <label>WinWin Booking REf NO</label>
+                                    <input type="text" class="form-control" placeholder="Booking REf NO" autocomplete="off" value="{{old('win_booking_ref_no',$setting->win_booking_ref_no )}}" style="background-color:#fff" name="win_booking_ref_no">
                             </div>
                             <div class="form-group col-md-3" >
                                 <label>Refund NO</label>
@@ -70,6 +74,16 @@
                             <div class="form-group col-md-3" >
                                 <label>Trucker Certificate NO</label>
                                     <input type="text" class="form-control" placeholder="Trucker Certificate NO" autocomplete="off" value="{{old('trucker_cer_no',$setting->trucker_cer_no )}}" style="background-color:#fff" name="trucker_cer_no">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3" >
+                                <label>Winwin Invoice Confirmed Serial</label>
+                                    <input type="text" class="form-control" placeholder="Winwin Invoice Confirmed Serial" autocomplete="off" value="{{old('invoice_win_confirm',$setting->invoice_win_confirm)}}" style="background-color:#fff" name="invoice_win_confirm">   
+                            </div>
+                            <div class="form-group col-md-3" >
+                                <label>Winwin Debit Confirmed Serial</label>
+                                    <input type="text" class="form-control" placeholder="Winwin Debit Confirmed Serial" autocomplete="off" value="{{old('debit_win_confirm',$setting->debit_win_confirm)}}" style="background-color:#fff" name="debit_win_confirm">   
                             </div>
                         </div>
                             <div class="row">

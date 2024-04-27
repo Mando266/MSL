@@ -47,15 +47,26 @@
                 </br>
                 @php
                 $mytime = Carbon\Carbon::now();
-                $containerCount = 0;
-                $firstContainerDetail = $booking->bookingContainerDetails->first();
-                $containerType = optional(optional($firstContainerDetail)->containerType)->name;
-                $haz = optional($firstContainerDetail)->haz;
-                foreach($booking->bookingContainerDetails as $detail){
-                    $containerCount = $containerCount + $detail->qty;
+                $containerTypes = []; 
+
+                foreach ($booking->bookingContainerDetails as $detail) {
                     $containerType = optional($detail->containerType)->name;
+                    $haz = $detail->haz;
+                    
+                    if (!isset($containerTypes[$containerType])) {
+                        $containerTypes[$containerType] = 0;
+                    }
+                    
+                    $containerTypes[$containerType] += $detail->qty;
                 }
+
+                $containerDetailsDisplay = [];
+                foreach ($containerTypes as $type => $count) {
+                    $containerDetailsDisplay[] = "$type * $count";
+                }
+
                 @endphp
+
                 <table class="col-md-12 tableStyle" >
                     <tbody>
                         <tr>
@@ -106,6 +117,11 @@
                             <td class="col-md-3 tableStyle text-right underline" >العميل</td>
                         </tr>
                         @else
+                        <tr>
+                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional($booking->customer)->name}} <br>
+                        </td>
+                            <td class="col-md-3 tableStyle text-right underline" >العميل</td>
+                        </tr>
                         @endif
                         <tr>
                             <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{ $booking->ref_no }}</td>
@@ -142,12 +158,18 @@
                         </tr>
                         @endif
                         <tr>
-                            <td class="col-md-9 tableStyle" >&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{$containerCount}} X {{$containerType}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">
+                            @foreach($containerDetailsDisplay as $containerType => $count)
+                                {{ $count }}<br>
+                            @endforeach
+                        </td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
                         @if(optional($booking->quotation)->shipment_type != "Import" || optional($booking)->shipment_type != "Import")
                         <tr>
-                        <td class="col-md-9 tableStyle"><textarea style="margin-bottom: -40px; border: none; resize: none; background-color: white;"></textarea></td>
+                        @foreach($booking->truckerGates as $truckerGate)
+                        <td class="col-md-9 tableStyle">&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp{{optional(optional($truckerGate)->trucker)->company_name}} </td>
+                        @endforeach
                         <td class="col-md-3 tableStyle text-right underline">
                        مقاول النقل </td>
                         </tr>
@@ -222,7 +244,13 @@
     </tbody>
 </table>
             </div>
-
+            <div class="form-row">
+                                <div class="col-md-12 form-group">
+                                    <label> Notes </label>
+                                    <textarea class="form-control" name="notes">
+                                    </textarea>
+                                </div>
+                            </div>
             @if(optional($booking->quotation)->shipment_type != "Import")
                 <table class="col-md-12 tableStyle" >
                     <tbody>

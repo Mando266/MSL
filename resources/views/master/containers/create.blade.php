@@ -162,6 +162,12 @@
                                     </div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-8 form-group">
+                                    <label>Notes</label>
+                                    <textarea class="form-control" name="notes"></textarea>
+                                </div>
                                 <div class="form-group col-md-4">
                                     <div class="custom-file-container" data-upload-id="certificat">
                                         <label> <span style="color:#3b3f5c" ;> Certificate </span><a
@@ -184,6 +190,27 @@
                                     @enderror
                                 </div>
                             </div>
+                            <hr/>
+                        <table id="containerRepairs" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Invoice NO</th>
+                                    <th>Invoice Date</th>
+                                    <th>supplier</th>
+                                    <th>Part Code</th>
+                                    <th>Description</th>
+                                    <th>Repair Date</th>
+                                    <th>qty</th>
+                                    <th>Price</th>
+                                    <th>Hours</th>
+                                    <th>Labor</th>
+                                    <th>Total</th>
+                                    <th>
+                                        <a id="add"> Add Repair <i class="fas fa-plus"></i></a>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
 
                             <div class="row">
                                 <div class="col-md-12 text-center">
@@ -238,4 +265,32 @@
 
 
     </style>
+@endpush
+@push('scripts')
+    <script>
+        $(document).ready(function(){
+            $("#containerRepairs").on("click", ".remove", function () {
+            $(this).closest("tr").remove();
+            });
+        var counter  = 1;
+            $("#add").click(function(){
+                    var tr = '<tr>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][invoice_no]" class="form-control" autocomplete="off" placeholder="Invoice oN"></td>'+
+                '<td><input type="date" name="containerRepairs['+counter+'][invoice_date]" class="form-control" autocomplete="off" placeholder="Invoice Date"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][supplier]" class="form-control" autocomplete="off" placeholder="Supplier"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][part_code]" class="form-control" autocomplete="off" placeholder="Part Code"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][part_description]" class="form-control" autocomplete="off" placeholder="Description"></td>'+
+                '<td><input type="date" name="containerRepairs['+counter+'][repair_date]" class="form-control" autocomplete="off" placeholder="Repair Date"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][qty]" class="form-control" autocomplete="off" placeholder="Qty"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][price]" class="form-control" autocomplete="off" placeholder="Price"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][hours]" class="form-control" autocomplete="off" placeholder="Hours"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][labor]" class="form-control" autocomplete="off" placeholder="Labor"></td>'+
+                '<td><input type="text" name="containerRepairs['+counter+'][total]" class="form-control" autocomplete="off" placeholder="Total"></td>'+
+                '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+                '</tr>';
+                counter++;
+                $('#containerRepairs').append(tr);
+            });
+        });
+    </script>
 @endpush

@@ -87,7 +87,7 @@
                                         @forelse ($items as $item)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{{optional($item->tarriffType)->description}}} - {{{optional($item->ports)->code}}} - {{$item->tariff_id}}</td>
+                                            <td>{{{optional($item->tarriffType)->description}}} - {{{optional($item->ports)->code}}} - {{$item->tariff_id}} - {{{optional($item->containersType)->name}}} </td>
                                             <td>{{$item->validity_from}}</td>
                                             <td>{{$item->validity_to}}</td>
                                            <td class="text-center">
@@ -136,7 +136,3 @@
         </div>
     </div>
 @endsection
-{{-- const date1 = new Date('7/13/2010');
-const date2 = new Date('12/15/2010');
-const diffTime = Math.abs(date2 - date1);
-console.log(diffDays + "days"); --}}

@@ -35,7 +35,8 @@ class ContainersExport implements FromCollection, WithHeadings
             "PRODUCTION YEAR",
             "Container Ownership",
             "SOC/COC",
-            "Transhipment OR Not"
+            "Transhipment OR Not",
+            "Notes"
         ];
     }
 
@@ -66,6 +67,7 @@ class ContainersExport implements FromCollection, WithHeadings
                 'lessor' => optional($container->seller)->name,
                 'soc_coc' => $container->SOC_COC,
                 'is_transhipment' => $transhipment,
+                'notes' => $notes,
             ]);
             $exportContainers->add($tempCollection);
         }
