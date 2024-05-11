@@ -30,8 +30,7 @@ class InvoiceController extends Controller
 
         $invoices = Invoice::filter(new InvoiceIndexFilter(request()))
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')
-        ->orderByRaw('ISNULL(portal_status), portal_status ASC')
-
+        ->orderByRaw('ISNULL(portal_status), portal_status desc')
         ->get(); // Get all receipts from the database
 
         $sortedInvoices = $invoices->sortByDesc(function ($invoice) {

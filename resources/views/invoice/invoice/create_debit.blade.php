@@ -194,8 +194,10 @@
                                         <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{(optional($bldraft->booking->quotation)->ofr) * $qty }}"
                                             placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                                         </td>
-                                        <td><input type="text" class="form-control" id="calculated_amount" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
-                                        <td><input type="text" class="form-control" id="calculated_total_amount" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="calculated_amount" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount_vat" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
+
                                     </tr>
                                     @else
                                     <tr>
@@ -211,7 +213,7 @@
                                         </select>
                                             <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[0][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value ="Ocean Freight" > -->
                                         </td>
-                                        <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{$detentionAmount}}"
+                                        <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[0][size_small]" value="{{$detentionAmount  / $qty}}"
                                             placeholder="Weight" autocomplete="off" disabled style="background-color: white;">
                                         </td>
                                         <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value="{{$detentionAmount}}"
@@ -367,6 +369,12 @@
             $('#calculated_total_amount').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
         } else {
             $('#calculated_total_amount').val(''); // Clear calculated amount if inputs are not valid
+        }
+        if (!isNaN(rateValue) && !isNaN(totalAmount)) {
+            let calculatedTotalAmount = rateValue * totalAmount;
+            $('#calculated_total_amount_vat').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
+        } else {
+            $('#calculated_total_amount_vat').val(''); // Clear calculated amount if inputs are not valid
         }
     }
 

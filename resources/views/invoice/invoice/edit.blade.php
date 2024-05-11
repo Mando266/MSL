@@ -189,6 +189,7 @@
                                         <label class="form-check-label" for="add_egp">
                                           EGP
                                         </label>
+                                        
                                     </div>
                                 </div>
                                 @else
