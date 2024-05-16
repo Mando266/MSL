@@ -30,7 +30,7 @@ class InvoiceController extends Controller
 
         $invoices = Invoice::filter(new InvoiceIndexFilter(request()))
         ->where('company_id',Auth::user()->company_id)->with('chargeDesc','bldraft','receipts')
-        ->orderBy('id', 'desc')
+        ->orderByRaw('ISNULL(portal_status), portal_status desc')
         ->get(); // Get all receipts from the database
 
         $sortedInvoices = $invoices->sortByDesc(function ($invoice) {
@@ -179,7 +179,6 @@ class InvoiceController extends Controller
                 $cart->triffText = "Port Storage";
             }
         }
-
         return view('invoice.invoice.create_invoice', [
             'bldrafts' => $bldrafts,
             'cartData' => $cartData ?? null,
@@ -216,7 +215,6 @@ class InvoiceController extends Controller
             $equipmentTypes = ContainersTypes::orderBy('id')->get();
             $bookings  = Booking::orderBy('id','desc')->where('company_id',Auth::user()->company_id)->get();
             $customers = Customers::where('company_id',Auth::user()->company_id)->get();
-
 
             return view('invoice.invoice.create_customize_debit',[
                 'shippers'=>$shippers,
