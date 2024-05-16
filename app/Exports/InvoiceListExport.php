@@ -119,7 +119,7 @@ class InvoiceListExport implements FromCollection,WithHeadings
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional($VoyagePort)->eta,
                     'etd' => optional($VoyagePort)->etd,
-                    'date' => $invoice->date,
+                    'date' => $invoice->created_at->format('Y-m-d'),
                     'type' => $invoice->type,
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
                     'total usd' => $total,

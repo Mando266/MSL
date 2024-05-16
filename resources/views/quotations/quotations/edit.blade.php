@@ -220,6 +220,8 @@
                                 <input type="checkbox" id="oog" name="oog" value="1" {{$quotation->oog == 1 ? 'checked="checked"' : '' }}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> OOG </a>
 
                                 <input type="checkbox" id="rf" name="rf" value="1" {{$quotation->rf == 1 ? 'checked="checked"' : '' }}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> RF </a>
+
+                                <input type="checkbox" id="nor" name="nor" value="1" {{$quotation->nor == 1 ? 'checked="checked"' : '' }}><a style="font-size: 15px; color: #3b3f5c; letter-spacing: 1px; margin-right: 10px;"> NOR </a>
                                 </div>
                             </div>
                         </div>

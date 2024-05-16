@@ -214,7 +214,8 @@
                                         <br>
                                         <input class="form-check-input" type="radio" name="rate" id="custom_rate_radio" >
                                             <label class="form-check-label" for="custom_rate_radio">Custom Rate</label>
-                                        <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;" placeholder="Enter custom rate">
+                                        <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;"  
+                                        placeholder="Enter custom rate">
                                     </div>
                                 </div>
                                 @endif
@@ -333,10 +334,8 @@
                             </thead>
                             <tbody>
                      @foreach($invoice_details as $key => $item)
-
                         <tr>
                             <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
-
                             <td>
                                 <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
                                     title="{{trans('forms.select')}}" autofocus >
@@ -352,14 +351,14 @@
                             <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
                                 placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                             </td>
+                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_amount" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
+                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount_vat" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
                         </tr>
                         @endforeach
-
                         </tbody>
                     </table>
                     @endif
-
-
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary mt-3">Confirm</button>
@@ -524,5 +523,99 @@ $(document).ready(function(){
 
     });
 });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#createForm').submit(function() {
+            $('input, select').removeAttr('disabled');
+        });
+
+        function updateAmount() {
+            var rateValue;
+            if ($('#custom_rate_radio').is(':checked') && $('#custom_rate_input').val()) {
+                rateValue = parseFloat($('#custom_rate_input').val()); // Use custom rate if custom radio is selected and value is entered
+            } else {
+                rateValue = parseFloat($("input[name='rate']:checked").data('rate')); // Otherwise, use the rate associated with the selected radio button
+            }
+            var sizeSmallValue = parseFloat($('#size_small').val());
+
+            // Check if both values are numbers and valid
+            if (!isNaN(rateValue) && !isNaN(sizeSmallValue)) {
+                var calculatedAmount = rateValue * sizeSmallValue;
+                $('#calculated_amount').val(calculatedAmount.toFixed(2)); // Formats the result to 2 decimal places
+            } else {
+                $('#calculated_amount').val(''); // Clear calculated amount if inputs are not valid
+            }
+        }
+
+        // Set initial data-rate values from server or defaults
+        $('#rate1').data('rate', {{ optional($bldraft->voyage)->exchange_rate ?? 'default_rate_value' }});
+        $('#exchange_rate2').data('rate', {{ optional($bldraft->voyage)->exchange_rate_etd ?? 'default_rate_value_etd' }});
+
+        // Event listeners for changes in the rate selection, size small input, or custom rate input
+        $("input[name='rate']").change(updateAmount);
+        $('#size_small').on('input', updateAmount);
+        $('#custom_rate_input').on('input', updateAmount);
+
+        // Show or hide the custom rate input field based on the custom rate radio button
+        $('#custom_rate_radio').change(function() {
+            if (this.checked) {
+                $('#custom_rate_input').show();
+            } else {
+                $('#custom_rate_input').hide();
+                $('#custom_rate_input').val(''); // Clear custom rate when hiding the input
+            }
+            updateAmount(); // Ensure amount updates when switching between rate options
+        });
+
+        // Initial call to update the amount on page load
+        updateAmount();
+    });
+    $(document).ready(function() {
+    // Fetch initial values and set event listeners
+    $('#custom_rate_radio').change(toggleCustomRateInput);
+    $("input[name='rate']").change(calculateTotalAmount);
+    $('#custom_rate_input').on('input', calculateTotalAmount);
+
+    // Function to toggle the custom rate input visibility
+    function toggleCustomRateInput() {
+        if ($('#custom_rate_radio').is(':checked')) {
+            $('#custom_rate_input').show();
+        } else {
+            $('#custom_rate_input').hide().val('');  // Clear and hide the custom rate input
+        }
+    }
+
+    // Function to calculate the total amount based on the selected rate and the base total amount
+    function calculateTotalAmount() {
+        let rateValue;
+        if ($('#custom_rate_radio').is(':checked') && $('#custom_rate_input').val()) {
+            rateValue = parseFloat($('#custom_rate_input').val()); // Use custom rate if custom radio is selected and value is entered
+        } else {
+            rateValue = parseFloat($("input[name='rate']:checked").data('rate')); // Use the rate associated with the selected radio button
+        }
+        
+        let totalAmount = parseFloat($('#ofr').val()); // Fetch the current total amount from the charges table
+        
+        // Calculate the new total amount if both rate and base amount are valid numbers
+        if (!isNaN(rateValue) && !isNaN(totalAmount)) {
+            let calculatedTotalAmount = rateValue * totalAmount;
+            $('#calculated_total_amount').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
+        } else {
+            $('#calculated_total_amount').val(''); // Clear calculated amount if inputs are not valid
+        }
+        if (!isNaN(rateValue) && !isNaN(totalAmount)) {
+            let calculatedTotalAmount = rateValue * totalAmount;
+            $('#calculated_total_amount_vat').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
+        } else {
+            $('#calculated_total_amount_vat').val(''); // Clear calculated amount if inputs are not valid
+        }
+    }
+
+    // Initial setup and calculations
+    toggleCustomRateInput(); // Ensure correct visibility state for the custom rate input
+    calculateTotalAmount(); // Calculate the total amount initia=y
+});
+
 </script>
 @endpush

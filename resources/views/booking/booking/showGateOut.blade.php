@@ -94,9 +94,9 @@
                     يرجي التكرم بالسماح بصرف الحاويات ادناه من الدائره الجمركيه حتي يوم </td>
                         </tr>
                         <tr>
-                            <td class="tableStyle text-right underline" colspan="2">
+                            <!-- <td class="tableStyle text-right underline" colspan="2">
                                 <textarea style="margin-bottom: -40px; text-align: right; border: none; resize: none; background-color: white;"></textarea>
-                  تم تحصيل مصاريف الطاقة حتي يوم </td>
+                  تم تحصيل مصاريف الطاقة حتي يوم </td> -->
                         </tr>
                     @else
                         <tr>

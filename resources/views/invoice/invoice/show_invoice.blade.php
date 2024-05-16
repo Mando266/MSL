@@ -32,7 +32,7 @@
                     <thead>
                         <tr>
 
-                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import")
+                            @if(optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" || $invoice->booking_status == 1)
                                 @if($invoice->invoice_status == "draft")
                                 <th class="text-center  underline" style="font-size: 24px !important;">IMPORT PROFORMA INVOICE</th>
                                 @else
