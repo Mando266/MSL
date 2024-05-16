@@ -128,7 +128,7 @@ class InvoiceBreakdownExport implements FromCollection,WithHeadings
                     'vessel' => $invoice->bldraft_id == 0 ? optional(optional($invoice->voyage)->vessel)->name : optional($invoice->bldraft->voyage->vessel)->name,
                     'eta' => optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->eta : optional($VoyagePort)->eta,
                     'etd' => optional(optional(optional($invoice->bldraft)->booking)->quotation)->shipment_type == "Import" && optional($invoice->bldraft->booking)->transhipment_port != null ? optional($secondVoyagePortdis)->etd : optional($VoyagePort)->etd,
-                    'date' => $invoice->date,
+                    'date' => $invoice->created_at->format('Y-m-d'),
                     'type' => $invoice->type,
                     'payment_kind' => optional($invoice->bldraft)->payment_kind,
                     'STATUS' => $invoice->invoice_status,
