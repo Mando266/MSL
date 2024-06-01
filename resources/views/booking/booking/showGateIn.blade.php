@@ -101,7 +101,22 @@
                             <td class="col-md-3 tableStyle text-right underline" >متوقع الوصول</td>
                         </tr>
                         <tr>
-                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">{{$containerCount}} X {{$containerType}}</td>
+                            <td class="col-md-9 tableStyle" style="padding-left: 80px;">
+                            @php
+                                $containerTypes = $booking->bookingContainerDetails->pluck('containerType.name')->unique();
+                            @endphp
+                            @if($containerTypes->count() > 1)
+                                @foreach($booking->bookingContainerDetails as $detail)
+                                    {{ $detail->qty }} X {{ optional($detail->containerType)->name }} <br>
+                                @endforeach
+                            @else
+                                @php
+                                    $totalQty = $booking->bookingContainerDetails->sum('qty');
+                                    $singleType = $booking->bookingContainerDetails->first();
+                                @endphp
+                                {{ $totalQty }} X {{ optional($singleType->containerType)->name }}
+                            @endif
+                            </td>
                             <td class="col-md-3 tableStyle text-right underline" >عدد الحاويات</td>
                         </tr>
                     </tbody>
@@ -109,7 +124,7 @@
                 <div class="row">
                 <div class="col-md-1">
 
-</div>
+                </div>
 <table class="col-md-10 tableStyle" >
     <tbody>
         <tr>

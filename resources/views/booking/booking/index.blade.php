@@ -277,6 +277,7 @@
                                         $qty = 0;
                                         $assigned = 0;
                                         $unassigned = 0;
+                                        $containerTypes = $item->bookingContainerDetails->pluck('containerType.name')->unique();
                                         ?>
                                     @foreach($item->bookingContainerDetails as $bookingContainerDetail)
                                             <?php
@@ -315,8 +316,13 @@
                                         <td>{{optional($item->dischargePort)->code}}</td>
                                         <td>
                                             <table style="border: hidden;">
-                                                @if($item->bookingContainerDetails->count() > 0)
+                                                <!-- @if($item->bookingContainerDetails->count() > 0)
                                                     <td>{{ optional($item->bookingContainerDetails[0]->containerType)->name }}</td>
+                                                @endif -->
+                                                @if($containerTypes->isNotEmpty())
+                                                    <td>
+                                                    {!! $containerTypes->implode('<br>') !!}
+                                                    </td>
                                                 @endif
                                             </table>
                                         </td>

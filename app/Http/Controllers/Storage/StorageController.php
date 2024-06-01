@@ -85,7 +85,6 @@ class StorageController extends Controller
                 $mov = Movements::where('bl_no', $bl_no)->where('company_id', Auth::user()->company_id)->distinct()->get()->pluck('container_id')->toarray();
                 $containers = Containers::whereIn('id', $mov)->get();
                 // Searching in container movements For the begining movement to the end move to get the difference in days
-
                 $grandTotal = 0;
                 foreach ($containers as $container) {
                     $periodCalc = collect();
@@ -103,13 +102,14 @@ class StorageController extends Controller
                     }
                     //No till date and no movement to selected
                     if ($request->date == null && $request->to == null) {
-                        $toMovement = Movements::where('container_id', $container->id)
+                        $toMovement = Movements::where('container_id', $container->id)->where('movement_id', 6)
                             ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
+
                     } elseif ($request->date == null) {
                         $toMovement = Movements::where('container_id', $container->id)->where('movement_id', $request->to)
                             ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
                     } else {
-                        $toMovement = Movements::where('container_id', $container->id)
+                        $toMovement = Movements::where('container_id', $container->id)->where('movement_id', 6)
                             ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
                         if ($toMovement == null) {
                             $toMovement = $request->date;
@@ -126,6 +126,7 @@ class StorageController extends Controller
                         }
                         if (request('from_date') != null) {
                             $diffBetweenDates = Carbon::parse($fromMovementDate)->diffInDays(request('from_date'));
+
                         }
                     } else {
                         // if there is no till movement
@@ -135,6 +136,7 @@ class StorageController extends Controller
                             $diffBetweenDates = Carbon::parse($fromMovementDate)->diffInDays(request('from_date'));
                         }
                     }
+
                     $daysCount = $daysCount + 1;
                     $tempDaysCount = $daysCount;
                     if (request()->service == 3) {
@@ -158,6 +160,7 @@ class StorageController extends Controller
                                                 $tempDaysCount = $tempDaysCount - $period->number_off_dayes;
                                                 $quotationFreeTime = $quotationFreeTime - $period->number_off_dayes;
                                                 $days = $period->number_off_dayes;
+
                                                 if ($diffBetweenDates != 0) {
                                                     $days = $days - $diffBetweenDates;
                                                     $days = $days < 0 ? 0 : $days;
@@ -324,6 +327,7 @@ class StorageController extends Controller
                         'container_type' => $container->containersTypes->name,
                         'from' => request('from_date') != null ? request('from_date') : $fromMovementDate,
                         'to' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movement_date : $toMovement) : $now,
+                        //dd($toMovement),
                         'from_code' => optional(optional($fromMovement)->movementcode)->code,
                         'to_code' => $toMovement != null ? (optional($toMovement)->movement_date != null ? $toMovement->movementcode->code : $toMovement) : $now,
                         'total' => $containerTotal,
@@ -352,6 +356,7 @@ class StorageController extends Controller
                     if ($request->date == null && $request->to == null) {
                         $toMovement = Movements::where('container_id', $container->id)
                             ->where('movement_date', '>', $fromMovementDate)->oldest()->first();
+
                     } elseif ($request->date == null) {
                         $toMovement = Movements::where('container_id', $container->id)->where('movement_id', $request->to)
                             ->where('movement_date', '>', $fromMovementDate)->oldest()->first();

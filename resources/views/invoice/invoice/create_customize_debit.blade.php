@@ -178,6 +178,10 @@
                                     <label>QTY<span class="text-warning"> * (Required.) </span></label>
                                         <input type="text" class="form-control" placeholder="Qty" name="qty" autocomplete="off" style="background-color:#fff" required>
                                 </div>
+                                <div class="form-group col-md-3" >
+                                    <label>Exchange Rate</label>
+                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="47.15" autocomplete="off"  style="background-color:#fff" required>
+                                </div>
                             </div> 
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
@@ -203,7 +207,7 @@
                                                 id="Charge Description" data-live-search="true"
                                                 name="invoiceChargeDesc[0][charge_description]"
                                                 data-size="10"
-                                                title="{{trans('forms.select')}}">
+                                                title="{{trans('forms.select')}}" requierd>
                                             @foreach ($charges as $item)
                                                 <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>
                                             @endforeach
@@ -226,6 +230,10 @@
                                         <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[0][total_amount]" value=""
                                             placeholder="Total" autocomplete="off" disabled style="background-color: white;" required>
                                         </td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="egy_amount" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="total_egy" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                                        <td style="display: none;"><input type="hidden" class="form-control" id="egp_vat" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
+
                                     </tr>
                                 </tbody>
                             </table> 
@@ -244,46 +252,6 @@
 </div>
 @endsection
 @push('scripts')
-<script>
-    $(document).on('input', 'input[name="qty"]', function() {
-        var qty = $(this).val();
-        $('#debit tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-        });
-    });
-    $('body').on('input', 'input[name$="[size_small]"]', function() {
-    // Get the current row
-    var row = $(this).closest('tr');
-
-    // Get the qty value from the QTY input field
-    var qty = $('input[name="qty"]').val();
-
-    // Get the size_small value from the current row
-    var sizeSmall = $(this).val();
-
-    // Get the enabled value from the current row
-    var enabled = row.find('input[name$="[enabled]"]:checked').val();
-
-    // Calculate the total amount and update the total_amount input field of the current row
-    var totalAmount = enabled == 1 ? qty * sizeSmall : sizeSmall;
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-});
-$('body').on('change', 'input[name$="[enabled]"]', function() {
-    var row = $(this).closest('tr');
-    var sizeSmall = row.find('input[name$="[size_small]"]').val();
-    var qty = $('input[name="qty"]').val();
-    var totalAmount = 0;
-    if($(this).val() == 1) {
-        totalAmount = sizeSmall * qty;
-    } else {
-        totalAmount = sizeSmall;
-    }
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-});
-</script>
 <script>
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
@@ -311,10 +279,13 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
         var counter  = 1;
         $("#add").click(function(){
            var tr = '<tr>'+
-               '<td><select class="selectpicker form-control" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10" title="{{trans('forms.select')}}"> @foreach ($charges as $item) <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>@endforeach</select></td>' +
+               '<td><select class="selectpicker form-control" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10" title="{{trans('forms.select')}}"> @foreach ($charges as $item) <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}} requierd>{{$item->name}}</option>@endforeach</select></td>' +
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Rate" required></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][total_amount]" class="form-control" autocomplete="off" placeholder="Total" disabled required></td>'+
+               '<td style="display: none;"><input type="hidden" class="form-control" id="egy_amount" name="invoiceChargeDesc['+counter+'][egy_amount]" disabled></td>'+
+               '<td style="display: none;"><input type="hidden" class="form-control" id="total_egy" name="invoiceChargeDesc['+counter+'][total_egy]" disabled></td>'+
+               '<td style="display: none;"><input type="hidden" class="form-control" id="egp_vat" name="invoiceChargeDesc['+counter+'][egp_vat]" disabled></td>'+
                '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
            '</tr>';
            counter++;
@@ -324,5 +295,36 @@ $('body').on('change', 'input[name$="[enabled]"]', function() {
 
         });
     }); 
+    </script>
+
+    <script>
+        function calculateAmounts() {
+            $('#debit tbody tr').each(function() {
+                let row = $(this);
+                let qty = parseFloat($('input[name="qty"]').val()) || 0;
+                let exchangeRate = parseFloat($('input[name="customize_exchange_rate"]').val()) || 0;
+                let sizeSmall = parseFloat(row.find('input[name*="[size_small]"]').val()) || 0;
+                let enabled = row.find('input[name*="[enabled]"]:checked').val() == "1";
+
+                let totalAmount = enabled ? sizeSmall * qty : sizeSmall;
+                let egyAmount = sizeSmall * exchangeRate;
+                let totalEgy = totalAmount * exchangeRate;
+
+                row.find('input[name*="[total_amount]"]').val(totalAmount.toFixed(2));
+                row.find('input[name*="[egy_amount]"]').val(egyAmount.toFixed(2));
+                row.find('input[name*="[total_egy]"]').val(totalEgy.toFixed(2));
+                row.find('input[name*="[egp_vat]"]').val(totalEgy.toFixed(2));
+            });
+        }
+
+        $(document).on('input', 'input[name="qty"], input[name="customize_exchange_rate"], input[name*="[size_small]"]', function() {
+            calculateAmounts();
+        });
+
+        $(document).on('change', 'input[name*="[enabled]"]', function() {
+            calculateAmounts();
+        });
+
+        calculateAmounts();
     </script>
 @endpush

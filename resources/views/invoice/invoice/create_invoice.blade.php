@@ -45,10 +45,6 @@
                                                 Shipper
                                             </option>
                                         @endif
-                                        <!-- <option value="add">Add</option>
-                                        @foreach($customers as $customer)
-                                            <option value="{{ $customer->id }}" class="additional-option">{{ $customer->name }}</option>
-                                        @endforeach -->
                                     </select>
                                     @error('customer_id')
                                     <div style="color: red;">
@@ -172,7 +168,7 @@
                                 </div>
                                 <div class="col-md-2 form-group ">
                                     <label>Exchange Rate</label>
-                                    <input class="form-control"  type="text" name="customize_exchange_rate" id="exchange_rate" placeholder="Exchange Rate" autocomplete="off" value='47.5'>
+                                    <input class="form-control"  type="text" name="customize_exchange_rate" id="exchange_rate" placeholder="Exchange Rate" autocomplete="off" value='47.15' required>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <div style="padding: 30px;">
@@ -200,7 +196,7 @@
                                 <div class="col-md-3 form-group">
                                     <label> VAT % </label>
                                     <input type="text" class="form-control" placeholder="VAT %" name="vat"
-                                           autocomplete="off" value="0" style="background-color:#fff" required>
+                                           autocomplete="off" value="14" style="background-color:#fff" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -500,104 +496,96 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
-        $('#createForm').submit(function () {
-            $('input').removeAttr('disabled');
-        });
-    </script>
-    <script>
-        $('#createForm').submit(function () {
-            $('select').removeAttr('disabled');
-        });
-    </script>
- <script>
-
-   $(document).ready(function() {
-    // Initially hide additional options
-    $('.additional-option').hide();
-
-    $('#customer').on('change', function() {
-        if ($(this).val() === 'add') {
-            $(this).find('option[value="add"]').remove();
-            $('.additional-option').show();
-            $('#customer').selectpicker('toggle');
-        } else {
-            $('.additional-option').hide();
-        }
-    });
-
+<script>
     $('#createForm').submit(function () {
         $('input').removeAttr('disabled');
+    });
+</script>
+
+<script>
+    $('#createForm').submit(function () {
         $('select').removeAttr('disabled');
     });
+</script>
 
-    let customer = $('#customer');
-    $('#customer').on('change', function (e) {
-        let value = e.target.value;
-        $.get(`/api/master/customers/${customer.val()}`).then(function (data) {
-            let notIfiy = data.customer[0];
-            let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-            notifiy.html(list2.join(''));
+<script>
+    $(function () {
+        let customer = $('#customer');
+        $('#customer').on('change', function (e) {
+            let value = e.target.value;
+            let response = $.get(`/api/master/customers/${customer.val()}`).then(function (data) {
+                let notIfiy = data.customer[0];
+                let notifiy = $('#notifiy').val(' ' + notIfiy.name);
+                notifiy.html(list2.join(''));
+            });
         });
     });
+</script>
 
-    function calculateTotals() {
-        var vat = $('input[name="vat"]').val() / 100;
-        var qty = $('input[name="qty"]').val();
-        var exchangeRate = $('input[name="customize_exchange_rate"]').val();
+<script>
+    function calculateAmounts() {
+        let vat = parseFloat($('input[name="vat"]').val()) / 100;
+        let qty = parseFloat($('input[name="qty"]').val());
+        let exchangeRate = parseFloat($('#exchange_rate').val());  // Get the value from the input field
 
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var add_vat = $(this).find('input[name$="[add_vat]"]:checked').val();
+        $('#charges tbody tr').each(function () {
+            let row = $(this);
+            let sizeSmall = parseFloat(row.find('input[name$="[size_small]"]').val());
+            let enabled = row.find('input[name$="[enabled]"]:checked').val();
+            let add_vat = row.find('input[name$="[add_vat]"]:checked').val();
 
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
-            var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
+            let totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
+            let totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
 
-            $(this).find('input[name$="[total]"]').val(totalAmount);
-            $(this).find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
+            row.find('input[name$="[total]"]').val(totalAmount.toFixed(2));
+            row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
 
-            var egpAmount = totalAmount * exchangeRate;
-            var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
+            let egpAmount = totalAmount * exchangeRate;
+            let egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
 
-            $(this).find('input[name$="[egy_amount]"]').val(egpAmount);
-            $(this).find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
+            row.find('input[name$="[egy_amount]"]').val(egpAmount.toFixed(2));
+            row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
         });
     }
 
-    $(document).on('input', 'input[name="vat"]', calculateTotals);
-    $(document).on('input', 'input[name="customize_exchange_rate"]', calculateTotals);
-    $('body').on('change', 'input[name$="[enabled]"]', calculateTotals);
-    $('body').on('change', 'input[name$="[add_vat]"]', calculateTotals);
-    $('body').on('input', 'input[name$="[size_small]"]', calculateTotals);
-
-    // Calculate totals on page load
-    calculateTotals();
-
-    $("#charges").on("click", ".remove", function () {
-        $(this).closest("tr").remove();
-        calculateTotals(); // Recalculate totals after removing a row
+    $(document).on('input', 'input[name="vat"], input[name="qty"], input[name$="[size_small]"], input[name$="[total]"], #exchange_rate', function() {
+        calculateAmounts();
     });
 
-    var counter = '<?= isset($key) ? ++$key : 0 ?>';
-    $("#add").click(function () {
-        var tr = '<tr>' +
-            '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc[' + counter + '][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>' +
-            '<td><input type="text" name="invoiceChargeDesc[' + counter + '][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>' +
-            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][add_vat]" id="item_' + counter + '_enabled_yes" value="1"><label class="form-check-label" for="item_' + counter + '_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][add_vat]" id="item_' + counter + '_enabled_no" value="0" checked><label class="form-check-label" for="item_' + counter + '_enabled_no">No</label></div></td>' +
-            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_yes" value="1" checked><label class="form-check-label" for="item_' + counter + '_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_no" value="0"><label class="form-check-label" for="item_' + counter + '_enabled_no">No</label></div></td>' +
-            '<td><input type="text" name="invoiceChargeDesc[' + counter + '][total]" class="form-control" autocomplete="off" placeholder="Total" required></td>' +
-            '<td><input type="text" name="invoiceChargeDesc[' + counter + '][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>' +
-            '<td><input type="text" name="invoiceChargeDesc[' + counter + '][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled></td>' +
-            '<td><input type="text" name="invoiceChargeDesc[' + counter + '][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT"></td>' +
-            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-        '</tr>';
-        counter++;
-        $('#charges').append(tr);
-        $('.selectpicker').selectpicker("render");
-        $('#selectpickers').selectpicker();
-        calculateTotals(); // Recalculate totals after adding a new row
+    $(document).on('change', 'input[name$="[enabled]"], input[name$="[add_vat]"]', function() {
+        calculateAmounts();
     });
-});
+
+    $(document).ready(function() {
+        calculateAmounts();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        localStorage.removeItem('cart');
+        $("#charges").on("click", ".remove", function () {
+            $(this).closest("tr").remove();
+        });
+        var counter = '<?= isset($key) ? ++$key : 0 ?>';
+        $("#add").click(function () {
+            var tr = '<tr>' +
+                '<td><select class="selectpicker form-control" data-live-search="true" id="selectpickers" name="invoiceChargeDesc[' + counter + '][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>' +
+                '<td><input type="text" name="invoiceChargeDesc[' + counter + '][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>' +
+                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][add_vat]" id="item_' + counter + '_enabled_yes" value="1"><label class="form-check-label" for="item_' + counter + '_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][add_vat]" id="item_' + counter + '_enabled_no" value="0" checked><label class="form-check-label" for="item_' + counter + '_enabled_no">No</label></div></td>' +
+                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_yes" value="1" checked><label class="form-check-label" for="item_' + counter + '_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_no" value="0"><label class="form-check-label" for="item_' + counter + '_enabled_no">No</label></div></td>' +
+                '<td><input type="text" name="invoiceChargeDesc[' + counter + '][total]" class="form-control" autocomplete="off" placeholder="Total" required></td>' +
+                '<td><input type="text" name="invoiceChargeDesc[' + counter + '][usd_vat]" class="form-control" autocomplete="off" placeholder="USD After VAT" disabled></td>' +
+                '<td><input type="text" name="invoiceChargeDesc[' + counter + '][egy_amount]" class="form-control" autocomplete="off" placeholder="Egp Amount" disabled></td>' +
+                '<td><input type="text" name="invoiceChargeDesc[' + counter + '][egp_vat]" class="form-control" autocomplete="off" placeholder="Egp After VAT"></td>' +
+                '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
+            '</tr>';
+            counter++;
+            $('#charges').append(tr);
+            $('.selectpicker').selectpicker("render");
+            $('#selectpickers').selectpicker();
+        });
+        $('input[name$="[size_small]"]').trigger("input")
+    });
 </script>
 @endpush

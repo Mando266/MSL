@@ -240,7 +240,7 @@
                                             @else
                                             <td></td>
                                             @endif
-                                            <td>{{$rate}}</td>
+                                            <td>{{optional($invoice)->customize_exchange_rate == null ?  $rate : optional($invoice)->customize_exchange_rate}}</td>
                                             <td class="text-center">
                                                 @if($invoice->invoice_status == "confirm")
                                                     <span class="badge badge-success"> Confirm </span>
@@ -250,7 +250,6 @@
                                                     <span class="badge badge-danger"> Draft </span>
                                                 @endif
                                             </td>
-
                                             <td class="text-center">
                                                 @if($invoice->paymentstauts == 1)
                                                     <span class="badge badge-info"> Paid </span>
@@ -272,7 +271,7 @@
                                             <td class="text-center">
                                                  <ul class="table-controls">
 
-                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15 ||  Auth::user()->id == 1)
+                                                @if($invoice->paymentstauts == 0 || Auth::user()->id == 7 || Auth::user()->id == 3 || Auth::user()->id == 15 ||  Auth::user()->id == 1 || Auth::user()->id = 22)
                                                     @permission('Invoice-Edit')
                                                     <li>
                                                         <a href="{{route('invoice.edit',['invoice'=>$invoice->id,'bldraft_id'=>$invoice->bldraft_id])}}" data-toggle="tooltip" target="_blank" data-placement="top" title="" data-original-title="edit">

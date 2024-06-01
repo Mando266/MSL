@@ -32,9 +32,7 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {
         $moveUpdate = Movements::where('id',$row['id'])->first();
-        if (!$moveUpdate){
-            return null;
-        }
+        
         // CHECK if null
         $a = collect($row);
         $z = $a->filter(fn($v)=>$v != null)->toArray();
@@ -94,14 +92,16 @@ class MovementsOvewriteImport implements ToModel,WithHeadingRow
             
             return session()->flash('message',"This Booking NO: {$booking} Not found");
         }
-        try {
+
+       try {
             // code that triggers a pdo exception
-            $dateConvertion = Date::excelToDateTimeObject($row['movement_date'])->format('Y-m-d');
+            $date = Date::excelToDateTimeObject($row['movement_date']);
+            $dateConvertion = $date->format('Y-m-d');
           } catch (Exception $e) {
             $dateConvertion = $row['movement_date'];
           }
           $row['movement_date'] = $dateConvertion;
-        
+
         // Get All movements and sort it and get the last movement before this movement 
 
         $movements = Movements::where('container_id',$row['container_id'])->orderBy('movement_date','desc')->with('movementcode')->get();

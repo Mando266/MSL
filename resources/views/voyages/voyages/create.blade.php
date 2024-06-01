@@ -98,7 +98,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-2">
+                            <!-- <div class="form-group col-md-2">
                                 <label for="exchange_rate">Exchange Rate ETA</label>
                                 <input type="text" class="form-control" id="Exchange" name="exchange_rate" value="{{old('exchange_rate')}}"
                                  placeholder="Exchange Rate" autocomplete="off" autofocus>
@@ -117,8 +117,8 @@
                                     {{$message}}
                                 </div>
                                 @enderror
-                            </div>
-                            <div class="form-group col-md-8">
+                            </div> -->
+                            <div class="form-group col-md-12">
                                 <label for="notes">Notes</label>
                                 <textarea class="form-control" id="notes" name="notes" value="{{old('notes')}}"
                                  placeholder="Notes" autocomplete="off" autofocus></textarea>

@@ -17,6 +17,7 @@ class StorageContainersController extends Controller
     {
         $bl = BlDraft::where('id',$id)->first();
         $mov = Movements::where('bl_no', $bl->ref_no)->where('company_id',$company_id)->distinct()->get()->pluck('container_id')->toarray();
+
         $containers = Containers::whereIn('id',$mov)->get();
 
         return Response::json([
@@ -43,7 +44,7 @@ class StorageContainersController extends Controller
         }
 
         return Response::json([
-            'triffs' => $dat
+            'triffs' => $data
         ],200);
     }
 }

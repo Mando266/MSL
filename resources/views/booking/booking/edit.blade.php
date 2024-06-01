@@ -338,9 +338,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="forwarder_ref_no">Cstar Ref No</label>
+                                <label for="forwarder_ref_no">Carrier Ref No</label>
                                 <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no',$booking->forwarder_ref_no)}}"
-                                    placeholder="Cstar Ref No" autocomplete="off">
+                                    placeholder="Carrier Ref No" autocomplete="off">
                                 @error('forwarder_ref_no')
                                 <div style="color: red;">
                                     {{$message}}
@@ -739,15 +739,11 @@
 
                                     <td class="containertype">
                                         <select class="selectpicker form-control" id="container_type" data-live-search="true" name="containerDetails[{{ $key }}][container_type]" data-size="10"
-                                                title="{{trans('forms.select')}}" >
+                                                title="{{trans('forms.select')}}">
                                                 @foreach ($equipmentTypes as $equipmentType)
-                                                @if($quotation->equipment_type_id != null)
-                                                <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('container_type',$quotation->equipment_type_id) ? 'selected':'disabled'}}>{{$equipmentType->name}}</option>
-                                                @elseif($booking->quotation_id == null)
-                                                <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$booking->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
-                                                @else
-                                                <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('equipment_type_id',$quotation->equipment_type_id) ? 'selected':''}}>{{$equipmentType->name}}</option>
-                                                @endif
+                                                
+                                                <option value="{{$equipmentType->id}}" {{$equipmentType->id == old('container_type',$item->container_type) ? 'selected':''}}>{{$equipmentType->name}}</option>
+
                                             @endforeach
                                         </select>
                                     </td>
@@ -759,7 +755,8 @@
                                     @if($quotation->id == 0)
                                         <td class="ports">
                                             <select class="selectpicker form-control" name="containerDetails[{{ $key }}][activity_location_id]" id="activity_location_id" data-live-search="true"  data-size="10"
-                                            title="{{trans('forms.select')}}" >
+                                            title="{{trans('forms.select')}}">
+                                                <option value="">Select....</option>
                                                 @foreach ($activityLocations as $activityLocation)
                                                     <option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id',$item->activity_location_id) ? 'selected':''}}>{{$activityLocation->code}}</option>
                                                 @endforeach
@@ -769,6 +766,7 @@
                                         <td class="ports">
                                             <select class="selectpicker form-control" name="containerDetails[{{ $key }}][activity_location_id]" id="activity_location_id" data-live-search="true"  data-size="10"
                                             title="{{trans('forms.select')}}" required>
+                                            <option value="">Select....</option>
                                                 @foreach ($activityLocations as $activityLocation)
                                                     <option value="{{$activityLocation->id}}" {{$activityLocation->id == old('activity_location_id',$item->activity_location_id) ? 'selected':''}}>{{$activityLocation->code}}</option>
                                                 @endforeach
@@ -780,7 +778,7 @@
                                                 title="{{trans('forms.select')}}">
                                                 <option value="000" selected>Select</option>
 
-                                                @if($booking->is_transhipment === 1)
+                                            @if($booking->is_transhipment === 1)
                                                 @foreach ($transhipmentContainers as $transhipmentContainer)
                                                     <option value="{{$transhipmentContainer->id}}" {{$transhipmentContainer->id == old('container_id',$transhipmentContainer->container_id) ? 'selected':''}}>{{$transhipmentContainer->code}}</option>
                                                 @endforeach

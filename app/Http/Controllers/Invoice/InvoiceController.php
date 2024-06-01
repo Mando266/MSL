@@ -299,6 +299,7 @@ class InvoiceController extends Controller
             'invoice_no'=>'',
             'date'=>$request->date,
             'rate'=>$request->exchange_rate,
+            'customize_exchange_rate'=>$request->customize_exchange_rate,
             'add_egp'=>'false',
             'invoice_kind'=>'',
             'type'=>'debit',
@@ -319,6 +320,7 @@ class InvoiceController extends Controller
                 'add_egp'=>'false',
                 'voyage_id'=>$request->voyage_id,
                 'notes'=>$request->notes,
+                'customize_exchange_rate'=>$request->customize_exchange_rate, 
             ]);
         }
         $setting = Setting::find(1);
@@ -391,7 +393,6 @@ class InvoiceController extends Controller
                 'bldraft_id' => ['required'],
                 'customer' => ['required'],
                 'customer_id' => ['required'],
-                'exchange_rate' => ['required'],
                 'add_egp' => ['required'],
             ]);
         }
@@ -426,6 +427,7 @@ class InvoiceController extends Controller
                 'invoice_no'=>'',
                 'date'=>$request->date,
                 'rate'=>$request->exchange_rate,
+                'customize_exchange_rate'=>$request->customize_exchange_rate,
                 'add_egp'=>$request->add_egp,
                 'vat'=>$request->vat,
                 'invoice_kind'=>'',
@@ -448,6 +450,7 @@ class InvoiceController extends Controller
                 'invoice_no'=>'',
                 'date'=>$request->date,
                 'rate'=>$request->exchange_rate,
+                'customize_exchange_rate'=>$request->customize_exchange_rate,
                 'vat'=>$request->vat,
                 'add_egp'=>$request->add_egp,
                 'invoice_kind'=>$blkind,

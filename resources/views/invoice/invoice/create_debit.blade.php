@@ -126,7 +126,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label>Exchange Rate</label>
-                                <input class="form-control" type="text" name="customize_exchange_rate" id="custom_rate_input" placeholder="Exchange Rate" value='47.5'>
+                                <input class="form-control" type="text" name="customize_exchange_rate" id="custom_rate_input" placeholder="Exchange Rate" value='47.15'>
                             </div>
                         </div>
                         <div class="form-row">
@@ -164,7 +164,7 @@
                                 @else
                                     <tr>
                                         <td>
-                                            <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[0][charge_description]" data-size="10" title="{{trans('forms.select')}}">
+                                            <select class="selectpicker form-control" id="Charge Description" data-live-search="true" name="invoiceChargeDesc[0][charge_description]" data-size="10" title="{{trans('forms.select')}}" required>
                                                 @foreach ($charges as $item)
                                                     <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}}>{{$item->name}}</option>
                                                 @endforeach
@@ -199,7 +199,6 @@
         localStorage.removeItem('cart');
         $("#createForm").validate();
     });
-
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
         $('select').removeAttr('disabled');
@@ -221,6 +220,7 @@
         let exchangeRate = parseFloat($('#custom_rate_input').val());
         let sizeSmall = parseFloat($('input[name="invoiceChargeDesc[0][size_small]"]').val());
         let totalAmount = parseFloat($('input[name="invoiceChargeDesc[0][total_amount]"]').val());
+        let totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
 
         let egyAmount = sizeSmall * exchangeRate;
         let totalEgy = totalAmount * exchangeRate;

@@ -41,7 +41,7 @@ class DetentionController extends Controller
     {
         $period = Period::where('demurrage_id',$request->Triff_id)->select('rate','number_off_dayes','period')->get();
         $movementsBlNo = Movements::where('company_id',Auth::user()->company_id)->select('bl_no')->distinct()->get()->pluck('bl_no');
-        //dd($movementsBlNo);
+        // dd($movementsBlNo);
         $demurrage = Demurrage::where('id',$request->Triff_id)->get();
         $demurrages = Demurrage::where('company_id',Auth::user()->company_id)->get();
         $movements = Movements::where('company_id',Auth::user()->company_id)->where('bl_no',$request->bl_no)->with('movementcode','container')->get();
@@ -99,7 +99,6 @@ class DetentionController extends Controller
             if($per->period != "Thereafter")
             $periodtimeTotal += $per->number_off_dayes;
         }
-        
         return view('containers.detention.index',[
             'containerType'=>$containerType,
             'container_no'=>$container_no,

@@ -208,7 +208,7 @@
 
                                 <div class="form-group col-md-2" >
                                     <label>Exchange Rate</label>
-                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" autocomplete="off"  style="background-color:#fff" required>
+                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate" id="customize_exchange_rate" value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
                                 @if($invoice->type == "invoice")
                                 <div class="form-group col-md-2" >
@@ -241,14 +241,14 @@
                                     <input type="text" class="form-control" id="vat" name="vat" value="{{ old('vat',$invoice->vat) }}" required>
                                 </div>
                             @endif    
-                                <div class="form-group col-md-3" >
+                                <!-- <div class="form-group col-md-3" >
                                     <label>Total USD</label>
                                         <input type="text" class="form-control" id="total_usd"  value="{{$total}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <label>Total EGP</label>
                                         <input type="text" class="form-control" id="total_egp"  value="{{$total_eg}}" autocomplete="off"  style="background-color:#fff" readonly>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12 form-group">
@@ -257,8 +257,8 @@
                                 </div> 
                             </div>
                             <h4>Charges
-                                <h4>
-                                    @if($invoice->type == "invoice")
+                                <h4>        
+                                @if($invoice->type == "invoice")
         
                                         <table id="charges" class="table table-bordered">
                                             <thead>
@@ -278,99 +278,99 @@
                                                 @endif
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            @foreach($invoice_details as $key => $item)
-                                                <tr>
-                                                    <input type="hidden" value="{{ $item->id }}"
-                                                           name="invoiceChargeDesc[{{ $key }}][id]">
-                                                    <td>
-                                                        <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
-                                                            title="{{trans('forms.select')}}" autofocus>
-                                                            @foreach ($charges as $charge)
-                                                                <option value="{{$charge->name}}" {{$charge->name == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="size_small"
-                                                               name="invoiceChargeDesc[{{ $key }}][size_small]"
-                                                               class="form-control"
-                                                               autocomplete="off" placeholder=""
-                                                               value="{{old('size_small',$item->size_small)}}"
-                                                               style="background-color: white;" required>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input vatRadio" type="radio"
-                                                                   name="invoiceChargeDesc[{{$key}}][add_vat]"
-                                                                   id="item_{{$key}}_enabled_yes" value="1"  {{ $item->add_vat ==  1 ? 'checked="checked"' :''}}>
-                                                            <label class="form-check-label"
-                                                                   for="item_{{$key}}_enabled_yes">Yes</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input vatRadio" type="radio"
-                                                                   name="invoiceChargeDesc[{{$key}}][add_vat]"
-                                                                   id="item_{{$key}}_enabled_no" value="0" {{ $item->add_vat ==  0 ? 'checked="checked"' :''}}>
-                                                            <label class="form-check-label"
-                                                                   for="item_{{$key}}_enabled_no">No</label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                   name="invoiceChargeDesc[{{$key}}][enabled]"
-                                                                   id="item_{{$key}}_enabled_yes" value="1"
-                                                                   {{ $item->enabled ==  1 ? 'checked="checked"' :''}} disabled>
-                                                            <label class="form-check-label"
-                                                                   for="item_{{$key}}_enabled_yes">Yes</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                   name="invoiceChargeDesc[{{$key}}][enabled]"
-                                                                   id="item_{{$key}}_enabled_no" value="0"
-                                                                   {{$item->enabled == 0 ? 'checked="checked"' :''}} disabled>
-                                                            <label class="form-check-label"
-                                                                   for="item_{{$key}}_enabled_no">No</label>
-                                                        </div>
-                                                    </td>
-        
-        
-                                                    <td><input type="text" class="form-control" id="usd_{{ $key }}"
-                                                               name="invoiceChargeDesc[{{ $key }}][total_amount]"
-                                                               value="{{old('total_amount',$item->total_amount)}}"
-                                                               placeholder="Total" autocomplete="off"
-                                                               style="background-color: white;" required disabled>
-                                                    </td>
-                                                    <td><input type="text" id="usd_vat_{{ $key }}"
-                                                               name="invoiceChargeDesc[{{ $key }}][usd_vat]"
-                                                               class="form-control" autocomplete="off"
-                                                               placeholder="USD After VAT" disabled></td>
-        
-        
-                                                    <td><input type="text" class="form-control" id="egp_{{ $key }}"
-                                                               name="invoiceChargeDesc[{{ $key }}][total_egy]"
-                                                               value="{{old('total_egy',$item->total_egy)}}"
-                                                               placeholder="Egp Amount" autocomplete="off"
-                                                               style="background-color: white;" required disabled>
-                                                    </td>
-        
-                                                    <td><input id="egp_vat_{{ $key }}" type="text"
-                                                               name="invoiceChargeDesc[{{ $key }}][egp_vat]"
-                                                               class="form-control" autocomplete="off"
-                                                               placeholder="Egp After VAT" disabled></td>
-        
-                                                    @if($invoice->type == "invoice")
-                                                        <td style="width:85px;">
-                                                            <button type="button" class="btn btn-danger remove"
-                                                                    onclick="removeItem({{$item->id}})"><i
-                                                                        class="fa fa-trash"></i></button>
+                                                <tbody>
+                                                @foreach($invoice_details as $key => $item)
+                                                    <tr>
+                                                        <input type="hidden" value="{{ $item->id }}"
+                                                            name="invoiceChargeDesc[{{ $key }}][id]">
+                                                        <td>
+                                                            <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
+                                                                title="{{trans('forms.select')}}" autofocus>
+                                                                @foreach ($charges as $charge)
+                                                                    <option value="{{$charge->name}}" {{$charge->name == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    @else
+                                                        <td>
+                                                            <input type="text" id="size_small"
+                                                                name="invoiceChargeDesc[{{ $key }}][size_small]"
+                                                                class="form-control"
+                                                                autocomplete="off" placeholder=""
+                                                                value="{{old('size_small',$item->size_small)}}"
+                                                                style="background-color: white;" required>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input vatRadio" type="radio"
+                                                                    name="invoiceChargeDesc[{{$key}}][add_vat]"
+                                                                    id="item_{{$key}}_enabled_yes" value="1"  {{ $item->add_vat ==  1 ? 'checked="checked"' :''}}>
+                                                                <label class="form-check-label"
+                                                                    for="item_{{$key}}_enabled_yes">Yes</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input vatRadio" type="radio"
+                                                                    name="invoiceChargeDesc[{{$key}}][add_vat]"
+                                                                    id="item_{{$key}}_enabled_no" value="0" {{ $item->add_vat ==  0 ? 'checked="checked"' :''}}>
+                                                                <label class="form-check-label"
+                                                                    for="item_{{$key}}_enabled_no">No</label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="invoiceChargeDesc[{{$key}}][enabled]"
+                                                                    id="item_{{$key}}_enabled_yes" value="1"
+                                                                    {{ $item->enabled ==  1 ? 'checked="checked"' :''}} disabled>
+                                                                <label class="form-check-label"
+                                                                    for="item_{{$key}}_enabled_yes">Yes</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="invoiceChargeDesc[{{$key}}][enabled]"
+                                                                    id="item_{{$key}}_enabled_no" value="0"
+                                                                    {{$item->enabled == 0 ? 'checked="checked"' :''}} disabled>
+                                                                <label class="form-check-label"
+                                                                    for="item_{{$key}}_enabled_no">No</label>
+                                                            </div>
+                                                        </td>
+
+
+                                                        <td><input type="text" class="form-control" id="usd_{{ $key }}"
+                                                                name="invoiceChargeDesc[{{ $key }}][total_amount]"
+                                                                value="{{old('total_amount',$item->total_amount)}}"
+                                                                placeholder="Total" autocomplete="off"
+                                                                style="background-color: white;" required disabled>
+                                                        </td>
+                                                        <td><input type="text" id="usd_vat_{{ $key }}"
+                                                                name="invoiceChargeDesc[{{ $key }}][usd_vat]"
+                                                                class="form-control" autocomplete="off"
+                                                                placeholder="USD After VAT" disabled></td>
+
+
+                                                        <td><input type="text" class="form-control" id="egp_{{ $key }}"
+                                                                name="invoiceChargeDesc[{{ $key }}][total_egy]"
+                                                                value="{{old('total_egy',$item->total_egy)}}"
+                                                                placeholder="Egp Amount" autocomplete="off"
+                                                                style="background-color: white;" required disabled>
+                                                        </td>
+
+                                                        <td><input id="egp_vat_{{ $key }}" type="text"
+                                                                name="invoiceChargeDesc[{{ $key }}][egp_vat]"
+                                                                class="form-control" autocomplete="off"
+                                                                placeholder="Egp After VAT" disabled></td>
+
+                                                        @if($invoice->type == "invoice")
+                                                            <td style="width:85px;">
+                                                                <button type="button" class="btn btn-danger remove"
+                                                                        onclick="removeItem({{$item->id}})"><i
+                                                                            class="fa fa-trash"></i></button>
+                                                            </td>
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
                                         <table id="containerDepit" class="table table-bordered">
                                             <thead>
                                             <tr>
@@ -378,8 +378,7 @@
                                                 <th class="text-center">Rate</th>
                                                 <th class="text-center">Multiply QTY</th>
                                                 <th class="text-center">Total Amount</th>
-                                                <th class="text-center"><a id="addDepit"> Add <i
-                                                                class="fas fa-plus"></i></a></th>
+                                                <th class="text-center"><a id="addDepit"> Add <i class="fas fa-plus"></i></a></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -401,7 +400,7 @@
                                                                     @endforeach
                                                                 </select>
                                                     </td>
-                                                    <td><input type="text" class="form-control" id="size_small"
+                                                    <td><input type="text" class="form-control" id="size_small_1"
                                                                name="invoiceChargeDesc[{{ $key }}][size_small]"
                                                                value="{{(old('size_small',$item->size_small))}}"
                                                                placeholder="Rate" autocomplete="off"
@@ -426,12 +425,16 @@
                                                         </div>
                                                     </td>
         
-                                                    <td><input type="text" class="form-control" id="ofr"
+                                                    <td><input type="text" class="form-control" id="total_amount_1"
                                                                name="invoiceChargeDesc[{{ $key }}][total_amount]"
                                                                value="{{(old('total_amount',$item->total_amount))}}"
                                                                placeholder="Amount 20/40" autocomplete="off"
                                                                style="background-color: white;">
                                                     </td>
+                                                    <td style="display:none;"><input type="hidden" class="form-control" id="egy_amount_1" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
+                                                    <td style="display:none;"><input type="hidden" class="form-control" id="total_egy_1" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                                                    <td style="display:none;"><input type="hidden" class="form-control" id="egp_vat_1" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
+
                                                     <td style="width:85px;">
                                                         <button type="button" class="btn btn-danger remove"
                                                                 onclick="removeItem({{$item->id}})"><i
@@ -443,7 +446,6 @@
                                             </tbody>
                                         </table>
                                     @endif
-        
                                     <div class="row">
                                         <div class="col-md-12 text-center">
                                             <button type="submit" class="btn btn-primary mt-3">Confirm</button>
@@ -462,240 +464,130 @@
 @endsection
 @push('scripts')
     @include('invoice.invoice._js_vat_table')
-<script>
-    $(document).on('input', 'input[name="qty"]', function() {
-        var qty = $(this).val();
-        var totEgp = 0;
-        var totUsd = 0;
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-            // Calculate the total EGP Amount and update the Amount input field of the current row
+    <script>
+    $(document).ready(function() {
+        function updateRow(row) {
+            var sizeSmall = row.find('input[name$="[size_small]"]').val();
+            var enabled = row.find('input[name$="[enabled]"]:checked').val();
+            var add_vat = row.find('input[name$="[add_vat]"]:checked').val();
+            var qty = $('input[name="qty"]').val();
+            var vat = $('input[name="vat"]').val() / 100;
             var exchangeRate = $('input[name="customize_exchange_rate"]').val();
 
-            var egpAmount = totalAmount * exchangeRate;
-            $(this).find('input[name$="[total_egy]"]').val(egpAmount);
+            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
+            var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
 
-            // update total_egp and usd to calculate all rows 
-            
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totEgp = totEgp + parseFloat(egpAmount);
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-        var debitTable = $('#containerDepit');
-
-        if (debitTable.length == 0) {
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
-        }
-        // update total_egp and usd to calculate all rows for Debit !!!!!!!!!!!!!!!!!!
-        if (debitTable.length > 0) {
-            var totUsd = 0;
-            $('#containerDepit tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-            
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-            $('input[id="total_egp"]').val(0);
-            $('input[id="total_usd"]').val(totUsd);
-            
-        }
-        
-    });
-    $(document).on('input', 'input[name="customize_exchange_rate"]', function() {
-        var qty = $('input[name="qty"]').val();
-        var exchangeRate = $(this).val();
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-            // Calculate the total EGP Amount and update the Amount input field of the current row
-            
+            row.find('input[name$="[total_amount]"]').val(totalAmount);
+            row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
 
             var egpAmount = totalAmount * exchangeRate;
-            $(this).find('input[name$="[total_egy]"]').val(egpAmount);
-            // update total_egp and usd to calculate all rows 
-            var totEgp = 0;
-            var totUsd = 0;
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totEgp = totEgp + parseFloat(egpAmount);
-            totUsd = totUsd + parseFloat(usdAmount);
+            var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
+
+            row.find('input[name$="[total_egy]"]').val(egpAmount);
+            row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
+        }
+
+        function updateAllRows() {
+            $('#charges tbody tr').each(function() {
+                updateRow($(this));
+            });
+        }
+
+        $('input[name="qty"], input[name="vat"], input[name="customize_exchange_rate"]').on('input', function() {
+            updateAllRows();
         });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
-        calculateTotals()
+
+        $('body').on('change', 'input[name$="[enabled]"], input[name$="[add_vat]"]', function() {
+            updateRow($(this).closest('tr'));
+        });
+
+        $('body').on('input', 'input[name$="[size_small]"]', function() {
+            updateRow($(this).closest('tr'));
+        });
+
+        updateAllRows();
     });
-    $('body').on('input', 'input[name$="[size_small]"]', function() {
-    // Get the current row
-    var row = $(this).closest('tr');
-
-    // Get the qty value from the QTY input field
-    var qty = $('input[name="qty"]').val();
-
-    // Get the size_small value from the current row
-    var sizeSmall = $(this).val();
-
-    // Get the enabled value from the current row
-    var enabled = row.find('input[name$="[enabled]"]:checked').val();
-
-    // Calculate the total amount based on the enabled value and update the total_amount input field of the current row
-    var totalAmount = enabled == 1 ? qty * sizeSmall : sizeSmall;
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-
-    // Calculate the total EGP Amount and update the Amount input field of the current row
-    var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-
-    var egpAmount = totalAmount * exchangeRate;
-    row.find('input[name$="[total_egy]"]').val(egpAmount);
-
-    // update total_egp and usd to calculate all rows 
-    var totEgp = 0;
-    var totUsd = 0;
-    var debitTable = $('#containerDepit');
-    if (debitTable.length > 0) {
-        $('#containerDepit tbody tr').each(function() {
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-        $('input[id="total_egp"]').val(0);
-        $('input[id="total_usd"]').val(totUsd);
-    }else{
-        $('#charges tbody tr').each(function() {
-            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totEgp = totEgp + parseFloat(egpAmount);
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
-    }
-    
-
-});
-$('body').on('change', 'input[name$="[enabled]"]', function() {
-    var row = $(this).closest('tr');
-    var sizeSmall = row.find('input[name$="[size_small]"]').val();
-    var qty = $('input[name="qty"]').val();
-    var totalAmount = 0;
-    if($(this).val() == 1) {
-        totalAmount = sizeSmall * qty;
-    } else {
-        totalAmount = sizeSmall;
-    }
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-
-    // Calculate the total EGP Amount and update the Amount input field of the current row
-    var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-
-    var egpAmount = totalAmount * exchangeRate;
-    row.find('input[name$="[total_egy]"]').val(egpAmount);
-
-    // update total_egp and usd to calculate all rows 
-    var totEgp = 0;
-    var totUsd = 0;
-    var debitTable = $('#containerDepit');
-    if (debitTable.length > 0) {
-        $('#containerDepit tbody tr').each(function() {
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-        $('input[id="total_egp"]').val(0);
-        $('input[id="total_usd"]').val(totUsd);
-    }else{
-        $('#charges tbody tr').each(function() {
-            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totEgp = totEgp + parseFloat(egpAmount);
-            totUsd = totUsd + parseFloat(usdAmount);
-        });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
-    }
-    
-});
 </script>
+
 <script>
+    $(document).ready(function() {
+    // When the form is submitted, ensure all inputs are enabled
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
     });
-</script>
-<script>
-    $(function(){
-            let customer = $('#customer');
-            $('#customer').on('change',function(e){
-                let value = e.target.value;
-                let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                    let notIfiy = data.customer[0] ;
-                    let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                notifiy.html(list2.join(''));
-            });
+
+    // Update the customer name field when a customer is selected
+    $('#customer').on('change', function() {
+        $.get(`/api/master/customers/${$(this).val()}`).then(function(data) {
+            $('#notifiy').val(data.customer[0].name);
         });
     });
-</script>
 
-<script>
-var removed = [];
-function removeItem(item){
-    removed.push(item);
-    console.log(removed);
-    document.getElementById("removed").value = removed;
-}
-$(document).ready(function(){
-    $("#charges").on("click", ".remove", function () {
+    // Remove a row from the charges table
+    $("#charges, #containerDepit").on("click", ".remove", function() {
         $(this).closest("tr").remove();
+    });
 
-        // update total_egp and usd to calculate all rows 
-        var totEgp = 0;
-        var totUsd = 0;
-        $('#charges tbody tr').each(function() {
-            var egpAmount = $(this).find('input[name$="[total_egy]"]').val();
-            var usdAmount = $(this).find('input[name$="[total_amount]"]').val();
-            totEgp = totEgp + parseFloat(egpAmount);
-            totUsd = totUsd + parseFloat(usdAmount);
+    // Calculate amounts for each row in the charges table
+    function calculateAmounts() {
+        $('#containerDepit tbody tr').each(function() {
+            let row = $(this);
+            let qty = parseFloat($('input[name="qty"]').val()) || 0;
+            let exchangeRate = parseFloat($('input[name="customize_exchange_rate"]').val()) || 0;
+            let sizeSmall = parseFloat(row.find('input[name*="[size_small]"]').val()) || 0;
+            let enabled = row.find('input[name*="[enabled]"]:checked').val() == "1";
+
+            let totalAmount = enabled ? sizeSmall * qty : sizeSmall;
+            let egyAmount = sizeSmall * exchangeRate;
+            let totalEgy = totalAmount * exchangeRate;
+
+            row.find('input[name*="[total_amount]"]').val(totalAmount.toFixed(2));
+            row.find('input[name*="[egy_amount]"]').val(egyAmount.toFixed(2));
+            row.find('input[name*="[total_egy]"]').val(totalEgy.toFixed(2));
+            row.find('input[name*="[egp_vat]"]').val(totalEgy.toFixed(2));
         });
-        $('input[id="total_egp"]').val(totEgp);
-        $('input[id="total_usd"]').val(totUsd);
-        calculateTotals()
+    }
 
+    // Recalculate amounts when specific inputs change
+    $(document).on('input', 'input[name="qty"], input[name="customize_exchange_rate"], input[name*="[size_small]"]', function() {
+        calculateAmounts();
     });
-    var counter  = '<?= isset($key)? ++$key : 0 ?>';
-    
-});
-var removed = [];
-function removeItem( item )
-{
-    removed.push(item);
-    console.log(removed);
-    document.getElementById("removed").value = removed;
-}
-$(document).ready(function(){
-    $("#containerDepit").on("click", ".remove", function () {
-    $(this).closest("tr").remove();
-    });
-    var counter  = '<?= isset($key)? $key++ : 0 ?>';
 
-    $("#addDepit").click(function(){
-       var tr = '<tr>'+ 
-            '<td><input type="text" id="Charge Description" name="invoiceChargeDesc['+counter+'][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" required></td>'+
-            '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc['+counter+'][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;" required></td>'+
-            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
-            '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc['+counter+'][total_amount]"  placeholder="Total" autocomplete="off" style="background-color: white;" disabled required></td>'+
-            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>'
-        '</tr>';
-       counter++;
-      $('#containerDepit').append(tr);
+    $(document).on('change', 'input[name*="[enabled]"]', function() {
+        calculateAmounts();
+    });
+
+    // Initial calculation on page load
+    calculateAmounts();
+
+    var counter = '<?= isset($key) ? ++$key : 0 ?>';
+
+    // Handle the removal of an item and track removed items
+    var removed = [];
+    function removeItem(item) {
+        removed.push(item);
+        console.log(removed);
+        document.getElementById("removed").value = removed;
+    }
+
+    // Add a new row to the charges table
+    $("#addDepit").click(function() {
+        var tr = '<tr>' +
+            '<td><select class="selectpicker form-control" id="selectpickers" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10" title="{{trans('forms.select')}}"> @foreach ($charges as $item) <option value="{{$item->name}}" {{$item->name == old($item->charge_description) ? 'selected':''}} requierd>{{$item->name}}</option>@endforeach</select></td>' +
+            '<td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[' + counter + '][size_small]" placeholder="Rate" autocomplete="off" style="background-color: white;" required></td>' +
+            '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_yes" value="1" checked><label class="form-check-label" for="item_' + counter + '_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc[' + counter + '][enabled]" id="item_' + counter + '_enabled_no" value="0"><label class="form-check-label" for="item_' + counter + '_enabled_no">No</label></div></td>' +
+            '<td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[' + counter + '][total_amount]" placeholder="Total" autocomplete="off" style="background-color: white;" disabled required></td>' +
+            '<td style="display:none;"><input type="hidden" class="form-control" name="invoiceChargeDesc[' + counter + '][egy_amount]" disabled></td>' +
+            '<td style="display:none;"><input type="hidden" class="form-control" name="invoiceChargeDesc[' + counter + '][total_egy]" disabled></td>' +
+            '<td style="display:none;"><input type="hidden" class="form-control" name="invoiceChargeDesc[' + counter + '][egp_vat]" disabled></td>' +
+            '<td style="width:85px;"><button type="button" class="btn btn-danger remove"><i class="fa fa-trash"></i></button></td>' +
+            '</tr>';
+        counter++;
+        $('#containerDepit').append(tr);
         $('.selectpicker').selectpicker("render");
         $('#selectpickers').selectpicker();
     });
 });
 </script>
-
 
 @endpush

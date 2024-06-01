@@ -265,9 +265,9 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="forwarder_ref_no">Cstar Ref No</label>
+                                <label for="forwarder_ref_no">Carrier Ref No</label>
                                 <input type="text" class="form-control" id="forwarder_ref_no" name="forwarder_ref_no" value="{{old('forwarder_ref_no')}}"
-                                    placeholder="Cstar Ref No" autocomplete="off">
+                                    placeholder="Carrier Ref No" autocomplete="off">
                                 @error('forwarder_ref_no')
                                 <div style="color: red;">
                                     {{$message}}

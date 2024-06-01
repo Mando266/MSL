@@ -67,7 +67,7 @@ class ContainersExport implements FromCollection, WithHeadings
                 'lessor' => optional($container->seller)->name,
                 'soc_coc' => $container->SOC_COC,
                 'is_transhipment' => $transhipment,
-                'notes' => $notes,
+                'notes' => $container->notes,
             ]);
             $exportContainers->add($tempCollection);
         }

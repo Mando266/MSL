@@ -56,7 +56,7 @@
                     <tbody>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >IMO No.</td>
-                            <td class="col-md-4 tableStyle text-right underline" >560-161-093</td>
+                            <td class="col-md-4 tableStyle text-center underline" >560-161-093</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" > الرقم الضريبي</td>
                         </tr>
                         <tr>
@@ -65,9 +65,9 @@
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >رقم الحجز</td>
                         </tr>
                         <tr>
-                            <td class="col-md-4 tableStyle underline" >Alexandria on</td>
+                            <td class="col-md-4 tableStyle underline" >ON</td>
                             <td class="col-md-4 tableStyle text-center" >{{ $mytime->format("D, F, j") }}</td>
-                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >الأسكندرية في</td>
+                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >في</td>
                         </tr>
                         <tr>
                             <td class="col-md-4 tableStyle underline" >Please receive on M/V</td>
@@ -95,17 +95,32 @@
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;" >ميناء الترنزيت</td>
                         </tr>
                         <tr>
-                            <td class="col-md-4 tableStyle underline" >FPOD</td>
+                            <td class="col-md-4 tableStyle underline" >POD</td>
                             <td class="col-md-4 tableStyle text-center" >{{optional($booking->dischargePort)->name}}</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">ميناء الوصول</td>
                         </tr>
                         <tr>
-                            <td class="col-md-4 tableStyle underline" >Numbers of</td>
-                            <td class="col-md-4 tableStyle text-center" >{{$containerCount}} X {{$containerType}}</td>
-                            <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">عدد الحاويات</td>
+                            <td class="col-md-4 tableStyle underline" >No Of Containers</td>
+                            <td class="col-md-4 tableStyle text-center">  
+                            @php
+                                $containerTypes = $booking->bookingContainerDetails->pluck('containerType.name')->unique();
+                            @endphp
+                            @if($containerTypes->count() > 1)
+                                @foreach($booking->bookingContainerDetails as $detail)
+                                    {{ $detail->qty }} X {{ optional($detail->containerType)->name }} <br>
+                                @endforeach
+                            @else
+                                @php
+                                    $totalQty = $booking->bookingContainerDetails->sum('qty');
+                                    $singleType = $booking->bookingContainerDetails->first();
+                                @endphp
+                                {{ $totalQty }} X {{ optional($singleType->containerType)->name }}
+                            @endif
+                            </td>
+                        <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">عدد الحاويات</td>
                         </tr>
                         <tr>
-                            <td class="col-md-4 tableStyle underline" >Cargo</td>
+                            <td class="col-md-4 tableStyle underline" >Cargo / Weight</td>
                             <td class="col-md-4 tableStyle text-center" >{{$booking->commodity_description}}</td>
                             <td class="col-md-4 tableStyle text-right underline letter-spacing: 0px;">وصف البضاعة / وزن</td>
                         </tr>
