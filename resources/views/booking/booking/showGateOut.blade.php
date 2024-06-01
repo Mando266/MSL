@@ -62,7 +62,7 @@
 
                 $containerDetailsDisplay = [];
                 foreach ($containerTypes as $type => $count) {
-                    $containerDetailsDisplay[] = "$type * $count";
+                    $containerDetailsDisplay[] = " $count X $type";
                 }
 
                 @endphp

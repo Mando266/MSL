@@ -150,26 +150,9 @@
                                     <label>TAX</label>
                                         <input type="text" class="form-control" placeholder="TAX %" name="tax_discount"  value="{{old('tax_discount',$invoice->tax_discount)}}" autocomplete="off"  style="background-color:#fff" >
                                 </div>
-                                <div class="col-md-2 form-group " >
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="rate" id="rate" value="eta" {{ "eta" == old('rate',$invoice->rate) ? 'checked':''}}>
-                                        <label class="form-check-label" for="exchange_rate">
-                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                                                ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
-                                            @elseif(optional($bldraft)->voyage_id != null)
-                                                ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
-                                            @endif
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate" value="etd"  {{ "etd" == old('rate',$invoice->rate) ? 'checked':''}}>
-                                        <label class="form-check-label" for="exchange_rate">
-                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                                                ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
-                                            @elseif(optional($bldraft)->voyage_id != null)
-                                                ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
-                                            @endif
-                                        </label>
-                                    </div>
+                                <div class="col-md-2 form-group ">
+                                    <label>Exchange Rate</label>
+                                    <input class="form-control"  type="text" name="customize_exchange_rate" id="exchange_rate" placeholder="Exchange Rate" autocomplete="off" value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate)}}" required>
                                 </div>
                                 <div class="form-group col-md-3" >
                                     <div style="padding: 30px;">
@@ -193,31 +176,9 @@
                                     </div>
                                 </div>
                                 @else
-                                <div class="col-md-2 form-group " >
-                                    <div style="padding: 30px;">
-                                        <input class="form-check-input" type="radio" name="rate" id="rate1" value="eta" {{ "eta" == old('rate',$invoice->rate) ? 'checked':''}}>
-                                        <label class="form-check-label" for="exchange_rate">
-                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                                                ETA Rate {{ optional(optional($bldraft->booking)->secondvoyage)->exchange_rate }}
-                                            @elseif(optional($bldraft)->voyage_id != null)
-                                                ETA Rate {{ optional($bldraft->voyage)->exchange_rate }}
-                                            @endif
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="rate" id="exchange_rate2" value="etd"  {{ "etd" == old('rate',$invoice->rate) ? 'checked':''}}>
-                                        <label class="form-check-label" for="exchange_rate">
-                                            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                                                ETD Rate {{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd }}
-                                            @elseif(optional($bldraft)->voyage_id != null)
-                                                ETD Rate {{ optional($bldraft->voyage)->exchange_rate_etd }}
-                                            @endif
-                                        </label>
-                                        <br>
-                                        <input class="form-check-input" type="radio" name="rate" id="custom_rate_radio" >
-                                            <label class="form-check-label" for="custom_rate_radio">Custom Rate</label>
-                                        <input type="text" name="customize_exchange_rate" id="custom_rate_input" style="display: none;"  
-                                        placeholder="Enter custom rate">
-                                    </div>
+                                <div class="col-md-2 form-group ">
+                                    <label>Exchange Rate</label>
+                                    <input class="form-control"  type="text" name="customize_exchange_rate" id="custom_rate_input" placeholder="Exchange Rate" autocomplete="off" value="{{old('customize_exchange_rate',$invoice->customize_exchange_rate ?? '47.15')}}" required>
                                 </div>
                                 @endif
                             </div> 
@@ -229,11 +190,12 @@
                                     <input type="text" class="form-control" id="vat" name="vat" value="{{old('vat',$invoice->vat)}}">
                                 </div>
                                 @endif
+
+                                @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3" >
                                     <label>Total USD</label>
                                         <input type="text" class="form-control" id="total_usd"  value="{{round($total,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
                                 </div>
-                                @if($invoice->type == "invoice")
                                 <div class="form-group col-md-3" >
                                     <label>Total EGP</label>
                                         <input type="text" class="form-control" id="total_egp"  value="{{round($total_eg,2)}}" autocomplete="off"  style="background-color:#fff" readonly>
@@ -339,22 +301,22 @@
                             <input type="hidden" value ="{{ $item->id }}" name="invoiceChargeDesc[{{ $key }}][id]">
                             <td>
                                 <select class="selectpicker form-control" id="charge_description" data-live-search="true" name="invoiceChargeDesc[{{$key}}][charge_description]" data-size="10"
-                                    title="{{trans('forms.select')}}" autofocus >
+                                    title="{{trans('forms.select')}}" autofocus required>
                                     @foreach ($charges as $charge)
                                         <option value="{{$charge->name}}" {{$charge->name == old('charge_description',$item->charge_description)? 'selected':''}}>{{$charge->name}}</option>
                                     @endforeach
                                 </select>
                                 <!-- <input type="text" id="Charge Description" name="invoiceChargeDesc[{{ $key }}][charge_description]" class="form-control" autocomplete="off" placeholder="Charge Description" value="{{(old('charge_description',$item->charge_description))}}" > -->
                             </td>
-                            <td><input type="text" class="form-control" id="size_small" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(old('size_small',$item->size_small))}}"
+                            <td><input type="text" class="form-control" id="size_small_1" name="invoiceChargeDesc[{{ $key }}][size_small]" value="{{(old('size_small',$item->size_small))}}"
                                 placeholder="Rate" autocomplete="off" disabled style="background-color: white;">
                             </td> 
-                            <td><input type="text" class="form-control" id="ofr" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
+                            <td><input type="text" class="form-control" id="total_amount_1" name="invoiceChargeDesc[{{ $key }}][total_amount]" value="{{(old('total_amount',$item->total_amount))}}"
                                 placeholder="Ofr" autocomplete="off" disabled style="background-color: white;">
                             </td>
-                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_amount" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
-                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount" name="invoiceChargeDesc[0][total_egy]" disabled></td>
-                            <td style="display: none;"><input type="hidden" class="form-control" id="calculated_total_amount_vat" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
+                            <td style="display:none;"><input type="hidden" class="form-control" id="egy_amount_1" name="invoiceChargeDesc[0][egy_amount]" disabled></td>
+                            <td style="display:none;"><input type="hidden" class="form-control" id="total_egy_1" name="invoiceChargeDesc[0][total_egy]" disabled></td>
+                            <td style="display:none;"><input type="hidden" class="form-control" id="egp_vat_1" name="invoiceChargeDesc[0][egp_vat]" disabled></td>
                         </tr>
                         @endforeach
                         </tbody>
@@ -377,30 +339,129 @@
 @endsection
 @push('scripts')
 <script>
-    const rateRadio = document.getElementById('rate1');
-    const exchangeRateRadio = document.getElementById('exchange_rate2');
-    const customRateRadio = document.getElementById('custom_rate_radio');
-    const customRateInput = document.getElementById('custom_rate_input');
+    $(document).ready(function() {
+        function calculateTotals() {
+            var exchangeRate = parseFloat($('#exchange_rate').val());
+            var qty = parseFloat($('input[name="qty"]').val());
+            var vatRate = parseFloat($('#vat').val()) / 100;
+            var totalUsd = 0;
+            var totalEgp = 0;
 
-    // Initial check on page load
-    toggleCustomRateInput();
+            $('#charges tbody tr').each(function() {
+                var sizeSmall = parseFloat($(this).find('input[name$="[size_small]"]').val());
+                var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
+                var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
+                var egpAmount = totalAmount * exchangeRate;
+                var egpVat = egpAmount * (1 + vatRate);
+                var usdvat =  totalAmount * (1 + vatRate)
 
-    // Event listeners for radio button changes
-    rateRadio.addEventListener('change', toggleCustomRateInput);
-    exchangeRateRadio.addEventListener('change', toggleCustomRateInput);
-    customRateRadio.addEventListener('change', toggleCustomRateInput);
+                $(this).find('input[name$="[total_amount]"]').val(totalAmount.toFixed(2));
+                $(this).find('input[name$="[total_egy]"]').val(egpAmount.toFixed(2));
+                $(this).find('input[name$="[egp_vat]"]').val(egpVat.toFixed(2));
+                $(this).find('input[name$="[usd_vat]"]').val(usdvat.toFixed(2));
 
-    // Function to toggle the display of the custom rate input field
-    function toggleCustomRateInput() {
-        if (customRateRadio.checked) {
-            customRateInput.style.display = 'inline-block';
-        } else {
-            customRateInput.style.display = 'none';
+                totalUsd += totalAmount;
+                totalEgp += egpAmount;
+            });
+
+            $('#total_usd').val(totalUsd.toFixed(2));
+            $('#total_egp').val(totalEgp.toFixed(2));
         }
-    }
+
+        // Perform calculations on exchange rate input change
+        $('#exchange_rate').on('input', function() {
+            calculateTotals();
+        });
+
+        // Perform calculations on page load
+        calculateTotals();
+
+        // Event listeners for changes in the charge rows
+        $('body').on('input', 'input[name$="[size_small]"], input[name="qty"], input[name$="[enabled]"]', function() {
+            calculateTotals();
+        });
+
+        // Handle VAT calculation
+        function handleVatInput() {
+            var vatRate = parseFloat($('#vat').val()) / 100;
+            $('#charges tbody tr').each(function() {
+                var egpAmount = parseFloat($(this).find('input[name$="[total_egy]"]').val());
+                var egpVat = egpAmount * (1 + vatRate);
+                $(this).find('input[name$="[egp_vat]"]').val(egpVat.toFixed(2));
+            });
+        }
+
+        // Event listener for VAT input change
+        $('#vat').on('input', function() {
+            handleVatInput();
+            calculateTotals();
+        });
+
+        // Initialize customer change event
+        $('#customer').on('change', function() {
+            var customer = $(this).val();
+            $.get(`/api/master/customers/${customer}`).then(function(data) {
+                var notIfiy = data.customer[0];
+                $('#notifiy').val(' ' + notIfiy.name);
+            });
+        });
+
+        // Submit form
+        $('#editForm').submit(function() {
+            $('input, select').removeAttr('disabled');
+        });
+
+        $(document).ready(function() {
+            calculateTotals();
+        });
+    });
 </script>
-    @include('invoice.invoice._js_vat_table')
-    <script>
+
+<script>
+    var removed = [];
+    function removeItem( item )
+    {
+        removed.push(item);
+        console.log(removed);
+        document.getElementById("removed").value = removed;
+    }
+    $(document).ready(function(){
+        $("#charges").on("click", ".remove", function () {
+        $(this).closest("tr").remove();
+        // update total_egp and usd to calculate all rows 
+            calculateTotals()
+
+        });
+    });
+</script>
+
+<script>
+    function calculateAmounts() {
+        let exchangeRate = parseFloat($('#custom_rate_input').val());
+        let sizeSmall = parseFloat($('#size_small_1').val()); 
+        let totalAmount = parseFloat($('#total_amount_1').val()); 
+
+        let egyAmount = sizeSmall * exchangeRate;
+        let totalEgy = totalAmount * exchangeRate;
+
+        $('#egy_amount_1').val(egyAmount.toFixed(2)); 
+        $('#total_egy_1').val(totalEgy.toFixed(2));
+        $('#egp_vat_1').val(totalEgy.toFixed(2));
+    }
+    
+    $(document).on('input', '#custom_rate_input_1, #size_small_1, #total_amount_1', function() {
+
+        calculateAmounts();
+    });
+
+    $(document).ready(function() {
+        calculateAmounts();
+    });
+</script>
+
+@include('invoice.invoice._js_vat_table')
+
+<script>
     $('#editForm').submit(function() {
         $('input').removeAttr('disabled');
         $('select').removeAttr('disabled');
@@ -408,215 +469,10 @@
 </script>
 
 <script>
-        $(function(){
-                let customer = $('#customer');
-                $('#customer').on('change',function(e){
-                    let value = e.target.value;
-                    let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                        let notIfiy = data.customer[0] ;
-                        let notifiy = $('#notifiy').val(' ' + notIfiy.name);
-                    notifiy.html(list2.join(''));
-                });
-            });
-        });
-</script>
-<script>
-    $(document).on('input', 'input[name="rate"]', function() {
-        var exchange = $(this).val();
-        var qty = $('input[name="qty"]').val();
-        var totEgp = 0;
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-            $(this).find('input[name$="[total_amount]"]').val(totalAmount);
-
-            @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-                var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
-                var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
-            @else
-                var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-                var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-            @endif
-
-            var exchangeRate = exchange === 'eta' ? eta : etd;
-            var egpAmount = totalAmount * exchangeRate;
-            totEgp = totEgp + parseFloat(egpAmount);
-            $(this).find('input[name$="[total_egy]"]').val(egpAmount);
-        });
-        $('input[id="total_egp"]').val(totEgp);
-        handleVatInput()
-
-    });
-    $('body').on('change', 'input[name$="[enabled]"]', function() {
-    var row = $(this).closest('tr');
-    var sizeSmall = row.find('input[name$="[size_small]"]').val();
-    var qty = $('input[name="qty"]').val();
-    var totalAmount = 0;
-    if($(this).val() == 1) {
-        totalAmount = sizeSmall * qty;
-    } else {
-        totalAmount = sizeSmall;
-    }
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-
-    // Calculate the total EGP Amount and update the Amount input field of the current row
-    var exchange = $('input[name="rate"]:checked').val();
-        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
-            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
-        @else
-            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-        @endif    var exchangeRate = exchange === 'eta' ? eta : etd;
-    var egpAmount = totalAmount * exchangeRate;
-    row.find('input[name$="[total_egy]"]').val(egpAmount);
-    // update total_egp and usd to calculate all rows
-        handleVatInput()
-});
-
-$('body').on('input', 'input[name$="[size_small]"]', function() {
-    // Get the current row
-    var row = $(this).closest('tr');
-
-    // Get the qty value from the QTY input field
-    var qty = $('input[name="qty"]').val();
-
-    // Get the size_small value from the current row
-    var sizeSmall = $(this).val();
-
-    var enabled = row.find('input[name$="[enabled]"]:checked').val();
-
-    // Calculate the total amount and update the total_amount input field of the current row
-    var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall;
-
-    row.find('input[name$="[total_amount]"]').val(totalAmount);
-        @if(optional($bldraft->booking)->voyage_id_second != null && optional($bldraft->booking)->transhipment_port != null)
-            var eta  = "{{optional(optional($bldraft->booking)->secondvoyage)->exchange_rate}}";
-            var etd  = "{{optional( optional($bldraft->booking)->secondvoyage)->exchange_rate_etd}}";
-        @else
-            var eta  = "{{optional($bldraft->voyage)->exchange_rate}}";
-            var etd  = "{{optional($bldraft->voyage)->exchange_rate_etd}}";
-        @endif   
-     // Calculate the total EGP Amount and update the Amount input field of the current row
-    var exchangeRate = $('input[name="rate"]:checked').val();
-    exchangeRate = exchangeRate === 'eta' ? eta : etd;
-    var egpAmount = totalAmount * exchangeRate;
-    row.find('input[name$="[total_egy]"]').val(egpAmount);
-    // update total_egp and usd to calculate all rows
-    calculateTotals()
-});
-</script>
-<script>
-var removed = [];
-function removeItem( item )
-{
-    removed.push(item);
-    console.log(removed);
-    document.getElementById("removed").value = removed;
-}
-$(document).ready(function(){
-    $("#charges").on("click", ".remove", function () {
-    $(this).closest("tr").remove();
-    // update total_egp and usd to calculate all rows 
-
-        calculateTotals()
-
-    });
-});
-</script>
-<script>
     $(document).ready(function() {
-        $('#createForm').submit(function() {
+        $('#editForm').submit(function() {
             $('input, select').removeAttr('disabled');
         });
-
-        function updateAmount() {
-            var rateValue;
-            if ($('#custom_rate_radio').is(':checked') && $('#custom_rate_input').val()) {
-                rateValue = parseFloat($('#custom_rate_input').val()); // Use custom rate if custom radio is selected and value is entered
-            } else {
-                rateValue = parseFloat($("input[name='rate']:checked").data('rate')); // Otherwise, use the rate associated with the selected radio button
-            }
-            var sizeSmallValue = parseFloat($('#size_small').val());
-
-            // Check if both values are numbers and valid
-            if (!isNaN(rateValue) && !isNaN(sizeSmallValue)) {
-                var calculatedAmount = rateValue * sizeSmallValue;
-                $('#calculated_amount').val(calculatedAmount.toFixed(2)); // Formats the result to 2 decimal places
-            } else {
-                $('#calculated_amount').val(''); // Clear calculated amount if inputs are not valid
-            }
-        }
-
-        // Set initial data-rate values from server or defaults
-        $('#rate1').data('rate', {{ optional($bldraft->voyage)->exchange_rate ?? 'default_rate_value' }});
-        $('#exchange_rate2').data('rate', {{ optional($bldraft->voyage)->exchange_rate_etd ?? 'default_rate_value_etd' }});
-
-        // Event listeners for changes in the rate selection, size small input, or custom rate input
-        $("input[name='rate']").change(updateAmount);
-        $('#size_small').on('input', updateAmount);
-        $('#custom_rate_input').on('input', updateAmount);
-
-        // Show or hide the custom rate input field based on the custom rate radio button
-        $('#custom_rate_radio').change(function() {
-            if (this.checked) {
-                $('#custom_rate_input').show();
-            } else {
-                $('#custom_rate_input').hide();
-                $('#custom_rate_input').val(''); // Clear custom rate when hiding the input
-            }
-            updateAmount(); // Ensure amount updates when switching between rate options
-        });
-
-        // Initial call to update the amount on page load
-        updateAmount();
     });
-    $(document).ready(function() {
-    // Fetch initial values and set event listeners
-    $('#custom_rate_radio').change(toggleCustomRateInput);
-    $("input[name='rate']").change(calculateTotalAmount);
-    $('#custom_rate_input').on('input', calculateTotalAmount);
-
-    // Function to toggle the custom rate input visibility
-    function toggleCustomRateInput() {
-        if ($('#custom_rate_radio').is(':checked')) {
-            $('#custom_rate_input').show();
-        } else {
-            $('#custom_rate_input').hide().val('');  // Clear and hide the custom rate input
-        }
-    }
-
-    // Function to calculate the total amount based on the selected rate and the base total amount
-    function calculateTotalAmount() {
-        let rateValue;
-        if ($('#custom_rate_radio').is(':checked') && $('#custom_rate_input').val()) {
-            rateValue = parseFloat($('#custom_rate_input').val()); // Use custom rate if custom radio is selected and value is entered
-        } else {
-            rateValue = parseFloat($("input[name='rate']:checked").data('rate')); // Use the rate associated with the selected radio button
-        }
-        
-        let totalAmount = parseFloat($('#ofr').val()); // Fetch the current total amount from the charges table
-        
-        // Calculate the new total amount if both rate and base amount are valid numbers
-        if (!isNaN(rateValue) && !isNaN(totalAmount)) {
-            let calculatedTotalAmount = rateValue * totalAmount;
-            $('#calculated_total_amount').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
-        } else {
-            $('#calculated_total_amount').val(''); // Clear calculated amount if inputs are not valid
-        }
-        if (!isNaN(rateValue) && !isNaN(totalAmount)) {
-            let calculatedTotalAmount = rateValue * totalAmount;
-            $('#calculated_total_amount_vat').val(calculatedTotalAmount.toFixed(2)); // Set the calculated total amount
-        } else {
-            $('#calculated_total_amount_vat').val(''); // Clear calculated amount if inputs are not valid
-        }
-    }
-
-    // Initial setup and calculations
-    toggleCustomRateInput(); // Ensure correct visibility state for the custom rate input
-    calculateTotalAmount(); // Calculate the total amount initia=y
-});
-
 </script>
 @endpush

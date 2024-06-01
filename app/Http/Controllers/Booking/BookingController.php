@@ -295,6 +295,7 @@ class BookingController extends Controller
             'imo' => $request->input('imo') != null ? 1 : 0,
             'rf' => $request->input('rf') != null ? 1 : 0,
             'oog' => $request->input('oog') != null ? 1 : 0,
+            'nor' => $request->input('nor') != null ? 1 : 0,
             'ffw_id' => $request->input('ffw_id'),
             'booking_confirm' => $request->input('booking_confirm'),
             'notes' => $request->input('notes'),

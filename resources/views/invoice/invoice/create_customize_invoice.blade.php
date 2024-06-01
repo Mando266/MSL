@@ -184,7 +184,7 @@
                                 </div>
                                 <div class="form-group col-md-2" >
                                     <label>Exchange Rate</label>
-                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="{{old('customize_exchange_rate')}}" autocomplete="off"  style="background-color:#fff" required>
+                                        <input type="text" class="form-control" placeholder="Exchange Rate" name="customize_exchange_rate"  value="47.15" autocomplete="off"  style="background-color:#fff" required>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <div style="padding: 30px;">
@@ -204,7 +204,7 @@
                             <div class="form-row">
                                     <div class="col-md-3 form-group">
                                         <label> VAT % </label>
-                                        <input type="text" class="form-control" placeholder="VAT %" name="vat" value={{0}} autocomplete="off"  style="background-color:#fff">
+                                        <input type="text" class="form-control" placeholder="VAT %" name="vat" value={{14}} autocomplete="off"  style="background-color:#fff">
                                     </div> 
                                 <div class="form-group col-md-3">
                                     <label for="status">Booking Status<span class="text-warning"> * </span></label>
@@ -256,17 +256,18 @@
 @push('scripts')
 <script>
     $(function(){
-            let customer = $('#customer');
-            $('#customer').on('change',function(e){
-                let value = e.target.value;
-                let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
-                    let notIfiy = data.customer[0] ;
-                    let notifiy = $('#notifiy').val(' ' + notIfiy.name);
+        let customer = $('#customer');
+        $('#customer').on('change',function(e){
+            let value = e.target.value;
+            let response =    $.get(`/api/master/customers/${customer.val()}`).then(function(data){
+                let notIfiy = data.customer[0] ;
+                let notifiy = $('#notifiy').val(' ' + notIfiy.name);
                 notifiy.html(list2.join(''));
             });
         });
     });
 </script>
+
 <script>
     $('#createForm').submit(function() {
         $('input').removeAttr('disabled');
@@ -274,161 +275,51 @@
 </script>
 
 <script>
-    $(document).on('input', 'input[name="qty"]', function() {
-        var vat = $(this).val();
-        vat = vat / 100;
-        var qty = $('input[name="qty"]').val();
-        var exchangeRate = $('input[name="customize_exchange_rate"]').val();
+    $(document).ready(function() {
+        function updateRow(row) {
+            var sizeSmall = row.find('input[name$="[size_small]"]').val();
+            var enabled = row.find('input[name$="[enabled]"]:checked').val();
+            var add_vat = row.find('input[name$="[add_vat]"]:checked').val();
+            var qty = $('input[name="qty"]').val();
+            var vat = $('input[name="vat"]').val() / 100;
+            var exchangeRate = $('input[name="customize_exchange_rate"]').val();
 
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var add_vat = $(this).find('input[name$="[add_vat]"]:checked').val();
             var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
             var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
-            $(this).find('input[name$="[total]"]').val(totalAmount);
-            $(this).find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-            // Calculate the total EGP Amount and update the Amount input field of the current row
-            var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-            var egpAmount = totalAmount * exchangeRate;
-            var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-            $(this).find('input[name$="[egy_amount]"]').val(egpAmount);
-            $(this).find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
-        });
-    });
 
-
-    $(document).on('input', 'input[name="vat"]', function() {
-        var vat = $(this).val();
-        vat = vat / 100;
-        var qty = $('input[name="qty"]').val();
-        var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var add_vat = $(this).find('input[name$="[add_vat]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
-            var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
-            $(this).find('input[name$="[total]"]').val(totalAmount);
-            $(this).find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-            // Calculate the total EGP Amount and update the Amount input field of the current row
-            var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-            var egpAmount = totalAmount * exchangeRate;
-            var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-            $(this).find('input[name$="[egy_amount]"]').val(egpAmount);
-            $(this).find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
-        });
-    });
-    $(document).on('input', 'input[name="customize_exchange_rate"]', function() {
-        var exchange = $(this).val();
-        var qty = $('input[name="qty"]').val();
-        var vat = $('input[name="vat"]').val();
-        vat = vat / 100;
-        $('#charges tbody tr').each(function() {
-            var sizeSmall = $(this).find('input[name$="[size_small]"]').val();
-            var enabled = $(this).find('input[name$="[enabled]"]:checked').val();
-            var add_vat = $(this).find('input[name$="[add_vat]"]:checked').val();
-            var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
-            var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
-            $(this).find('input[name$="[total]"]').val(totalAmount);
-            $(this).find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-            var exchangeRate = $('input[name="customize_exchange_rate"]').val();
+            row.find('input[name$="[total]"]').val(totalAmount);
+            row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
 
             var egpAmount = totalAmount * exchangeRate;
             var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-            $(this).find('input[name$="[egy_amount]"]').val(egpAmount);
-            $(this).find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
-        });
-    });
-    $('body').on('change', 'input[name$="[enabled]"]', function() {
-        var row = $(this).closest('tr');
-        var sizeSmall = row.find('input[name$="[size_small]"]').val();
-        var vat = $('input[name="vat"]').val();
-        vat = vat / 100;
-        var add_vat = row.find('input[name$="[add_vat]"]:checked').val();
-        var qty = $('input[name="qty"]').val();
-        var totalAmount = 0;
-        if($(this).val() == 1) {
-            totalAmount = sizeSmall * qty;
-        } else {
-            totalAmount = sizeSmall * 1;
+
+            row.find('input[name$="[egy_amount]"]').val(egpAmount);
+            row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
         }
-        var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
 
-        row.find('input[name$="[total]"]').val(totalAmount);
-        row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-
-        // Calculate the total EGP Amount and update the Amount input field of the current row
-        var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-
-        var egpAmount = totalAmount * exchangeRate;
-        var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-        row.find('input[name$="[egy_amount]"]').val(egpAmount);
-        row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
-    });
-
-    $('body').on('change', 'input[name$="[add_vat]"]', function() {
-        var row = $(this).closest('tr');
-        var sizeSmall = row.find('input[name$="[size_small]"]').val();
-        var vat = $('input[name="vat"]').val();
-        vat = vat / 100;
-        var enabled = row.find('input[name$="[enabled]"]:checked').val();
-        var qty = $('input[name="qty"]').val();
-        var totalAmount = 0;
-        if(enabled == 1) {
-            totalAmount = sizeSmall * qty;
-        } else {
-            totalAmount = sizeSmall * 1;
+        function updateAllRows() {
+            $('#charges tbody tr').each(function() {
+                updateRow($(this));
+            });
         }
-        var totalAmountAfterVat = $(this).val() == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
 
-        row.find('input[name$="[total]"]').val(totalAmount);
-        row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
+        $('input[name="qty"], input[name="vat"], input[name="customize_exchange_rate"]').on('input', function() {
+            updateAllRows();
+        });
 
-        // Calculate the total EGP Amount and update the Amount input field of the current row
-        var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-        var egpAmount = totalAmount * exchangeRate;
-        var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-        row.find('input[name$="[egy_amount]"]').val(egpAmount);
-        row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
+        $('body').on('change', 'input[name$="[enabled]"], input[name$="[add_vat]"]', function() {
+            updateRow($(this).closest('tr'));
+        });
+
+        $('body').on('input', 'input[name$="[size_small]"]', function() {
+            updateRow($(this).closest('tr'));
+        });
+
+        updateAllRows();
     });
-
-$('body').on('input', 'input[name$="[size_small]"]', function() {
-    // Get the current row
-    var row = $(this).closest('tr');
-
-    // Get the qty value from the QTY input field
-    var qty = $('input[name="qty"]').val();
-
-    var vat = $('input[name="vat"]').val();
-    vat = vat / 100;
-    var add_vat = row.find('input[name$="[add_vat]"]:checked').val();
-
-    // Get the size_small value from the current row
-    var sizeSmall = $(this).val();
-
-    var enabled = row.find('input[name$="[enabled]"]:checked').val();
-
-    // Calculate the total amount and update the total_amount input field of the current row
-    var totalAmount = enabled == 1 ? sizeSmall * qty : sizeSmall * 1;
-    var totalAmountAfterVat = add_vat == 1 ? totalAmount + (totalAmount * vat) : totalAmount;
-
-    row.find('input[name$="[total]"]').val(totalAmount);
-    row.find('input[name$="[usd_vat]"]').val(totalAmountAfterVat.toFixed(2));
-
-    var exchangeRate = $('input[name="customize_exchange_rate"]').val();
-
-    var egpAmount = totalAmount * exchangeRate;
-    var egpAmountAfterVat = totalAmountAfterVat * exchangeRate;
-    row.find('input[name$="[egy_amount]"]').val(egpAmount);
-    row.find('input[name$="[egp_vat]"]').val(egpAmountAfterVat.toFixed(2));
-
-});
 </script>
 
 <script>
-
     $(document).ready(function(){
         $("#charges").on("click", ".remove", function () {
             $(this).closest("tr").remove();
@@ -436,7 +327,7 @@ $('body').on('input', 'input[name$="[size_small]"]', function() {
         var counter  = '<?= isset($key)? ++$key : 0 ?>';
         $("#add").click(function(){
            var tr = '<tr>'+ 
-               '<td><select class="form-control" data-live-search="true" name="invoiceChargeDesc['+counter+'][charge_description]" data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
+               '<td><select class="form-control" data-live-search="true" name="invoiceChargeDesc['+counter+'][charge_description]" required     data-size="10"><option>Select</option>@foreach ($charges as $item)<option value="{{$item->name}}">{{$item->name}}</option>@endforeach</select></td>'+
                '<td><input type="text" name="invoiceChargeDesc['+counter+'][size_small]" class="form-control" autocomplete="off" placeholder="Amount" required></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_yes" value="1"><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][add_vat]" id="item_'+counter+'_enabled_no" value="0" checked><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+
                '<td><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_yes" value="1" checked><label class="form-check-label" for="item_'+counter+'_enabled_yes">Yes</label></div><div class="form-check"><input class="form-check-input" type="radio" name="invoiceChargeDesc['+counter+'][enabled]" id="item_'+counter+'_enabled_no" value="0"><label class="form-check-label" for="item_'+counter+'_enabled_no">No</label></div></td>'+

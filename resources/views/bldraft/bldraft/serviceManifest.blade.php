@@ -36,13 +36,15 @@
                     @endforeach
                     <div class="row">
                         <div class="col-md-2">
-                        @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
-                        <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
-                        @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
-                        <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
-                        @else
-                        <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
-                        @endif
+                            @if(optional(optional($blDraft->booking)->principal)->code == 'PLS')
+                                <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                @elseif(optional(optional($blDraft->booking)->principal)->code == 'Cstar')
+                                <img src="{{asset('assets/img/cstar-logo.jpeg')}}" style="width: 260px;" alt="logo">
+                                @elseif(Auth::user()->company_id == 3)
+                                <img src="{{asset('assets/img/winwin_maritime.png')}}" style="width: 260px;" alt="logo">
+                                @else
+                                <img src="{{asset('assets/img/msl-logo.png')}}" style="width: 260px;" alt="logo">
+                            @endif
                         </div>
                         <table class="col-md-10 tableStyle" style="margin-bottom: 0rem; border-style: hidden;">
                             <tbody>
@@ -83,7 +85,11 @@
                                 {{ optional($blDraft->dischargePort)->name }}
                                 </td>
                                 <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
+                                @if(optional($blDraft->booking)->transhipment_port != null && $blDraft->booking->quotation->shipment_type == "Import")
+                                    {{ optional($etdfristvoayege)->etd }} 
+                                    @else
                                     {{ optional($etdvoayege)->etd }}
+                                @endif    
                                 </td>
                             </tr>
                         </tbody>
@@ -199,7 +205,11 @@
                                     {{ optional($blDraft->dischargePort)->name }}
                                     </td>
                                     <td class="tableStyle" style="border-style: hidden;">Date of Sailing </br>
-                                        {{ optional($etdvoayege)->etd }}
+                                    @if(optional($blDraft->booking)->transhipment_port != null && $blDraft->booking->quotation->shipment_type == "Import")
+                                    {{ optional($etdfristvoayege)->etd }} 
+                                    @else
+                                    {{ optional($etdvoayege)->etd }}
+                                    @endif  
                                     </td>
                                 </tr>
                             </tbody>

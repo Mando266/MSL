@@ -347,9 +347,11 @@ class BlDraftController extends Controller
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
         $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
+        $etdfristvoayege = VoyagePorts::where('voyage_id',$blDraft->booking->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
         return view('bldraft.bldraft.manifest',[
             'blDraft'=>$blDraft,
-            'etdvoayege'=>$etdvoayege
+            'etdvoayege'=>$etdvoayege,
+            'etdfristvoayege'=>$etdfristvoayege
 
             ]);
     }
@@ -357,6 +359,7 @@ class BlDraftController extends Controller
     {
         $blDraft = BlDraft::where('id',$id)->with('blDetails')->first();
         $etdvoayege = VoyagePorts::where('voyage_id',$blDraft->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
+        $etdfristvoayege = VoyagePorts::where('voyage_id',$blDraft->booking->voyage_id)->where('port_from_name',optional($blDraft->loadPort)->id)->first();
 
         return view('bldraft.bldraft.serviceManifest',[
             'blDraft'=>$blDraft,
@@ -364,8 +367,8 @@ class BlDraftController extends Controller
             'loadPort'=>request()->loadPort ?? null,
             'dischargePort'=>request()->dischargePort ?? null,
             'xml'=>$xml,
-            'etdvoayege'=>$etdvoayege
-
+            'etdvoayege'=>$etdvoayege,
+            'etdfristvoayege'=>$etdfristvoayege
             ]);
     }
 
